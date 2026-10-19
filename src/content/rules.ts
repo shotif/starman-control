@@ -48,6 +48,22 @@ export const RULES = {
     /** One turn for every 3 light-years, rounded up. */
     deciPerTurn: 30,
   },
+  lanes: {
+    /** How far a new lane can reach, until research extends it (M1_LANES_RESEARCH.md §1). */
+    reachDeci: 60,
+    /** Industry for a new lane: a base, and so much a light-year. */
+    industryBase: 20,
+    industryPerLy: 6,
+    metalsPerLy: 1,
+    fuelPerLy: 2,
+    /** Turns it is tuned once paid for: one, and one more for every 3 light-years. */
+    tuningTurns: 1,
+    deciPerTuningTurn: 30,
+  },
+  outposts: {
+    /** Industry an outpost makes for its queue, which holds lanes only. */
+    industry: 2,
+  },
   homeWeb: {
     /** Reborn's lanes within this many jumps of a capital make its home web (D-19a). */
     jumps: 2,

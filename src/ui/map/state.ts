@@ -14,6 +14,9 @@ export const hover = signal<{ id: SystemId; x: number; y: number } | null>(null)
 export const query = signal('');
 export const failed = signal<string | null>(null);
 
+/** A lane being looked at in a colony's or outpost's list, drawn on the map (desktop hover). */
+export const lanePreview = signal<{ from: SystemId; to: SystemId } | null>(null);
+
 /** Choosing where a ship goes: the ship, whether it jumps blind, and the star chosen so far. */
 export const targeting = signal<{ ship: number; blind: boolean; to: SystemId | null } | null>(null);
 
@@ -36,5 +39,6 @@ export function resetMapState(): void {
   panel.value = null;
   hover.value = null;
   targeting.value = null;
+  lanePreview.value = null;
   toast.value = null;
 }

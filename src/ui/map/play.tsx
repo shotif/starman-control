@@ -15,7 +15,7 @@ import type { Need } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import type { GameState, ShipState } from '../../sim/state.ts';
-import type { World } from '../../sim/world.ts';
+import { laneEnds, type World } from '../../sim/world.ts';
 import { FactionMark } from '../parts.tsx';
 import { Founding, holdingName, needText } from './colony.tsx';
 import { say, targeting } from './state.ts';
@@ -229,6 +229,14 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'full':
       return `${holding(e.holding)} is full: its people have no more room to grow.`;
+    case 'lane-begun':
+      return `${holding(e.holding)} has paid for ${e.relight ? 'relighting the lane' : 'a new lane'} to ${name(e.to)}: its beacons are tuned for ${e.turns} turn${e.turns === 1 ? '' : 's'}.`;
+    case 'lane-opened': {
+      const [a, b] = laneEnds(e.lane);
+      return `The lane between ${name(a)} and ${name(b)} is open.`;
+    }
+    case 'lane-refused':
+      return `${holding(e.holding)} could not begin the lane to ${name(e.to)}: ${e.reason}`;
   }
 }
 
@@ -241,6 +249,11 @@ function eventPlace(e: ReportEvent): { holding: number } | { system: SystemId } 
     case 'full':
     case 'founded':
       return { holding: e.holding };
+    case 'lane-begun':
+    case 'lane-refused':
+      return { system: e.to };
+    case 'lane-opened':
+      return { system: laneEnds(e.lane)[1] };
     default:
       return { system: e.system };
   }

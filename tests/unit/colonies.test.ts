@@ -241,7 +241,7 @@ describe('the build queue', () => {
     let g = start('sta');
     const c = capital(g, 'sta');
     g = queue(g, 'sta', c.id, { kind: 'ship', ship: 'survey' });
-    expect(queueTurns(capital(g, 'sta'))).toEqual([3]);
+    expect(queueTurns(world, g, capital(g, 'sta'))).toEqual([3]);
     const before = g.ships.length;
     g = turns(g, 2).state;
     expect(capital(g, 'sta').industry).toBe(26);
@@ -266,7 +266,7 @@ describe('the build queue', () => {
     g.holdings[0] = { ...c, industry: 55 };
     g = queue(g, 'sta', c.id, { kind: 'project', project: 'mine' });
     g = queue(g, 'sta', c.id, { kind: 'ship', ship: 'survey' });
-    expect(queueTurns(capital(g, 'sta'))).toEqual([1, 1]);
+    expect(queueTurns(world, g, capital(g, 'sta'))).toEqual([1, 1]);
     const r = turn(g);
     expect(r.reports[0]?.events.filter((e) => e.kind === 'built')).toHaveLength(2);
     expect(capital(r.state, 'sta').industry).toBe(55 + 13 - 30 - 30);
@@ -282,7 +282,7 @@ describe('the build queue', () => {
     g.holdings[0] = { ...c, industry: 60 };
     g.powers[0] = { ...powerOf(g, 'sta'), stockpile: { metals: 0, volatiles: 0, fuel: 0 } };
     g = queue(g, 'sta', c.id, { kind: 'project', project: 'mine' });
-    expect(shortfall(capital(g, 'sta'), powerOf(g, 'sta').stockpile)).toEqual({ industry: 0, missing: { metals: 5 } });
+    expect(shortfall(world, g, capital(g, 'sta'))).toEqual({ industry: 0, missing: { metals: 5 } });
     expect(needsOf(world, g, 'sta')).toContainEqual({ kind: 'waiting', holding: c.id, system: 'sol' });
     // Production comes before the yields: 0 metals, then 4, then 8, when it is built.
     g = turns(g, 2).state;
@@ -311,7 +311,7 @@ describe('the build queue', () => {
     );
     g.holdings.push({ ...c, id: 10, kind: 'outpost', capital: false, body: 'mars', people: 0, projects: [] });
     expect(why(g, 'sta', { type: 'queue', holding: 10, item: { kind: 'project', project: 'mine' } })).toBe(
-      'Outposts build nothing yet.',
+      'Outposts build only lanes.',
     );
     expect(why(g, 'frontier', { type: 'queue', holding: c.id, item: { kind: 'ship', ship: 'survey' } })).toBe(
       'That colony is not yours.',

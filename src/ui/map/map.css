@@ -466,6 +466,10 @@
   border-top: 3px solid var(--accent);
 }
 
+.legend-tuning {
+  border-top: 3px dotted var(--accent);
+}
+
 .legend-dark {
   border-top: 2px dashed #9b90c9;
 }

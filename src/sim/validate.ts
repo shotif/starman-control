@@ -41,8 +41,9 @@ export function shapeProblems(raw: unknown): string[] {
   if (!Array.isArray(raw.lanes)) out.push('lanes is not a list');
   else
     for (const [i, l] of raw.lanes.entries()) {
-      if (!isRecord(l) || typeof l.id !== 'string' || !isFactionId(l.owner) || l.status !== 'open')
-        out.push(`lane ${i} is not an open lane with an owner`);
+      if (!isRecord(l) || typeof l.id !== 'string' || !isFactionId(l.owner)) out.push(`lane ${i} has no owner`);
+      else if (l.status !== 'open' && !(l.status === 'building' && isWhole(l.left, 1)))
+        out.push(`lane ${i} is neither open nor being tuned`);
     }
   if (!Array.isArray(raw.ships)) out.push('ships is not a list');
   else
@@ -91,7 +92,8 @@ export function shapeProblems(raw: unknown): string[] {
           (q) =>
             isRecord(q) &&
             ((q.kind === 'ship' && typeof q.ship === 'string' && q.ship in SHIPS) ||
-              (q.kind === 'project' && typeof q.project === 'string' && q.project in PROJECTS)),
+              (q.kind === 'project' && typeof q.project === 'string' && q.project in PROJECTS) ||
+              (q.kind === 'lane' && typeof q.to === 'string')),
         )
       )
         out.push(`holding ${i} has a queue it cannot build`);
@@ -149,6 +151,11 @@ export function stateProblems(world: World, state: GameState): string[] {
       out.push(`holding ${h.id} is on ${h.body}, which is not in ${h.system}`);
     if (h.kind === 'outpost' && h.people !== 0) out.push(`outpost ${h.id} has people`);
     if (new Set(h.projects).size !== h.projects.length) out.push(`holding ${h.id} has a project twice`);
+    for (const q of h.queue) {
+      if (q.kind === 'lane' && (!world.hasSystem(q.to) || q.to === h.system))
+        out.push(`holding ${h.id} queues a lane to ${q.to}, which it cannot have`);
+      if (q.kind !== 'lane' && h.kind === 'outpost') out.push(`outpost ${h.id} queues something other than a lane`);
+    }
   }
   let lastShip = 0;
   for (const s of state.ships) {

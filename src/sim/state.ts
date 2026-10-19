@@ -13,7 +13,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 3;
+export const STATE_VERSION = 4;
 
 export interface Stockpile {
   metals: number;
@@ -33,12 +33,13 @@ export interface PowerState {
   shipsBuilt: number;
 }
 
-/** A lane that is not dark. Every catalogue lane not listed is dark. */
-export interface LaneState {
-  id: LaneId;
-  owner: FactionId;
-  status: 'open';
-}
+/**
+ * A lane that is not dark: open, or paid for and being tuned for `left` more turns. Every lane of
+ * the catalogue not listed is dark; a lane not in the catalogue is one a power built.
+ */
+export type LaneState =
+  | { id: LaneId; owner: FactionId; status: 'open' }
+  | { id: LaneId; owner: FactionId; status: 'building'; left: number };
 
 export interface BlindJump {
   from: SystemId;

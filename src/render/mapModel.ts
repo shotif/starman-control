@@ -29,6 +29,8 @@ export interface MapLane {
   a: SystemId;
   b: SystemId;
   owner: FactionId | null;
+  /** Open, being tuned (drawn dotted in its owner's colour), or dark. */
+  status: 'open' | 'building' | 'dark';
 }
 
 export interface MapHolding {
@@ -79,8 +81,17 @@ export function mapContent(world: World, state: GameState): MapContent {
       planets: s.sky.planets.length,
     };
   });
-  const owner = new Map(state.lanes.map((l) => [l.id, l.owner]));
-  const lanes = world.catalogue.map((l): MapLane => ({ id: l.id, a: l.a, b: l.b, owner: owner.get(l.id) ?? null }));
+  // Reborn's old lanes, open, being tuned or dark; then the lanes the powers have built anew.
+  const kept = new Map(state.lanes.map((l) => [l.id, l]));
+  const lanes = world.catalogue.map((l): MapLane => {
+    const s = kept.get(l.id);
+    return { id: l.id, a: l.a, b: l.b, owner: s?.owner ?? null, status: s ? s.status : 'dark' };
+  });
+  for (const l of state.lanes) {
+    if (world.catalogueLane(...laneEnds(l.id))) continue;
+    const [a, b] = laneEnds(l.id);
+    lanes.push({ id: l.id, a, b, owner: l.owner, status: l.status });
+  }
   // A power holds its capital, the systems of its colonies and outposts, and its home web's systems,
   // in that order where two powers meet. A system's label counts the people of its colonies.
   const held = new Map<SystemId, MapHolding>();

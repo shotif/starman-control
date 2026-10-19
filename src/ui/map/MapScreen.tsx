@@ -44,6 +44,7 @@ import {
 import {
   failed,
   hover,
+  lanePreview,
   mode,
   panel,
   query,
@@ -96,9 +97,16 @@ function shipMarks(game: GameState): ShipMark[] {
   });
 }
 
-/** Standing orders, drawn faintly: each ship's route through its destinations, or its blind jump. */
+/**
+ * Standing orders, drawn faintly: each ship's route through its destinations, or its blind jump,
+ * and each lane waiting in a queue.
+ */
 function orderRoutes(world: World, game: GameState, faction: string): MapRoute[] {
   const out: MapRoute[] = [];
+  for (const h of game.holdings) {
+    if (h.owner !== faction) continue;
+    for (const q of h.queue) if (q.kind === 'lane') out.push({ systems: [h.system, q.to], kind: 'orders' });
+  }
   for (const s of game.ships) {
     if (s.owner !== faction) continue;
     if (s.blindJump) {
@@ -256,7 +264,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
   // What the map draws follows the game: its lanes and holdings, its ships, and the routes.
   const lanesKey = [
-    ...game.lanes.map((l) => `${l.id}:${l.owner}`),
+    ...game.lanes.map((l) => `${l.id}:${l.owner}:${l.status}`),
     ...game.holdings.map((h) => `${h.id}:${Math.floor(h.people / 10)}`),
   ].join(',');
   useEffect(() => {
@@ -264,6 +272,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     view.current?.setSelected(selected.value);
   }, [world, lanesKey, ready]);
   const shipsKey = JSON.stringify(game.ships.map((s) => [s.at, s.blindJump?.left, s.destinations]));
+  const queuesKey = JSON.stringify(game.holdings.map((h) => h.queue.filter((q) => q.kind === 'lane')));
   useEffect(() => {
     view.current?.setShips(play ? shipMarks(latest.current.game) : []);
   }, [shipsKey, ready, play]);
@@ -284,8 +293,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       const plan = planFor(world, g, ship, to, t?.blind ?? false);
       if (plan.ok) routes.push({ systems: plan.path, kind: 'plan', blind: plan.blind });
     }
+    const lane = lanePreview.value;
+    if (lane) routes.push({ systems: [lane.from, lane.to], kind: 'plan' });
     v.setRoutes(routes);
-  }, [shipsKey, ready, t, hoverId, desktop, selectedShip.value, world, play]);
+  }, [shipsKey, queuesKey, ready, t, hoverId, desktop, selectedShip.value, lanePreview.value, world, play]);
 
   /** Tells the map which part of it is not covered by bars, panels and sheets. */
   const updateStage = useCallback(() => {
@@ -1062,6 +1073,10 @@ export function Legend() {
         <li>
           <span class="legend-line legend-open" aria-hidden="true" /> An open lane, in the colour of the power that
           tends it <Badge kind="fiction" />
+        </li>
+        <li>
+          <span class="legend-line legend-tuning" aria-hidden="true" /> A lane being tuned, dotted in its power’s
+          colour: paid for, and open in a few turns <Badge kind="fiction" />
         </li>
         <li>
           <span class="legend-line legend-dark" aria-hidden="true" /> A dark lane: one of the old lanes, out of tune

@@ -2,9 +2,8 @@
 // asked, never stored.
 
 import type { FactionId } from '../content/factions.ts';
-import { itemCost } from '../content/projects.ts';
 import type { SystemId } from '../data/types.ts';
-import { settleable } from './economy.ts';
+import { costOf, settleable } from './economy.ts';
 import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
@@ -33,7 +32,7 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
       if (h.projects.includes('shipyard')) out.push({ kind: 'idle-yard', holding: h.id, system: h.system });
       continue;
     }
-    const c = itemCost(first);
+    const c = costOf(world, state, h, first);
     if (h.industry >= c.industry && (stock.metals < c.metals || stock.volatiles < c.volatiles || stock.fuel < c.fuel))
       out.push({ kind: 'waiting', holding: h.id, system: h.system });
   }

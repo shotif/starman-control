@@ -33,7 +33,7 @@ export interface Hop {
 export function lanesFor(world: World, state: GameState, owner: FactionId): Map<SystemId, Hop[]> {
   const out = new Map<SystemId, Hop[]>();
   for (const l of state.lanes) {
-    if (l.owner !== owner) continue;
+    if (l.owner !== owner || l.status !== 'open') continue;
     const [a, b] = laneEnds(l.id);
     const lengthDeci = world.catalogueLane(a, b)?.lengthDeci ?? world.distanceDeci(a, b);
     const cost = laneCost(lengthDeci);

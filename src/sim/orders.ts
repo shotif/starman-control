@@ -22,7 +22,7 @@ export type Order =
   /** Found a colony (colony ship) or an outpost (outpost ship) on a body of the system it is at, when the turn ends. */
   | { type: 'colonise'; ship: number; body: string }
   | { type: 'found-outpost'; ship: number; body: string }
-  /** A colony's build queue: add an item at the end, take one out, or move one. */
+  /** A colony's or outpost's build queue: add an item at the end, take one out, or move one. */
   | { type: 'queue'; holding: number; item: QueueItem }
   | { type: 'unqueue'; holding: number; index: number }
   | { type: 'reorder'; holding: number; from: number; to: number };
@@ -38,11 +38,16 @@ function shipOf(state: GameState, faction: FactionId, id: number): ShipState | s
   return ship;
 }
 
-function holdingRefusal(state: GameState, faction: FactionId, order: Exclude<Order, ShipOrder>): string | null {
+function holdingRefusal(
+  world: World,
+  state: GameState,
+  faction: FactionId,
+  order: Exclude<Order, ShipOrder>,
+): string | null {
   const h = state.holdings.find((x) => x.id === order.holding);
   if (!h) return 'There is no such colony.';
   if (h.owner !== faction) return 'That colony is not yours.';
-  if (order.type === 'queue') return queueRefusal(h, order.item);
+  if (order.type === 'queue') return queueRefusal(world, state, h, order.item);
   if (order.type === 'unqueue')
     return order.index >= 0 && order.index < h.queue.length ? null : 'Nothing is queued there.';
   const { from, to } = order;
@@ -51,7 +56,7 @@ function holdingRefusal(state: GameState, faction: FactionId, order: Exclude<Ord
 
 /** Why an order cannot be given, or null if it can. */
 export function refuse(world: World, state: GameState, faction: FactionId, order: Order): string | null {
-  if (!('ship' in order)) return holdingRefusal(state, faction, order);
+  if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
   if (order.type === 'stop' || order.type === 'hold') return null;

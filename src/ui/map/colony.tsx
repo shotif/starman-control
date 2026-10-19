@@ -5,7 +5,7 @@
 import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
-import { type Cost, itemCost, itemName, PROJECTS } from '../../content/projects.ts';
+import { type Cost, itemName, PROJECTS, type QueueItem } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { SPECIES } from '../../content/species.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -14,6 +14,7 @@ import {
   bodyOf,
   buildOptions,
   capacityOf,
+  costOf,
   growthOf,
   incomeOf,
   industryOf,
@@ -24,13 +25,16 @@ import {
   shortfall,
   yieldsOf,
 } from '../../sim/economy.ts';
+import { formatLy } from '../../sim/geometry.ts';
 import { habitability } from '../../sim/habitability.ts';
+import { laneQuote, laneTargets } from '../../sim/lanes.ts';
 import type { Need } from '../../sim/needs.ts';
 import { type GameState, type Holding, powerOf, type ShipState, type Stockpile } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
 import { give, type Play } from './play.tsx';
+import { lanePreview } from './state.ts';
 import './colony.css';
 
 /** People and room are counted in tenths of a unit of about a million: "10.4", "12". */
@@ -54,6 +58,13 @@ export function costText(c: Cost): string {
   if (c.volatiles) parts.push(`${c.volatiles} volatiles`);
   if (c.fuel) parts.push(`${c.fuel} fusion fuel`);
   return parts.join(', ');
+}
+
+/** "Survey ship", "New lane to Ross 128", "Relight the lane to Ross 128". */
+export function queueLabel(world: World, h: Holding, item: QueueItem): string {
+  if (item.kind !== 'lane') return itemName(item);
+  const to = world.system(item.to).name;
+  return world.catalogueLane(h.system, item.to) ? `Relight the lane to ${to}` : `New lane to ${to}`;
 }
 
 function missingText(m: Partial<Stockpile>): string {
@@ -135,16 +146,41 @@ function YieldsLine({ world, game, h }: { world: World; game: GameState; h: Hold
   );
 }
 
-function Queue({ game, h, play, table }: { game: GameState; h: Holding; play: Play; table: boolean }) {
-  const stock = powerOf(game, h.owner).stockpile;
-  const short = shortfall(h, stock);
-  const turns = queueTurns(h);
+function Queue({
+  world,
+  game,
+  h,
+  play,
+  table,
+}: {
+  world: World;
+  game: GameState;
+  h: Holding;
+  play: Play;
+  table: boolean;
+}) {
+  const short = shortfall(world, game, h);
+  const turns = queueTurns(world, game, h);
+  const cost = (item: QueueItem) => costOf(world, game, h, item);
+  const label = (item: QueueItem) => queueLabel(world, h, item);
   const up = (i: number) => give(play, { type: 'reorder', holding: h.id, from: i, to: i - 1 });
   const remove = (i: number) => give(play, { type: 'unqueue', holding: h.id, index: i });
   const waits = (i: number) =>
     i === 0 && short !== null && Object.keys(short.missing).length > 0 && short.industry === 0;
+  /** A lane is tuned after it is paid for. */
+  const tuned = (item: QueueItem) => {
+    if (item.kind !== 'lane') return '';
+    const n = laneQuote(world, game, h.owner, h.system, item.to).turns;
+    return `, then tuned for ${n} turn${n === 1 ? '' : 's'}`;
+  };
+  const when = (i: number) => {
+    const item = h.queue[i];
+    return `${turnsText(turns[i] ?? null)}${item ? tuned(item) : ''}`;
+  };
   const status = (i: number) =>
-    waits(i) && short ? `Waits for ${missingText(short.missing)}` : `Ready ${turnsText(turns[i] ?? null)}`;
+    waits(i) && short
+      ? `Waits for ${missingText(short.missing)}`
+      : `${h.queue[i]?.kind === 'lane' ? 'Paid' : 'Ready'} ${when(i)}`;
   const buttons = (i: number, name: string) => (
     <>
       <button
@@ -168,7 +204,7 @@ function Queue({ game, h, play, table }: { game: GameState; h: Holding; play: Pl
     </>
   );
   const first = h.queue[0];
-  const firstCost = first ? itemCost(first).industry : 0;
+  const firstCost = first ? cost(first).industry : 0;
   const progress = `${Math.min(h.industry, firstCost)} of ${firstCost}`;
   if (h.queue.length === 0)
     return (
@@ -192,11 +228,11 @@ function Queue({ game, h, play, table }: { game: GameState; h: Holding; play: Pl
         </thead>
         <tbody>
           {h.queue.map((item, i) => (
-            <tr key={`${i}-${itemName(item)}`} class={i === 0 ? 'is-first' : ''}>
-              <td>{itemName(item)}</td>
-              <td>{i === 0 ? progress : itemCost(item).industry}</td>
-              <td class={waits(i) ? 'waits' : ''}>{waits(i) ? status(i) : turnsText(turns[i] ?? null)}</td>
-              <td class="queue-buttons">{buttons(i, itemName(item))}</td>
+            <tr key={`${i}-${label(item)}`} class={i === 0 ? 'is-first' : ''}>
+              <td>{label(item)}</td>
+              <td>{i === 0 ? progress : cost(item).industry}</td>
+              <td class={waits(i) ? 'waits' : ''}>{waits(i) ? status(i) : when(i)}</td>
+              <td class="queue-buttons">{buttons(i, label(item))}</td>
             </tr>
           ))}
         </tbody>
@@ -205,11 +241,11 @@ function Queue({ game, h, play, table }: { game: GameState; h: Holding; play: Pl
   return (
     <ol class="queue-list">
       {h.queue.map((item, i) => {
-        const c = itemCost(item);
+        const c = cost(item);
         return (
-          <li key={`${i}-${itemName(item)}`} class={i === 0 ? 'is-first' : ''}>
+          <li key={`${i}-${label(item)}`} class={i === 0 ? 'is-first' : ''}>
             <div class="queue-item">
-              <b>{itemName(item)}</b>
+              <b>{label(item)}</b>
               <span class={waits(i) ? 'waits' : 'dim'}>{status(i)}</span>
               {i === 0 && (
                 <span
@@ -226,7 +262,7 @@ function Queue({ game, h, play, table }: { game: GameState; h: Holding; play: Pl
                 </span>
               )}
             </div>
-            <div class="queue-buttons">{buttons(i, itemName(item))}</div>
+            <div class="queue-buttons">{buttons(i, label(item))}</div>
           </li>
         );
       })}
@@ -234,8 +270,8 @@ function Queue({ game, h, play, table }: { game: GameState; h: Holding; play: Pl
   );
 }
 
-function AddToQueue({ h, play }: { h: Holding; play: Play }) {
-  const options = buildOptions(h);
+function AddToQueue({ world, game, h, play }: { world: World; game: GameState; h: Holding; play: Play }) {
+  const options = buildOptions(world, game, h);
   return (
     <ul class="build-options">
       {options.map(({ item, refusal }) => {
@@ -251,8 +287,51 @@ function AddToQueue({ h, play }: { h: Holding; play: Play }) {
               onClick={() => give(play, { type: 'queue', holding: h.id, item })}
             >
               <b>{name}</b>
-              <span class="build-cost">{costText(itemCost(item))}</span>
+              <span class="build-cost">{costText(costOf(world, game, h, item))}</span>
               <span class="build-does">{refusal ?? does}</span>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Lanes this holding could queue: dark lanes to relight and stars within reach, nearest first. */
+function LanesFromHere({ world, game, h, play }: { world: World; game: GameState; h: Holding; play: Play }) {
+  const targets = laneTargets(world, game, h.owner, h.system);
+  if (targets.length === 0) return <p class="dim">No star is within your lane reach from here.</p>;
+  return (
+    <ul class="build-options lane-options">
+      {targets.map(({ quote: q, refusal }) => {
+        const to = world.system(q.to).name;
+        const turns = `tuned for ${q.turns} turn${q.turns === 1 ? '' : 's'}`;
+        return (
+          <li key={q.to}>
+            <button
+              type="button"
+              class="build-option"
+              disabled={refusal !== null}
+              aria-label={`Queue a lane to ${to}`}
+              onClick={() => give(play, { type: 'queue', holding: h.id, item: { kind: 'lane', to: q.to } })}
+              onMouseEnter={() => {
+                lanePreview.value = { from: h.system, to: q.to };
+              }}
+              onMouseLeave={() => {
+                lanePreview.value = null;
+              }}
+              onFocus={() => {
+                lanePreview.value = { from: h.system, to: q.to };
+              }}
+              onBlur={() => {
+                lanePreview.value = null;
+              }}
+            >
+              <b>
+                {to} <span class="lane-kind">{q.relight ? 'relight' : 'new'}</span>
+              </b>
+              <span class="build-cost">{costText(q.cost)}</span>
+              <span class="build-does">{refusal ?? `${formatLy(q.lengthDeci)}, ${turns}`}</span>
             </button>
           </li>
         );
@@ -316,9 +395,10 @@ export function HoldingPanel({
           <FigureLine label="Industry" {...industryOf(h)} />
         </>
       ) : (
-        <p class="dim">Outposts have no people; they gather their world’s riches.</p>
+        <p class="dim">Outposts have no people; they gather their world’s riches, and can build lanes.</p>
       )}
       <YieldsLine world={world} game={game} h={h} />
+      {h.kind === 'outpost' && <FigureLine label="Industry" {...industryOf(h)} />}
       {h.kind === 'colony' && (
         <>
           <h3>Built here</h3>
@@ -333,16 +413,22 @@ export function HoldingPanel({
           ) : (
             <p class="dim">Nothing yet.</p>
           )}
-          {mine && play && (
+        </>
+      )}
+      {mine && play && (
+        <>
+          <h3>
+            Building <span class="dim">· {industryOf(h).total} industry a turn</span>
+          </h3>
+          <Queue world={world} game={game} h={h} play={play} table={table} />
+          {h.kind === 'colony' && (
             <>
-              <h3>
-                Building <span class="dim">· {industryOf(h).total} industry a turn</span>
-              </h3>
-              <Queue game={game} h={h} play={play} table={table} />
               <h3>Add to the queue</h3>
-              <AddToQueue h={h} play={play} />
+              <AddToQueue world={world} game={game} h={h} play={play} />
             </>
           )}
+          <h3>Lanes from here</h3>
+          <LanesFromHere world={world} game={game} h={h} play={play} />
         </>
       )}
     </article>
@@ -434,8 +520,8 @@ export function needText(world: World, game: GameState, need: Need): string {
   const name = holdingName(world, game, h);
   if (need.kind === 'idle-yard') return `${name}’s shipyard is building nothing.`;
   const first = h.queue[0];
-  const short = shortfall(h, powerOf(game, h.owner).stockpile);
-  return `${first ? itemName(first) : 'Its next item'} at ${name} waits for ${short ? missingText(short.missing) : 'resources'}.`;
+  const short = shortfall(world, game, h);
+  return `${first ? queueLabel(world, h, first) : 'Its next item'} at ${name} waits for ${short ? missingText(short.missing) : 'resources'}.`;
 }
 
 type Tab = 'colonies' | 'outposts' | 'ships';
@@ -481,8 +567,8 @@ export function EmpireView({
   const building = (h: Holding) => {
     const first = h.queue[0];
     if (!first) return h.projects.includes('shipyard') ? 'Nothing' : '—';
-    const t = queueTurns(h)[0] ?? null;
-    return `${itemName(first)}, ${t === null ? 'no industry' : t === 1 ? 'this turn' : `about ${t} turns`}`;
+    const t = queueTurns(world, game, h)[0] ?? null;
+    return `${queueLabel(world, h, first)}, ${t === null ? 'no industry' : t === 1 ? 'this turn' : `about ${t} turns`}`;
   };
   const head = (key: ColonyKey, label: string) => (
     <th scope="col" aria-sort={sort.key === key ? (sort.down ? 'descending' : 'ascending') : 'none'}>

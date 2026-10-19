@@ -3,13 +3,14 @@
 // Pure and in whole numbers.
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
-import { itemCost, PROJECTS, type QueueItem } from '../content/projects.ts';
+import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS, type ShipType } from '../content/ships.ts';
 import { SPECIES } from '../content/species.ts';
 import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
 import { habitability } from './habitability.ts';
+import { laneQuote, laneRefusal } from './lanes.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile } from './state.ts';
 import type { World } from './world.ts';
 
@@ -37,9 +38,10 @@ export function capacityOf(world: World, state: GameState, h: Holding): number {
   return body ? habitability(body, SPECIES[FACTIONS[h.owner].species]).capacity * 10 : 0;
 }
 
-/** A colony's industry a turn: 1 for each whole unit of people, the capital's, the traits'. */
+/** A colony's industry a turn: 1 for each whole unit of people, the capital's, the traits'. An outpost's own, for lanes. */
 export function industryOf(h: Holding): Figure {
-  if (h.kind !== 'colony') return { total: 0, parts: [] };
+  if (h.kind !== 'colony')
+    return { total: RULES.outposts.industry, parts: [{ label: 'an outpost’s own', value: RULES.outposts.industry }] };
   const units = Math.floor(h.people / 10);
   const parts: Part[] = [{ label: 'from people', value: units }];
   if (h.capital) parts.push({ label: 'from the capital', value: RULES.capital.industry });
@@ -163,9 +165,16 @@ export function settleable(
   );
 }
 
-/** Why a colony cannot queue an item, or null (M1_COLONIES.md §3). */
-export function queueRefusal(h: Holding, item: QueueItem): string | null {
-  if (h.kind !== 'colony') return 'Outposts build nothing yet.';
+/** What an item costs where it is queued: a ship's or project's own cost, or the lane's. */
+export function costOf(world: World, state: GameState, h: Holding, item: QueueItem): Cost {
+  if (item.kind === 'lane') return laneQuote(world, state, h.owner, h.system, item.to).cost;
+  return itemCost(item);
+}
+
+/** Why a colony or outpost cannot queue an item, or null (M1_COLONIES.md §3, M1_LANES_RESEARCH.md §1). */
+export function queueRefusal(world: World, state: GameState, h: Holding, item: QueueItem): string | null {
+  if (item.kind === 'lane') return laneRefusal(world, state, h.owner, h.system, item.to);
+  if (h.kind !== 'colony') return 'Outposts build only lanes.';
   if (item.kind === 'ship') {
     if (!h.projects.includes('shipyard')) return 'Ships need a shipyard.';
     return null;
@@ -176,18 +185,27 @@ export function queueRefusal(h: Holding, item: QueueItem): string | null {
   return null;
 }
 
-/** Every item a colony might build, each with why not if it cannot. */
-export function buildOptions(h: Holding): { item: QueueItem; refusal: string | null }[] {
-  const ships: QueueItem[] = (Object.keys(SHIPS) as ShipType[]).map((ship) => ({ kind: 'ship', ship }));
-  const projects: QueueItem[] = Object.values(PROJECTS).map((p) => ({ kind: 'project', project: p.id }));
-  return [...ships, ...projects].map((item) => ({ item, refusal: queueRefusal(h, item) }));
+/** Every ship and project a colony might build, each with why not if it cannot (lanes: lanes.ts). */
+export function buildOptions(
+  world: World,
+  state: GameState,
+  h: Holding,
+): { item: BuildItem; refusal: string | null }[] {
+  const ships: BuildItem[] = (Object.keys(SHIPS) as ShipType[]).map((ship) => ({ kind: 'ship', ship }));
+  const projects: BuildItem[] = Object.values(PROJECTS).map((p) => ({ kind: 'project', project: p.id }));
+  return [...ships, ...projects].map((item) => ({ item, refusal: queueRefusal(world, state, h, item) }));
 }
 
 /** What the first item still lacks: industry (it waits for more), or resources from the stockpile. */
-export function shortfall(h: Holding, stockpile: Stockpile): { industry: number; missing: Partial<Stockpile> } | null {
+export function shortfall(
+  world: World,
+  state: GameState,
+  h: Holding,
+): { industry: number; missing: Partial<Stockpile> } | null {
   const first = h.queue[0];
   if (!first) return null;
-  const c = itemCost(first);
+  const stockpile = powerOf(state, h.owner).stockpile;
+  const c = costOf(world, state, h, first);
   const missing: Partial<Stockpile> = {};
   if (stockpile.metals < c.metals) missing.metals = c.metals - stockpile.metals;
   if (stockpile.volatiles < c.volatiles) missing.volatiles = c.volatiles - stockpile.volatiles;
@@ -200,11 +218,11 @@ export function shortfall(h: Holding, stockpile: Stockpile): { industry: number;
  * today's industry and with the resources to hand; null if the colony makes no industry. Growth
  * and waiting for resources can change it, so the interface says "about".
  */
-export function queueTurns(h: Holding): (number | null)[] {
+export function queueTurns(world: World, state: GameState, h: Holding): (number | null)[] {
   const rate = industryOf(h).total;
   let need = -h.industry;
   return h.queue.map((item) => {
-    need += itemCost(item).industry;
+    need += costOf(world, state, h, item).industry;
     if (need <= 0) return 1;
     return rate > 0 ? Math.max(1, Math.ceil(need / rate)) : null;
   });

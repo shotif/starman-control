@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+import { FACTIONS } from '../content/factions.ts';
 import type { SystemId } from '../data/types.ts';
 import { OrbitController } from './camera.ts';
 import { GestureTracker } from './gestures.ts';
@@ -209,12 +210,14 @@ export class MapView {
   private highlight!: THREE.Points;
   private openLanes!: LineSegments2;
   private darkLanes!: LineSegments2;
+  private tuningLanes!: LineSegments2;
   private drops!: THREE.LineSegments;
   private readonly starMaterial: THREE.ShaderMaterial;
   private readonly markMaterial: THREE.ShaderMaterial;
   private readonly highlightMaterial: THREE.ShaderMaterial;
   private readonly openMaterial: LineMaterial;
   private readonly darkMaterial: LineMaterial;
+  private readonly tuningMaterial: LineMaterial;
   private readonly grid = new THREE.Group();
   private ships: THREE.Points | null = null;
   private readonly shipMaterial: THREE.ShaderMaterial;
@@ -313,6 +316,18 @@ export class MapView {
     this.openMaterial = this.own(
       new LineMaterial({ linewidth: 3, vertexColors: true, worldUnits: false, transparent: true, opacity: 0.95 }),
     );
+    this.tuningMaterial = this.own(
+      new LineMaterial({
+        linewidth: 2.5,
+        vertexColors: true,
+        worldUnits: false,
+        dashed: true,
+        dashSize: 0.1,
+        gapSize: 0.1,
+        transparent: true,
+        opacity: 0.9,
+      }),
+    );
     this.darkMaterial = this.own(
       new LineMaterial({
         color: COLOURS.dark,
@@ -396,7 +411,15 @@ export class MapView {
 
   /** (Re)builds everything drawn from the content. */
   private build(): void {
-    for (const o of [this.stars, this.marks, this.highlight, this.openLanes, this.darkLanes, this.drops]) {
+    for (const o of [
+      this.stars,
+      this.marks,
+      this.highlight,
+      this.openLanes,
+      this.tuningLanes,
+      this.darkLanes,
+      this.drops,
+    ]) {
       if (!o) continue;
       this.scene.remove(o);
       o.geometry.dispose();
@@ -439,26 +462,32 @@ export class MapView {
     this.highlight = this.markPoints([], this.highlightMaterial);
     this.highlight.renderOrder = 4;
 
-    const open = lanes.filter((l) => l.owner);
-    const openGeometry = new LineSegmentsGeometry();
-    const openPos: number[] = [];
-    const openCol: number[] = [];
-    for (const l of open) {
-      const a = systems[this.index.get(l.a) ?? 0]?.pos ?? [0, 0, 0];
-      const b = systems[this.index.get(l.b) ?? 0]?.pos ?? [0, 0, 0];
-      openPos.push(...a, ...b);
-      colour.set(holdings.find((h) => h.faction === l.owner)?.colour ?? '#ffffff');
-      openCol.push(colour.r, colour.g, colour.b, colour.r, colour.g, colour.b);
-    }
-    openGeometry.setPositions(openPos.length ? openPos : [0, 0, 0, 0, 0, 0]);
-    openGeometry.setColors(openCol.length ? openCol : [0, 0, 0, 0, 0, 0]);
-    this.openLanes = new LineSegments2(openGeometry, this.openMaterial);
-    this.openLanes.visible = open.length > 0;
-    this.openLanes.renderOrder = 1;
+    const coloured = (status: 'open' | 'building', material: LineMaterial) => {
+      const list = lanes.filter((l) => l.status === status);
+      const geometry = new LineSegmentsGeometry();
+      const pos: number[] = [];
+      const col: number[] = [];
+      for (const l of list) {
+        const a = systems[this.index.get(l.a) ?? 0]?.pos ?? [0, 0, 0];
+        const b = systems[this.index.get(l.b) ?? 0]?.pos ?? [0, 0, 0];
+        pos.push(...a, ...b);
+        colour.set(l.owner ? FACTIONS[l.owner].colour : '#ffffff');
+        col.push(colour.r, colour.g, colour.b, colour.r, colour.g, colour.b);
+      }
+      geometry.setPositions(pos.length ? pos : [0, 0, 0, 0, 0, 0]);
+      geometry.setColors(col.length ? col : [0, 0, 0, 0, 0, 0]);
+      const line = new LineSegments2(geometry, material);
+      line.computeLineDistances();
+      line.visible = list.length > 0;
+      line.renderOrder = 1;
+      return line;
+    };
+    this.openLanes = coloured('open', this.openMaterial);
+    this.tuningLanes = coloured('building', this.tuningMaterial);
 
     const darkPos: number[] = [];
     for (const l of lanes) {
-      if (l.owner) continue;
+      if (l.status !== 'dark') continue;
       darkPos.push(
         ...(systems[this.index.get(l.a) ?? 0]?.pos ?? [0, 0, 0]),
         ...(systems[this.index.get(l.b) ?? 0]?.pos ?? [0, 0, 0]),
@@ -481,7 +510,15 @@ export class MapView {
       this.own(new THREE.LineBasicMaterial({ color: COLOURS.grid, transparent: true, opacity: 0.07 })),
     );
 
-    this.scene.add(this.darkLanes, this.openLanes, this.drops, this.marks, this.stars, this.highlight);
+    this.scene.add(
+      this.darkLanes,
+      this.openLanes,
+      this.tuningLanes,
+      this.drops,
+      this.marks,
+      this.stars,
+      this.highlight,
+    );
     this.points = systems.map(() => createScreenPoint());
     this.buildLabels();
     this.updateHighlight();
@@ -713,6 +750,8 @@ export class MapView {
     const k = worldPerPixel(s.distance, MAP_FOV_DEG, this.height);
     this.darkMaterial.dashSize = 6 * k;
     this.darkMaterial.gapSize = 5 * k;
+    this.tuningMaterial.dashSize = 2 * k;
+    this.tuningMaterial.gapSize = 4 * k;
     this.shipMaterial.uniforms.scale.value = this.dpr;
     for (const m of [this.routeMaterials.planBlind, this.routeMaterials.ordersBlind]) {
       m.dashSize = 8 * k;
@@ -752,6 +791,7 @@ export class MapView {
     this.renderer.setSize(w, h, false);
     this.openMaterial.resolution.set(w, h);
     this.darkMaterial.resolution.set(w, h);
+    this.tuningMaterial.resolution.set(w, h);
     for (const m of Object.values(this.routeMaterials)) m.resolution.set(w, h);
     this.shipMaterial.uniforms.viewport.value.set(w * this.dpr, h * this.dpr);
     this.invalidate();
@@ -1046,7 +1086,15 @@ export class MapView {
     cancelAnimationFrame(this.frame);
     this.observer.disconnect();
     this.detach();
-    for (const o of [this.stars, this.marks, this.highlight, this.openLanes, this.darkLanes, this.drops])
+    for (const o of [
+      this.stars,
+      this.marks,
+      this.highlight,
+      this.openLanes,
+      this.tuningLanes,
+      this.darkLanes,
+      this.drops,
+    ])
       o.geometry.dispose();
     for (const child of this.grid.children) (child as THREE.LineLoop).geometry.dispose();
     this.ships?.geometry.dispose();

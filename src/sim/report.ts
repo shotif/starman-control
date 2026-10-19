@@ -1,8 +1,9 @@
 // What a turn tells each power (M1_TURNS.md §5, M1_COLONIES.md §4): what happened, as plain data the
 // interface words.
 
-import type { QueueItem } from '../content/projects.ts';
+import type { BuildItem } from '../content/projects.ts';
 import type { SystemId } from '../data/types.ts';
+import type { LaneId } from './world.ts';
 
 export type ReportEvent =
   /**
@@ -23,6 +24,12 @@ export type ReportEvent =
   /** A ship could not found where it was told to. */
   | { kind: 'not-founded'; ship: number; system: SystemId; body: string; reason: string }
   /** A colony finished an item of its queue (a new ship's id, if it was a ship). */
-  | { kind: 'built'; holding: number; item: QueueItem; ship?: number }
+  | { kind: 'built'; holding: number; item: BuildItem; ship?: number }
+  /** A lane paid for: its beacons are tuned for so many turns. */
+  | { kind: 'lane-begun'; holding: number; to: SystemId; relight: boolean; turns: number }
+  /** A lane tuned and open. */
+  | { kind: 'lane-opened'; lane: LaneId }
+  /** A queued lane that could not be begun when it was paid for, and why. */
+  | { kind: 'lane-refused'; holding: number; to: SystemId; reason: string }
   /** A colony has grown to fill its room. */
   | { kind: 'full'; holding: number };

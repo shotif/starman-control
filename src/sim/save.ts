@@ -105,6 +105,8 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     );
     return { ...g, version: 3, holdings, ships };
   },
+  /** 3 → 4 (M1 increment 6a): lanes can be built and relit. Nothing saved before changes shape. */
+  3: (g) => ({ ...g, version: 4 }),
 };
 
 function migrate(game: Record<string, unknown>): Record<string, unknown> {

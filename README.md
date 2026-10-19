@@ -21,8 +21,8 @@ species later.
 and on blind jumps through the real neighbourhood (207 systems, flat or in 3D, on a phone or a
 desktop), find each system's worlds (the known planets as measured, the rest generated and
 labelled fiction), found colonies and outposts on them, grow your people, gather metals,
-volatiles and fusion fuel, and build ships and projects through each colony's queue. Lane
-building and research come next.
+volatiles and fusion fuel, build ships and projects through each colony's queue, and build new
+lanes or relight the dark ones. Research and anomalies come next, then the 3D system view.
 
 ## Design documents
 

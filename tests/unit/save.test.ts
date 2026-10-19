@@ -3,7 +3,7 @@ import { SaveStore } from '../../src/app/saves.ts';
 import { MemoryBackend } from '../../src/app/storage.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { envelope, exportSave, parseSave, SAVE_FORMAT, SaveError, saveFileName } from '../../src/sim/save.ts';
-import { newGame } from '../../src/sim/state.ts';
+import { newGame, STATE_VERSION } from '../../src/sim/state.ts';
 import { buildWorld } from '../../src/sim/world.ts';
 
 const world = buildWorld(SKY);
@@ -56,7 +56,7 @@ describe('save files', () => {
     (v2.ships[3] as { founding: unknown }).founding = { kind: 'outpost', body: 'tau-ceti-e' };
     const json = JSON.stringify({ format: SAVE_FORMAT, version: 1, savedAt: when.toISOString(), game: v2 });
     const g = parseSave(world, json);
-    expect(g.version).toBe(3);
+    expect(g.version).toBe(STATE_VERSION);
     expect(g.holdings).toHaveLength(1);
     expect(g.holdings[0]).toMatchObject({
       body: 'tau-ceti-e',

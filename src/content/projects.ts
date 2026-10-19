@@ -1,6 +1,7 @@
 // What a colony can build (M1_FIRST_LIGHT.md §7, M1_COLONIES.md §3), as data. Ships come from
 // ships.ts; projects are built once per colony. Costs are starting points for balancing in M2.
 
+import type { SystemId } from '../data/types.ts';
 import { SHIPS, type ShipType } from './ships.ts';
 
 export type ProjectId = 'shipyard' | 'lane-station' | 'mine' | 'survey-station';
@@ -48,14 +49,21 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
 
 export const PROJECT_IDS: readonly ProjectId[] = ['shipyard', 'lane-station', 'mine', 'survey-station'];
 
-export type QueueItem = { kind: 'ship'; ship: ShipType } | { kind: 'project'; project: ProjectId };
+/** A ship or a project: what costs the same wherever it is built. */
+export type BuildItem = { kind: 'ship'; ship: ShipType } | { kind: 'project'; project: ProjectId };
 
-export function itemCost(item: QueueItem): Cost {
+/** A lane from the holding's system to another star, new or relit (M1_LANES_RESEARCH.md §1). */
+export type LaneItem = { kind: 'lane'; to: SystemId };
+
+export type QueueItem = BuildItem | LaneItem;
+
+/** The base cost of a ship or project; src/sim/economy.ts's costOf gives any item's actual cost. */
+export function itemCost(item: BuildItem): Cost {
   if (item.kind === 'project') return PROJECTS[item.project].cost;
   const c = SHIPS[item.ship].cost;
   return { industry: c.industry, metals: c.metals, volatiles: c.volatiles, fuel: 0 };
 }
 
 export function itemName(item: QueueItem): string {
-  return item.kind === 'project' ? PROJECTS[item.project].name : SHIPS[item.ship].name;
+  return item.kind === 'lane' ? 'Lane' : item.kind === 'project' ? PROJECTS[item.project].name : SHIPS[item.ship].name;
 }

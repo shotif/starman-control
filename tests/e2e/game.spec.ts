@@ -233,4 +233,25 @@ test.describe('colonies', () => {
     );
     await expect(page.locator('.map-date')).toHaveText('Q4 2176');
   });
+
+  test('queues a lane from the capital, and the turn report says it is being tuned', async ({ page }, info) => {
+    const project = info.project.name;
+    await newGame(page, 'Lead the Frontier Co-op', project);
+    const empire = await openEmpire(page, project);
+    await press(empire.getByRole('button', { name: /^Tau Ceti/ }).first(), project);
+    const panel = selection(page, project, 'Tau Ceti');
+    const lane = panel.getByRole('button', { name: 'Queue a lane to Epsilon Eridani' });
+    await expect(lane).toContainText('5.5 ly, tuned for 3 turns');
+    await expect(lane).toContainText('53 industry, 6 metals, 11 fusion fuel');
+    await press(lane, project);
+    await expect(panel).toContainText('New lane to Epsilon Eridani');
+    await expect(panel).toContainText('then tuned for 3 turns');
+    await expect(lane).toBeDisabled();
+    await expect(lane).toContainText('A lane to Epsilon Eridani is already queued.');
+    // 53 industry at 12 a turn: paid in the fifth turn.
+    for (let i = 0; i < 5; i++) await endTurn(page, project);
+    await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
+      'Tau Ceti e has paid for a new lane to Epsilon Eridani: its beacons are tuned for 3 turns.',
+    );
+  });
 });

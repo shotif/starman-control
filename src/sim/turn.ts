@@ -5,13 +5,13 @@
 // every device.
 
 import { FACTIONS } from '../content/factions.ts';
-import { itemCost } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SPECIES } from '../content/species.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
-import { capacityOf, growthOf, industryOf, settleRefusal, yieldsOf } from './economy.ts';
+import { capacityOf, costOf, growthOf, industryOf, settleRefusal, yieldsOf } from './economy.ts';
 import { habitability } from './habitability.ts';
+import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import type { ReportEvent } from './report.ts';
 import {
@@ -24,7 +24,7 @@ import {
   powerOf,
   type ShipState,
 } from './state.ts';
-import type { World } from './world.ts';
+import { laneId, type World } from './world.ts';
 
 /** Whether a survey ship should stop to survey where it now is. */
 function wantsSurvey(state: GameState, ship: ShipState): boolean {
@@ -138,9 +138,15 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   }
   state.ships = state.ships.filter((s) => !usedUp.has(s.id));
 
-  // 3. Production: each colony's industry goes into its queue; finished items appear.
+  // 3. Production. Lanes being tuned come a turn nearer opening; then each colony's and outpost's
+  // industry goes into its queue, and finished items appear (a paid lane begins its tuning).
+  state.lanes = state.lanes.map((l) => {
+    if (l.status !== 'building') return l;
+    if (l.left > 1) return { ...l, left: l.left - 1 };
+    (events.get(l.owner) as ReportEvent[]).push({ kind: 'lane-opened', lane: l.id });
+    return { id: l.id, owner: l.owner, status: 'open' };
+  });
   for (const h of state.holdings) {
-    if (h.kind !== 'colony') continue;
     const power = powerOf(state, h.owner);
     const log = events.get(h.owner) as ReportEvent[];
     h.industry += industryOf(h).total;
@@ -150,7 +156,16 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
         h.industry = Math.min(h.industry, RULES.colonies.storedIndustry);
         break;
       }
-      const c = itemCost(first);
+      if (first.kind === 'lane') {
+        // Checked again: a lane opened or begun since it was queued may have taken its place.
+        const reason = laneRefusal(world, state, h.owner, h.system, first.to, false);
+        if (reason) {
+          h.queue.shift();
+          log.push({ kind: 'lane-refused', holding: h.id, to: first.to, reason });
+          continue;
+        }
+      }
+      const c = costOf(world, state, h, first);
       const s = power.stockpile;
       if (h.industry < c.industry || s.metals < c.metals || s.volatiles < c.volatiles || s.fuel < c.fuel) break;
       h.industry -= c.industry;
@@ -158,7 +173,13 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       s.volatiles -= c.volatiles;
       s.fuel -= c.fuel;
       h.queue.shift();
-      if (first.kind === 'ship') {
+      if (first.kind === 'lane') {
+        const q = laneQuote(world, state, h.owner, h.system, first.to);
+        const id = laneId(h.system, first.to);
+        state.lanes.push({ id, owner: h.owner, status: 'building', left: q.turns });
+        state.lanes.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+        log.push({ kind: 'lane-begun', holding: h.id, to: first.to, relight: q.relight, turns: q.turns });
+      } else if (first.kind === 'ship') {
         const ship = makeShip(state, h.owner, first.ship, h.system);
         log.push({ kind: 'built', holding: h.id, item: first, ship: ship.id });
       } else {

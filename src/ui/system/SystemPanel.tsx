@@ -12,7 +12,7 @@ import { habitability } from '../../sim/habitability.ts';
 import { estimateStar } from '../../sim/starLight.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import type { GameState } from '../../sim/state.ts';
-import { otherEnd, type World } from '../../sim/world.ts';
+import { laneEnds, otherEnd, type World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { bodyBadge, PlanetPanel } from './PlanetPanel.tsx';
 import { bodyLine, HABITABILITY_WORD } from './words.ts';
@@ -179,7 +179,14 @@ export function SystemPanel({
   const system = world.system(id);
   const s = system.sky;
   const height = s.positionLy[2];
-  const lanes = world.catalogueAt(id);
+  // Reborn's old lanes here, then any lane a power has built anew.
+  const kept = new Map(game.lanes.map((l) => [l.id, l]));
+  const lanes = [
+    ...world.catalogueAt(id).map((l) => ({ id: l.id, lengthDeci: l.lengthDeci })),
+    ...game.lanes
+      .filter((l) => laneEnds(l.id).includes(id) && !world.catalogueLane(...laneEnds(l.id)))
+      .map((l) => ({ id: l.id, lengthDeci: world.distanceDeci(...laneEnds(l.id)) })),
+  ];
   const owners = new Map(game.lanes.map((l) => [l.id, l.owner]));
   const capitalOf = game.powers.find((p) => p.capital === id)?.faction;
   const heldBy = capitalOf ?? holdings[0]?.owner ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
@@ -339,14 +346,26 @@ export function SystemPanel({
       <ul class="lanes">
         {lanes.map((l) => {
           const to = otherEnd(l.id, id);
-          const owner = owners.get(l.id);
+          const lane = kept.get(l.id);
           return (
-            <li key={l.id} class={owner ? 'lane-open' : 'lane-dark'}>
+            <li key={l.id} class={lane ? 'lane-open' : 'lane-dark'}>
               <button type="button" class="link" onClick={() => onGo(to)}>
                 {world.system(to).name}
               </button>
               <span>{formatLy(l.lengthDeci)}</span>
-              {owner ? <FactionTag faction={owner} /> : <span class="dark">dark since the Lapse</span>}
+              {lane ? (
+                <span>
+                  <FactionTag faction={lane.owner} />
+                  {lane.status === 'building' && (
+                    <span class="dark">
+                      {' '}
+                      · being tuned, {lane.left} turn{lane.left === 1 ? '' : 's'}
+                    </span>
+                  )}
+                </span>
+              ) : (
+                <span class="dark">dark since the Lapse</span>
+              )}
             </li>
           );
         })}
