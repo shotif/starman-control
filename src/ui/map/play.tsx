@@ -4,17 +4,20 @@
 
 import { useState } from 'preact/hooks';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
+import { itemName } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
+import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, previewMove } from '../../sim/movement.ts';
 import type { Need } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
-import type { GameState, PowerState, ShipState } from '../../sim/state.ts';
+import type { GameState, ShipState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { FactionMark } from '../parts.tsx';
+import { Founding, holdingName, needText } from './colony.tsx';
 import { say, targeting } from './state.ts';
 
 export interface Play {
@@ -31,29 +34,6 @@ export function give(play: Play, o: Order): boolean {
   const reason = play.order(o);
   if (reason) say(reason);
   return reason === null;
-}
-
-export function Resources({ power }: { power: PowerState }) {
-  const s = power.stockpile;
-  return (
-    <ul class="resources" aria-label="Stockpile">
-      <li title="Metals">
-        <span class="res-icon res-metals" aria-hidden="true" />
-        <b>{s.metals}</b>
-        <span class="res-name"> metals</span>
-      </li>
-      <li title="Volatiles">
-        <span class="res-icon res-volatiles" aria-hidden="true" />
-        <b>{s.volatiles}</b>
-        <span class="res-name"> volatiles</span>
-      </li>
-      <li title="Fusion fuel">
-        <span class="res-icon res-fuel" aria-hidden="true" />
-        <b>{s.fuel}</b>
-        <span class="res-name"> fusion fuel</span>
-      </li>
-    </ul>
-  );
 }
 
 /** "Idle at Tau Ceti", "Bound for Epsilon Eridani: 1 turn", "On a blind jump to Ross 128: lands next turn". */
@@ -73,6 +53,10 @@ export function shipStatus(world: World, game: GameState, ship: ShipState): stri
     return p
       ? `At ${here}, bound for ${last}${via}: ${p.turns} turn${p.turns === 1 ? '' : 's'}`
       : `At ${here}, bound for ${last}`;
+  }
+  if (ship.founding && ship.at) {
+    const b = bodiesOf(world, game.seed, ship.at).find((x) => x.id === ship.founding?.body);
+    return `Founding ${ship.founding.kind === 'colony' ? 'a colony' : 'an outpost'} on ${b?.name ?? 'a world'} at ${here}`;
   }
   if (ship.hold) return `Holding at ${here}`;
   return `Idle at ${here}`;
@@ -168,7 +152,7 @@ export function ShipPanel({
           A blind jump reaches any star within {formatLy(reach)}, with no lane, taking a turn for every 3 ly.
         </p>
       )}
-      {ship.type !== 'survey' && <p class="dim">Founding colonies and outposts arrives with the next update.</p>}
+      {!inFlight && <Founding world={world} game={game} ship={ship} play={play} />}
     </article>
   );
 }
@@ -185,7 +169,7 @@ export function ShipsList({
   faction: FactionId;
   onPick: (id: number) => void;
 }) {
-  const idle = (s: ShipState) => s.at !== null && s.destinations.length === 0 && !s.blindJump && !s.hold;
+  const idle = (s: ShipState) => s.at !== null && s.destinations.length === 0 && !s.blindJump && !s.hold && !s.founding;
   const ships = game.ships
     .filter((s) => s.owner === faction)
     .sort((a, b) => Number(idle(b)) - Number(idle(a)) || a.id - b.id);
@@ -206,29 +190,60 @@ export function ShipsList({
   );
 }
 
-function eventText(world: World, game: GameState, e: ReportEvent): string {
-  const ship = game.ships.find((s) => s.id === e.ship)?.name ?? 'A ship';
+export function eventText(world: World, game: GameState, e: ReportEvent): string {
+  const shipOf = (id: number | undefined) => game.ships.find((s) => s.id === id)?.name ?? 'A ship';
+  const holding = (id: number) => {
+    const h = game.holdings.find((x) => x.id === id);
+    return h ? holdingName(world, game, h) : 'A colony';
+  };
   const name = (id: SystemId) => world.system(id).name;
+  const body = (system: SystemId, id: string) =>
+    bodiesOf(world, game.seed, system).find((b) => b.id === id)?.name ?? id;
   switch (e.kind) {
     case 'surveyed': {
       const n = e.habitable.length;
-      return `${ship} surveyed ${name(e.system)}: ${e.worlds} world${e.worlds === 1 ? '' : 's'}${
+      const by = e.station !== undefined ? `The survey station at ${holding(e.station)}` : shipOf(e.ship);
+      return `${by} surveyed ${name(e.system)}: ${e.worlds} world${e.worlds === 1 ? '' : 's'}${
         n > 0 ? `, ${n} your people could live on` : ', none your people could live on without domes'
       }.`;
     }
     case 'arrived':
-      return `${ship} reached ${name(e.system)}.`;
+      return `${shipOf(e.ship)} reached ${name(e.system)}.`;
     case 'jumped':
-      return `${ship} jumped blind for ${name(e.to)}: ${e.turns} turn${e.turns === 1 ? '' : 's'} out of contact.`;
+      return `${shipOf(e.ship)} jumped blind for ${name(e.to)}: ${e.turns} turn${e.turns === 1 ? '' : 's'} out of contact.`;
     case 'landed':
-      return `${ship} came out of its blind jump at ${name(e.system)}.`;
+      return `${shipOf(e.ship)} came out of its blind jump at ${name(e.system)}.`;
     case 'blocked':
-      return `${ship} could not go on to ${name(e.to)}: no open lane leads there.`;
+      return `${shipOf(e.ship)} could not go on to ${name(e.to)}: no open lane leads there.`;
+    case 'founded': {
+      const h = game.holdings.find((x) => x.id === e.holding);
+      return `${e.shipName} founded ${h?.kind === 'outpost' ? 'an outpost' : 'a colony'} on ${body(e.system, e.body)} at ${name(e.system)}.`;
+    }
+    case 'not-founded':
+      return `${shipOf(e.ship)} could not found on ${body(e.system, e.body)}: ${e.reason}`;
+    case 'built': {
+      const what = itemName(e.item).toLowerCase();
+      return e.ship !== undefined
+        ? `${holding(e.holding)} built a ${what}, the ${shipOf(e.ship)}.`
+        : `${holding(e.holding)} built a ${what}.`;
+    }
+    case 'full':
+      return `${holding(e.holding)} is full: its people have no more room to grow.`;
   }
 }
 
-function eventPlace(e: ReportEvent): SystemId {
-  return e.kind === 'jumped' ? e.to : e.system;
+/** Where a report item leads: the colony it is about, or its system. */
+function eventPlace(e: ReportEvent): { holding: number } | { system: SystemId } {
+  switch (e.kind) {
+    case 'jumped':
+      return { system: e.to };
+    case 'built':
+    case 'full':
+    case 'founded':
+      return { holding: e.holding };
+    default:
+      return { system: e.system };
+  }
 }
 
 export function ReportView({
@@ -237,12 +252,14 @@ export function ReportView({
   faction,
   needs,
   onGo,
+  onHolding,
 }: {
   world: World;
   game: GameState;
   faction: FactionId;
   needs: number;
   onGo: (id: SystemId) => void;
+  onHolding: (id: number) => void;
 }) {
   const r = game.reports.find((x) => x.faction === faction);
   return (
@@ -253,8 +270,16 @@ export function ReportView({
       {r && r.events.length > 0 && (
         <ul class="report-items">
           {r.events.map((e, i) => (
-            <li key={`${e.kind}-${e.ship}-${i}`} class={`report-${e.kind}`}>
-              <button type="button" class="link" onClick={() => onGo(eventPlace(e))}>
+            <li key={`${e.kind}-${i}`} class={`report-${e.kind}`}>
+              <button
+                type="button"
+                class="link"
+                onClick={() => {
+                  const place = eventPlace(e);
+                  if ('holding' in place) onHolding(place.holding);
+                  else onGo(place.system);
+                }}
+              >
                 {eventText(world, game, e)}
               </button>
             </li>
@@ -276,14 +301,14 @@ export function NeedsStack({
   world,
   game,
   needs,
-  onOrders,
+  onNeed,
   onEnd,
   onClose,
 }: {
   world: World;
   game: GameState;
   needs: readonly Need[];
-  onOrders: (ship: number) => void;
+  onNeed: (need: Need) => void;
   onEnd: () => void;
   onClose: () => void;
 }) {
@@ -297,15 +322,10 @@ export function NeedsStack({
             <p class="needs-count">
               {at + 1} of {needs.length} need you
             </p>
-            <p>
-              {(() => {
-                const s = game.ships.find((x) => x.id === need.ship);
-                return s ? `${SHIPS[s.type].name} ${s.name} is idle at ${world.system(need.system).name}.` : '';
-              })()}
-            </p>
+            <p>{needText(world, game, need)}</p>
             <div class="needs-actions">
-              <button type="button" class="button button-primary" onClick={() => onOrders(need.ship)}>
-                Give orders
+              <button type="button" class="button button-primary" onClick={() => onNeed(need)}>
+                {need.kind === 'idle-ship' ? 'Give orders' : 'Open the colony'}
               </button>
               <button type="button" class="button button-quiet" onClick={() => setAt(at + 1)}>
                 Skip

@@ -39,9 +39,11 @@ describe('a new game', () => {
     expect(shipName(['Wake Salvage'], 8)).toBe('Hyena II');
   });
 
-  it('starts with every ship idle, so each needs you', () => {
+  it('starts with every ship idle and the capital’s shipyard building nothing, so each needs you', () => {
     const g = start('frontier');
-    expect(needsOf(g, 'frontier')).toHaveLength(4);
+    const needs = needsOf(world, g, 'frontier');
+    expect(needs.filter((n) => n.kind === 'idle-ship')).toHaveLength(4);
+    expect(needs.filter((n) => n.kind === 'idle-yard')).toHaveLength(1);
   });
 });
 
@@ -178,7 +180,7 @@ describe('blind jumps', () => {
     expect(turns).toBe(2);
     const s = surveyShip(g);
     let state = order(g, 'frontier', { type: 'blind-jump', ship: s.id, to: target });
-    expect(needsOf(state, 'frontier').some((n) => n.ship === s.id)).toBe(false);
+    expect(needsOf(world, state, 'frontier').some((n) => n.kind === 'idle-ship' && n.ship === s.id)).toBe(false);
     for (let i = 1; i < turns; i++) {
       state = resolveTurn(world, state).state;
       expect(ship(state, s.id).at).toBeNull();
@@ -205,7 +207,7 @@ describe('holding', () => {
     let g = start('sta');
     const colony = g.ships.find((x) => x.type === 'colony') as ShipState;
     g = order(g, 'sta', { type: 'hold', ship: colony.id, hold: true });
-    expect(needsOf(g, 'sta').map((n) => n.ship)).not.toContain(colony.id);
+    expect(needsOf(world, g, 'sta').map((n) => (n.kind === 'idle-ship' ? n.ship : 0))).not.toContain(colony.id);
     g = order(g, 'sta', { type: 'move', ship: colony.id, to: 'barnard' });
     expect(ship(g, colony.id).hold).toBe(false);
   });

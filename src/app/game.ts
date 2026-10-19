@@ -21,7 +21,9 @@ export const resolving = signal(false);
 export const freshReport = signal(false);
 
 export const player = computed(() => (game.value ? playerPower(game.value) : undefined));
-export const needs = computed(() => (game.value && player.value ? needsOf(game.value, player.value.faction) : []));
+export const needs = computed(() =>
+  game.value && player.value ? needsOf(world, game.value, player.value.faction) : [],
+);
 export const report = computed(() => {
   const g = game.value;
   const p = player.value;

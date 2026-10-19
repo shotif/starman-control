@@ -37,7 +37,17 @@ describe('a new game', () => {
     const [a, b, c] = FACTION_IDS.map((f) => solo(f).powers[0]);
     expect(a?.stockpile).toEqual(b?.stockpile);
     expect(b?.stockpile).toEqual(c?.stockpile);
-    for (const p of [a, b, c]) expect(p?.laneStations).toEqual([p?.capital]);
+    for (const f of FACTION_IDS) {
+      const capital = solo(f).holdings[0];
+      expect(capital).toMatchObject({
+        kind: 'colony',
+        capital: true,
+        people: 100,
+        projects: ['shipyard', 'lane-station'],
+      });
+    }
+    expect(solo('sta').holdings[0]?.body).toBe('earth');
+    expect(solo('frontier').holdings[0]?.body).toBeNull(); // which world waits on D-24
   });
 
   it('opens only the home webs of the powers in play; every other lane is dark', () => {
@@ -85,7 +95,7 @@ describe('state checks', () => {
     expect(stateProblems(world, { ...g, lanes: [{ id: 'barnard~sol', owner: 'frontier', status: 'open' }] })).toEqual([
       'lane barnard~sol belongs to frontier, who is not in play',
     ]);
-    const crowded = { ...g, powers: [{ ...(g.powers[0] as (typeof g.powers)[number]), laneStations: [] }] };
+    const crowded = { ...g, holdings: g.holdings.map((h) => ({ ...h, projects: [] })) };
     expect(stateProblems(world, crowded)).toEqual(['sol anchors 4 lanes but has 3 beacon slots']);
     expect(shapeProblems({ ...g, turn: 1.5 })).toEqual(['turn is not a whole number from 1']);
     expect(shapeProblems({ ...g, seed: 0 })).toHaveLength(1);

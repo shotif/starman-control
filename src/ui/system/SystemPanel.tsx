@@ -3,6 +3,7 @@
 // phone, the inspector on a desktop. In the codex (`realOnly`) it shows only what is observed.
 
 import { useState } from 'preact/hooks';
+import type { FactionId } from '../../content/factions.ts';
 import { SPECIES, type SpeciesDef } from '../../content/species.ts';
 import type { Measured, SkyPlanet, SkyStar, SystemId } from '../../data/types.ts';
 import { type Body, bodiesOf } from '../../sim/bodies.ts';
@@ -36,6 +37,20 @@ interface Props {
   /** The viewing power's ships here, and what to do when one is chosen. */
   ships?: readonly { id: number; name: string; kind: string; status: string }[];
   onShip?: (id: number) => void;
+  /** Colonies and outposts here, anyone's; the viewer's own open with `onHolding`. */
+  holdings?: readonly HoldingRow[];
+  onHolding?: (id: number) => void;
+}
+
+export interface HoldingRow {
+  id: number;
+  name: string;
+  /** "Capital", "Colony", "Outpost". */
+  kind: string;
+  owner: FactionId;
+  body: string | null;
+  line: string;
+  mine: boolean;
 }
 
 const COUNT = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
@@ -113,7 +128,17 @@ function PlanetItem({ p }: { p: SkyPlanet }) {
   );
 }
 
-function WorldRow({ b, species, onOpen }: { b: Body; species: SpeciesDef; onOpen: () => void }) {
+function WorldRow({
+  b,
+  species,
+  held,
+  onOpen,
+}: {
+  b: Body;
+  species: SpeciesDef;
+  held?: HoldingRow;
+  onOpen: () => void;
+}) {
   const h = habitability(b, species);
   return (
     <li class={`world-item${b.parent ? ' is-moon' : ''}`}>
@@ -122,7 +147,14 @@ function WorldRow({ b, species, onOpen }: { b: Body; species: SpeciesDef; onOpen
         <span class="world-name">
           {b.name} <Badge kind={bodyBadge(b)} />
         </span>
-        <span class="world-line">{bodyLine(b)}</span>
+        <span class="world-line">
+          {held && (
+            <span class="world-held">
+              {held.mine ? `Your ${held.kind.toLowerCase()}` : <FactionTag faction={held.owner} />} ·{' '}
+            </span>
+          )}
+          {bodyLine(b)}
+        </span>
         <span class={`hab hab-${h.level}`}>{HABITABILITY_WORD[h.level]}</span>
       </button>
     </li>
@@ -141,6 +173,8 @@ export function SystemPanel({
   surveyed = true,
   ships,
   onShip,
+  holdings = [],
+  onHolding,
 }: Props) {
   const system = world.system(id);
   const s = system.sky;
@@ -148,7 +182,8 @@ export function SystemPanel({
   const lanes = world.catalogueAt(id);
   const owners = new Map(game.lanes.map((l) => [l.id, l.owner]));
   const capitalOf = game.powers.find((p) => p.capital === id)?.faction;
-  const heldBy = capitalOf ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
+  const heldBy = capitalOf ?? holdings[0]?.owner ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
+  const heldBody = new Map(holdings.filter((h) => h.body).map((h) => [h.body as string, h]));
   // Charted only: astronomers' worlds (known planets, observed belts, all of Sol's), not the rest.
   const bodies = realOnly ? [] : bodiesOf(world, game.seed, id).filter((b) => surveyed || b.origin !== 'generated');
 
@@ -159,7 +194,9 @@ export function SystemPanel({
         <p class="system-kind">{describeStars(s.stars.map((st) => st.spectralType))}</p>
         {heldBy && (
           <p class="held">
-            <FactionTag faction={heldBy} /> · {capitalOf ? 'its capital' : 'in its home web'} <Badge kind="fiction" />
+            <FactionTag faction={heldBy} /> ·{' '}
+            {capitalOf ? 'its capital' : holdings.some((h) => h.owner === heldBy) ? 'settled' : 'in its home web'}{' '}
+            <Badge kind="fiction" />
           </p>
         )}
         {onCentre && (
@@ -168,6 +205,32 @@ export function SystemPanel({
           </button>
         )}
       </header>
+
+      {holdings.length > 0 && (
+        <>
+          <h3>Colonies and outposts</h3>
+          <ul class="ships-here">
+            {holdings.map((h) => (
+              <li key={h.id}>
+                {h.mine && onHolding ? (
+                  <button type="button" class="ship-row holding-row" onClick={() => onHolding(h.id)}>
+                    <b>{h.name}</b>
+                    <span class="ship-type">{h.kind}</span>
+                    <span class="ship-line">{h.line}</span>
+                  </button>
+                ) : (
+                  <div class="ship-row holding-row">
+                    <b>{h.name}</b>
+                    <span class="ship-type">
+                      <FactionTag faction={h.owner} /> {h.kind.toLowerCase()}
+                    </span>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       {ships && ships.length > 0 && (
         <>
@@ -255,7 +318,7 @@ export function SystemPanel({
           {bodies.length > 0 && (
             <ul class="worlds">
               {bodies.map((b) => (
-                <WorldRow key={b.id} b={b} species={species} onOpen={() => onBody?.(b.id)} />
+                <WorldRow key={b.id} b={b} species={species} held={heldBody.get(b.id)} onOpen={() => onBody?.(b.id)} />
               ))}
             </ul>
           )}
@@ -297,7 +360,8 @@ export function SystemView(props: Omit<Props, 'onBody' | 'realOnly'>) {
   const [body, setBody] = useState<string | null>(null);
   const bodies = bodiesOf(props.world, props.game.seed, props.id);
   const open = body ? bodies.find((b) => b.id === body) : undefined;
-  if (open)
+  if (open) {
+    const held = props.holdings?.find((h) => h.body === open.id);
     return (
       <PlanetPanel
         body={open}
@@ -305,7 +369,10 @@ export function SystemView(props: Omit<Props, 'onBody' | 'realOnly'>) {
         species={props.species ?? SPECIES.human}
         systemName={props.world.system(props.id).name}
         onBack={() => setBody(null)}
+        held={held}
+        onHolding={props.onHolding}
       />
     );
+  }
   return <SystemPanel {...props} onBody={setBody} />;
 }

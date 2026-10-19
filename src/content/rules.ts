@@ -18,6 +18,24 @@ export const RULES = {
     /** Every power starts with the same small stockpile (§5). */
     stockpile: { metals: 40, volatiles: 20, fuel: 40 },
   },
+  capital: {
+    /** People, in tenths of a unit (a unit is about a million): 10 units. */
+    people: 100,
+    /** Room for 12 units, whatever its world (§5). */
+    capacity: 120,
+    /** Extra industry from generations of building. */
+    industry: 2,
+    /** Resources it yields besides its world's. */
+    yields: { metals: 2, volatiles: 1, fuel: 1 },
+  },
+  colonies: {
+    /** A new colony's people, in tenths of a unit. */
+    founding: 10,
+    /** Growth a turn, in hundredths, before the room left is counted (M1_COLONIES.md §2). */
+    growthPercent: 10,
+    /** Industry kept with nothing to build. */
+    storedIndustry: 60,
+  },
   movement: {
     /** Jump points a ship has each turn (§6), before traits and research. */
     jumpPoints: 2,

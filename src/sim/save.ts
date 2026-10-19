@@ -4,7 +4,8 @@
 //
 // The world is never saved: it is rebuilt from the dataset, so a save is small.
 
-import { type GameState, STATE_VERSION } from './state.ts';
+import { isFactionId } from '../content/factions.ts';
+import { capitalHolding, type GameState, STATE_VERSION } from './state.ts';
 import { shapeProblems, stateProblems } from './validate.ts';
 import type { World } from './world.ts';
 
@@ -44,11 +45,27 @@ export function exportSave(game: GameState, now = new Date(), slot?: number): { 
 
 const NEWER = 'This save was made by a newer version of the game. Reload the page to update the game, then try again.';
 
-/**
- * Brings an older game up to the current shape. Each step takes one version to the next; there are
- * none yet, since version 1 is the first shape a player could save.
- */
-const MIGRATIONS: Record<number, (game: Record<string, unknown>) => Record<string, unknown>> = {};
+type Raw = Record<string, unknown>;
+
+const DAMAGED = 'This save is damaged and cannot be loaded.';
+
+/** Brings an older game up to the current shape. Each step takes one version to the next. */
+const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
+  /**
+   * 1 → 2 (M1 increment 5): colonies and outposts. Each power gains its capital colony (with the
+   * shipyard and lane station it always had), lane stations move from the power to its holdings,
+   * and ships can be founding a holding.
+   */
+  1: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map(({ laneStations: _, ...p }) => p);
+    const holdings = powers
+      .filter((p) => isFactionId(p.faction))
+      .map((p, i) => ({ id: i + 1, ...capitalHolding(p.faction as Parameters<typeof capitalHolding>[0]) }));
+    const ships = (g.ships as Raw[]).map((s) => ({ ...s, founding: null }));
+    return { ...g, version: 2, powers, ships, holdings, nextHoldingId: holdings.length + 1 };
+  },
+};
 
 function migrate(game: Record<string, unknown>): Record<string, unknown> {
   let g = game;
@@ -73,7 +90,13 @@ export function readEnvelope(world: World, raw: unknown): { game: GameState; sav
   if (typeof version === 'number' && version > STATE_VERSION) throw new SaveError(NEWER);
   const shape = shapeProblems(raw.game);
   if (shape.some((p) => p.startsWith('version'))) throw new SaveError('This save is damaged: its game has no version.');
-  const game = migrate(structuredClone(raw.game));
+  let game: Record<string, unknown>;
+  try {
+    game = migrate(structuredClone(raw.game));
+  } catch (e) {
+    if (e instanceof SaveError) throw e;
+    throw new SaveError(DAMAGED);
+  }
   const problems = [...shapeProblems(game)];
   if (problems.length === 0) problems.push(...stateProblems(world, game as unknown as GameState));
   if (problems.length > 0) throw new SaveError(`This save is damaged and cannot be loaded (${problems[0]}).`);

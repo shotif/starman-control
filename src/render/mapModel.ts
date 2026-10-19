@@ -37,6 +37,8 @@ export interface MapHolding {
   mark: FactionMark;
   colour: string;
   capital: boolean;
+  /** People in its colonies there, in whole units of about a million; 0 if it has none. */
+  people: number;
 }
 
 export interface MapContent {
@@ -79,18 +81,25 @@ export function mapContent(world: World, state: GameState): MapContent {
   });
   const owner = new Map(state.lanes.map((l) => [l.id, l.owner]));
   const lanes = world.catalogue.map((l): MapLane => ({ id: l.id, a: l.a, b: l.b, owner: owner.get(l.id) ?? null }));
-  // In M1 a power holds its capital and its home web's systems; colonies and outposts come later.
+  // A power holds its capital, the systems of its colonies and outposts, and its home web's systems,
+  // in that order where two powers meet. A system's label counts the people of its colonies.
   const held = new Map<SystemId, MapHolding>();
-  for (const p of state.powers) {
-    const f = FACTIONS[p.faction];
-    held.set(p.capital, { system: p.capital, faction: p.faction, mark: f.mark, colour: f.colour, capital: true });
+  const mark = (system: SystemId, faction: FactionId, capital: boolean) => {
+    if (held.has(system)) return;
+    const f = FACTIONS[faction];
+    held.set(system, { system, faction, mark: f.mark, colour: f.colour, capital, people: 0 });
+  };
+  for (const p of state.powers) mark(p.capital, p.faction, true);
+  for (const h of state.holdings) mark(h.system, h.owner, false);
+  for (const l of state.lanes) for (const end of laneEnds(l.id)) mark(end, l.owner, false);
+  const people = new Map<SystemId, number>();
+  for (const h of state.holdings) {
+    if (h.kind === 'colony' && held.get(h.system)?.faction === h.owner)
+      people.set(h.system, (people.get(h.system) ?? 0) + h.people);
   }
-  for (const l of state.lanes) {
-    const f = FACTIONS[l.owner];
-    for (const end of laneEnds(l.id)) {
-      if (!held.has(end))
-        held.set(end, { system: end, faction: l.owner, mark: f.mark, colour: f.colour, capital: false });
-    }
+  for (const [system, tenths] of people) {
+    const m = held.get(system);
+    if (m) m.people = Math.floor(tenths / 10);
   }
   return { systems, lanes, holdings: [...held.values()] };
 }

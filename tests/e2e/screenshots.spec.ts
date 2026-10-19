@@ -13,7 +13,15 @@ const SIZES = [
   { name: 'desktop-1440', width: 1440, height: 900, touch: false },
 ];
 
-const SCREENS: { name: string; path: string; select?: string; star?: string; mode?: string }[] = [
+const SCREENS: {
+  name: string;
+  path: string;
+  select?: string;
+  star?: string;
+  mode?: string;
+  /** A new game as the Cooperative, then: the map, the empire, or its capital colony. */
+  game?: 'map' | 'empire' | 'colony';
+}[] = [
   { name: 'title', path: './' },
   { name: 'data', path: './#/data' },
   { name: 'data-system', path: './#/data', select: 'Tau Ceti' },
@@ -21,6 +29,9 @@ const SCREENS: { name: string; path: string; select?: string; star?: string; mod
   { name: 'map-system', path: './?test#/map', star: 'sol' },
   { name: 'map-other-view', path: './?test#/map', mode: 'toggle' },
   { name: 'new-game', path: './#/new' },
+  { name: 'game', path: './?test#/new', game: 'map' },
+  { name: 'game-empire', path: './?test#/new', game: 'empire' },
+  { name: 'game-colony', path: './?test#/new', game: 'colony' },
 ];
 
 for (const size of SIZES) {
@@ -30,6 +41,23 @@ for (const size of SIZES) {
       test(screen.name, async ({ page }) => {
         await page.goto(screen.path);
         if (screen.path.includes('#/map')) await page.locator('[data-ready="1"]').waitFor({ timeout: 30_000 });
+        const press = async (l: ReturnType<typeof page.locator>) => (size.touch ? l.tap() : l.click());
+        if (screen.game) {
+          await press(page.getByText('More'));
+          await page.getByLabel(/Seed/).fill('4242');
+          await press(page.getByRole('button', { name: 'Lead the Frontier Co-op' }));
+          await page.locator('[data-ready="1"]').waitFor({ timeout: 30_000 });
+          if (screen.game !== 'map') {
+            await press(page.getByRole('button', { name: 'Empire', exact: true }));
+            if (screen.game === 'colony')
+              await press(
+                page
+                  .getByRole('dialog', { name: 'Empire' })
+                  .getByRole('button', { name: /^Tau Ceti/ })
+                  .first(),
+              );
+          }
+        }
         if (screen.select) await page.getByRole('button', { name: `Show ${screen.select}` }).click();
         if (screen.star) {
           const p = await page.evaluate((id) => {

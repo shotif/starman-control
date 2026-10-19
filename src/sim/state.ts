@@ -4,6 +4,7 @@
 // orders, and the rules treat both the same.
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
+import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { type ShipType, STARTING_FLEET, shipName } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
@@ -12,7 +13,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 1;
+export const STATE_VERSION = 2;
 
 export interface Stockpile {
   metals: number;
@@ -25,8 +26,6 @@ export interface PowerState {
   /** Who gives its orders. The rules treat both the same. */
   controller: 'player' | 'ai';
   capital: SystemId;
-  /** Systems where it has built a lane station (five beacon slots instead of three). */
-  laneStations: SystemId[];
   stockpile: Stockpile;
   /** Systems it has surveyed, in id order (§1 of M1_TURNS.md); every other system is only charted. */
   surveyed: SystemId[];
@@ -64,6 +63,26 @@ export interface ShipState {
   hold: boolean;
   /** Survey ships survey what they enter unless this is off. */
   autoSurvey: boolean;
+  /** A colony or outpost it will found when the turn ends, on a body of the system it is at. */
+  founding: { kind: 'colony' | 'outpost'; body: string } | null;
+}
+
+/** A colony or an outpost (M1_COLONIES.md §1). */
+export interface Holding {
+  id: number;
+  owner: FactionId;
+  kind: 'colony' | 'outpost';
+  system: SystemId;
+  /** The body it is on; null only for a capital whose world is not yet decided (D-24). */
+  body: string | null;
+  capital: boolean;
+  /** People, in tenths of a unit (a unit is about a million); 0 for an outpost. */
+  people: number;
+  /** Projects built here, in the order they were finished. */
+  projects: ProjectId[];
+  queue: QueueItem[];
+  /** Industry made and not yet spent: it goes into the first item, and is kept up to a limit. */
+  industry: number;
 }
 
 export interface GameState {
@@ -78,6 +97,9 @@ export interface GameState {
   /** In id order. */
   ships: ShipState[];
   nextShipId: number;
+  /** Colonies and outposts, in id order. */
+  holdings: Holding[];
+  nextHoldingId: number;
   /** What happened to each power in the last turn that ended. */
   reports: { faction: FactionId; turn: number; events: ReportEvent[] }[];
 }
@@ -102,6 +124,7 @@ export function makeShip(state: GameState, faction: FactionId, type: ShipType, a
     blindJump: null,
     hold: false,
     autoSurvey: type === 'survey',
+    founding: null,
   };
   state.nextShipId++;
   power.shipsBuilt++;
@@ -109,9 +132,35 @@ export function makeShip(state: GameState, faction: FactionId, type: ShipType, a
   return ship;
 }
 
+/** A new colony or outpost, added to the state. */
+export function makeHolding(
+  state: GameState,
+  h: Omit<Holding, 'id' | 'projects' | 'queue' | 'industry'> & Partial<Pick<Holding, 'projects'>>,
+): Holding {
+  const holding: Holding = { id: state.nextHoldingId, projects: [], queue: [], industry: 0, ...h };
+  state.nextHoldingId++;
+  state.holdings.push(holding);
+  return holding;
+}
+
+/** A power's capital colony, as every game starts it (§5 of the M1 design, M1_COLONIES.md §1). */
+export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
+  return {
+    owner: faction,
+    kind: 'colony',
+    system: FACTIONS[faction].capital.systemId,
+    body: FACTIONS[faction].capital.bodyId ?? null,
+    capital: true,
+    people: RULES.capital.people,
+    projects: ['shipyard', 'lane-station'],
+    queue: [],
+    industry: 0,
+  };
+}
+
 /**
- * A new game (§5): every power in play holds its capital, with a lane station, its home web of
- * lanes, its starting ships and a small stockpile, and has surveyed its capital.
+ * A new game (§5): every power in play holds its capital, with a shipyard and a lane station, its
+ * home web of lanes, its starting ships and a small stockpile, and has surveyed its capital.
  */
 export function newGame(world: World, setup: NewGameSetup): GameState {
   if (setup.powers.length === 0) throw new RangeError('A game needs at least one power');
@@ -134,7 +183,6 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       faction: p.faction,
       controller: p.controller,
       capital: FACTIONS[p.faction].capital.systemId,
-      laneStations: [FACTIONS[p.faction].capital.systemId],
       stockpile: { ...RULES.start.stockpile },
       surveyed: [FACTIONS[p.faction].capital.systemId],
       shipsBuilt: 0,
@@ -142,16 +190,24 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     lanes,
     ships: [],
     nextShipId: 1,
+    holdings: [],
+    nextHoldingId: 1,
     reports: [],
   };
+  for (const p of state.powers) makeHolding(state, capitalHolding(p.faction));
   for (const p of state.powers) for (const type of STARTING_FLEET) makeShip(state, p.faction, type, p.capital);
   return state;
 }
 
-/** Beacon slots at a system for its holder (§3). */
+/** Beacon slots at a system (§3): five where a holding there has a lane station, else three. */
 export function beaconSlots(state: GameState, system: SystemId): number {
-  const station = state.powers.some((p) => p.laneStations.includes(system));
+  const station = state.holdings.some((h) => h.system === system && h.projects.includes('lane-station'));
   return station ? RULES.beacons.slotsWithStation : RULES.beacons.slots;
+}
+
+/** The holding on a body, if any power holds it. */
+export function holdingOn(state: GameState, body: string): Holding | undefined {
+  return state.holdings.find((h) => h.body === body);
 }
 
 export function powerOf(state: GameState, faction: FactionId): PowerState {

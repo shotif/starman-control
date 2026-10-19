@@ -6,7 +6,8 @@ import type { SpeciesDef } from '../../content/species.ts';
 import type { Measured } from '../../data/types.ts';
 import type { Attribute, Body, FactKind } from '../../sim/bodies.ts';
 import { habitability } from '../../sim/habitability.ts';
-import { Badge, type BadgeKind } from '../parts.tsx';
+import { Badge, type BadgeKind, FactionTag } from '../parts.tsx';
+import type { HoldingRow } from './SystemPanel.tsx';
 import {
   ATMOSPHERE_WORD,
   auWord,
@@ -49,9 +50,12 @@ interface Props {
   species: SpeciesDef;
   systemName: string;
   onBack: () => void;
+  /** A colony or outpost on it, and how to open the player's own. */
+  held?: HoldingRow;
+  onHolding?: (id: number) => void;
 }
 
-export function PlanetPanel({ body: b, siblings, species, systemName, onBack }: Props) {
+export function PlanetPanel({ body: b, siblings, species, systemName, onBack, held, onHolding }: Props) {
   const h = habitability(b, species);
   const f = (a: Attribute) => b.facts[a];
   const p = b.planet;
@@ -68,6 +72,20 @@ export function PlanetPanel({ body: b, siblings, species, systemName, onBack }: 
           {parent ? `A moon of ${parent.name}` : `A ${KIND_WORD[b.kind]}`} <Badge kind={bodyBadge(b)} />
         </p>
       </header>
+
+      {held && (
+        <p class="held">
+          {held.mine && onHolding ? (
+            <button type="button" class="button button-small" onClick={() => onHolding(held.id)}>
+              Open your {held.kind.toLowerCase()} here
+            </button>
+          ) : (
+            <>
+              <FactionTag faction={held.owner} /> · {held.kind.toLowerCase()} here <Badge kind="fiction" />
+            </>
+          )}
+        </p>
+      )}
 
       <section class={`habitability hab-${h.level}`} aria-label={`For ${species.name.toLowerCase()}`}>
         <p>

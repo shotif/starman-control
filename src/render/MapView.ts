@@ -539,7 +539,14 @@ export class MapView {
       el.className = 'map-label';
       el.textContent = s.name;
       el.dataset.system = s.id;
-      if (this.holdings.has(s.id)) el.classList.add('is-held');
+      const held = this.holdings.get(s.id);
+      if (held) el.classList.add('is-held');
+      if (held && held.people > 0) {
+        const people = document.createElement('span');
+        people.className = 'map-label-people';
+        people.textContent = ` ${held.people}M`;
+        el.appendChild(people);
+      }
       el.hidden = true;
       this.labelLayer.appendChild(el);
       const box = createLabelBox();
@@ -557,11 +564,12 @@ export class MapView {
     this.content.systems.forEach((s, i) => {
       const label = this.labels[i];
       if (!label) return;
+      const text = label.el.textContent ?? s.name;
       if (ctx) {
         ctx.font = font;
-        label.box.width = Math.ceil(ctx.measureText(s.name).width) + 10;
+        label.box.width = Math.ceil(ctx.measureText(text).width) + 10;
       } else {
-        label.box.width = s.name.length * 7 + 10;
+        label.box.width = text.length * 7 + 10;
       }
     });
     this.labelsDirty = true;

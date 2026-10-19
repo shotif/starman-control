@@ -6,8 +6,10 @@ import type { ViewMode } from '../../render/MapView.ts';
 
 export const selected = signal<SystemId | null>(null);
 export const selectedShip = signal<number | null>(null);
+/** A colony or outpost being looked at, in its system. */
+export const selectedHolding = signal<number | null>(null);
 export const mode = signal<ViewMode | null>(null);
-export const panel = signal<'search' | 'legend' | 'keys' | 'menu' | 'ships' | 'report' | 'needs' | null>(null);
+export const panel = signal<'search' | 'legend' | 'keys' | 'menu' | 'empire' | 'report' | 'needs' | null>(null);
 export const hover = signal<{ id: SystemId; x: number; y: number } | null>(null);
 export const query = signal('');
 export const failed = signal<string | null>(null);
@@ -30,6 +32,7 @@ export function say(message: string): void {
 export function resetMapState(): void {
   selected.value = null;
   selectedShip.value = null;
+  selectedHolding.value = null;
   panel.value = null;
   hover.value = null;
   targeting.value = null;

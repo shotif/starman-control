@@ -263,6 +263,12 @@ planet is a good way to show the player what *disputed* means: the planet screen
 capital's own description says it is fiction. C is the cautious choice if you would rather no
 capital rests on a planet that may not exist.
 
+**Meanwhile (increment 5):** the Cooperative's and the Wake's capitals are colonies of their
+system, standing on no world, and are named after the system. Nothing in the rules depends on the
+world (the capital's room is fixed at 12), so the game is fully playable. Until you answer, the
+candidate worlds can be settled like any other; when the answer is built, a save that has settled
+the chosen world will have that colony folded into the capital.
+
 ## Round 2: needed later
 
 | ID | Question | Needed by | Recommendation in brief |
@@ -303,3 +309,8 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-19 | From the capital no star lies within the 6 ly blind-jump reach outside the home web, for any power; from the far side of each web, six or seven do | equal for all three powers; it makes the home web the way out, as the design intends |
 | 2026-10-19 | Routes are drawn in amber, ships as chevrons a little lighter than their power's colour | the Cooperative's colour is the interface's cyan, so routes in cyan vanished over its lanes |
 | 2026-10-19 | Saves now hold real games: from here on, every change to the state's shape comes with a migration | players can have saves on the live site from increment 4 |
+| 2026-10-19 | Colonies (increment 5) follow [M1_COLONIES.md](design/M1_COLONIES.md): the capital is a colony of 10 with room for 12 for every power; industry, yields and growth as there; build queues that wait for resources; the game state is now version 2, and version 1 saves are migrated | written before building; the numbers are for balancing in M2 |
+| 2026-10-19 | People are shown in millions ("10.4 million"), a unit being about a million; a colony's system label on the map shows its people ("Tau Ceti 10M") | plain words; the map shows where your people are at a glance |
+| 2026-10-19 | The desktop's Empire panel opens with **P** (for your power), not E as first written, because Q and E already turn the map | keeps the established camera keys |
+| 2026-10-19 | A new colony grows in the turn it is founded; a survey station surveys from the turn after it is finished; a mine yields in the turn it is finished | follows the order of the turn's steps (arrivals, production, growth, yields) without special cases |
+| 2026-10-19 | Industry is kept (up to 60) only while nothing is queued; while an item waits for resources, industry keeps building up behind it | an empty queue is the player's choice and is capped; a waiting item is not, so nothing is lost while metals arrive |

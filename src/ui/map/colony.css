@@ -1,0 +1,321 @@
+/* ---------------------------------------------------------------- colonies, outposts and the empire */
+
+.map-label-people {
+  color: var(--text-muted);
+  font-size: 0.85em;
+}
+
+.res-income {
+  color: #7fe7a3;
+  font-size: 0.85em;
+}
+
+.holding-panel header h2 {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-label);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+
+.holding-panel h3,
+.founding h3 {
+  margin: 1rem 0 0.4rem;
+  font-family: var(--font-label);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.holding-panel .facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.75rem;
+  margin: 0.75rem 0 0.4rem;
+}
+
+.holding-panel .facts dt {
+  color: var(--text-dim);
+}
+
+.holding-panel .facts dd {
+  margin: 0;
+}
+
+.figure {
+  margin: 0.4rem 0;
+  line-height: 1.4;
+}
+
+.projects {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.projects li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.1);
+}
+
+.waits {
+  color: var(--warm);
+}
+
+/* The build queue: a list on a phone, a table on a desktop */
+
+.queue-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.queue-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.1);
+}
+
+.queue-item {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1 1 12rem;
+}
+
+.queue-bar {
+  display: block;
+  height: 6px;
+  border: 1px solid var(--panel-border);
+  background: rgba(126, 170, 255, 0.08);
+}
+
+.queue-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.queue-buttons {
+  display: flex;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.queue-table,
+.empire-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.queue-table th,
+.queue-table td,
+.empire-table th,
+.empire-table td {
+  padding: 0.35rem 0.4rem;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.12);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.queue-table th,
+.empire-table th {
+  color: var(--text-dim);
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.queue-table tr.is-first td {
+  color: var(--text);
+}
+
+.build-options {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.build-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name cost"
+    "does does";
+  gap: 0.1rem 0.6rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--panel-border);
+  background: rgba(92, 200, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.build-option:hover:not(:disabled),
+.build-option:focus-visible {
+  border-color: var(--accent);
+  background: rgba(92, 200, 255, 0.12);
+}
+
+.build-option:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.build-option b {
+  grid-area: name;
+}
+
+.build-cost {
+  grid-area: cost;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.build-does {
+  grid-area: does;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Founding from a ship */
+
+.found-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.found-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas:
+    "name hab go"
+    "line hab go";
+  align-items: center;
+  gap: 0 0.6rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.35rem 0.25rem;
+  border: 0;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.1);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.found-row:hover,
+.found-row:focus-visible {
+  background: rgba(92, 200, 255, 0.08);
+}
+
+.found-go {
+  grid-area: go;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--accent);
+  background: rgba(92, 200, 255, 0.18);
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.world-held {
+  color: var(--text);
+}
+
+/* The empire */
+
+.empire .empire-tabs {
+  display: flex;
+  width: 100%;
+  margin: 0 0 0.6rem;
+}
+
+.empire-tabs .toggle-option {
+  flex: 1 1 0;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.empire-tabs .toggle-option[aria-selected="true"] {
+  border-color: var(--accent);
+  background: rgba(92, 200, 255, 0.18);
+  color: var(--text);
+}
+
+.empire-cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empire-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name type"
+    "line line"
+    "tag tag";
+  gap: 0.1rem 0.5rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.45rem 0.3rem;
+  border: 0;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.1);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.empire-card:hover,
+.empire-card:focus-visible {
+  background: rgba(92, 200, 255, 0.08);
+}
+
+.empire-card b {
+  grid-area: name;
+}
+
+.empire-card .ship-line:last-child,
+.empire-card .needs-tag {
+  grid-area: tag;
+}
+
+.sort {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.sort:hover,
+.sort:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.empire-popover {
+  top: 12px;
+  right: auto;
+  left: 12px;
+  width: min(720px, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}

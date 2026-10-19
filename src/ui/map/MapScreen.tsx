@@ -20,6 +20,7 @@ import { mapContent } from '../../render/mapModel.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { findRoute } from '../../sim/movement.ts';
+import type { Need } from '../../sim/needs.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
@@ -28,19 +29,30 @@ import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
 import { SystemView } from '../system/SystemPanel.tsx';
+import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
 import {
   give,
   NeedsStack,
   type Play,
   planFor,
   ReportView,
-  Resources,
   ShipPanel,
   ShipsList,
   shipStatus,
   TargetBar,
 } from './play.tsx';
-import { failed, hover, mode, panel, query, selected, selectedShip, targeting, toast } from './state.ts';
+import {
+  failed,
+  hover,
+  mode,
+  panel,
+  query,
+  selected,
+  selectedHolding,
+  selectedShip,
+  targeting,
+  toast,
+} from './state.ts';
 import '../sheet.css';
 import './map.css';
 
@@ -68,10 +80,11 @@ export const SHORTCUTS: readonly [string, string][] = [
 
 export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['Enter', 'End the turn'],
-  ['N', 'The next idle ship'],
+  ['N', 'The next thing that needs you'],
   ['M', 'Move the selected ship'],
   ['Right click', 'Send the selected ship there (Shift: add a waypoint)'],
   ['R', 'The report'],
+  ['P', 'Your power: colonies, outposts and ships'],
 ];
 
 function shipMarks(game: GameState): ShipMark[] {
@@ -124,6 +137,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const select = useCallback((id: SystemId | null) => {
     selected.value = id;
     selectedShip.value = null;
+    selectedHolding.value = null;
     view.current?.setSelected(id);
     if (id && panel.value === 'search') panel.value = null;
   }, []);
@@ -138,12 +152,27 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const s = latest.current.game.ships.find((x) => x.id === id);
     if (!s) return;
     selectedShip.value = id;
+    selectedHolding.value = null;
     selected.value = s.at;
     panel.value = null;
     const where = s.at ?? s.blindJump?.to ?? null;
     view.current?.setSelected(where);
     if (where) view.current?.focus(where);
   }, []);
+  const pickHolding = useCallback((id: number) => {
+    const h = latest.current.game.holdings.find((x) => x.id === id);
+    if (!h) return;
+    selectedShip.value = null;
+    selectedHolding.value = id;
+    selected.value = h.system;
+    panel.value = null;
+    view.current?.setSelected(h.system);
+    view.current?.focus(h.system);
+  }, []);
+  const onNeed = useCallback(
+    (n: Need) => (n.kind === 'idle-ship' ? pickShip(n.ship) : pickHolding(n.holding)),
+    [pickShip, pickHolding],
+  );
 
   /** A star chosen on the map: a destination while choosing one, else a system to look at. */
   const onMapSelect = useCallback(
@@ -226,7 +255,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const [ready, setReady] = useState(0);
 
   // What the map draws follows the game: its lanes and holdings, its ships, and the routes.
-  const lanesKey = game.lanes.map((l) => `${l.id}:${l.owner}`).join(',');
+  const lanesKey = [
+    ...game.lanes.map((l) => `${l.id}:${l.owner}`),
+    ...game.holdings.map((h) => `${h.id}:${Math.floor(h.people / 10)}`),
+  ].join(',');
   useEffect(() => {
     view.current?.setContent(mapContent(world, latest.current.game));
     view.current?.setSelected(selected.value);
@@ -339,10 +371,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const nextIdle = useCallback(() => {
     const p = latest.current.play;
     if (!p || p.needs.length === 0) return;
-    const i = p.needs.findIndex((n) => n.ship === selectedShip.value);
+    const i = p.needs.findIndex((n) =>
+      n.kind === 'idle-ship' ? n.ship === selectedShip.value : n.holding === selectedHolding.value,
+    );
     const next = p.needs[(i + 1) % p.needs.length];
-    if (next) pickShip(next.ship);
-  }, [pickShip]);
+    if (next) onNeed(next);
+  }, [onNeed]);
 
   // Keys (desktop, and any keyboard on a tablet).
   useEffect(() => {
@@ -376,6 +410,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'Enter' && p) void endTurn();
       else if (k === 'n' && p) nextIdle();
       else if (k === 'r' && p) panel.value = panel.value === 'report' ? null : 'report';
+      else if (k === 'p' && p) panel.value = panel.value === 'empire' ? null : 'empire';
       else if (k === 'm' && p && selectedShip.value !== null)
         targeting.value = { ship: selectedShip.value, blind: false, to: null };
       else if (k === 'Escape') {
@@ -399,6 +434,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
   const current = selected.value;
   const ship = selectedShip.value === null ? undefined : game.ships.find((s) => s.id === selectedShip.value);
+  const holding =
+    selectedHolding.value === null ? undefined : game.holdings.find((h) => h.id === selectedHolding.value);
   const date = formatDate(game.turn);
   const modeNow = mode.value ?? (desktop ? '3d' : 'flat');
   const power = play ? powerOf(game, play.faction) : undefined;
@@ -424,11 +461,43 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       surveyed={power ? hasSurveyed(power, id) : true}
       ships={shipsAt(id)}
       onShip={pickShip}
+      holdings={game.holdings
+        .filter((h) => h.system === id)
+        .map((h) => ({
+          id: h.id,
+          name: holdingName(world, game, h),
+          kind: holdingKind(h),
+          owner: h.owner,
+          body: h.body,
+          line: h.kind === 'colony' ? `${millions(h.people)} million people` : 'gathers its world’s riches',
+          mine: play?.faction === h.owner,
+        }))}
+      onHolding={pickHolding}
+    />
+  );
+  const holdingView = (h: NonNullable<typeof holding>) => (
+    <HoldingPanel key={h.id} world={world} game={game} holding={h} play={play} table={desktop} onGo={go} />
+  );
+  const empire = play && (
+    <EmpireView
+      world={world}
+      game={game}
+      faction={play.faction}
+      table={desktop}
+      onHolding={pickHolding}
+      shipsList={<ShipsList world={world} game={game} faction={play.faction} onPick={pickShip} />}
     />
   );
   const shipView = (s: ShipState) => play && <ShipPanel world={world} game={game} ship={s} play={play} onGo={go} />;
   const report = play && (
-    <ReportView world={world} game={game} faction={play.faction} needs={play.needs.length} onGo={go} />
+    <ReportView
+      world={world}
+      game={game}
+      faction={play.faction}
+      needs={play.needs.length}
+      onGo={go}
+      onHolding={pickHolding}
+    />
   );
   const keys = play ? [...PLAY_SHORTCUTS, ...SHORTCUTS] : SHORTCUTS;
   const endLabel = play?.resolving ? 'Ending…' : 'End turn';
@@ -460,6 +529,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             </button>
           </div>
         )}
+        {desktop && play && panel.value === 'empire' && (
+          <div class="popover empire-popover" role="dialog" aria-label="Empire" data-keep-clear>
+            {empire}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
         {desktop && play && <TargetBar world={world} game={game} play={play} />}
       </div>
 
@@ -472,7 +549,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         <span class="map-date" title="A turn is three months">
           {date}
         </span>
-        {power && <Resources power={power} />}
+        {play && <Resources world={world} game={game} faction={play.faction} />}
         {desktop ? (
           <>
             <SearchBox world={world} onPick={go} />
@@ -497,6 +574,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             </button>
             {play && (
               <>
+                <button
+                  type="button"
+                  class="chip"
+                  aria-pressed={panel.value === 'empire'}
+                  onClick={() => (panel.value = panel.value === 'empire' ? null : 'empire')}
+                >
+                  Empire
+                </button>
                 <button type="button" class="chip" onClick={() => void play.leave()}>
                   Save and leave
                 </button>
@@ -534,15 +619,28 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
       {desktop &&
         (play ? (
-          <PlayOutliner world={world} game={game} play={play} onShip={pickShip} onGo={go} />
+          <PlayOutliner
+            world={world}
+            game={game}
+            play={play}
+            onShip={pickShip}
+            onHolding={pickHolding}
+            onNeed={onNeed}
+            onGo={go}
+          />
         ) : (
           <Outliner world={world} game={game} onGo={go} />
         ))}
 
       {desktop && (
-        <aside class="map-inspector" aria-label={ship ? 'Selected ship' : 'Selected system'}>
+        <aside
+          class="map-inspector"
+          aria-label={ship ? 'Selected ship' : holding ? 'Selected colony' : 'Selected system'}
+        >
           {ship ? (
             shipView(ship)
+          ) : holding ? (
+            holdingView(holding)
           ) : current ? (
             systemView(current)
           ) : (
@@ -603,9 +701,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               <button
                 type="button"
                 class="bar-button"
-                onClick={() => (panel.value = panel.value === 'ships' ? null : 'ships')}
+                onClick={() => (panel.value = panel.value === 'empire' ? null : 'empire')}
               >
-                Ships
+                Empire
               </button>
               <ViewToggle mode={modeNow} onChange={setMode} />
               <button type="button" class="bar-button bar-primary" disabled={play.resolving} onClick={askEndTurn}>
@@ -669,22 +767,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 world={world}
                 game={game}
                 needs={play.needs}
-                onOrders={(id) => pickShip(id)}
+                onNeed={onNeed}
                 onEnd={() => void endTurn()}
                 onClose={close}
               />
             );
           if (play && panel.value === 'report') return sheet('Report', report, close, 'report');
-          if (play && panel.value === 'ships')
-            return sheet(
-              'Ships',
-              <>
-                <h2 class="sheet-heading">Your ships</h2>
-                <ShipsList world={world} game={game} faction={play.faction} onPick={pickShip} />
-              </>,
-              close,
-              'ships',
-            );
+          if (play && panel.value === 'empire') return sheet('Empire', empire, close, 'empire');
           if (play && panel.value === 'menu')
             return sheet(
               'Menu',
@@ -707,6 +796,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             );
           if (panel.value === 'legend') return sheet('Legend', <Legend />, close, 'legend');
           if (ship) return sheet(ship.name, shipView(ship), () => (selectedShip.value = null), `ship-${ship.id}`);
+          if (holding)
+            return sheet(
+              holdingName(world, game, holding),
+              holdingView(holding),
+              () => (selectedHolding.value = null),
+              `holding-${holding.id}`,
+            );
           if (current) return sheet(world.system(current).name, systemView(current), () => select(null), current);
           return null;
         })()}
@@ -868,14 +964,19 @@ function PlayOutliner({
   game,
   play,
   onShip,
+  onHolding,
+  onNeed,
   onGo,
 }: {
   world: World;
   game: GameState;
   play: Play;
   onShip: (id: number) => void;
+  onHolding: (id: number) => void;
+  onNeed: (n: Need) => void;
   onGo: (id: SystemId) => void;
 }) {
+  const colonies = game.holdings.filter((h) => h.owner === play.faction);
   return (
     <aside class="outliner" aria-label="Your power">
       <h2>Needs you</h2>
@@ -883,20 +984,34 @@ function PlayOutliner({
         <p class="dim">Nothing. End the turn when you are ready.</p>
       ) : (
         <ul class="needs-list">
-          {play.needs.map((n) => {
-            const s = game.ships.find((x) => x.id === n.ship);
-            return (
-              s && (
-                <li key={n.ship}>
-                  <button type="button" class="outliner-item" onClick={() => onShip(n.ship)}>
-                    {s.name} is idle at {world.system(n.system).name}
-                  </button>
-                </li>
-              )
-            );
-          })}
+          {play.needs.map((n) => (
+            <li key={n.kind === 'idle-ship' ? `s${n.ship}` : `${n.kind}-${n.holding}`}>
+              <button type="button" class="outliner-item" onClick={() => onNeed(n)}>
+                {needText(world, game, n)}
+              </button>
+            </li>
+          ))}
         </ul>
       )}
+      <h2>Colonies and outposts</h2>
+      <ul class="needs-list">
+        {colonies.map((h) => (
+          <li key={h.id}>
+            <button
+              type="button"
+              class={`outliner-item${selectedHolding.value === h.id ? ' is-selected' : ''}`}
+              onClick={() => onHolding(h.id)}
+            >
+              {holdingName(world, game, h)}
+              <span class="capital">
+                {' '}
+                {h.kind === 'colony' ? `${millions(h.people)}M` : 'outpost'}
+                {h.capital ? ' · capital' : ''}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
       <h2>Ships</h2>
       <ShipsList world={world} game={game} faction={play.faction} onPick={onShip} />
       <h2>Home</h2>

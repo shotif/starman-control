@@ -19,6 +19,22 @@ describe('save files', () => {
     expect(parseSave(world, `﻿${json}`)).toEqual(game);
   });
 
+  it('bring a game saved before colonies (state version 1) up to date', () => {
+    // A version 1 game, as increment 4 wrote it: lane stations on the power, no holdings.
+    const { holdings: _h, nextHoldingId: _n, ...rest } = structuredClone(game);
+    const old = {
+      ...rest,
+      version: 1,
+      powers: game.powers.map((p) => ({ ...p, laneStations: [p.capital] })),
+      ships: game.ships.map(({ founding: _f, ...s }) => s),
+    };
+    const json = JSON.stringify({ format: SAVE_FORMAT, version: 1, savedAt: when.toISOString(), game: old });
+    expect(parseSave(world, json)).toEqual(game);
+    // A damaged version 1 game is refused with a message, not a crash.
+    const broken = JSON.stringify({ format: SAVE_FORMAT, version: 1, game: { ...old, powers: 'gone' } });
+    expect(() => parseSave(world, broken)).toThrow(SaveError);
+  });
+
   it('are small: far under the 200 KB budget', () => {
     expect(exportSave(game, when).json.length).toBeLessThan(200 * 1024);
   });

@@ -71,9 +71,23 @@ describe('what the map draws', () => {
       mark: 'circle',
       colour: FACTIONS.frontier.colour,
       capital: true,
+      people: 10,
     });
     expect(content.holdings.filter((h) => h.faction === 'sta')).toHaveLength(7);
     expect(content.holdings.some((h) => h.faction === 'hollow-wake')).toBe(false);
+  });
+
+  it('marks systems with colonies and outposts, and counts their people for the label', () => {
+    const g = structuredClone(game);
+    const earth = g.holdings[0] as (typeof g.holdings)[number];
+    g.holdings.push(
+      { ...earth, id: 9, kind: 'outpost', system: 'ross-128', body: 'ross-128-b', capital: false, people: 0 },
+      { ...earth, id: 10, system: 'sol', body: 'mars', capital: false, people: 15 },
+    );
+    const c = mapContent(world, g);
+    expect(c.holdings.find((h) => h.system === 'ross-128')).toMatchObject({ faction: 'sta', people: 0 });
+    // Earth's 10 and Mars's 1.5 make 11 whole units at Sol.
+    expect(c.holdings.find((h) => h.system === 'sol')).toMatchObject({ capital: true, people: 11 });
   });
 
   it('labels the selected system first, then capitals, held systems, known planets, the rest', () => {

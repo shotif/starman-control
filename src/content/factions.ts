@@ -34,7 +34,11 @@ export interface FactionDef {
   colour: string;
   mark: FactionMark;
   species: SpeciesId;
-  capital: { systemId: SystemId };
+  /**
+   * Its capital's system and, once decided, its world: Earth for the Authority (D-20); the others
+   * wait on D-24, and nothing in the rules depends on which world it is.
+   */
+  capital: { systemId: SystemId; bodyId?: string };
   traits: TraitDef[];
   /** Its shipbuilding traditions, from Reborn's makers. */
   shipmakers: string[];
@@ -50,7 +54,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     colour: '#62e39a',
     mark: 'square',
     species: 'human',
-    capital: { systemId: 'sol' },
+    capital: { systemId: 'sol', bodyId: 'earth' },
     traits: [
       {
         id: 'sta-administration',
