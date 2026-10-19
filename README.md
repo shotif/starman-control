@@ -18,7 +18,8 @@ species later.
 
 **Status: building milestone M1, First light.** Not playable yet. The live site,
 <https://shotif.github.io/starman-control/>, has the map of the real neighbourhood (207 systems,
-their stars and known planets, and the old lanes, flat or in 3D, on a phone or a desktop) until
+flat or in 3D, on a phone or a desktop): every star, its worlds (the known planets as measured,
+the rest generated and labelled fiction) and the old lanes, and a codex of the real data, until
 the first playable build.
 
 ## Design documents
@@ -49,6 +50,7 @@ npm run test:e2e  # browser journeys on a phone, a tablet and a desktop (Playwri
 npm run screenshots  # every screen at the review sizes, into test-results/screens/
 npm run format    # apply Biome's formatting
 npm run data:import  # copy the sky and lanes from a Starman Reborn checkout (../starman-reborn)
+npm run data:import-dwarfs  # copy the mean dwarf star table (Pecaut & Mamajek 2013)
 npm run art:ping  # check the Gemini key (see docs/ART_PIPELINE.md)
 ```
 

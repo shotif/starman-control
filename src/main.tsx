@@ -5,7 +5,7 @@ import { watchLayout } from './ui/layout.ts';
 import { Title } from './ui/Title.tsx';
 import './style.css';
 
-/** The screen, from the address: "#/map", "#/data" (the data preview), or the title. */
+/** The screen, from the address: "#/map", "#/codex" (once "#/data"), or the title. */
 const route = signal(location.hash);
 window.addEventListener('hashchange', () => {
   route.value = location.hash;
@@ -14,7 +14,7 @@ window.addEventListener('hashchange', () => {
 });
 
 function screenName(hash: string): string {
-  return hash.startsWith('#/map') ? 'map' : hash.startsWith('#/data') ? 'data' : 'title';
+  return hash.startsWith('#/map') ? 'map' : hash.startsWith('#/codex') || hash.startsWith('#/data') ? 'codex' : 'title';
 }
 document.documentElement.dataset.screen = screenName(location.hash);
 
@@ -37,7 +37,7 @@ const loadData = () => import('./ui/data/route.tsx');
 const loadMap = () => import('./ui/map/route.tsx');
 
 function App() {
-  if (route.value.startsWith('#/data')) return <Lazy load={loadData} />;
+  if (route.value.startsWith('#/codex') || route.value.startsWith('#/data')) return <Lazy load={loadData} />;
   if (route.value.startsWith('#/map')) return <Lazy load={loadMap} />;
   return <Title buildId={__BUILD_ID__} />;
 }

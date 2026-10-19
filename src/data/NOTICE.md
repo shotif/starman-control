@@ -41,6 +41,26 @@ Catalogue, <https://github.com/OpenExoplanetCatalogue/open_exoplanet_catalogue> 
     DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE DATABASE OR THE USE OR OTHER DEALINGS IN THE DATABASE.
 
+## The mean dwarf sequence
+
+`dwarfs.json` is copied by `npm run data:import-dwarfs` (scripts/data/import-dwarfs.ts) from Eric
+Mamajek's table *A Modern Mean Dwarf Stellar Color and Effective Temperature Sequence*,
+<https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt> (version 2022.04.16),
+whose content is largely Table 5 of Pecaut & Mamajek (2013, ApJS 208, 9,
+<https://ui.adsabs.harvard.edu/abs/2013ApJS..208....9P>), cited as its author asks. Only the
+spectral type, effective temperature, luminosity (10^logL), radius and mass are kept. The game
+uses it to estimate each star's light from its type, and says so.
+
+## Sol
+
+Sol's planets and moons (`src/content/sol.ts`) are from NASA's Planetary Fact Sheet and JPL's
+planetary satellite physical parameters.
+
+## A correction
+
+Four planets' status notes in Reborn's data read "the Encyclopaedia calls it ." with the word
+missing (from Reborn's `scripts/sky-process.ts`); the import drops that empty clause.
+
 ## The lanes
 
 The lanes are fiction: Starman Reborn's jump network, made by its world generator. In Control

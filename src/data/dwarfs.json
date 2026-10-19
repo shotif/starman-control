@@ -1,0 +1,796 @@
+{
+  "source": {
+    "label": "Pecaut & Mamajek 2013, a modern mean dwarf stellar color and effective temperature sequence (ApJS 208, 9)",
+    "url": "https://ui.adsabs.harvard.edu/abs/2013ApJS..208....9P",
+    "bibcode": "2013ApJS..208....9P",
+    "table": "https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt",
+    "version": "2022.04.16"
+  },
+  "description": "Mean main-sequence (dwarf) stars by spectral type: effective temperature (K), luminosity, radius and mass (solar units). Luminosity is 10^logL from the table, to four figures. Rows without a luminosity are left out.",
+  "rows": [
+    {
+      "type": "O3V",
+      "teffK": 44900,
+      "luminosity": 660700,
+      "radius": 13.43,
+      "mass": 59
+    },
+    {
+      "type": "O4V",
+      "teffK": 42900,
+      "luminosity": 446700,
+      "radius": 12.13,
+      "mass": 48
+    },
+    {
+      "type": "O5V",
+      "teffK": 41400,
+      "luminosity": 346700,
+      "radius": 11.45,
+      "mass": 43
+    },
+    {
+      "type": "O5.5V",
+      "teffK": 40500,
+      "luminosity": 275400,
+      "radius": 10.71,
+      "mass": 38
+    },
+    {
+      "type": "O6V",
+      "teffK": 39500,
+      "luminosity": 229100,
+      "radius": 10.27,
+      "mass": 35
+    },
+    {
+      "type": "O6.5V",
+      "teffK": 38300,
+      "luminosity": 186200,
+      "radius": 9.82,
+      "mass": 31
+    },
+    {
+      "type": "O7V",
+      "teffK": 37100,
+      "luminosity": 151400,
+      "radius": 9.42,
+      "mass": 28
+    },
+    {
+      "type": "O7.5V",
+      "teffK": 36100,
+      "luminosity": 123000,
+      "radius": 8.95,
+      "mass": 26
+    },
+    {
+      "type": "O8V",
+      "teffK": 35100,
+      "luminosity": 97720,
+      "radius": 8.47,
+      "mass": 23.6
+    },
+    {
+      "type": "O8.5V",
+      "teffK": 34300,
+      "luminosity": 81280,
+      "radius": 8.06,
+      "mass": 21.9
+    },
+    {
+      "type": "O9V",
+      "teffK": 33300,
+      "luminosity": 66070,
+      "radius": 7.72,
+      "mass": 20.2
+    },
+    {
+      "type": "O9.5V",
+      "teffK": 31900,
+      "luminosity": 52480,
+      "radius": 7.5,
+      "mass": 18.7
+    },
+    {
+      "type": "B0V",
+      "teffK": 31400,
+      "luminosity": 44670,
+      "radius": 7.16,
+      "mass": 17.7
+    },
+    {
+      "type": "B0.5V",
+      "teffK": 29000,
+      "luminosity": 26920,
+      "radius": 6.48,
+      "mass": 14.8
+    },
+    {
+      "type": "B1V",
+      "teffK": 26000,
+      "luminosity": 13490,
+      "radius": 5.71,
+      "mass": 11.8
+    },
+    {
+      "type": "B1.5V",
+      "teffK": 24500,
+      "luminosity": 8128,
+      "radius": 5.02,
+      "mass": 9.9
+    },
+    {
+      "type": "B2V",
+      "teffK": 20600,
+      "luminosity": 2692,
+      "radius": 4.06,
+      "mass": 7.3
+    },
+    {
+      "type": "B2.5V",
+      "teffK": 18500,
+      "luminosity": 1585,
+      "radius": 3.89,
+      "mass": 6.1
+    },
+    {
+      "type": "B3V",
+      "teffK": 17000,
+      "luminosity": 977.2,
+      "radius": 3.61,
+      "mass": 5.4
+    },
+    {
+      "type": "B4V",
+      "teffK": 16400,
+      "luminosity": 776.2,
+      "radius": 3.46,
+      "mass": 5.1
+    },
+    {
+      "type": "B5V",
+      "teffK": 15700,
+      "luminosity": 588.8,
+      "radius": 3.36,
+      "mass": 4.7
+    },
+    {
+      "type": "B6V",
+      "teffK": 14500,
+      "luminosity": 371.5,
+      "radius": 3.27,
+      "mass": 4.3
+    },
+    {
+      "type": "B7V",
+      "teffK": 14000,
+      "luminosity": 302,
+      "radius": 2.94,
+      "mass": 3.92
+    },
+    {
+      "type": "B8V",
+      "teffK": 12300,
+      "luminosity": 154.9,
+      "radius": 2.86,
+      "mass": 3.38
+    },
+    {
+      "type": "B9V",
+      "teffK": 10700,
+      "luminosity": 72.44,
+      "radius": 2.49,
+      "mass": 2.75
+    },
+    {
+      "type": "B9.5V",
+      "teffK": 10400,
+      "luminosity": 63.1,
+      "radius": 2.45,
+      "mass": 2.68
+    },
+    {
+      "type": "A0V",
+      "teffK": 9700,
+      "luminosity": 38.02,
+      "radius": 2.193,
+      "mass": 2.18
+    },
+    {
+      "type": "A1V",
+      "teffK": 9300,
+      "luminosity": 30.9,
+      "radius": 2.136,
+      "mass": 2.05
+    },
+    {
+      "type": "A2V",
+      "teffK": 8800,
+      "luminosity": 23.99,
+      "radius": 2.117,
+      "mass": 1.98
+    },
+    {
+      "type": "A3V",
+      "teffK": 8600,
+      "luminosity": 16.98,
+      "radius": 1.861,
+      "mass": 1.86
+    },
+    {
+      "type": "A4V",
+      "teffK": 8250,
+      "luminosity": 13.49,
+      "radius": 1.794,
+      "mass": 1.93
+    },
+    {
+      "type": "A5V",
+      "teffK": 8100,
+      "luminosity": 12.3,
+      "radius": 1.785,
+      "mass": 1.88
+    },
+    {
+      "type": "A6V",
+      "teffK": 7910,
+      "luminosity": 11.22,
+      "radius": 1.775,
+      "mass": 1.83
+    },
+    {
+      "type": "A7V",
+      "teffK": 7760,
+      "luminosity": 10,
+      "radius": 1.75,
+      "mass": 1.77
+    },
+    {
+      "type": "A8V",
+      "teffK": 7590,
+      "luminosity": 9.12,
+      "radius": 1.747,
+      "mass": 1.81
+    },
+    {
+      "type": "A9V",
+      "teffK": 7400,
+      "luminosity": 8.318,
+      "radius": 1.747,
+      "mass": 1.75
+    },
+    {
+      "type": "F0V",
+      "teffK": 7220,
+      "luminosity": 7.244,
+      "radius": 1.728,
+      "mass": 1.61
+    },
+    {
+      "type": "F1V",
+      "teffK": 7020,
+      "luminosity": 6.166,
+      "radius": 1.679,
+      "mass": 1.5
+    },
+    {
+      "type": "F2V",
+      "teffK": 6820,
+      "luminosity": 5.129,
+      "radius": 1.622,
+      "mass": 1.46
+    },
+    {
+      "type": "F3V",
+      "teffK": 6750,
+      "luminosity": 4.677,
+      "radius": 1.578,
+      "mass": 1.44
+    },
+    {
+      "type": "F4V",
+      "teffK": 6670,
+      "luminosity": 4.169,
+      "radius": 1.533,
+      "mass": 1.38
+    },
+    {
+      "type": "F5V",
+      "teffK": 6550,
+      "luminosity": 3.631,
+      "radius": 1.473,
+      "mass": 1.33
+    },
+    {
+      "type": "F6V",
+      "teffK": 6350,
+      "luminosity": 2.692,
+      "radius": 1.359,
+      "mass": 1.25
+    },
+    {
+      "type": "F7V",
+      "teffK": 6280,
+      "luminosity": 2.455,
+      "radius": 1.324,
+      "mass": 1.21
+    },
+    {
+      "type": "F8V",
+      "teffK": 6180,
+      "luminosity": 1.95,
+      "radius": 1.221,
+      "mass": 1.18
+    },
+    {
+      "type": "F9V",
+      "teffK": 6050,
+      "luminosity": 1.66,
+      "radius": 1.167,
+      "mass": 1.13
+    },
+    {
+      "type": "F9.5V",
+      "teffK": 5990,
+      "luminosity": 1.514,
+      "radius": 1.142,
+      "mass": 1.08
+    },
+    {
+      "type": "G0V",
+      "teffK": 5930,
+      "luminosity": 1.349,
+      "radius": 1.1,
+      "mass": 1.06
+    },
+    {
+      "type": "G1V",
+      "teffK": 5860,
+      "luminosity": 1.202,
+      "radius": 1.06,
+      "mass": 1.03
+    },
+    {
+      "type": "G2V",
+      "teffK": 5770,
+      "luminosity": 1.023,
+      "radius": 1.012,
+      "mass": 1
+    },
+    {
+      "type": "G3V",
+      "teffK": 5720,
+      "luminosity": 0.9772,
+      "radius": 1.002,
+      "mass": 0.99
+    },
+    {
+      "type": "G4V",
+      "teffK": 5680,
+      "luminosity": 0.912,
+      "radius": 0.991,
+      "mass": 0.985
+    },
+    {
+      "type": "G5V",
+      "teffK": 5660,
+      "luminosity": 0.8913,
+      "radius": 0.977,
+      "mass": 0.98
+    },
+    {
+      "type": "G6V",
+      "teffK": 5600,
+      "luminosity": 0.7943,
+      "radius": 0.949,
+      "mass": 0.97
+    },
+    {
+      "type": "G7V",
+      "teffK": 5550,
+      "luminosity": 0.7413,
+      "radius": 0.927,
+      "mass": 0.95
+    },
+    {
+      "type": "G8V",
+      "teffK": 5480,
+      "luminosity": 0.6761,
+      "radius": 0.914,
+      "mass": 0.94
+    },
+    {
+      "type": "G9V",
+      "teffK": 5380,
+      "luminosity": 0.5495,
+      "radius": 0.853,
+      "mass": 0.9
+    },
+    {
+      "type": "K0V",
+      "teffK": 5270,
+      "luminosity": 0.4571,
+      "radius": 0.813,
+      "mass": 0.88
+    },
+    {
+      "type": "K1V",
+      "teffK": 5170,
+      "luminosity": 0.4074,
+      "radius": 0.797,
+      "mass": 0.86
+    },
+    {
+      "type": "K2V",
+      "teffK": 5100,
+      "luminosity": 0.3715,
+      "radius": 0.783,
+      "mass": 0.82
+    },
+    {
+      "type": "K3V",
+      "teffK": 4830,
+      "luminosity": 0.2818,
+      "radius": 0.755,
+      "mass": 0.78
+    },
+    {
+      "type": "K4V",
+      "teffK": 4600,
+      "luminosity": 0.2042,
+      "radius": 0.713,
+      "mass": 0.73
+    },
+    {
+      "type": "K5V",
+      "teffK": 4440,
+      "luminosity": 0.1738,
+      "radius": 0.701,
+      "mass": 0.7
+    },
+    {
+      "type": "K6V",
+      "teffK": 4300,
+      "luminosity": 0.138,
+      "radius": 0.669,
+      "mass": 0.69
+    },
+    {
+      "type": "K7V",
+      "teffK": 4100,
+      "luminosity": 0.1,
+      "radius": 0.63,
+      "mass": 0.64
+    },
+    {
+      "type": "K8V",
+      "teffK": 3990,
+      "luminosity": 0.0871,
+      "radius": 0.615,
+      "mass": 0.62
+    },
+    {
+      "type": "K9V",
+      "teffK": 3930,
+      "luminosity": 0.07943,
+      "radius": 0.608,
+      "mass": 0.59
+    },
+    {
+      "type": "M0V",
+      "teffK": 3850,
+      "luminosity": 0.06918,
+      "radius": 0.588,
+      "mass": 0.57
+    },
+    {
+      "type": "M0.5V",
+      "teffK": 3770,
+      "luminosity": 0.0537,
+      "radius": 0.544,
+      "mass": 0.54
+    },
+    {
+      "type": "M1V",
+      "teffK": 3660,
+      "luminosity": 0.04074,
+      "radius": 0.501,
+      "mass": 0.5
+    },
+    {
+      "type": "M1.5V",
+      "teffK": 3620,
+      "luminosity": 0.03631,
+      "radius": 0.482,
+      "mass": 0.47
+    },
+    {
+      "type": "M2V",
+      "teffK": 3560,
+      "luminosity": 0.02884,
+      "radius": 0.446,
+      "mass": 0.44
+    },
+    {
+      "type": "M2.5V",
+      "teffK": 3470,
+      "luminosity": 0.02291,
+      "radius": 0.421,
+      "mass": 0.4
+    },
+    {
+      "type": "M3V",
+      "teffK": 3430,
+      "luminosity": 0.01622,
+      "radius": 0.361,
+      "mass": 0.37
+    },
+    {
+      "type": "M3.5V",
+      "teffK": 3270,
+      "luminosity": 0.009333,
+      "radius": 0.3,
+      "mass": 0.27
+    },
+    {
+      "type": "M4V",
+      "teffK": 3210,
+      "luminosity": 0.007244,
+      "radius": 0.274,
+      "mass": 0.23
+    },
+    {
+      "type": "M4.5V",
+      "teffK": 3110,
+      "luminosity": 0.003981,
+      "radius": 0.217,
+      "mass": 0.184
+    },
+    {
+      "type": "M5V",
+      "teffK": 3060,
+      "luminosity": 0.00302,
+      "radius": 0.196,
+      "mass": 0.162
+    },
+    {
+      "type": "M5.5V",
+      "teffK": 2930,
+      "luminosity": 0.001622,
+      "radius": 0.156,
+      "mass": 0.123
+    },
+    {
+      "type": "M6V",
+      "teffK": 2810,
+      "luminosity": 0.001047,
+      "radius": 0.137,
+      "mass": 0.102
+    },
+    {
+      "type": "M6.5V",
+      "teffK": 2740,
+      "luminosity": 0.0007943,
+      "radius": 0.126,
+      "mass": 0.093
+    },
+    {
+      "type": "M7V",
+      "teffK": 2680,
+      "luminosity": 0.0006457,
+      "radius": 0.12,
+      "mass": 0.09
+    },
+    {
+      "type": "M7.5V",
+      "teffK": 2630,
+      "luminosity": 0.0005754,
+      "radius": 0.116,
+      "mass": 0.088
+    },
+    {
+      "type": "M8V",
+      "teffK": 2570,
+      "luminosity": 0.0005248,
+      "radius": 0.114,
+      "mass": 0.085
+    },
+    {
+      "type": "M8.5V",
+      "teffK": 2420,
+      "luminosity": 0.0003388,
+      "radius": 0.104,
+      "mass": 0.08
+    },
+    {
+      "type": "M9V",
+      "teffK": 2380,
+      "luminosity": 0.000302,
+      "radius": 0.102,
+      "mass": 0.079
+    },
+    {
+      "type": "M9.5V",
+      "teffK": 2350,
+      "luminosity": 0.0002692,
+      "radius": 0.101,
+      "mass": 0.078
+    },
+    {
+      "type": "L0V",
+      "teffK": 2270,
+      "luminosity": 0.0002512,
+      "radius": 0.102,
+      "mass": 0.077
+    },
+    {
+      "type": "L1V",
+      "teffK": 2160,
+      "luminosity": 0.000195,
+      "radius": 0.0995,
+      "mass": 0.076
+    },
+    {
+      "type": "L2V",
+      "teffK": 2060,
+      "luminosity": 0.0001514,
+      "radius": 0.097,
+      "mass": 0.075
+    },
+    {
+      "type": "L3V",
+      "teffK": 1920,
+      "luminosity": 0.0001096,
+      "radius": 0.0942,
+      "mass": null
+    },
+    {
+      "type": "L4V",
+      "teffK": 1870,
+      "luminosity": 0.00009772,
+      "radius": 0.094,
+      "mass": null
+    },
+    {
+      "type": "L5V",
+      "teffK": 1710,
+      "luminosity": 0.0000631,
+      "radius": 0.0909,
+      "mass": null
+    },
+    {
+      "type": "L6V",
+      "teffK": 1550,
+      "luminosity": 0.00004169,
+      "radius": 0.0891,
+      "mass": null
+    },
+    {
+      "type": "L7V",
+      "teffK": 1530,
+      "luminosity": 0.0000389,
+      "radius": 0.0886,
+      "mass": null
+    },
+    {
+      "type": "L8V",
+      "teffK": 1420,
+      "luminosity": 0.00002818,
+      "radius": 0.0875,
+      "mass": null
+    },
+    {
+      "type": "L9V",
+      "teffK": 1370,
+      "luminosity": 0.00002455,
+      "radius": 0.0877,
+      "mass": null
+    },
+    {
+      "type": "T0V",
+      "teffK": 1255,
+      "luminosity": 0.00002188,
+      "radius": 0.098,
+      "mass": null
+    },
+    {
+      "type": "T1V",
+      "teffK": 1240,
+      "luminosity": 0.00002042,
+      "radius": 0.1,
+      "mass": null
+    },
+    {
+      "type": "T2V",
+      "teffK": 1220,
+      "luminosity": 0.00001862,
+      "radius": 0.1,
+      "mass": null
+    },
+    {
+      "type": "T3V",
+      "teffK": 1200,
+      "luminosity": 0.00001698,
+      "radius": 0.102,
+      "mass": null
+    },
+    {
+      "type": "T4V",
+      "teffK": 1180,
+      "luminosity": 0.00001445,
+      "radius": 0.101,
+      "mass": null
+    },
+    {
+      "type": "T4.5V",
+      "teffK": 1170,
+      "luminosity": 0.00001259,
+      "radius": 0.099,
+      "mass": null
+    },
+    {
+      "type": "T5V",
+      "teffK": 1160,
+      "luminosity": 0.00001122,
+      "radius": 0.101,
+      "mass": null
+    },
+    {
+      "type": "T5.5V",
+      "teffK": 1040,
+      "luminosity": 0.00000912,
+      "radius": 0.099,
+      "mass": null
+    },
+    {
+      "type": "T6V",
+      "teffK": 950,
+      "luminosity": 0.000007586,
+      "radius": 0.1,
+      "mass": null
+    },
+    {
+      "type": "T7V",
+      "teffK": 825,
+      "luminosity": 0.000004266,
+      "radius": 0.098,
+      "mass": null
+    },
+    {
+      "type": "T7.5V",
+      "teffK": 750,
+      "luminosity": 0.000002884,
+      "radius": 0.095,
+      "mass": null
+    },
+    {
+      "type": "T8V",
+      "teffK": 680,
+      "luminosity": 0.00000195,
+      "radius": 0.095,
+      "mass": null
+    },
+    {
+      "type": "T8.5V",
+      "teffK": 600,
+      "luminosity": 0.000001175,
+      "radius": 0.097,
+      "mass": null
+    },
+    {
+      "type": "T9V",
+      "teffK": 560,
+      "luminosity": 7.079e-7,
+      "radius": 0.1,
+      "mass": null
+    },
+    {
+      "type": "Y0V",
+      "teffK": 450,
+      "luminosity": 3.02e-7,
+      "radius": 0.104,
+      "mass": null
+    }
+  ]
+}

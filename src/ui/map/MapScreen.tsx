@@ -25,7 +25,7 @@ import { layout, sideSheets } from '../layout.ts';
 import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
-import { SystemPanel } from '../system/SystemPanel.tsx';
+import { SystemView } from '../system/SystemPanel.tsx';
 import '../sheet.css';
 import './map.css';
 
@@ -246,7 +246,7 @@ export function MapScreen({ world, game, buildId }: Props) {
           <div class="map-failed">
             <p>This browser cannot draw the map ({failed.value}).</p>
             <p>
-              <a href="#/data">Open the systems as a list</a> instead.
+              <a href="#/codex">Open the systems as a list</a> instead.
             </p>
           </div>
         )}
@@ -276,6 +276,9 @@ export function MapScreen({ world, game, buildId }: Props) {
             >
               Legend
             </button>
+            <a class="chip" href="#/codex">
+              Codex
+            </a>
             <button
               type="button"
               class="chip"
@@ -286,9 +289,14 @@ export function MapScreen({ world, game, buildId }: Props) {
             </button>
           </>
         ) : (
-          <a class="chip" href="#/">
-            Menu
-          </a>
+          <>
+            <a class="chip" href="#/codex">
+              Codex
+            </a>
+            <a class="chip" href="#/" aria-label="Back to the title">
+              Title
+            </a>
+          </>
         )}
       </header>
 
@@ -297,7 +305,8 @@ export function MapScreen({ world, game, buildId }: Props) {
       {desktop && (
         <aside class="map-inspector" aria-label="Selected system">
           {current ? (
-            <SystemPanel
+            <SystemView
+              key={current}
               world={world}
               game={game}
               id={current}
@@ -378,7 +387,7 @@ export function MapScreen({ world, game, buildId }: Props) {
           topInset={topHeight}
           side={sideSheets.value}
         >
-          <SystemPanel world={world} game={game} id={current} onGo={go} onCentre={() => view.current?.focus(current)} />
+          <SystemView world={world} game={game} id={current} onGo={go} onCentre={() => view.current?.focus(current)} />
         </Sheet>
       )}
       {!desktop && !current && panel.value === 'legend' && (

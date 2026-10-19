@@ -23,6 +23,7 @@
     "art:sheet": "node scripts/art/sheet.ts",
     "art:check": "node scripts/art/check.ts",
     "data:import": "node scripts/data/import-reborn.ts",
+    "data:import-dwarfs": "node scripts/data/import-dwarfs.ts",
     "lint": "biome check .",
     "format": "biome check --write .",
     "check": "npm run typecheck && npm run lint && npm run art:check && npm test && npm run build"

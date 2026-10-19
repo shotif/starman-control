@@ -5,18 +5,19 @@ const isDesktop = (name: string) => name === 'desktop';
 /** A tap on a touch device, a click with the mouse on the desktop: a mouse switches a tablet to the desktop layout. */
 const press = (target: Locator, project: string) => (isDesktop(project) ? target.click() : target.tap());
 
-test.describe('the data preview', () => {
+test.describe('the codex', () => {
   test('opens from the title', async ({ page }, info) => {
     await page.goto('./');
     await expect(page.getByRole('heading', { name: /Starman Control/i })).toBeVisible();
-    await press(page.getByRole('link', { name: 'the data as a table' }), info.project.name);
-    await expect(page.getByRole('heading', { name: /The neighbourhood/ })).toBeVisible();
+    await press(page.getByRole('link', { name: 'the codex' }), info.project.name);
+    await expect(page.getByRole('heading', { name: /Codex/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /How the game works out/ })).toBeVisible();
     await expect(page.locator('.count')).toHaveText('207 of 207');
     await expect(page.locator('.web-card')).toHaveCount(3);
   });
 
   test('uses the layout for the device', async ({ page }, info) => {
-    await page.goto('./#/data');
+    await page.goto('./#/codex');
     await expect(page.locator('html')).toHaveAttribute(
       'data-layout',
       isDesktop(info.project.name) ? 'desktop' : 'phone',
@@ -31,7 +32,7 @@ test.describe('the data preview', () => {
   });
 
   test('finds a system and shows its real data', async ({ page }, info) => {
-    await page.goto('./#/data');
+    await page.goto('./#/codex');
     await page.getByPlaceholder(/Find a system/).fill('barnards');
     await expect(page.locator('.count')).toHaveText('1 of 207');
     if (isDesktop(info.project.name)) {
@@ -52,7 +53,7 @@ test.describe('the data preview', () => {
   });
 
   test('shows the home webs: seven systems each, the rest dark', async ({ page }, info) => {
-    await page.goto('./#/data');
+    await page.goto('./#/codex');
     await press(page.getByLabel('Home webs only'), info.project.name);
     await expect(page.locator('.count')).toHaveText('21 of 207');
     await press(page.getByRole('button', { name: 'Show Tau Ceti' }), info.project.name);
@@ -64,7 +65,7 @@ test.describe('the data preview', () => {
 
   test('sorts by any column on the desktop, and moves with the keyboard', async ({ page }, info) => {
     test.skip(!isDesktop(info.project.name), 'desktop only: the phone sorts with a menu');
-    await page.goto('./#/data');
+    await page.goto('./#/codex');
     const first = page.locator('.system-table tbody th button').first();
     await expect(first).toHaveText('Sol');
     await page.getByRole('button', { name: 'From Sol' }).click();
@@ -83,13 +84,13 @@ test.describe('the data preview', () => {
 
   test('sorts with a menu on a phone', async ({ page }, info) => {
     test.skip(isDesktop(info.project.name), 'phone and tablet');
-    await page.goto('./#/data');
+    await page.goto('./#/codex');
     await page.getByLabel('Sort').selectOption('name');
     await expect(page.locator('.system-card .card-name').first()).toHaveText(/^\d|^A/);
   });
 
   test('never scrolls sideways', async ({ page }) => {
-    await page.goto('./#/data');
+    await page.goto('./#/codex');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
@@ -97,7 +98,7 @@ test.describe('the data preview', () => {
 
 test('a tablet switches to the desktop layout when a mouse is used', async ({ page }, info) => {
   test.skip(info.project.name !== 'tablet', 'tablet only');
-  await page.goto('./#/data');
+  await page.goto('./#/codex');
   await expect(page.locator('html')).toHaveAttribute('data-layout', 'phone');
   await page.mouse.move(200, 300);
   await expect(page.locator('html')).toHaveAttribute('data-layout', 'desktop');

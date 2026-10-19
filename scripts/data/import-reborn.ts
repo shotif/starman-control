@@ -104,7 +104,9 @@ function planet(p: Record<string, unknown>): SkyPlanet {
     name: p.displayName as string,
     hostId: p.hostId as string,
     status: p.status as SkyPlanet['status'],
-    ...(p.statusNote ? { statusNote: p.statusNote as string } : {}),
+    // Reborn's sky script (scripts/sky-process.ts) leaves the Encyclopaedia's word out of four notes
+    // ("the Encyclopaedia calls it ."): drop the empty clause rather than show it.
+    ...(p.statusNote ? { statusNote: (p.statusNote as string).replace('; the Encyclopaedia calls it .', '.') } : {}),
     controversial: p.controversial as boolean,
     source: { label: (p.sourceLabel as string | undefined) ?? 'NASA Exoplanet Archive', url: p.sourceUrl as string },
     asOfDate: p.asOfDate as string,

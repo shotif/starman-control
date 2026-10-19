@@ -16,8 +16,8 @@ export function Title({ buildId }: { buildId: string }) {
           Explore the neighbourhood
         </a>
         <span>
-          The real stars within 27 light-years and the old lanes between them. Not yet a game:{' '}
-          <a href="#/data">the data as a table</a>.
+          The real stars within 27 light-years, their worlds, and the old lanes between them. Not yet a game. Or read{' '}
+          <a href="#/codex">the codex</a>.
         </span>
       </p>
       <p class="build">

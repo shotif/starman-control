@@ -5,8 +5,9 @@
 redesigned around lane building; three details of it are open ([§13](#13-questions-for-the-owner)).
 Everything else follows the decisions and the scope in [../SCOPE.md](../SCOPE.md).
 
-**Progress:** increments 1 (data and simulation core) and 2 (the map) built 19 October 2026,
-on the recommendations for D-19a to D-19c; see [§12](#increments).
+**Progress:** increments 1 (data and simulation core), 2 (the map) and 3 (planets, detailed in
+[M1_PLANETS.md](M1_PLANETS.md)) built 19 October 2026, on the recommendations for D-19a to D-19c;
+see [§12](#increments).
 
 **Goal.** The first playable Starman Control: choose a faction, chart the real neighbourhood,
 build and relight lanes out from your home, survey the systems they reach, settle their planets,
@@ -204,7 +205,8 @@ planets are kept and say *Astronomers dispute this planet*, as in Reborn.
 | Brown dwarfs (L, T, Y) | none, or one or two small cold worlds |
 
 Generated planets keep clear of the known planets' orbits, and never contradict an observation.
-Giants get their largest moons as bodies of their own. Sol is entirely real.
+Giants get their largest moons as bodies of their own. Sol is entirely real. The rules in detail
+are in [M1_PLANETS.md](M1_PLANETS.md).
 
 ### What a body is, for play
 

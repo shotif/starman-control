@@ -76,3 +76,178 @@
   color: var(--text-dim);
   font-size: 0.9rem;
 }
+
+.star-light {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.system-panel .world-item {
+  padding: 0;
+}
+
+.system-panel .world-item.is-moon {
+  padding-left: 1.25rem;
+}
+
+.world-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  grid-template-areas:
+    "glyph name hab"
+    "glyph line hab";
+  align-items: center;
+  gap: 0 0.6rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.35rem 0.25rem;
+  border: 0;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.1);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.world-row:hover,
+.world-row:focus-visible {
+  background: rgba(92, 200, 255, 0.08);
+}
+
+.world-glyph {
+  grid-area: glyph;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8b8f99;
+}
+
+.world-glyph.kind-rocky {
+  background: radial-gradient(circle at 35% 35%, #c8b49a, #6d5a48);
+}
+
+.world-glyph.kind-super-earth {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle at 35% 35%, #b9c4a0, #556147);
+}
+
+.world-glyph.kind-mini-neptune {
+  background: radial-gradient(circle at 35% 35%, #a9d8e8, #3d6f86);
+}
+
+.world-glyph.kind-ice-giant {
+  width: 17px;
+  height: 17px;
+  background: radial-gradient(circle at 35% 35%, #bfe8f0, #3f7f9a);
+}
+
+.world-glyph.kind-gas-giant {
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 35% 35%, #f0d2a2, #8a6038);
+}
+
+.world-glyph.kind-dwarf,
+.world-glyph.kind-moon {
+  width: 9px;
+  height: 9px;
+  margin-left: 2px;
+  background: radial-gradient(circle at 35% 35%, #d8d8d8, #6b6b6b);
+}
+
+.world-glyph.kind-belt {
+  height: 4px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, #a49a8a 0 2px, transparent 2px 4px);
+}
+
+.world-name {
+  grid-area: name;
+  font-weight: 600;
+}
+
+.world-line {
+  grid-area: line;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Habitability: a word and a colour, never the colour alone */
+
+.hab {
+  grid-area: hab;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hab-comfortable {
+  color: #7fe7a3;
+}
+
+.hab-tolerable {
+  color: #c9e57c;
+}
+
+.hab-harsh {
+  color: #ffbf6b;
+}
+
+.hab-uninhabitable {
+  color: var(--text-dim);
+}
+
+.planet-panel header h2 {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-label);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+
+.back-link {
+  min-height: 44px;
+}
+
+.habitability {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid currentColor;
+  border-left-width: 3px;
+}
+
+.habitability p {
+  margin: 0.15rem 0;
+  color: var(--text);
+}
+
+.habitability .reasons {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.planet-panel .facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.planet-panel .facts dt {
+  color: var(--text-dim);
+}
+
+.planet-panel .facts dd {
+  margin: 0;
+}
+
+.planet-panel .note {
+  color: var(--text-dim);
+  font-size: 0.88rem;
+}

@@ -1,17 +1,20 @@
-// The data preview (M1 increment 1): the real systems and the old lanes before there is a map.
+// The codex (§10, light in M1): every system's real data and its sources, how the game estimates
+// what is not measured, and the data's licences. It began as increment 1's data preview.
 // Phone: cards, and a system opens as a bottom sheet. Desktop: a sortable table, and the selected
 // system fills an inspector beside it. Both show the same things (D-04).
 
 import { signal } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
-import type { Measured, SkyPlanet, SystemId } from '../../data/types.ts';
+import type { SystemId } from '../../data/types.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
+import { DWARF_SOURCE } from '../../sim/starLight.ts';
 import type { GameState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { layout } from '../layout.ts';
 import { Badge, FactionMark, FactionTag } from '../parts.tsx';
+import { SystemPanel } from '../system/SystemPanel.tsx';
 import { filterRows, type SortKey, type SystemRow, sortRows, systemRows } from './model.ts';
 import '../sheet.css';
 import './data.css';
@@ -33,6 +36,9 @@ export function DataPage({ world, game, buildId }: Props) {
   const rows = systemRows(world, game);
   const shown = sortRows(filterRows(rows, query.value, websOnly.value), sortKey.value, descending.value);
   const current = rows.find((r) => r.id === selected.value) ?? null;
+  const go = (id: SystemId) => {
+    selected.value = id;
+  };
   const desktop = layout.value === 'desktop';
 
   useEffect(() => {
@@ -60,15 +66,15 @@ export function DataPage({ world, game, buildId }: Props) {
   return (
     <div class={`data-page layout-${layout.value}${!desktop && current ? ' has-sheet' : ''}`}>
       <header class="data-header">
-        <a class="back" href="#/">
-          ← Title
+        <a class="back" href="#/map">
+          ← Map
         </a>
         <h1>
-          The neighbourhood <span>data preview</span>
+          Codex <span>the real neighbourhood</span>
         </h1>
         <p class="data-sub">
-          Increment 1 of milestone M1: the real sky and the old lanes, before the map. {formatDate(game.turn)}, all
-          three powers in play.
+          What astronomers know of every system within 27 light-years of the Sun, with its sources, and the old lanes as
+          they stand in {formatDate(game.turn)}.
         </p>
         <ul class="data-facts" aria-label="What the dataset holds">
           <li>
@@ -145,7 +151,7 @@ export function DataPage({ world, game, buildId }: Props) {
           <SystemTable rows={shown} />
           <aside class="inspector" aria-label="Selected system">
             {current ? (
-              <SystemDetail row={current} world={world} />
+              <SystemPanel world={world} game={game} id={current.id} onGo={go} realOnly />
             ) : (
               <p class="hint">Select a system to see its stars, planets and lanes. ↑ and ↓ move through the list.</p>
             )}
@@ -185,10 +191,12 @@ export function DataPage({ world, game, buildId }: Props) {
             </button>
           </div>
           <div class="sheet-body">
-            <SystemDetail row={current} world={world} />
+            <SystemPanel world={world} game={game} id={current.id} onGo={go} realOnly />
           </div>
         </div>
       )}
+
+      <Methods />
 
       <footer class="data-footer">
         Stars from Gaia DR3 and SIMBAD, planets from the NASA Exoplanet Archive and the Extrasolar Planets
@@ -327,105 +335,51 @@ function SystemCard({ row }: { row: SystemRow }) {
   );
 }
 
-function measured(m: Measured | undefined, digits = 2): string {
-  if (!m) return 'unknown';
-  const v = m.value.toFixed(digits);
-  return m.error !== undefined ? `${v} ± ${m.error.toFixed(digits)}` : v;
-}
-
-function PlanetItem({ p }: { p: SkyPlanet }) {
+function Methods() {
   return (
-    <li class="planet">
-      <div class="planet-name">
-        <a href={p.source.url} target="_blank" rel="noreferrer">
-          {p.name}
-        </a>{' '}
-        <Badge kind={p.status === 'confirmed' ? 'observed' : 'disputed'} />
-      </div>
-      <dl>
-        <dt>Orbit</dt>
-        <dd>{p.semiMajorAxisAu ? `${measured(p.semiMajorAxisAu, 3)} au` : 'unknown'}</dd>
-        <dt>{p.massEarth?.qualifier?.startsWith('minimum') ? 'Minimum mass' : 'Mass'}</dt>
-        <dd>{p.massEarth ? `${measured(p.massEarth)} Earths` : 'unknown'}</dd>
-        <dt>Radius</dt>
-        <dd>{p.radiusEarth ? `${measured(p.radiusEarth)} Earths` : 'unknown'}</dd>
-      </dl>
-      {p.statusNote && <p class="note">{p.statusNote}</p>}
-    </li>
-  );
-}
-
-function SystemDetail({ row, world }: { row: SystemRow; world: World }) {
-  const s = world.system(row.id).sky;
-  return (
-    <article class="system-detail">
-      <h2>{s.name}</h2>
-      <p class="detail-dist">
-        {s.distanceLy.toFixed(2)} ly from Sol
-        {s.distanceErrorLy !== undefined && s.distanceErrorLy > 0 && ` ± ${s.distanceErrorLy.toFixed(3)}`}{' '}
-        <Badge kind="observed" />
+    <section class="codex-methods" aria-label="How the game estimates">
+      <h2>How the game works out what is not measured</h2>
+      <ul>
+        <li>
+          <b>A star’s light and temperature</b> <Badge kind="estimated" /> are read from the mean sequence of dwarf
+          stars for its catalogued type,{' '}
+          <a href={DWARF_SOURCE.url} target="_blank" rel="noreferrer">
+            {DWARF_SOURCE.label}
+          </a>
+          . White dwarfs are worked out from the temperature their type gives and a radius of 0.012 of the Sun’s. Stars
+          whose type is not catalogued are taken as a typical red dwarf.
+        </li>
+        <li>
+          <b>A planet’s equilibrium temperature</b> <Badge kind="estimated" /> follows from its orbit and its star’s
+          light: 255 K × L<sup>¼</sup> ÷ √(orbit in au), assuming it reflects as much light as Earth does.
+        </li>
+        <li>
+          <b>Everything else about a planet</b> nobody has measured (its air, water and riches), and every planet, moon
+          and belt astronomers have not found, is made by the game from the star’s real type and the game’s seed, and
+          marked <Badge kind="fiction" />. It never contradicts what is observed.
+        </li>
+        <li>
+          <b>The lanes, the powers and the Lapse</b> <Badge kind="fiction" /> are the game’s story.
+        </li>
+      </ul>
+      <h2>Sources and licences</h2>
+      <p>
+        Positions and types: Gaia DR3 and SIMBAD. Planets: the NASA Exoplanet Archive and the Extrasolar Planets
+        Encyclopaedia, with three from the Open Exoplanet Catalogue (MIT licence). Sol: NASA’s fact sheets. Two stars’
+        values (Procyon B, Ross 614 B) come from the HYG database v4.0, shared under CC BY-SA 4.0. All as gathered by{' '}
+        <a href="https://github.com/shotif/starman-reborn" target="_blank" rel="noreferrer">
+          Starman Reborn
+        </a>
+        ’s sky snapshot of 30 September 2026; see{' '}
+        <a
+          href="https://github.com/shotif/starman-control/blob/main/src/data/NOTICE.md"
+          target="_blank"
+          rel="noreferrer"
+        >
+          the data notice
+        </a>
+        .
       </p>
-
-      <h3>Stars</h3>
-      <ul class="stars">
-        {s.stars.map((st) => (
-          <li key={st.id}>
-            <span class="star-dot" style={{ background: st.colorHex }} aria-hidden="true" />
-            <b>{st.name}</b> {st.spectralType}
-            {st.flareVariable && <span class="flare-tag"> · flare star ({st.flareVariable})</span>}{' '}
-            <a href={st.astrometrySource.url} target="_blank" rel="noreferrer">
-              {st.astrometrySource.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      <h3>Known planets</h3>
-      {s.planets.length > 0 ? (
-        <ul class="planets">
-          {s.planets.map((p) => (
-            <PlanetItem key={p.id} p={p} />
-          ))}
-        </ul>
-      ) : (
-        <p class="none">
-          None known. Every other planet here will be generated when the planets arrive, and labelled{' '}
-          <Badge kind="fiction" />.
-        </p>
-      )}
-
-      {s.belts.length > 0 && (
-        <>
-          <h3>Belts and discs</h3>
-          <ul class="belts">
-            {s.belts.map((b) => (
-              <li key={b.id}>
-                <b>{b.name}</b> <Badge kind="observed" /> {b.note}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      <h3>
-        Old lanes <Badge kind="fiction" />
-      </h3>
-      <ul class="lanes">
-        {row.lanes.map((l) => (
-          <li key={l.id} class={l.owner ? 'lane-open' : 'lane-dark'}>
-            <button
-              type="button"
-              class="link"
-              onClick={() => {
-                selected.value = l.to;
-              }}
-            >
-              {l.toName}
-            </button>{' '}
-            {formatLy(l.lengthDeci)} · {l.owner ? <FactionTag faction={l.owner} /> : <span class="dark">dark</span>}
-          </li>
-        ))}
-      </ul>
-    </article>
+    </section>
   );
 }

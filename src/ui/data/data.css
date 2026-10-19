@@ -395,3 +395,22 @@
 .data-page.has-sheet .data-footer {
   margin-bottom: min(55dvh, 520px);
 }
+
+.codex-methods {
+  max-width: 60rem;
+  margin-top: 2rem;
+  color: var(--text-muted);
+}
+
+.codex-methods h2 {
+  margin: 1.25rem 0 0.5rem;
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.codex-methods li {
+  margin: 0.5rem 0;
+}

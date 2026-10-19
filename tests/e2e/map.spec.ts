@@ -222,3 +222,28 @@ test('shows a system beside the map when a phone is turned sideways', async ({ p
   await sheet.getByRole('button', { name: 'Close' }).tap();
   await expect(sheet).toHaveCount(0);
 });
+
+test('opens a world from its system, with where each fact comes from', async ({ page }, info) => {
+  const desktop = isDesktop(info.project.name);
+  /** The system's panel: the inspector on a desktop, its own sheet on a phone. */
+  const panelOf = (system: string) =>
+    desktop ? page.getByRole('complementary', { name: 'Selected system' }) : page.getByRole('dialog', { name: system });
+  await openMap(page);
+  await pressStar(page, 'sol', info.project.name);
+  let panel = panelOf('Sol');
+  if (!desktop) await panel.getByRole('button', { name: 'Show more' }).tap();
+  await press(panel.getByRole('button', { name: /^Earth/ }), info.project.name);
+  await expect(panel.getByRole('heading', { name: 'Earth' })).toBeVisible();
+  await expect(panel.getByText('For humans: Comfortable')).toBeVisible();
+  await expect(panel.getByText('Observed').first()).toBeVisible();
+  await press(panel.getByRole('button', { name: '← Sol' }), info.project.name);
+  // A known planet elsewhere: measured values, and the parts that are the game's own.
+  await press(panel.getByRole('button', { name: 'Alpha Centauri' }), info.project.name);
+  panel = panelOf('Alpha Centauri');
+  await expect(panel.getByRole('heading', { name: 'Alpha Centauri' })).toBeVisible();
+  if (!desktop) await panel.getByRole('button', { name: 'Show more' }).tap();
+  await press(panel.getByRole('button', { name: /Proxima Centauri b/ }), info.project.name);
+  await expect(panel.getByText('1.055 ± 0.055')).toBeVisible();
+  await expect(panel.getByText('exposed: its star is a flare star')).toBeVisible();
+  await expect(panel.getByText('Fiction').first()).toBeVisible();
+});
