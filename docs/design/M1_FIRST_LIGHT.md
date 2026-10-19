@@ -10,7 +10,9 @@ Everything else follows the decisions and the scope in [../SCOPE.md](../SCOPE.md
 5 (colonies, detailed in [M1_COLONIES.md](M1_COLONIES.md)) built 19 October 2026, on the
 recommendations for D-19a to D-19c, which the owner then confirmed; 6 (lanes, research and
 anomalies, detailed in [M1_LANES_RESEARCH.md](M1_LANES_RESEARCH.md)) and 7 (the system in 3D,
-detailed in [M1_SYSTEM_VIEW.md](M1_SYSTEM_VIEW.md)) the same day; see [§12](#increments).
+detailed in [M1_SYSTEM_VIEW.md](M1_SYSTEM_VIEW.md)) and 8 (the proof, detailed in
+[M1_PROOF.md](M1_PROOF.md)) the same day: M1 is built, waiting only on the owner's try on a real
+phone; see [§12](#increments).
 
 **Goal.** The first playable Starman Control: choose a faction, chart the real neighbourhood,
 build and relight lanes out from your home, survey the systems they reach, settle their planets,

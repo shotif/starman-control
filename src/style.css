@@ -26,6 +26,13 @@ a {
   color: var(--accent);
 }
 
+html {
+  /* Text size setting (M1_PROOF.md §1): every size is in rem. */
+  font-size: calc(16px * var(--text-scale, 1));
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 html,
 body {
   margin: 0;
@@ -33,6 +40,51 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-read);
+  /* An app, not a page: no pull-to-refresh, no tap flash, no long-press callouts. */
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Only what is meant to be copied can be selected. */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input,
+textarea,
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Scrollbars in the console's colours. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(126, 170, 255, 0.35) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(126, 170, 255, 0.3);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.reduced-motion *,
+html.reduced-motion *::before,
+html.reduced-motion *::after {
+  animation-duration: 0.01ms;
+  animation-iteration-count: 1;
+  transition-duration: 0.01ms;
 }
 
 body {

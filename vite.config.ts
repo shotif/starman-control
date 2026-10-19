@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { offlineFilesPlugin } from './scripts/app/offlineFiles.ts';
 
 export default defineConfig({
   // Relative asset paths so the static build works from any sub-path
@@ -14,7 +15,10 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: true,
+    // For the budgets (scripts/app/budgets.ts): which files each screen loads.
+    manifest: true,
   },
+  plugins: [offlineFilesPlugin()],
   server: { port: 5173 },
   preview: { port: 4173 },
 });

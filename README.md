@@ -24,7 +24,10 @@ labelled fiction), found colonies and outposts on them, grow your people, gather
 volatiles and fusion fuel, build ships and projects through each colony's queue, and build new
 lanes or relight the dark ones, spend research points on a research tree, investigate the
 anomalies your surveys find, and look inside any system in 3D, its stars and worlds drawn as in
-Starman Reborn. The proof of M1 (settings, a soak test, a real phone, the budgets) comes next.
+Starman Reborn. Saves (three slots, export and import) and settings (text size, reduced motion,
+quality) are in, and the game can be installed to a phone's home screen or a desktop and played
+offline. M1 is built; the visual overhaul of [VISUAL_DIRECTION.md](docs/design/VISUAL_DIRECTION.md)
+comes next.
 
 ## Design documents
 

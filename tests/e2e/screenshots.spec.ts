@@ -4,11 +4,16 @@ import { test } from '@playwright/test';
  * Screenshots of every screen at the test sizes, for review (`npm run screenshots`): from a 320 px
  * phone to a 1440 px desktop. Saved to test-results/screens/.
  */
-const SIZES = [
-  { name: 'phone-320', width: 320, height: 640, touch: true },
+const SIZES: { name: string; width: number; height: number; touch: boolean; textScale?: number }[] = [
+  // Starman Reborn's nine test sizes (tests/e2e/screenshots.spec.ts at ba4ef73), and a 1280 desktop.
+  { name: 'phone-360', width: 360, height: 640, touch: true },
+  { name: 'phone-360-landscape', width: 640, height: 360, touch: true },
   { name: 'phone-390', width: 390, height: 844, touch: true },
   { name: 'phone-landscape', width: 844, height: 390, touch: true },
-  { name: 'tablet', width: 820, height: 1180, touch: true },
+  { name: 'tablet', width: 768, height: 1024, touch: true },
+  { name: 'tablet-landscape', width: 1024, height: 768, touch: true },
+  { name: 'phone-411-text-130', width: 411, height: 741, touch: true, textScale: 1.3 },
+  { name: 'phone-316-zoom-130', width: 316, height: 570, touch: true },
   { name: 'desktop-1280', width: 1280, height: 800, touch: false },
   { name: 'desktop-1440', width: 1440, height: 900, touch: false },
 ];
@@ -25,6 +30,8 @@ const SCREENS: {
   inside?: string;
 }[] = [
   { name: 'title', path: './' },
+  { name: 'settings', path: './#/settings' },
+  { name: 'saves', path: './#/saves' },
   { name: 'data', path: './#/data' },
   { name: 'data-system', path: './#/data', select: 'Tau Ceti' },
   { name: 'map', path: './?test#/map' },
@@ -43,6 +50,10 @@ for (const size of SIZES) {
     test.use({ viewport: { width: size.width, height: size.height }, hasTouch: size.touch, isMobile: size.touch });
     for (const screen of SCREENS) {
       test(screen.name, async ({ page }) => {
+        if (size.textScale)
+          await page.addInitScript((t) => {
+            localStorage.setItem('starman-control:settings', JSON.stringify({ textScale: t }));
+          }, size.textScale);
         await page.goto(screen.path);
         if (screen.path.includes('#/map')) await page.locator('[data-ready="1"]').waitFor({ timeout: 30_000 });
         const press = async (l: ReturnType<typeof page.locator>) => (size.touch ? l.tap() : l.click());

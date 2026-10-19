@@ -491,7 +491,18 @@ describe('a scripted player that grows', () => {
       expect(powerOf(first.state, f).investigated.length).toBeGreaterThanOrEqual(1);
       const again = grow(f, 42, 50, first.log);
       expect(again.state).toEqual(first.state);
-      expect(parseSave(world, exportSave(first.state).json)).toEqual(first.state);
+      const json = exportSave(first.state).json;
+      expect(parseSave(world, json)).toEqual(first.state);
+      // The budgets (M1_PROOF.md §4): a save after 50 turns under 200 KB, a turn under 200 ms.
+      expect(json.length).toBeLessThan(200 * 1024);
+      const times: number[] = [];
+      for (let i = 0; i < 5; i++) {
+        const t0 = performance.now();
+        turn(first.state);
+        times.push(performance.now() - t0);
+      }
+      times.sort((a, b) => a - b);
+      expect(times[2]).toBeLessThan(200);
     });
   }
 });

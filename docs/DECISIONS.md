@@ -31,6 +31,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-23 | Art direction and image model, from the style test | Decided 2026-10-19 | the draft style, with `gemini-nano-banana-2.1` (Nano Banana) for everything |
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
+| D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -298,6 +299,22 @@ system *screen* (a panel of facts) but no 3D view, so it is now designed in
 lanes and research; compressed and labelled "not to scale"; Reborn's shaders, with plain spheres
 as the low-quality setting.
 
+### D-26 · Visual direction — **Decided (owner's direction)**
+
+On 19 October 2026 the owner asked for the game to be "visually appealing and sexy", not to "look
+like a browser game", for inspiration from other games, and for at least three increments chosen
+by Claude after M1's proof:
+
+> This game has to be visually appealing and sexy. It should not look like a browser game, which
+> is, by the way, what it looks like now. Use the internet and use other games for inspiration.
+> Make it visually very nice and engaging for the players.
+
+Claude's answer is [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md): the interface as **Control's
+console**, a holographic command table (D-11), luminous and animated, with the real Milky Way in
+the sky, faces and emblems for the powers from the art pipeline (D-23), sound, and an installable
+full-screen app; built as increments 9 to 11 after the proof (8). Inspiration is taken as
+technique only, never names or art from other games.
+
 ## Round 2: needed later
 
 | ID | Question | Needed by | Recommendation in brief |
@@ -347,5 +364,7 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-19 | An anomaly's progress towards a technology stops one point short of finishing it | the technology is still researched in its place in the tree, after what it needs |
 | 2026-10-19 | Choosing where a ship goes frames its system and every star it can reach above the bars | on a phone, a neighbour could hide under the destination bar |
 | 2026-10-19 | The 3D system view (increment 7) follows [M1_SYSTEM_VIEW.md](design/M1_SYSTEM_VIEW.md) and D-25: entered with **View in 3D** or **V**, left with **← Neighbourhood** or Esc; it borrows the map's renderer, and Reborn's art is copied into `src/render/art/` with its lint rule against `!` relaxed there only | one WebGL context on a phone; copied code stays as Reborn wrote it |
+| 2026-10-19 | The proof (increment 8) follows [M1_PROOF.md](design/M1_PROOF.md): settings kept in `localStorage`, the saves screen, an installable full-screen app with Reborn's service worker, and the budgets (title 40 KB, map in a game 900 KB, a 50-turn save 200 KB, a 50-turn turn 200 ms) failing `npm run check` | M1 §12's budgets, measured on every build |
+| 2026-10-19 | The app's icon: the Sun under Control's ring, one lane to each power in its colour and shape (`public/icon.svg`) | drawn as vector art in the game's own vocabulary; no generated picture needed |
 | 2026-10-19 | A new colony grows in the turn it is founded; a survey station surveys from the turn after it is finished; a mine yields in the turn it is finished | follows the order of the turn's steps (arrivals, production, growth, yields) without special cases |
 | 2026-10-19 | Industry is kept (up to 60) only while nothing is queued; while an item waits for resources, industry keeps building up behind it | an empty queue is the player's choice and is capped; a waiting item is not, so nothing is lost while metals arrive |

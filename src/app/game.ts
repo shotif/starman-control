@@ -6,8 +6,9 @@ import type { FactionId } from '../content/factions.ts';
 import { needsOf } from '../sim/needs.ts';
 import { applyOrder, type Order } from '../sim/orders.ts';
 import { randomSeed } from '../sim/rng.ts';
+import { exportSave, parseSave } from '../sim/save.ts';
 import { type GameState, newGame, playerPower } from '../sim/state.ts';
-import { SaveStore } from './saves.ts';
+import { SaveStore, type SaveSummary, type SlotInfo } from './saves.ts';
 import { detectBackend } from './storage.ts';
 import { endTurn } from './turns.ts';
 import { world } from './world.ts';
@@ -101,4 +102,48 @@ export async function leaveGame(): Promise<void> {
   const g = game.value;
   if (g) await (await saves()).autosave(g, new Date(), false);
   game.value = null;
+}
+
+// ---------------------------------------------------------------- the saves screen (M1_PROOF.md §2)
+
+export async function listSaves(): Promise<{ auto: SaveSummary | null; slots: SlotInfo[] }> {
+  const store = await saves();
+  return { auto: await store.autoSummary(), slots: await store.listSlots() };
+}
+
+/** Saves the game being played to a slot. */
+export async function saveToSlot(slot: number): Promise<void> {
+  const g = game.value;
+  if (g) await (await saves()).saveSlot(slot, g);
+}
+
+/** Loads a slot as the game being played (and the autosave). Throws SaveError when it cannot. */
+export async function loadFromSlot(slot: number): Promise<void> {
+  const store = await saves();
+  const g = await store.loadSlot(slot);
+  game.value = g;
+  freshReport.value = false;
+  await store.autosave(g);
+}
+
+export async function clearSlot(slot: number): Promise<void> {
+  await (await saves()).clearSlot(slot);
+}
+
+/** A file of the autosave or a slot, to keep or move. Null when there is nothing there. */
+export async function exportFile(slot: number | null): Promise<{ name: string; json: string } | null> {
+  const store = await saves();
+  if (slot === null) {
+    const c = game.value ? { game: game.value } : await store.continueGame();
+    return c ? exportSave(c.game) : null;
+  }
+  return exportSave(await store.loadSlot(slot), new Date(), slot);
+}
+
+/** Reads an exported file as the game being played (and the autosave). Throws SaveError when it cannot. */
+export async function importFile(text: string): Promise<void> {
+  const g = parseSave(world, text);
+  game.value = g;
+  freshReport.value = false;
+  await (await saves()).autosave(g);
 }

@@ -38,6 +38,12 @@ export function Title({ buildId }: { buildId: string }) {
         <a class="button button-quiet" href="#/codex">
           Codex
         </a>
+        <a class="button button-quiet" href="#/saves">
+          Saves
+        </a>
+        <a class="button button-quiet" href="#/settings">
+          Settings
+        </a>
       </nav>
       <p class="status">In development: milestone M1, First light. The first turns are playable.</p>
       <p class="build">

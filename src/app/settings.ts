@@ -1,0 +1,75 @@
+// Settings (M1_PROOF.md §1), kept on the device as Starman Reborn keeps them (src/app/settings.ts
+// at ba4ef73, D-10, in spirit): text size, reduced motion and quality. They are read at start-up,
+// before anything is drawn, so they live in localStorage rather than the save store.
+
+import { signal } from '@preact/signals';
+
+export const TEXT_SCALES = [1, 1.15, 1.3, 1.5] as const;
+export type TextScale = (typeof TEXT_SCALES)[number];
+export type MotionSetting = 'system' | 'reduce' | 'full';
+export type QualitySetting = 'auto' | 'low' | 'medium' | 'high';
+export type Quality = 'low' | 'medium' | 'high';
+
+export interface Settings {
+  textScale: TextScale;
+  motion: MotionSetting;
+  quality: QualitySetting;
+}
+
+const KEY = 'starman-control:settings';
+export const DEFAULT_SETTINGS: Settings = { textScale: 1, motion: 'system', quality: 'auto' };
+
+/** Reads stored settings, keeping only values the game knows. */
+export function parseSettings(raw: unknown): Settings {
+  const s = { ...DEFAULT_SETTINGS };
+  if (typeof raw !== 'object' || raw === null) return s;
+  const r = raw as Record<string, unknown>;
+  if (TEXT_SCALES.includes(r.textScale as TextScale)) s.textScale = r.textScale as TextScale;
+  if (r.motion === 'system' || r.motion === 'reduce' || r.motion === 'full') s.motion = r.motion;
+  if (r.quality === 'auto' || r.quality === 'low' || r.quality === 'medium' || r.quality === 'high')
+    s.quality = r.quality;
+  return s;
+}
+
+function load(): Settings {
+  try {
+    return parseSettings(JSON.parse(localStorage.getItem(KEY) ?? 'null'));
+  } catch {
+    return { ...DEFAULT_SETTINGS };
+  }
+}
+
+export const settings = signal<Settings>(typeof localStorage === 'undefined' ? { ...DEFAULT_SETTINGS } : load());
+
+export function updateSettings(patch: Partial<Settings>): void {
+  settings.value = { ...settings.value, ...patch };
+  try {
+    localStorage.setItem(KEY, JSON.stringify(settings.value));
+  } catch {
+    // Private browsing may refuse; the settings still hold for this visit.
+  }
+  applySettings();
+}
+
+/** Whether motion should be reduced: the setting, or the device's own when it says "as the device". */
+export function reducedMotion(s: Settings = settings.value): boolean {
+  if (s.motion !== 'system') return s.motion === 'reduce';
+  return typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/** The quality to draw at: the setting, or for "automatic" low on small, slow devices, else medium. */
+export function quality(s: Settings = settings.value): Quality {
+  if (s.quality !== 'auto') return s.quality;
+  if (typeof navigator === 'undefined') return 'medium';
+  const cores = navigator.hardwareConcurrency ?? 8;
+  const memory = (navigator as { deviceMemory?: number }).deviceMemory ?? 8;
+  return cores <= 4 || memory <= 3 ? 'low' : 'medium';
+}
+
+/** Puts the settings on the page: the text size on the root, and a class for reduced motion. */
+export function applySettings(): void {
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  root.style.setProperty('--text-scale', String(settings.value.textScale));
+  root.classList.toggle('reduced-motion', reducedMotion());
+}

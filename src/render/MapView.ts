@@ -597,10 +597,14 @@ export class MapView {
   private measureLabels(): void {
     if (!this.measure) this.measure = document.createElement('canvas').getContext('2d');
     const ctx = this.measure;
-    const font = getComputedStyle(this.labels[0]?.el ?? this.container).font || '600 13px sans-serif';
+    const style = getComputedStyle(this.labels[0]?.el ?? this.container);
+    const font = style.font || '600 13px sans-serif';
+    // Labels grow with the text size setting.
+    const height = Math.round((Number.parseFloat(style.fontSize) || 13) * 1.385);
     this.content.systems.forEach((s, i) => {
       const label = this.labels[i];
       if (!label) return;
+      label.box.height = height;
       const text = label.el.textContent ?? s.name;
       if (ctx) {
         ctx.font = font;
@@ -780,7 +784,7 @@ export class MapView {
   private resize(): void {
     const w = Math.max(1, this.container.clientWidth);
     const h = Math.max(1, this.container.clientHeight);
-    this.dpr = Math.min(2, window.devicePixelRatio || 1);
+    this.dpr = Math.min(this.maxDpr, window.devicePixelRatio || 1);
     if (w === this.width && h === this.height && this.renderer.getPixelRatio() === this.dpr) return;
     const centred = this.stage.w === this.width && this.stage.h === this.height;
     const first = this.width === 1 && this.height === 1;
@@ -876,6 +880,19 @@ export class MapView {
   // ---------------------------------------------------------------- the system view
 
   private suspended = false;
+  /** Sharpest pixel ratio drawn: lower on the low quality setting. */
+  private maxDpr = 2;
+
+  /** The settings that change how the map draws (M1_PROOF.md §1). */
+  configure(opts: { reducedMotion: boolean; quality: 'low' | 'medium' | 'high' }): void {
+    this.controller.reducedMotion = opts.reducedMotion;
+    const dpr = opts.quality === 'low' ? 1 : 2;
+    if (dpr !== this.maxDpr) {
+      this.maxDpr = dpr;
+      this.resize();
+    }
+    this.invalidate();
+  }
 
   /** The renderer, lent to the system view while the map is paused. */
   get gl(): THREE.WebGLRenderer {

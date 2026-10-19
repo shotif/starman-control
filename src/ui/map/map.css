@@ -39,14 +39,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 18px;
+  height: 1.385em;
   padding: 0 5px;
   color: var(--text-muted);
   font-family: var(--font-label);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.03em;
-  line-height: 18px;
+  line-height: 1.385em;
   text-shadow:
     0 0 3px #000,
     0 0 6px #000;

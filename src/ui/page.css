@@ -1,0 +1,109 @@
+/* Full screens other than the map: settings and saves (M1_PROOF.md). */
+
+.page {
+  max-width: 760px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top)) var(--gutter-right) max(24px, env(safe-area-inset-bottom)) var(--gutter);
+}
+
+.page h1 {
+  margin: 0.5rem 0 1rem;
+  font-family: var(--font-label);
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.page h2 {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-label);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+
+.page .back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-label);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.page-section {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  clip-path: var(--cut);
+}
+
+.page-section p {
+  margin: 0.25rem 0 0.6rem;
+  color: var(--text-muted);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice {
+  min-width: 64px;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--panel-border);
+  background: rgba(9, 15, 28, 0.6);
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.choice[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgba(92, 200, 255, 0.16);
+  color: var(--text);
+  box-shadow: 0 0 12px rgba(92, 200, 255, 0.25) inset;
+}
+
+.save-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.save-row header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.save-what {
+  color: var(--text);
+}
+
+.save-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.save-note {
+  color: var(--warm);
+}

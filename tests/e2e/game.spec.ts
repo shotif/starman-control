@@ -318,3 +318,102 @@ test.describe('anomalies', () => {
     await expect(page.getByRole('dialog', { name: 'Report' })).toContainText('20 research points.');
   });
 });
+
+/** Opens the menu (a sheet on a phone, a popover on a desktop) and follows one of its links. */
+async function fromMenu(page: Page, item: string, project: string) {
+  await press(page.getByRole('button', { name: 'Menu', exact: true }), project);
+  await press(page.getByRole('link', { name: item, exact: true }), project);
+}
+
+test.describe('the M1 journey', () => {
+  test('survey, settle and research, end five turns, save to a slot, reload, and find the game as it was', async ({
+    page,
+  }, info) => {
+    const project = info.project.name;
+    await newGame(page, 'Lead the Transit Authority', project, '42');
+    // Survey: Petrel to Alpha Centauri.
+    await chooseShip(page, 'Petrel', project);
+    if (isDesktop(project)) {
+      await page.keyboard.press('m');
+      const ac = await starAt(page, 'alpha-centauri');
+      if (!ac) throw new Error('Alpha Centauri is off screen');
+      await page.mouse.click(ac.x, ac.y);
+    } else {
+      await page.getByRole('button', { name: 'Move', exact: true }).tap();
+      const ac = await starAt(page, 'alpha-centauri');
+      if (!ac) throw new Error('Alpha Centauri is off screen');
+      await page.touchscreen.tap(ac.x, ac.y);
+    }
+    await press(page.getByRole('button', { name: 'Confirm' }), project);
+    // Settle: an outpost on Mars.
+    await chooseShip(page, 'Redoubt', project);
+    await press(selection(page, project, 'Redoubt').getByRole('button', { name: /^Mars / }), project);
+    // Research: Deep survey.
+    if (isDesktop(project)) await page.keyboard.press('t');
+    else await page.getByRole('button', { name: 'Research', exact: true }).tap();
+    await press(page.getByRole('button', { name: 'Research Deep survey now' }), project);
+    if (isDesktop(project)) await page.keyboard.press('Escape');
+    else await page.getByRole('button', { name: 'Close' }).first().tap();
+    for (let i = 0; i < 5; i++) await endTurn(page, project);
+    await expect(page.locator('.map-date')).toHaveText('Q2 2177');
+    if (!isDesktop(project)) await page.getByRole('button', { name: 'Close' }).first().tap();
+    await fromMenu(page, 'Saves', project);
+    const slot = page.getByRole('region', { name: 'Slot 1' });
+    await press(slot.getByRole('button', { name: 'Save here' }), project);
+    await expect(page.getByRole('status')).toHaveText('Saved to slot 1.');
+    await expect(slot).toContainText('Sol Transit Authority · Q2 2177');
+    // A new visit: the slot loads the game as it was.
+    await page.goto('./?test#/saves');
+    await press(page.getByRole('region', { name: 'Slot 1' }).getByRole('button', { name: 'Load' }), project);
+    await expect(page.getByTestId('map')).toHaveAttribute('data-ready', '1', { timeout: 30_000 });
+    await expect(page.locator('.map-date')).toHaveText('Q2 2177');
+    const empire = await openEmpire(page, project);
+    await expect(empire.getByRole('tab', { name: 'Outposts 1' })).toBeVisible();
+    if (isDesktop(project)) await page.keyboard.press('Escape');
+    else await page.getByRole('button', { name: 'Close' }).first().tap();
+    if (isDesktop(project)) await page.keyboard.press('t');
+    else await page.getByRole('button', { name: 'Research', exact: true }).tap();
+    await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText(
+      'Deep survey',
+    );
+    await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText('25 of 30');
+  });
+
+  test('keeps the settings, and the text grows with them', async ({ page }, info) => {
+    const project = info.project.name;
+    await page.goto('./?test#/settings');
+    await press(page.getByRole('button', { name: '130%' }), project);
+    await press(page.getByRole('button', { name: 'Low', exact: true }), project);
+    const size = () => page.evaluate(() => getComputedStyle(document.documentElement).fontSize);
+    expect(await size()).toBe('20.8px');
+    await page.reload();
+    expect(await size()).toBe('20.8px');
+    await expect(page.getByRole('button', { name: 'Low', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible();
+  });
+});
+
+test.describe('an app, not a tab', () => {
+  test('can be installed, and plays offline after one visit', async ({ page, context }, info) => {
+    test.skip(!isDesktop(info.project.name), 'once is enough');
+    const manifest = await page.request.get('./manifest.webmanifest');
+    expect((await manifest.json()).display).toBe('fullscreen');
+    // Without ?test, so the service worker is kept.
+    await page.goto('./');
+    await expect(page.getByRole('heading', { name: /Starman/ })).toBeVisible();
+    await expect
+      .poll(() => page.evaluate(async () => (await caches.keys()).length), { timeout: 20_000 })
+      .toBeGreaterThan(0);
+    await expect
+      .poll(() => page.evaluate(async () => (await (await caches.open('starman-control-v1')).keys()).length), {
+        timeout: 20_000,
+      })
+      .toBeGreaterThan(5);
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.getByRole('heading', { name: /Starman/ })).toBeVisible();
+    await page.goto('./#/map');
+    await expect(page.getByTestId('map')).toHaveAttribute('data-ready', '1', { timeout: 30_000 });
+    await context.setOffline(false);
+  });
+});

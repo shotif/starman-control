@@ -81,6 +81,16 @@ export class SaveStore {
     return { ...readEnvelope(this.world, backup), fromBackup: true };
   }
 
+  /** What the autosave holds: null when there is none, or when it cannot be read. */
+  async autoSummary(): Promise<SaveSummary | null> {
+    try {
+      const c = await this.continueGame();
+      return c ? summarize(c.game, c.savedAt) : null;
+    } catch {
+      return null;
+    }
+  }
+
   async listSlots(): Promise<SlotInfo[]> {
     const out: SlotInfo[] = [];
     for (let slot = 1; slot <= SLOT_COUNT; slot++) {

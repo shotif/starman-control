@@ -11,6 +11,7 @@
 
 import { type ComponentChildren, Fragment } from 'preact';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { quality, reducedMotion, settings } from '../../app/settings.ts';
 import { ANOMALIES } from '../../content/anomalies.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { SHIPS } from '../../content/ships.ts';
@@ -276,6 +277,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     };
   }, [world, onMapSelect, go, onCommand]);
   const [ready, setReady] = useState(0);
+  // The settings that change how the map draws (M1_PROOF.md §1).
+  const look = settings.value;
+  useEffect(() => {
+    view.current?.configure({ reducedMotion: reducedMotion(look), quality: quality(look) });
+  }, [look, ready]);
 
   // The system in 3D (M1_SYSTEM_VIEW.md): it borrows the map's renderer while it is open.
   const sceneRef = useRef<SystemScene | null>(null);
@@ -317,7 +323,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               scene?.focus(id);
             },
           },
-          { reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches, quality: 'medium' },
+          { reducedMotion: reducedMotion(), quality: quality() },
         );
         sceneRef.current = scene;
         scene.setSelected(selectedBody.value);
@@ -848,6 +854,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
               Legend
             </button>
+            <a class="button button-quiet" href="#/saves">
+              Saves
+            </a>
+            <a class="button button-quiet" href="#/settings">
+              Settings
+            </a>
             <a class="button button-quiet" href="#/codex">
               Codex
             </a>
@@ -989,6 +1001,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
                   Legend
                 </button>
+                <a class="button button-quiet" href="#/saves">
+                  Saves
+                </a>
+                <a class="button button-quiet" href="#/settings">
+                  Settings
+                </a>
                 <a class="button button-quiet" href="#/codex">
                   Codex
                 </a>

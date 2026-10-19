@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { createAsteroidField, createDustRing } from './art/asteroids.ts';
-import { createPlanet, type PlanetArt } from './art/planets.ts';
+import { createPlanet, type PlanetStyle } from './art/planets.ts';
 import { createStar, type StarArt } from './art/stars.ts';
 import type { ArtContext, ArtObject } from './art/types.ts';
 import { byQuality } from './art/util.ts';
@@ -65,7 +65,7 @@ export class SystemScene {
   private readonly art: ArtObject[] = [];
   /** Objects made here rather than by the art builders, freed on dispose. */
   private readonly own: (THREE.Mesh | THREE.Line)[] = [];
-  private readonly planets = new Map<string, { art: PlanetArt; moonOrbit: THREE.Object3D | null }>();
+  private readonly planets = new Map<string, { art: ArtObject; moonOrbit: THREE.Object3D | null }>();
   private readonly things: Thing[] = [];
   private readonly order: number[] = [];
   private readonly placed: number[] = [];
@@ -201,19 +201,21 @@ export class SystemScene {
     for (const b of layout.bodies) {
       const host = starAt.get(b.star) ?? [0, 0, 0];
       const art = this.add(
-        createPlanet(
-          {
-            radius: b.radius,
-            style: b.style,
-            seed: hashSeed(b.id),
-            lightPosition: new THREE.Vector3(...host),
-            lightColor: layout.stars.find((s) => s.id === b.star)?.colour ?? '#ffffff',
-            ...(b.rings ? { rings: b.rings } : {}),
-            tilt: b.tilt,
-            spinSpeed: this.ctx.reducedMotion ? 0 : 0.08,
-          },
-          this.ctx,
-        ),
+        this.ctx.quality === 'low'
+          ? plainPlanet(b.radius, b.style)
+          : createPlanet(
+              {
+                radius: b.radius,
+                style: b.style,
+                seed: hashSeed(b.id),
+                lightPosition: new THREE.Vector3(...host),
+                lightColor: layout.stars.find((s) => s.id === b.star)?.colour ?? '#ffffff',
+                ...(b.rings ? { rings: b.rings } : {}),
+                tilt: b.tilt,
+                spinSpeed: this.ctx.reducedMotion ? 0 : 0.08,
+              },
+              this.ctx,
+            ),
       );
       const orbit = circle(b.orbit, orbitMaterial);
       let moonOrbit: THREE.Object3D | null = null;
@@ -284,8 +286,9 @@ export class SystemScene {
     el.hidden = true;
     this.labelLayer.appendChild(el);
     const box = createLabelBox();
-    box.height = 18;
-    box.width = (info?.text ?? id).length * 7 + 12;
+    const size = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    box.height = Math.round(size * 0.8125 * 1.385);
+    box.width = Math.round((info?.text ?? id).length * size * 0.44 + 12);
     this.things.push({ id, pos, radius, priority, label: el, box, point: createScreenPoint() });
   }
 
@@ -553,4 +556,40 @@ function hashSeed(text: string): number {
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
   return (h >>> 0) % 100000;
+}
+
+/** Plain colours for each look, for the low quality setting's simply lit spheres (D-25). */
+const PLAIN: Record<PlanetStyle, number> = {
+  mercury: 0x9a8f86,
+  venus: 0xd9c38f,
+  earth: 0x4f7fbf,
+  moon: 0x9c9c9c,
+  io: 0xd8c25a,
+  europa: 0xc9c2b0,
+  ganymede: 0x9a8f80,
+  callisto: 0x6f665c,
+  titan: 0xc79a4f,
+  mars: 0xb5603a,
+  jupiter: 0xc9a27a,
+  saturn: 0xd8c08a,
+  uranus: 0x9fd3dd,
+  neptune: 0x4f75c9,
+  'exo-rocky-warm': 0xa8805f,
+  'exo-scorched': 0x7a5a4a,
+  'exo-rocky-cold': 0x8a97a8,
+  'exo-gas-giant': 0xc8a882,
+};
+
+function plainPlanet(radius: number, style: PlanetStyle): ArtObject {
+  const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 24, 16),
+    new THREE.MeshStandardMaterial({ color: PLAIN[style], roughness: 0.9, metalness: 0 }),
+  );
+  return {
+    object: mesh,
+    dispose: () => {
+      mesh.geometry.dispose();
+      (mesh.material as THREE.Material).dispose();
+    },
+  };
 }

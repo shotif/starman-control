@@ -11,6 +11,8 @@
     "dev": "vite",
     "dev:host": "vite --host",
     "build": "vite build",
+    "budgets": "node scripts/app/budgets.ts",
+    "icons": "node scripts/app/icons.ts",
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "test": "vitest run",
@@ -26,7 +28,7 @@
     "data:import-dwarfs": "node scripts/data/import-dwarfs.ts",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "check": "npm run typecheck && npm run lint && npm run art:check && npm test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run art:check && npm test && npm run build && npm run budgets"
   },
   "dependencies": {
     "@fontsource/saira-condensed": "5.3.0",
