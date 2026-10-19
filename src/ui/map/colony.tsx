@@ -38,7 +38,7 @@ export function millions(tenths: number): string {
   return tenths % 10 === 0 ? String(tenths / 10) : (tenths / 10).toFixed(1);
 }
 
-/** Its world's name; a capital whose world is not yet decided (D-24) goes by its system's. */
+/** Its world's name. */
 export function holdingName(world: World, game: GameState, h: Holding): string {
   return bodyOf(world, game, h)?.name ?? world.system(h.system).name;
 }
@@ -290,10 +290,14 @@ export function HoldingPanel({
       <header>
         <h2>{name}</h2>
         <p class="system-kind">
-          {h.capital ? 'The capital' : h.kind === 'colony' ? 'A colony' : 'An outpost'}
-          {body ? ` at ${system}` : ', its world not yet named'} · <FactionTag faction={h.owner} />{' '}
-          <Badge kind="fiction" />
+          {h.capital ? 'The capital' : h.kind === 'colony' ? 'A colony' : 'An outpost'} at {system} ·{' '}
+          <FactionTag faction={h.owner} /> <Badge kind="fiction" />
         </p>
+        {body?.planet && body.planet.status !== 'confirmed' && (
+          <p class="dim">
+            Astronomers dispute {body.name}: it may not exist. The game keeps it, and says so <Badge kind="disputed" />
+          </p>
+        )}
       </header>
       {h.kind === 'colony' ? (
         <>

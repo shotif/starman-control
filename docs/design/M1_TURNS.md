@@ -9,8 +9,8 @@ your lanes and on blind jumps, survey what they reach, end the turn, read what h
 needs you. Saved every turn, so it can be closed at any time.
 
 **Out of scope here:** colonies, outposts and building (increment 5), lane building and research
-(increment 6). The capital is a system here; which planet it stands on is D-24, needed by
-increment 5.
+(increment 6). The capital is a system here; which planet it stands on is D-24, decided on
+19 October 2026.
 
 ## 1. What each power knows
 

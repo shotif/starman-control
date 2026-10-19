@@ -47,7 +47,8 @@ describe('a new game', () => {
       });
     }
     expect(solo('sta').holdings[0]?.body).toBe('earth');
-    expect(solo('frontier').holdings[0]?.body).toBeNull(); // which world waits on D-24
+    expect(solo('frontier').holdings[0]?.body).toBe('tau-ceti-e'); // D-24
+    expect(solo('hollow-wake').holdings[0]?.body).toBe('wolf-1061-c');
   });
 
   it('opens only the home webs of the powers in play; every other lane is dark', () => {

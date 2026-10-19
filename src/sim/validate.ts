@@ -80,7 +80,7 @@ export function shapeProblems(raw: unknown): string[] {
         continue;
       }
       if (h.kind !== 'colony' && h.kind !== 'outpost') out.push(`holding ${i} is neither a colony nor an outpost`);
-      if (h.body !== null && typeof h.body !== 'string') out.push(`holding ${i} is on no body`);
+      if (typeof h.body !== 'string') out.push(`holding ${i} is on no body`);
       if (typeof h.capital !== 'boolean') out.push(`holding ${i} does not say whether it is a capital`);
       if (!isWhole(h.people) || !isWhole(h.industry)) out.push(`holding ${i} people or industry is not a whole number`);
       if (!Array.isArray(h.projects) || !h.projects.every((p) => typeof p === 'string' && p in PROJECTS))
@@ -143,13 +143,10 @@ export function stateProblems(world: World, state: GameState): string[] {
       out.push(`holding ${h.id} is at ${h.system}, which is not a system`);
       continue;
     }
-    if (h.body === null && !h.capital) out.push(`holding ${h.id} is on no body`);
-    if (h.body !== null) {
-      if (bodiesHeld.has(h.body)) out.push(`${h.body} is held twice`);
-      bodiesHeld.add(h.body);
-      if (!bodiesOf(world, state.seed, h.system).some((b) => b.id === h.body))
-        out.push(`holding ${h.id} is on ${h.body}, which is not in ${h.system}`);
-    }
+    if (bodiesHeld.has(h.body)) out.push(`${h.body} is held twice`);
+    bodiesHeld.add(h.body);
+    if (!bodiesOf(world, state.seed, h.system).some((b) => b.id === h.body))
+      out.push(`holding ${h.id} is on ${h.body}, which is not in ${h.system}`);
     if (h.kind === 'outpost' && h.people !== 0) out.push(`outpost ${h.id} has people`);
     if (new Set(h.projects).size !== h.projects.length) out.push(`holding ${h.id} has a project twice`);
   }

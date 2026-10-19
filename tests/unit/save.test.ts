@@ -35,6 +35,40 @@ describe('save files', () => {
     expect(() => parseSave(world, broken)).toThrow(SaveError);
   });
 
+  it('put a capital that stood on no world on its world (D-24), folding in a colony already there', () => {
+    // A version 2 game, as increment 5 wrote it: the Cooperative's capital on no world, and a
+    // colony of its own on Tau Ceti e, with a ship about to found an outpost there too.
+    const v2 = structuredClone(game) as unknown as Record<string, unknown> & typeof game;
+    const cap = v2.holdings[0] as (typeof game.holdings)[number];
+    v2.version = 2;
+    (cap as { body: string | null }).body = null;
+    v2.holdings.push({
+      ...cap,
+      id: 2,
+      capital: false,
+      body: 'tau-ceti-e',
+      people: 15,
+      projects: ['mine'],
+      queue: [{ kind: 'ship', ship: 'survey' }],
+      industry: 7,
+    });
+    v2.nextHoldingId = 3;
+    (v2.ships[3] as { founding: unknown }).founding = { kind: 'outpost', body: 'tau-ceti-e' };
+    const json = JSON.stringify({ format: SAVE_FORMAT, version: 1, savedAt: when.toISOString(), game: v2 });
+    const g = parseSave(world, json);
+    expect(g.version).toBe(3);
+    expect(g.holdings).toHaveLength(1);
+    expect(g.holdings[0]).toMatchObject({
+      body: 'tau-ceti-e',
+      capital: true,
+      people: 115,
+      projects: ['shipyard', 'lane-station', 'mine'],
+      queue: [{ kind: 'ship', ship: 'survey' }],
+      industry: 7,
+    });
+    expect(g.ships[3]?.founding).toBeNull();
+  });
+
   it('are small: far under the 200 KB budget', () => {
     expect(exportSave(game, when).json.length).toBeLessThan(200 * 1024);
   });

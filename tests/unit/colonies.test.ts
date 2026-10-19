@@ -71,9 +71,10 @@ describe('the capital', () => {
       expect(capacityOf(world, g, c)).toBe(120);
       expect(beaconSlots(g, c.system)).toBe(RULES.beacons.slotsWithStation);
     }
-    // The Authority's stands on Earth (D-20); the others wait on D-24, and the rules do not mind.
+    // Earth (D-20), Tau Ceti e and Wolf 1061 c (D-24); the capital's rules do not depend on the world.
     expect(capital(start('sta'), 'sta').body).toBe('earth');
-    expect(capital(start('frontier'), 'frontier').body).toBeNull();
+    expect(capital(start('frontier'), 'frontier').body).toBe('tau-ceti-e');
+    expect(capital(start('hollow-wake'), 'hollow-wake').body).toBe('wolf-1061-c');
   });
 
   it('makes industry with every part shown: people, the capital, and the Authority’s 10%', () => {
@@ -94,7 +95,9 @@ describe('the capital', () => {
     let g = start('sta');
     // Earth is rich in metals (2), and the capital gives 2 metals, 1 volatiles and 1 fusion fuel.
     expect(yieldsOf(world, g, capital(g, 'sta')).total).toEqual({ metals: 4, volatiles: 1, fuel: 1 });
-    expect(incomeOf(world, start('frontier'), 'frontier')).toEqual({ metals: 2, volatiles: 1, fuel: 1 });
+    // Tau Ceti e is poor in metals (1), Wolf 1061 c rich (2).
+    expect(incomeOf(world, start('frontier'), 'frontier')).toEqual({ metals: 3, volatiles: 1, fuel: 1 });
+    expect(incomeOf(world, start('hollow-wake'), 'hollow-wake')).toEqual({ metals: 4, volatiles: 1, fuel: 1 });
     g = queue(g, 'sta', capital(g, 'sta').id, { kind: 'project', project: 'mine' });
     g = turns(g, 3).state;
     expect(capital(g, 'sta').projects).toContain('mine');

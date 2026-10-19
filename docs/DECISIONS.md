@@ -29,8 +29,8 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
 | D-22 | The technology stack | Decided 2026-10-19 | **the web platform, with Preact + Signals for the interface** and Biome; see [D-22](#d-22--the-technology-stack--decided) |
 | D-23 | Art direction and image model, from the style test | Decided 2026-10-19 | the draft style, with `gemini-nano-banana-2.1` (Nano Banana) for everything |
-| D-24 | Which planet each capital is on | Open (needed by M1 increment 4) | see [D-24](#d-24--the-capital-worlds--open) |
-| D-25 | The 3D system view: when, at what scale, with what look | Open | see [D-25](#d-25--the-3d-system-view--open) |
+| D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
+| D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -256,7 +256,7 @@ for everything." `art/styles.ts` now also asks to avoid black letterbox bars, an
 plain shapes. The style-test pictures stay out of the game (they were tests, not briefs the game
 needs); the first pictures for the game will be briefed when a screen needs them.
 
-### D-24 · The capital worlds — **Open**
+### D-24 · The capital worlds — **Decided**
 
 D-20 placed the capitals in Sol, Tau Ceti and Wolf 1061; the new game (M1 increment 4) needs the
 planet each stands on. Earth is Earth. The other two are less simple: **all four of Tau Ceti's
@@ -274,13 +274,14 @@ planet is a good way to show the player what *disputed* means: the planet screen
 capital's own description says it is fiction. C is the cautious choice if you would rather no
 capital rests on a planet that may not exist.
 
-**Meanwhile (increment 5):** the Cooperative's and the Wake's capitals are colonies of their
-system, standing on no world, and are named after the system. Nothing in the rules depends on the
-world (the capital's room is fixed at 12), so the game is fully playable. Until you answer, the
-candidate worlds can be settled like any other; when the answer is built, a save that has settled
-the chosen world will have that colony folded into the capital.
+**Decided on 19 October 2026: A**, as recommended: the Cooperative's capital is on **Tau Ceti
+e** and the Wake's on **Wolf 1061 c**. Until then (increment 5) the two capitals stood on no world;
+the game state's version 3 puts them on their worlds, and a save that had settled one of them has
+that colony folded into the capital. The capital's rules do not depend on its world, except that
+it also yields its world's riches: Earth and Wolf 1061 c are rich in metals, Tau Ceti e poor, so
+the Cooperative starts with 1 metal a turn less (to weigh when balancing in M2).
 
-### D-25 · The 3D system view — **Open**
+### D-25 · The 3D system view — **Decided**
 
 The owner asked on 19 October 2026 for a view inside a star system: "enter a star system and see
 the sun and the planets in 3D (the sun or multiple suns, if that's the case)". The plans had a
@@ -292,6 +293,10 @@ system *screen* (a panel of facts) but no 3D view, so it is now designed in
 | **When** | (a) in M1, as a new increment 7 after lanes and research, the proof becoming increment 8; (b) now, before lanes and research; (c) in M2 | **(a)**: lanes and research finish M1's 50-turn game first, and the view then shows a game with something in it; it costs M1 one more increment |
 | **Scale** | (a) compressed and labelled "not to scale", true figures in the panels; (b) true scale, zooming to find each world; (c) compressed with a true-scale switch | **(a)**: at true scale the worlds are invisible dots; (c) could follow later as a codex feature |
 | **Look** | (a) Reborn's procedural shaders for stars, planets, rings and belts, copied (D-10); (b) simple lit spheres; (c) generated pictures as planet textures | **(a)**: the same look as Reborn, no art cost, and every one of the game's ~700 worlds gets its own; (b) stays as the low-quality setting for slow phones |
+
+**Decided on 19 October 2026: (a), (a) and (a)**, as recommended: in M1 as increment 7, after
+lanes and research; compressed and labelled "not to scale"; Reborn's shaders, with plain spheres
+as the low-quality setting.
 
 ## Round 2: needed later
 

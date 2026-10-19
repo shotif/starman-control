@@ -13,7 +13,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 2;
+export const STATE_VERSION = 3;
 
 export interface Stockpile {
   metals: number;
@@ -73,8 +73,8 @@ export interface Holding {
   owner: FactionId;
   kind: 'colony' | 'outpost';
   system: SystemId;
-  /** The body it is on; null only for a capital whose world is not yet decided (D-24). */
-  body: string | null;
+  /** The body it is on. */
+  body: string;
   capital: boolean;
   /** People, in tenths of a unit (a unit is about a million); 0 for an outpost. */
   people: number;
@@ -149,7 +149,7 @@ export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
     owner: faction,
     kind: 'colony',
     system: FACTIONS[faction].capital.systemId,
-    body: FACTIONS[faction].capital.bodyId ?? null,
+    body: FACTIONS[faction].capital.bodyId,
     capital: true,
     people: RULES.capital.people,
     projects: ['shipyard', 'lane-station'],

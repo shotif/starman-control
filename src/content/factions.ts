@@ -35,10 +35,10 @@ export interface FactionDef {
   mark: FactionMark;
   species: SpeciesId;
   /**
-   * Its capital's system and, once decided, its world: Earth for the Authority (D-20); the others
-   * wait on D-24, and nothing in the rules depends on which world it is.
+   * Its capital's system and world: Earth for the Authority (D-20), Tau Ceti e for the Cooperative
+   * and Wolf 1061 c for the Wake (D-24). The capital's rules do not depend on which world it is.
    */
-  capital: { systemId: SystemId; bodyId?: string };
+  capital: { systemId: SystemId; bodyId: string };
   traits: TraitDef[];
   /** Its shipbuilding traditions, from Reborn's makers. */
   shipmakers: string[];
@@ -74,7 +74,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     colour: '#5cc8ff',
     mark: 'circle',
     species: 'human',
-    capital: { systemId: 'tau-ceti' },
+    capital: { systemId: 'tau-ceti', bodyId: 'tau-ceti-e' },
     traits: [
       {
         id: 'frontier-settlers',
@@ -94,7 +94,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     colour: '#ff5f5f',
     mark: 'triangle',
     species: 'human',
-    capital: { systemId: 'wolf-1061' },
+    capital: { systemId: 'wolf-1061', bodyId: 'wolf-1061-c' },
     traits: [
       {
         id: 'wake-runners',

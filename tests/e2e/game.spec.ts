@@ -229,7 +229,7 @@ test.describe('colonies', () => {
     await expect(panel).toContainText('A mine is already queued.');
     for (let i = 0; i < 3; i++) await endTurn(page, project);
     await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
-      'Tau Ceti built a survey ship, the Prism.',
+      'Tau Ceti e built a survey ship, the Prism.',
     );
     await expect(page.locator('.map-date')).toHaveText('Q4 2176');
   });

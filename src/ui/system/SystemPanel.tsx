@@ -48,7 +48,7 @@ export interface HoldingRow {
   /** "Capital", "Colony", "Outpost". */
   kind: string;
   owner: FactionId;
-  body: string | null;
+  body: string;
   line: string;
   mine: boolean;
 }
@@ -183,7 +183,7 @@ export function SystemPanel({
   const owners = new Map(game.lanes.map((l) => [l.id, l.owner]));
   const capitalOf = game.powers.find((p) => p.capital === id)?.faction;
   const heldBy = capitalOf ?? holdings[0]?.owner ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
-  const heldBody = new Map(holdings.filter((h) => h.body).map((h) => [h.body as string, h]));
+  const heldBody = new Map(holdings.map((h) => [h.body, h]));
   // Charted only: astronomers' worlds (known planets, observed belts, all of Sol's), not the rest.
   const bodies = realOnly ? [] : bodiesOf(world, game.seed, id).filter((b) => surveyed || b.origin !== 'generated');
 

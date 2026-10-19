@@ -241,9 +241,9 @@ M3. Every faction starts with **the same assets**; they differ in place and in t
 The capital is a developed home world whatever its planet, after generations of building. Every
 faction starts with: the capital (population 10, a shipyard and a lane station), one outpost in
 the home system, its home web of lanes (§3), two survey ships, one colony ship, one outpost ship,
-the founding technologies, and a small stockpile (40 metals, 20 volatiles, 40 fusion fuel). Which
-planet each capital is on is open ([D-24](../DECISIONS.md#d-24--the-capital-worlds--open)), since
-all four of Tau Ceti's reported planets are disputed. The traits are sketches to be balanced in M2 and M3.
+the founding technologies, and a small stockpile (40 metals, 20 volatiles, 40 fusion fuel). The
+capitals stand on Earth, Tau Ceti e (disputed, as all four of Tau Ceti's reported planets are) and
+Wolf 1061 c ([D-24](../DECISIONS.md#d-24--the-capital-worlds--decided)). The traits are sketches to be balanced in M2 and M3.
 
 ## 6. Ships and movement
 
@@ -331,7 +331,7 @@ first, colour always paired with a shape and a word.
 | Title | New game, Continue, Saves, Settings |
 | New game | the three factions as cards (place, traits, colour, makers); an optional seed |
 | **Map** (home) | the stars, lanes, your systems and ships; the date; resources; *End turn* |
-| System | the star (with its real data), its bodies with kind, size, habitability and badges, your assets there, actions; **in 3D** if D-25 places it in M1 ([M1_SYSTEM_VIEW.md](M1_SYSTEM_VIEW.md)) |
+| System | the star (with its real data), its bodies with kind, size, habitability and badges, your assets there, actions; and the system **in 3D** ([M1_SYSTEM_VIEW.md](M1_SYSTEM_VIEW.md), D-25) |
 | Planet | its attributes with badges; for a colony, population, output and the build queue, each figure explainable |
 | Ship | type, place, orders, the route preview |
 | Research | the current technology and progress, the research tree by field (what each technology needs and gives), the queue |
@@ -453,7 +453,7 @@ Each increment is deployed to the live site when CI passes.
 | 4 | **Ships and turns:** new game, the three factions, ships, moving on lanes, blind jumps, surveying, ending the turn, the report | the first playable turns |
 | 5 | **Colonies:** colonising, outposts, growth, industry, build queues, resources, the empire screen | you can grow |
 | 6 | **Lanes, research and anomalies:** building and relighting lanes, beacon slots and lane stations, lane engineering opens the map; *what needs you*; every figure explainable | the 50-turn game |
-| 7 | **The system in 3D** (proposed, D-25): enter a system and see its stars and worlds in 3D ([M1_SYSTEM_VIEW.md](M1_SYSTEM_VIEW.md)) | you can look inside every system |
+| 7 | **The system in 3D** (D-25): enter a system and see its stars and worlds in 3D ([M1_SYSTEM_VIEW.md](M1_SYSTEM_VIEW.md)) | you can look inside every system |
 | 8 | **Proof:** saves and settings complete, the soak test, screenshots, a real phone, the budgets | M1 is done |
 
 ## 13. Questions for the owner

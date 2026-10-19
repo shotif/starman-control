@@ -4,7 +4,8 @@
 //
 // The world is never saved: it is rebuilt from the dataset, so a save is small.
 
-import { isFactionId } from '../content/factions.ts';
+import { FACTIONS, isFactionId } from '../content/factions.ts';
+import { RULES } from '../content/rules.ts';
 import { capitalHolding, type GameState, STATE_VERSION } from './state.ts';
 import { shapeProblems, stateProblems } from './validate.ts';
 import type { World } from './world.ts';
@@ -64,6 +65,45 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
       .map((p, i) => ({ id: i + 1, ...capitalHolding(p.faction as Parameters<typeof capitalHolding>[0]) }));
     const ships = (g.ships as Raw[]).map((s) => ({ ...s, founding: null }));
     return { ...g, version: 2, powers, ships, holdings, nextHoldingId: holdings.length + 1 };
+  },
+  /**
+   * 2 → 3 (D-24): the Cooperative's and the Wake's capitals, which stood on no world, move onto
+   * Tau Ceti e and Wolf 1061 c. A colony or outpost the same power had founded on that world is
+   * folded into the capital (its people join, up to the capital's room; its projects, queue and
+   * industry are kept); a ship about to found there stops.
+   */
+  2: (g) => {
+    if (!Array.isArray(g.holdings) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
+    let holdings = g.holdings as Raw[];
+    const taken = new Set<string>();
+    for (const cap of holdings) {
+      if (cap.capital !== true || cap.body !== null || !isFactionId(cap.owner)) continue;
+      const body = FACTIONS[cap.owner].capital.bodyId;
+      const there = holdings.filter((h) => h !== cap && h.body === body);
+      const projects = new Set(cap.projects as string[]);
+      const queue = [...(cap.queue as Raw[])];
+      let people = cap.people as number;
+      let industry = cap.industry as number;
+      for (const h of there) {
+        if (h.owner !== cap.owner) continue;
+        people = Math.min(RULES.capital.capacity, people + (h.people as number));
+        industry += h.industry as number;
+        for (const p of h.projects as string[]) projects.add(p);
+        for (const item of h.queue as Raw[]) {
+          const dup =
+            item.kind === 'project' &&
+            (projects.has(item.project as string) || queue.some((q) => q.project === item.project));
+          if (!dup) queue.push(item);
+        }
+      }
+      Object.assign(cap, { body, people, industry, projects: [...projects], queue });
+      holdings = holdings.filter((h) => !there.includes(h));
+      taken.add(body);
+    }
+    const ships = (g.ships as Raw[]).map((s) =>
+      taken.has((s.founding as Raw | null)?.body as string) ? { ...s, founding: null } : s,
+    );
+    return { ...g, version: 3, holdings, ships };
   },
 };
 

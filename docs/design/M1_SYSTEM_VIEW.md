@@ -1,10 +1,11 @@
-# M1 · The system in 3D (proposed)
+# M1 · The system in 3D (increment 7)
 
-**Status:** proposed on 19 October 2026, at the owner's request ("I want to … enter a star system
-and see the sun and the planets in 3D"). Not built until the owner answers
-[D-25](../DECISIONS.md#d-25--the-3d-system-view--open), which asks when it comes and settles its
-scale and look. It adds to [M1 §10](M1_FIRST_LIGHT.md#10-the-interface-on-phone-and-desktop),
-where the system screen is a panel of facts.
+**Status:** designed on 19 October 2026 at the owner's request ("I want to … enter a star system
+and see the sun and the planets in 3D"); the owner took the recommendations of
+[D-25](../DECISIONS.md#d-25--the-3d-system-view--decided) the same day: M1 increment 7, after
+lanes and research, compressed to scale, with Reborn's shaders. It adds to
+[M1 §10](M1_FIRST_LIGHT.md#10-the-interface-on-phone-and-desktop), where the system screen is a
+panel of facts.
 
 **Goals.** Enter any system and see its star, or stars, and its worlds in 3D, on a phone and on a
 desktop; choose a world there to open its panel; see at a glance which worlds are yours, which

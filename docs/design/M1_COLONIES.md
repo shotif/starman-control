@@ -25,9 +25,9 @@ surveyed. The colony or outpost is founded when the turn ends (§2 of the M1 des
 
 **The capital** is a colony of 10 (units of about a million people) with room for 12, a shipyard
 and a lane station, the same for every power whatever its world. The Authority's is on Earth
-(D-20). Which world the Cooperative's and the Wake's capitals stand on is decision
-[D-24](../DECISIONS.md#d-24--the-capital-worlds--open): until it is answered, their capital is
-the capital of its system, its world not yet named, and nothing in the rules depends on which.
+(D-20), the Cooperative's on Tau Ceti e and the Wake's on Wolf 1061 c
+([D-24](../DECISIONS.md#d-24--the-capital-worlds--decided), decided after increment 5 was built,
+when the two stood on no world; the game state's version 3 moves them onto their worlds).
 
 ## 2. Each turn
 
