@@ -28,6 +28,9 @@ lanes, the drive, every story — is original fiction and labelled so in the gam
 **For Control:** this is a starlane network with drive technology deciding which lanes you can
 use — very close to *Master of Orion 3*'s starlanes, and it gives the strategic map chokepoints
 and a reason to research drives. The generator is a pure function of a seed and could be reused.
+*(Later decided, D-19: in Control the powers build their lanes; Reborn's network survives only in
+part, the rest as dark lanes to relight.)* Measured on 19 October 2026: 271 lanes, median length
+5.5 ly, three-quarters under 6.8 ly, the longest 11.7 ly.
 
 ## 3. The powers
 

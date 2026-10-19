@@ -19,10 +19,14 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-06 | Single player or multiplayer | Decided 2026-10-19 | Single player against AI; deterministic simulation |
 | D-07 | Space combat | Decided 2026-10-19 | Orders before battle, a watchable replay after |
 | D-08 | Who the player can be | Decided 2026-10-19 | **Several playable factions**: the three human powers first, aliens playable later |
-| D-09 | Art and external tools | Decided 2026-10-19 | **OpenAI and Google Gemini image generation** for portraits and illustrations; procedural for the rest |
+| D-09 | Art and external tools | Decided 2026-10-19 | **Google Gemini image generation** for portraits and illustrations (OpenAI not available for now); procedural for the rest |
 | D-10 | Sharing code with Reborn | Decided 2026-10-19 | Copy and adapt, noting the source |
 | D-11 | What "Control" means | Decided 2026-10-19 | You are Control, the voice the starmen answer to |
 | D-16 | Game length, and what a turn stands for | Decided 2026-10-19 | 150–250 turns; a turn is about three months |
+| D-19 | Jump lanes | Decided 2026-10-19 | **A fraction of Reborn's lanes at the start; players build new lanes as part of the strategy** |
+| D-19a–c | Which lanes survive, why the rest lapsed, how a lane is built | Open | see [D-19](#d-19--jump-lanes--decided-owners-direction-details-open) |
+| D-20 | The M1 start: year, capitals, traits | Decided 2026-10-19 | 2176; Earth, Tau Ceti, Wolf 1061; the draft traits |
+| D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -126,7 +130,9 @@ with a report that explains the outcome. Tactical command may come later.
 
 ### D-09 · Art and external tools — **Decided (owner's direction)**
 
-The owner provides **OpenAI API** and **Google Gemini API** access; Claude sets up the pipeline.
+The owner provides **Google Gemini API** access; Claude sets up the pipeline. (OpenAI was offered
+at first; on 19 October 2026 the owner said an OpenAI key cannot be provided, so the pipeline runs
+on Gemini alone and keeps OpenAI support for later.)
 
 - **Procedural** (as in Reborn): the map, planets, ships, battles and interface.
 - **Generated with OpenAI or Gemini** at build time, never while playing: species and leader
@@ -154,6 +160,43 @@ as signals.
 **three months**, so a game spans roughly sixty years. Fleets are limited by jumps per turn and by
 supply, not by Reborn's raw lane speed.
 
+## Round 3: the M1 design, answered 19 October 2026
+
+The owner accepted the M1 design's recommendations ([design/M1_FIRST_LIGHT.md](design/M1_FIRST_LIGHT.md)
+§13) except the lanes.
+
+### D-19 · Jump lanes — **Decided (owner's direction); details open**
+
+Claude recommended Reborn's exact lane network in every game. **The owner decided otherwise:**
+
+> Use a fraction of Reborn's lane network, and let the player build new lanes. Lane building
+> should be part of the strategy game.
+
+So lanes are infrastructure, not scenery: where you build them decides where you can go, where you
+meet others, where the chokepoints are, and what the stars that astronomers know are worth to you.
+The design is in [M1_FIRST_LIGHT.md §3](design/M1_FIRST_LIGHT.md#3-the-map-and-the-lanes). Three
+details are open, each with a recommendation there:
+
+| ID | Question | Recommendation |
+| --- | --- | --- |
+| D-19a | Which part of Reborn's network survives at the start | each power's **home web**: Reborn's lanes within two jumps of its capital, trimmed to the same size for every power; the rest of Reborn's lanes are **dark lanes**, visible and cheaper to relight than a new lane is to build |
+| D-19b | Why the rest lapsed (fiction) | a lane is a pair of tuned beacons that must be tended; in a generation of hard times after Reborn ("the Lapse") the powers tended only their home lanes, and the others drifted out of tune |
+| D-19c | How a lane is built | as a project at a system you hold, aimed at a star within your lane-building reach, paid for in industry, metals and fusion fuel |
+
+### D-20 · The M1 start — **Decided**
+
+As recommended: the game starts in **2176**, some 150 years after Reborn. The capitals are
+**Earth** (Sol Transit Authority), **Tau Ceti** (Frontier Cooperative) and **Wolf 1061** (Hollow
+Wake). The draft traits stand (Authority: industry +10%; Cooperative: colonies grow 20% faster;
+Wake: ships make one extra jump a turn), to be balanced in M2 and M3.
+
+### D-21 · How finished work reaches `main` — **Assumed**
+
+Claude asked whether to push to `main` once the checks pass (as Reborn does) or to open a pull
+request for each increment; the owner accepted the suggestions without naming one. Assumed: work
+is pushed to `main`, and so deployed, once `npm run check` and CI pass. Tell Claude if you would
+rather review pull requests.
+
 ## Round 2: needed later
 
 | ID | Question | Needed by | Recommendation in brief |
@@ -176,4 +219,4 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-19 | The interface borrows Reborn's design tokens and typefaces (Saira, dark navy glass, cyan accent) | the two games read as one universe |
 | 2026-10-19 | CI runs on every branch and pull request; Pages deploys from `main` | catches problems before they reach the live site |
 | 2026-10-19 | The simulation will be a pure, deterministic TypeScript core with no DOM access, separate from the interface | testable without a browser, AI turns can run in a worker, replays and multiplayer stay possible |
-| 2026-10-19 | API keys are read from environment variables (`OPENAI_API_KEY`, `GEMINI_API_KEY`) or a git-ignored `.env`; approved pictures are committed with a provenance record | keys stay out of the repository and the public site; every picture can be traced and regenerated |
+| 2026-10-19 | API keys are read from environment variables (`GEMINI_API_KEY`, and `OPENAI_API_KEY` if one is ever provided) or a git-ignored `.env`; approved pictures are committed with a provenance record | keys stay out of the repository and the public site; every picture can be traced and regenerated |

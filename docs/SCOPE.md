@@ -45,8 +45,8 @@ for a vanished species' relics — together with the lessons of what it got wron
 
 | Phase | Turns (approx.) | What happens |
 | --- | --- | --- |
-| Opening | 1–40 | Survey the old sphere's unclaimed systems, settle the best real planets, research better drives to reach the frontier lanes, rival human powers crowd the same stars |
-| Contact | 40–100 | The frontier lanes open; first signals from other species; translation, first treaties, first border incidents; the first relic sites |
+| Opening | 1–40 | Build and relight lanes out from your home web, survey the old sphere's unclaimed systems, settle the best real planets; rival human powers race for the same stars and the same dark lanes |
+| Contact | 40–100 | Lanes reach past the old sphere; first signals from other species; translation, first treaties, first border incidents over lanes and stars; the first relic sites |
 | Ascendancy | 100–180 | Large economies, fleets and wars; the council forms and votes; the artefact hunt narrows; a star dies and changes the map |
 | Endgame | 180–250 | A power wins by conquest, by the council's vote, or by completing the artefacts — or the turn limit ends it on score |
 
@@ -95,9 +95,9 @@ and way of playing; the AI plays the others. First sketches, to be designed in M
 
 | Faction | Plays as | Starts | Shipmakers |
 | --- | --- | --- | --- |
-| **Sol Transit Authority** | The lawful centre: strong administration, the lanes and their customs, steady growth, slow to change | Sol and the old core | Halden (balanced), Ares (armoured) |
-| **Frontier Cooperative** | Many settlements run by vote: good at colonising and farming, happiest at peace, decisions shaped by its members | Alpha Centauri, Sirius, Epsilon Eridani | Toliman (frugal), Horizon (fast), Eridani (cheap haulers) |
-| **Hollow Wake** | An outlaw power: lives off raids, tolls and black markets, hides its bases, weak at governing, dangerous at the edges | the raider dens of lawless space | Wake Salvage (stolen hulls rebuilt) |
+| **Sol Transit Authority** | The lawful centre: strong administration, the lanes and their customs, steady growth, slow to change | Earth, Sol *(D-20)* | Halden (balanced), Ares (armoured) |
+| **Frontier Cooperative** | Many settlements run by vote: good at colonising and farming, happiest at peace, decisions shaped by its members | Tau Ceti *(D-20)* | Toliman (frugal), Horizon (fast), Eridani (cheap haulers) |
+| **Hollow Wake** | An outlaw power: lives off raids, tolls and black markets, hides its bases, weak at governing, dangerous at the edges | Wolf 1061, Maw Roost's star *(D-20)* | Wake Salvage (stolen hulls rebuilt) |
 
 Starts are balanced by design, not copied from Reborn's map, where the powers differ greatly in
 size.
@@ -113,15 +113,22 @@ faction later means adding its data and its own mechanics, not rewriting the gam
 
 - **Real stars** in real 3D positions (*D-02*). The map shows the neighbourhood in 3D, with a flat
   projected view for clarity, as Reborn's star map does.
-- **Jump lanes** between stars, generated as Reborn generates them (short core lanes, longer
-  frontier lanes). **Drive technology decides the longest lane a ship can take**, so research
-  opens the map in rings — the real distances between real stars shape the strategy.
+- **Jump lanes are built by the powers** *(D-19)*: lane building is part of the strategy. Each
+  power starts with a fraction of Reborn's network around its home; the rest of Reborn's lanes are
+  *dark* (out of tune since a generation of hard times, *the Lapse*) and can be relit for less than
+  a new lane costs. New lanes are built as projects towards any star within your lane-building
+  reach, which research extends; each star anchors only a few lanes, so chokepoints are designed,
+  not given. Lanes belong to their builders: others use them by treaty, toll or force. The real
+  distances between real stars shape the strategy, and the real sky tells you where a lane is
+  worth building ([M1 design §3](design/M1_FIRST_LIGHT.md#3-the-map-and-the-lanes)).
 - **What astronomers already know is known from turn one:** every star's type and the real known
   exoplanets (with their uncertainties). **What nobody knows yet must be found:** generated planets,
   moons and belts *(D-03)*, resources, relic sites, anomalies, and other species.
 - **Survey ships** chart systems; **deep-space scanners** on colonies see fleets moving nearby.
 - **Anomalies** found by surveys become small research projects with a reward.
-- *Later:* building new lanes as an infrastructure project; lane blockades and interdiction.
+- Survey ships can make slow **blind jumps** without a lane, to look before you build.
+- *Later:* lane ships that lay lanes far from home; blockades and interdiction; lanes going dark
+  when left untended.
 
 ### 4.2 Planets and colonies
 
@@ -177,7 +184,7 @@ planet's viceroy to the plan you set.*
 - **Food** made by farm districts and shipped automatically along lanes within supply range.
 - **Strategic resources** drawn from Reborn's goods and the real sky: *metals* (rocky worlds and
   belts), *volatiles* (ice worlds, comets, Kuiper belts), *fusion fuel* (deuterium and helium-3,
-  from gas giants) and *exotics* (only from anomalies and relic sites). Advanced ships and
+  from gas giants) and *exotics* (only from anomalies and relic sites). Lanes, advanced ships and
   buildings need them.
 - **Trade:** freight between your own colonies happens by itself; trade treaties with other powers
   add income; the Wake's raiders, and war, interrupt it.
@@ -194,7 +201,8 @@ randomised each game, so some had to be traded for or stolen.*
   science.
 - Each field advances by levels; each level offers technologies. In 1.0 about 60–90
   technologies, each doing something you can see.
-- Drive research opens longer lanes (§4.1); habitability research opens harder worlds.
+- Lane engineering extends how far a lane can reach (§4.1); habitability research opens harder
+  worlds.
 - Every technology states its exact effect (MoO3's vague descriptions made players stop caring).
 - *Later:* more technologies; trading and stealing them; an option to shuffle a little which
   technology comes at which level, for replay.
@@ -436,7 +444,7 @@ deploys to the live site. The exit criterion says when the milestone is done.
 | | Milestone | Contents | Done when |
 | --- | --- | --- | --- |
 | **M0** | Foundations | Repository, CI, GitHub Pages, these documents, the first round of decisions, the art pipeline | Round 1 answered, the site live *(done 19 October 2026)* |
-| **M1** | First light | The real map (207 systems) and lanes, the turn loop, survey and colony ships, planets (real and generated), colonies and outposts with simple output, drive research, saves — on phone and desktop | You can explore and settle the neighbourhood alone for 50 turns, on a phone and on a desktop |
+| **M1** | First light | The real map (207 systems), building and relighting lanes, the turn loop, survey and colony ships, planets (real and generated), colonies and outposts with simple output, the first research, saves — on phone and desktop ([design](design/M1_FIRST_LIGHT.md)) | You can explore and settle the neighbourhood alone for 50 turns, on a phone and on a desktop |
 | **M2** | Worlds | Districts and zoning, projects, population and approval, food, credits and strategic resources, the research fields, governors, the turn report and number breakdowns | A 100-turn solo game has real economic choices, and every number explains itself |
 | **M3** | Neighbours | The other human powers as AI, the first two or three alien species, first contact and translation, treaties, borders, memory of what you did | You meet, trade with and quarrel with AI powers that behave believably |
 | **M4** | Fleets | The ship designer, fleets and task forces, battles with orders and replays, invasion and defences, war and peace, the council, the first victory conditions | A full game can be won by conquest or by the council's vote |

@@ -61,7 +61,7 @@ only: no names, text, art or data from that game.
 | Planets of 1–12 regions zoned for "dominant economic activities" (farming, mining, research and more) | Zoning districts as the heart of planet building | Few, clear zone types; each planet's nature visible in what it is good at; every effect explained |
 | Viceroys running planets to development plans; a designed ration of "focus points" for intervening, cut before release | Optional delegation for big empires | Nothing delegated by default; every delegated decision reported with its reason and reversible; orders stick. Whether attention becomes a resource is open *(D-15)* |
 | Spending past a planet's capacity at doubling cost ("overdrive") | The overdrive curve | Shown as a curve, so the trade-off is visible |
-| Starlanes and chokepoints | Lanes, from Reborn's own network | Drive research decides the longest lane you can take, so real distances shape the map |
+| Fixed starlanes and chokepoints | Lanes, and Reborn's network as their history | Lanes are **built** by the powers *(D-19)*: you design your own chokepoints, real distances decide what a lane costs, and the real sky tells you where one is worth building |
 | A senate of all races, with a vote that can win the game | The council, its resolutions and its leadership vote | Clear rules, visible vote counts and reasons for each power's vote |
 | The hunt for relics of a vanished people as a victory path | Relic sites, keys, guardians | Relics tied to a mystery told in chapters, so the hunt is a story, not a scavenger hunt |
 | Many species with deep trait systems | Species that differ in how they play | Fewer species in 1.0, each far more distinct |
