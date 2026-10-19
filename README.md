@@ -30,6 +30,7 @@ shows a placeholder title until the first playable build.
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with Google Gemini, reviewed and recorded |
 | [docs/research/MASTER_OF_ORION_3.md](docs/research/MASTER_OF_ORION_3.md) | How *Master of Orion 3* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_REBORN_UNIVERSE.md](docs/research/STARMAN_REBORN_UNIVERSE.md) | What the Starman Reborn universe already establishes, and what we can reuse |
+| [docs/research/TECH_STACK.md](docs/research/TECH_STACK.md) | The technology stack: engines and interface frameworks compared, with measured sizes |
 | [CLAUDE.md](CLAUDE.md) | How we work: documentation first, decisions by the owner, style rules |
 
 ## Run it

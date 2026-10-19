@@ -27,6 +27,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-19a–c | Which lanes survive, why the rest lapsed, how a lane is built | Open | see [D-19](#d-19--jump-lanes--decided-owners-direction-details-open) |
 | D-20 | The M1 start: year, capitals, traits | Decided 2026-10-19 | 2176; Earth, Tau Ceti, Wolf 1061; the draft traits |
 | D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
+| D-22 | The technology stack | Open | keep the web platform; add Preact + Signals for the interface and Biome; see [D-22](#d-22--the-technology-stack--open) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -197,6 +198,24 @@ request for each increment; the owner accepted the suggestions without naming on
 is pushed to `main`, and so deployed, once `npm run check` and CI pass. Tell Claude if you would
 rather review pull requests.
 
+### D-22 · The technology stack — **Open**
+
+The owner asked on 19 October 2026 whether a stack other than Reborn's would be more effective.
+The full comparison, with measured sizes, is in
+[research/TECH_STACK.md](research/TECH_STACK.md).
+
+| Option | In short |
+| --- | --- |
+| A. Reborn's stack unchanged (hand-written HTML interface) | smallest download, but every screen's updates written by hand: slow and error-prone for a 4X's many screens, twice over for phone and desktop |
+| **B. Reborn's platform plus Preact + Signals for the interface, and Biome** | about 8 KB more on a phone; components and Signals make the many two-layout screens far quicker to build and test |
+| C. As B with Svelte 5 | about 19 KB; pleasant, but its own compiler, checker and file format |
+| D. As B with React 19 | about 68 KB; the largest ecosystem, little gain for this game |
+| E. A game engine (Godot 4) | strong native exports, but a multi-megabyte web build, weaker in phone browsers, nothing of Reborn carried over |
+
+**Recommendation: B.** Nothing built so far changes (the simulation, data, three.js map and saves
+do not depend on it), and switching now costs nothing, whereas switching after M1's screens would
+mean rewriting them. M1's increment 1 has no interface code and can start either way.
+
 ## Round 2: needed later
 
 | ID | Question | Needed by | Recommendation in brief |
@@ -214,7 +233,7 @@ Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
-| 2026-10-19 | Same toolchain as Reborn: Node 22, TypeScript, Vite, Vitest, the same pinned versions | one way of working across both games; proven on GitHub Pages |
+| 2026-10-19 | Same toolchain as Reborn: Node 22, TypeScript, Vite, Vitest, the same pinned versions (the interface layer is open: D-22) | one way of working across both games; proven on GitHub Pages |
 | 2026-10-19 | No rendering library yet (three.js is the likely choice) | nothing is drawn yet but a placeholder title |
 | 2026-10-19 | The interface borrows Reborn's design tokens and typefaces (Saira, dark navy glass, cyan accent) | the two games read as one universe |
 | 2026-10-19 | CI runs on every branch and pull request; Pages deploys from `main` | catches problems before they reach the live site |
