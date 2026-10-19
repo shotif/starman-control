@@ -357,13 +357,22 @@ export class TitleScene {
     }
   };
 
+  /** Milliseconds between frames: 16, or more on a device that takes long over one. */
+  private gap = 16;
+
   private loop = () => {
     if (this.hidden) return;
     const now = performance.now();
+    if (this.frames > 0 && now - this.last < this.gap - 2) {
+      this.frame = requestAnimationFrame(this.loop);
+      return;
+    }
     // Time stops while the page is hidden, so the turn picks up where it left off.
     this.time += Math.min(0.1, (now - this.last) / 1000);
     this.last = now;
     this.draw(this.time);
+    const cost = performance.now() - now;
+    this.gap = Math.min(250, this.gap * 0.7 + Math.max(16, cost * 4) * 0.3);
     if (!this.opts.reducedMotion) this.frame = requestAnimationFrame(this.loop);
   };
 

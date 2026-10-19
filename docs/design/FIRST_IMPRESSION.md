@@ -65,8 +65,9 @@ sizes; the budgets.
   glow in their stars' colours, the brighter kinds with four faint spikes; Reborn's old lanes are
   dim threads; each power's home web (worked out as a new game does) is lit in its colour, with
   sparks of light running out from the capital; each capital is ringed by its power's mark. Things
-  further away fade, for depth. It has its own canvas, made after the menu has been drawn and
-  thrown away with the title; it stops while the page is hidden, and draws once and holds still
+  further away fade, for depth. It has its own canvas, made 0.8 s after the menu has been drawn
+  (once the boot screen has gone, so baking the sky never holds either up) and thrown away with
+  the title; it draws less often on a device that takes long over a frame; it stops while the page is hidden, and draws once and holds still
   with reduced motion. On a wide screen it sits right of the menu; on a tall one, above it.
 - **The title**: the logotype (STARMAN wide between two hairlines, CONTROL in a cold gradient with
   a glow and one pass of light across it), the tagline, and the menu as lit plates, each with a

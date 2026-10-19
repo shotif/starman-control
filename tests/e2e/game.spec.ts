@@ -340,6 +340,8 @@ test.describe('the M1 journey', () => {
   test('survey, settle and research, end five turns, save to a slot, reload, and find the game as it was', async ({
     page,
   }, info) => {
+    // The longest journey: more time on a slow machine.
+    test.slow();
     const project = info.project.name;
     await newGame(page, 'Lead the Transit Authority', project, '42');
     // Survey: Petrel to Alpha Centauri.

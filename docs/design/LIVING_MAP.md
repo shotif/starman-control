@@ -86,7 +86,8 @@ background stars and a smaller sky.
   darkens the map; the system view opens under the veil and the veil lifts over half a second.
   Leaving, the camera goes back to where it was before the glide and the veil lifts again.
 - **The frame rate:** a change (the camera, the content, the selection) is drawn at once; the
-  ambient motion alone is drawn at most every 30 ms; nothing is drawn while the system view is
+  ambient motion alone is drawn at most every 30 ms, and less often (down to every 400 ms) on a
+  device that takes long over a frame or cannot keep up, so it stays quick to answer a touch; nothing is drawn while the system view is
   open or with reduced motion unless something changes. The camera counts as still while only
   the ambient motion runs, so nothing waits for it.
 - **Tests:** `tests/e2e/living.spec.ts` on the phone, tablet and desktop: a game's map has its

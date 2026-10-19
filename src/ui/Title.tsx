@@ -98,8 +98,9 @@ function useTitleScene(host: { current: HTMLDivElement | null }): void {
           // No WebGL, or the scene could not load: the menu stands on the plain sky.
         });
     };
-    // After the first paint, so the menu is never kept waiting for the scene.
-    const timer = setTimeout(() => requestAnimationFrame(start), 60);
+    // After the menu is drawn and the boot screen has gone, so neither is kept waiting while the
+    // sky is baked.
+    const timer = setTimeout(() => requestAnimationFrame(start), 800);
     return () => {
       live = false;
       clearTimeout(timer);

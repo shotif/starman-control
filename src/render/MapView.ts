@@ -299,6 +299,8 @@ export class MapView {
   private dirty = false;
   /** Seconds of ambient motion: the sparks, the creeping dashes, the breathing ring. */
   private clock = 0;
+  /** Milliseconds between ambient frames: 30, or more on a device that cannot keep up (LIVING_MAP.md §6). */
+  private ambientGap = 30;
   private selectedAt = 0;
   private readonly starMaterial: THREE.ShaderMaterial;
   private readonly markMaterial: THREE.ShaderMaterial;
@@ -991,11 +993,14 @@ export class MapView {
   private draw(time: number): void {
     this.frame = 0;
     if (this.suspended) return;
-    // Only the ambient motion is running: at most 30 frames a second.
-    if (!this.dirty && this.lastTime && time - this.lastTime < 30) {
+    // Only the ambient motion is running: at most 30 frames a second, fewer on a slow device.
+    if (!this.dirty && this.lastTime && time - this.lastTime < this.ambientGap) {
       this.schedule();
       return;
     }
+    const ambientOnly = !this.dirty;
+    const interval = this.lastTime ? time - this.lastTime : 0;
+    const started = performance.now();
     this.dirty = false;
     const dt = this.lastTime ? Math.min(0.1, (time - this.lastTime) / 1000) : 1 / 60;
     this.lastTime = time;
@@ -1046,6 +1051,11 @@ export class MapView {
       this.labelsDirty = false;
     }
     this.container.dataset.ready = '1';
+    // A device that takes long over a frame, or cannot keep up, gets fewer ambient frames, so the
+    // game stays quick to answer a touch.
+    const cost = performance.now() - started;
+    const behind = ambientOnly && interval > this.ambientGap * 1.6 ? interval * 1.25 : 0;
+    this.ambientGap = Math.min(400, this.ambientGap * 0.7 + Math.max(30, cost * 5, behind) * 0.3);
     if (moving) this.invalidate();
     else if (flying) this.invalidate(false);
     else if (this.animating) this.schedule();

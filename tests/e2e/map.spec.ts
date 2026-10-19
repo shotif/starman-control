@@ -50,10 +50,11 @@ test.describe('the map', () => {
     await expect(page.getByTestId('map')).toHaveAttribute('data-ready', '1', { timeout: 30_000 });
     const mode = await page.evaluate(() => (window as unknown as MapHook).__map.viewMode);
     expect(mode).toBe(isDesktop(info.project.name) ? '3d' : 'flat');
-    const labels = await page.evaluate(() => (window as unknown as MapHook).__map.visibleLabels());
-    expect(labels).toContain('sol');
-    expect(labels.length).toBeGreaterThan(10);
+    // The labels are laid out once the map has its size: wait for them.
     expect(await starAt(page, 'sol')).not.toBeNull();
+    const labels = () => page.evaluate(() => (window as unknown as MapHook).__map.visibleLabels());
+    await expect.poll(labels).toContain('sol');
+    expect((await labels()).length).toBeGreaterThan(10);
     expect(errors).toEqual([]);
   });
 
