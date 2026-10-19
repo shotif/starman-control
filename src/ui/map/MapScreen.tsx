@@ -286,57 +286,67 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   // The system in 3D (M1_SYSTEM_VIEW.md): it borrows the map's renderer while it is open.
   const sceneRef = useRef<SystemScene | null>(null);
   const inside = insideSystem.value;
+  // The veil over the map while it glides into a system and the system comes up (LIVING_MAP.md §5).
+  const [veil, setVeil] = useState<{ kind: 'in' | 'out'; n: number } | null>(null);
   useEffect(() => {
     const v = view.current;
     if (!inside || !v) return;
     let disposed = false;
     let scene: SystemScene | null = null;
-    void Promise.all([import('../../render/SystemScene.ts'), import('../../render/systemLayout.ts')]).then(
-      ([{ SystemScene }, { systemLayout }]) => {
-        if (disposed) return;
-        const { game: g, play: p } = latest.current;
-        const power = p ? powerOf(g, p.faction) : undefined;
-        const surveyed = power ? hasSurveyed(power, inside) : true;
-        const bodies = bodiesOf(world, g.seed, inside).filter((b) => surveyed || b.origin !== 'generated');
-        const layout = systemLayout(world.system(inside), bodies);
-        const labels = new Map<string, SceneLabel>();
-        for (const st of world.system(inside).sky.stars) labels.set(st.id, { text: st.name });
-        for (const b of bodies) {
-          const h = g.holdings.find((x) => x.body === b.id);
-          labels.set(b.id, h ? { text: b.name, held: FACTIONS[h.owner].colour } : { text: b.name });
-        }
-        v.suspend(true);
-        scene = new SystemScene(
-          v.gl,
-          v.host,
-          layout,
-          labels,
-          {
-            select: (id) => {
-              if (!id) return;
-              const isBody = bodies.some((b) => b.id === id);
-              selected.value = inside;
-              selectedShip.value = null;
-              selectedHolding.value = null;
-              selectedBody.value = isBody ? id : null;
-              scene?.setSelected(id);
-              scene?.focus(id);
-            },
+    const glide = v.glideInto(inside);
+    if (glide) setVeil((w) => ({ kind: 'in', n: (w?.n ?? 0) + 1 }));
+    void Promise.all([
+      import('../../render/SystemScene.ts'),
+      import('../../render/systemLayout.ts'),
+      new Promise((done) => setTimeout(done, glide)),
+    ]).then(([{ SystemScene }, { systemLayout }]) => {
+      if (disposed) return;
+      const { game: g, play: p } = latest.current;
+      const power = p ? powerOf(g, p.faction) : undefined;
+      const surveyed = power ? hasSurveyed(power, inside) : true;
+      const bodies = bodiesOf(world, g.seed, inside).filter((b) => surveyed || b.origin !== 'generated');
+      const layout = systemLayout(world.system(inside), bodies);
+      const labels = new Map<string, SceneLabel>();
+      for (const st of world.system(inside).sky.stars) labels.set(st.id, { text: st.name });
+      for (const b of bodies) {
+        const h = g.holdings.find((x) => x.body === b.id);
+        labels.set(b.id, h ? { text: b.name, held: FACTIONS[h.owner].colour } : { text: b.name });
+      }
+      v.suspend(true);
+      scene = new SystemScene(
+        v.gl,
+        v.host,
+        layout,
+        labels,
+        {
+          select: (id) => {
+            if (!id) return;
+            const isBody = bodies.some((b) => b.id === id);
+            selected.value = inside;
+            selectedShip.value = null;
+            selectedHolding.value = null;
+            selectedBody.value = isBody ? id : null;
+            scene?.setSelected(id);
+            scene?.focus(id);
           },
-          { reducedMotion: reducedMotion(), quality: quality() },
-        );
-        sceneRef.current = scene;
-        scene.setSelected(selectedBody.value);
-        updateStage();
-        if (new URLSearchParams(location.search).has('test'))
-          (window as unknown as { __system: SystemScene }).__system = scene;
-      },
-    );
+        },
+        { reducedMotion: reducedMotion(), quality: quality() },
+      );
+      sceneRef.current = scene;
+      scene.setSelected(selectedBody.value);
+      updateStage();
+      if (glide) setVeil((w) => ({ kind: 'out', n: (w?.n ?? 0) + 1 }));
+      if (new URLSearchParams(location.search).has('test'))
+        (window as unknown as { __system: SystemScene }).__system = scene;
+    });
     return () => {
       disposed = true;
       scene?.dispose();
       sceneRef.current = null;
       v.suspend(false);
+      // The map comes back up out of the dark.
+      if (!reducedMotion()) setVeil((w) => ({ kind: 'out', n: (w?.n ?? 0) + 1 }));
+      else setVeil(null);
     };
   }, [inside, world, ready]);
   // Leaving the system: choosing another, choosing where a ship goes.
@@ -643,6 +653,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   return (
     <div ref={root} class={`map-screen layout-${layout.value}${play ? ' is-playing' : ''}`}>
       <div ref={host} class="map-host" data-testid="map">
+        {veil && <div key={veil.n} class={`map-veil veil-${veil.kind}`} aria-hidden="true" />}
         {insideSystem.value && (
           <div class="system-bar" style={{ top: desktop ? '12px' : `${topHeight + 8}px` }} data-keep-clear>
             <button type="button" class="chip system-exit" onClick={() => (insideSystem.value = null)}>

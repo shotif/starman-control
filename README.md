@@ -27,8 +27,9 @@ anomalies your surveys find, and look inside any system in 3D, its stars and wor
 Starman Reborn. Saves (three slots, export and import) and settings (text size, reduced motion,
 quality) are in, and the game can be installed to a phone's home screen or a desktop and played
 offline. M1 is built, and the visual overhaul of [VISUAL_DIRECTION.md](docs/design/VISUAL_DIRECTION.md)
-has begun: the title is a live 3D scene of the real neighbourhood under the Milky Way, and each
-power has its picture, its leader's face and its emblem.
+has begun: the title is a live 3D scene of the real neighbourhood under the Milky Way, each
+power has its picture, its leader's face and its emblem, and the map lies under the Milky Way
+with each power's reach in its colour and light running along its lanes.
 
 ## Design documents
 
@@ -38,7 +39,7 @@ power has its picture, its leader's face and its emblem.
 | [docs/SCOPE.md](docs/SCOPE.md) | Draft scope of work: every feature area, what is in 1.0 and what is later, milestones |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Key decisions: the open questions, the options, a recommendation, and the owner's answers |
 | [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone, with its parts in detail: [planets](docs/design/M1_PLANETS.md), [ships and turns](docs/design/M1_TURNS.md), [colonies](docs/design/M1_COLONIES.md), [lanes, research and anomalies](docs/design/M1_LANES_RESEARCH.md), and [the system in 3D](docs/design/M1_SYSTEM_VIEW.md) |
-| [docs/design/VISUAL_DIRECTION.md](docs/design/VISUAL_DIRECTION.md) | The look: Control's console, what the best of the genre do, and the visual increments, starting with [the first impression](docs/design/FIRST_IMPRESSION.md) |
+| [docs/design/VISUAL_DIRECTION.md](docs/design/VISUAL_DIRECTION.md) | The look: Control's console, what the best of the genre do, and the visual increments, starting with [the first impression](docs/design/FIRST_IMPRESSION.md) and [the living map](docs/design/LIVING_MAP.md) |
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with Google Gemini, reviewed and recorded |
 | [docs/research/MASTER_OF_ORION_3.md](docs/research/MASTER_OF_ORION_3.md) | How *Master of Orion 3* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_REBORN_UNIVERSE.md](docs/research/STARMAN_REBORN_UNIVERSE.md) | What the Starman Reborn universe already establishes, and what we can reuse |

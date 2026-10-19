@@ -16,6 +16,7 @@ import { OrbitController } from './camera.ts';
 import { GestureTracker } from './gestures.ts';
 import { createLabelBox, type LabelBox, layoutLabels, pickLabelAt, pickNearestPoint } from './labels.ts';
 import {
+  cloneOrbit,
   createScreenPoint,
   fitOrbitDistance,
   ORBIT_LIMITS,
@@ -31,6 +32,14 @@ import {
   worldPerPixel,
 } from './mapMath.ts';
 import { labelPriority, type MapContent, type MapHolding } from './mapModel.ts';
+import {
+  type BackgroundStars,
+  type BakedSky,
+  bakeMilkyWay,
+  createBackgroundStars,
+  createSkyBackdrop,
+  type SkyBackdrop,
+} from './milkyWay.ts';
 
 export type ViewMode = 'flat' | '3d';
 
@@ -63,24 +72,57 @@ export interface MapViewEvents {
 const STAR_VERTEX = `
 attribute float size;
 attribute vec3 tint;
+attribute float spikes;
 uniform float scale;
 varying vec3 vTint;
+varying float vSpikes;
 void main() {
   vTint = tint;
+  vSpikes = spikes;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   gl_PointSize = size * scale;
 }`;
 
+// A bright core, a soft halo, and four faint spikes on the brightest kinds (LIVING_MAP.md §2).
 const STAR_FRAGMENT = `
 varying vec3 vTint;
+varying float vSpikes;
 void main() {
   vec2 p = gl_PointCoord * 2.0 - 1.0;
   float d = length(p);
   if (d > 1.0) discard;
-  float core = 1.0 - smoothstep(0.2, 0.34, d);
-  float glow = exp(-d * d * 6.0) * 0.5;
-  vec3 col = mix(vTint, vec3(1.0), core * 0.55);
-  gl_FragColor = vec4(col, max(core, glow));
+  float core = 1.0 - smoothstep(0.16, 0.3, d);
+  float glow = exp(-d * d * 5.0) * 0.55 + exp(-d * 2.6) * 0.16;
+  float spikes = (exp(-abs(p.x) * 38.0) * exp(-abs(p.y) * 3.4) + exp(-abs(p.y) * 38.0) * exp(-abs(p.x) * 3.4)) * 0.5 * vSpikes;
+  float edge = 1.0 - smoothstep(0.75, 1.0, d);
+  vec3 col = mix(vTint, vec3(1.0), core * 0.6);
+  gl_FragColor = vec4(col, max(core, (glow + spikes) * edge));
+}`;
+
+/** Each power's reach (LIVING_MAP.md §4): a soft disc of its colour round each system it holds, facing the camera. */
+const FIELD_VERTEX = `
+attribute vec3 centre;
+attribute vec3 tint;
+attribute float radius;
+varying vec2 vCorner;
+varying vec3 vTint;
+void main() {
+  vCorner = position.xy;
+  vTint = tint;
+  vec4 mv = modelViewMatrix * vec4(centre, 1.0);
+  mv.xy += position.xy * radius;
+  gl_Position = projectionMatrix * mv;
+}`;
+
+const FIELD_FRAGMENT = `
+uniform float strength;
+varying vec2 vCorner;
+varying vec3 vTint;
+void main() {
+  float r = length(vCorner);
+  if (r > 1.0) discard;
+  float a = smoothstep(1.0, 0.0, r);
+  gl_FragColor = vec4(vTint * a * a * strength, 1.0);
 }`;
 
 /** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle). */
@@ -90,6 +132,7 @@ attribute vec3 tint;
 attribute float shape;
 attribute float weight;
 uniform float scale;
+uniform float pulse;
 varying vec3 vTint;
 varying float vShape;
 varying float vWeight;
@@ -98,7 +141,7 @@ void main() {
   vShape = shape;
   vWeight = weight;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  gl_PointSize = size * scale;
+  gl_PointSize = size * scale * pulse;
 }`;
 
 const MARK_FRAGMENT = `
@@ -212,6 +255,17 @@ export class MapView {
   private darkLanes!: LineSegments2;
   private tuningLanes!: LineSegments2;
   private drops!: THREE.LineSegments;
+  private fields!: THREE.Mesh;
+  private sparks!: LineSegments2;
+  private readonly fieldMaterial: THREE.ShaderMaterial;
+  private readonly sparkMaterial: LineMaterial;
+  private sky: { baked: BakedSky; backdrop: SkyBackdrop; stars: BackgroundStars } | null = null;
+  private quality: 'low' | 'medium' | 'high' = 'medium';
+  /** A change waits to be drawn (the camera, the content): drawn at once, not at the ambient rate. */
+  private dirty = false;
+  /** Seconds of ambient motion: the sparks, the creeping dashes, the breathing ring. */
+  private clock = 0;
+  private selectedAt = 0;
   private readonly starMaterial: THREE.ShaderMaterial;
   private readonly markMaterial: THREE.ShaderMaterial;
   private readonly highlightMaterial: THREE.ShaderMaterial;
@@ -278,10 +332,41 @@ export class MapView {
       depthWrite: false,
     };
     this.markMaterial = this.own(
-      new THREE.ShaderMaterial({ ...markOptions, uniforms: { scale: { value: 1 }, opacity: { value: 0.95 } } }),
+      new THREE.ShaderMaterial({
+        ...markOptions,
+        uniforms: { scale: { value: 1 }, opacity: { value: 0.95 }, pulse: { value: 1 } },
+      }),
     );
     this.highlightMaterial = this.own(
-      new THREE.ShaderMaterial({ ...markOptions, uniforms: { scale: { value: 1 }, opacity: { value: 1 } } }),
+      new THREE.ShaderMaterial({
+        ...markOptions,
+        uniforms: { scale: { value: 1 }, opacity: { value: 1 }, pulse: { value: 1 } },
+      }),
+    );
+    this.fieldMaterial = this.own(
+      new THREE.ShaderMaterial({
+        uniforms: { strength: { value: 0.2 } },
+        vertexShader: FIELD_VERTEX,
+        fragmentShader: FIELD_FRAGMENT,
+        transparent: true,
+        depthTest: false,
+        depthWrite: false,
+        // Fields of one power join where they meet instead of brightening (LIVING_MAP.md §4).
+        blending: THREE.CustomBlending,
+        blendEquation: THREE.MaxEquation,
+      }),
+    );
+    this.sparkMaterial = this.own(
+      new LineMaterial({
+        linewidth: 4,
+        vertexColors: true,
+        worldUnits: false,
+        dashed: true,
+        dashSize: 0.1,
+        gapSize: 1,
+        transparent: true,
+        opacity: 0.95,
+      }),
     );
     this.shipMaterial = this.own(
       new THREE.ShaderMaterial({
@@ -419,6 +504,8 @@ export class MapView {
       this.tuningLanes,
       this.darkLanes,
       this.drops,
+      this.fields,
+      this.sparks,
     ]) {
       if (!o) continue;
       this.scene.remove(o);
@@ -432,16 +519,19 @@ export class MapView {
     const pos = new Float32Array(systems.length * 3);
     const tint = new Float32Array(systems.length * 3);
     const size = new Float32Array(systems.length);
+    const spikes = new Float32Array(systems.length);
     systems.forEach((s, i) => {
       pos.set(s.pos, i * 3);
       colour.set(s.colour);
       tint.set([colour.r, colour.g, colour.b], i * 3);
-      size[i] = s.sizePx * 2.8;
+      size[i] = s.sizePx * 3.2;
+      spikes[i] = s.sizePx >= 11 ? 1 : s.sizePx >= 10 ? 0.45 : 0;
     });
     const starGeometry = new THREE.BufferGeometry();
     starGeometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     starGeometry.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
     starGeometry.setAttribute('size', new THREE.BufferAttribute(size, 1));
+    starGeometry.setAttribute('spikes', new THREE.BufferAttribute(spikes, 1));
     this.stars = new THREE.Points(starGeometry, this.starMaterial);
     this.stars.renderOrder = 3;
 
@@ -510,10 +600,15 @@ export class MapView {
       this.own(new THREE.LineBasicMaterial({ color: COLOURS.grid, transparent: true, opacity: 0.07 })),
     );
 
+    this.fields = this.buildFields(holdings, systems);
+    this.sparks = this.buildSparks(lanes, holdings, systems);
+
     this.scene.add(
+      this.fields,
       this.darkLanes,
       this.openLanes,
       this.tuningLanes,
+      this.sparks,
       this.drops,
       this.marks,
       this.stars,
@@ -522,6 +617,82 @@ export class MapView {
     this.points = systems.map(() => createScreenPoint());
     this.buildLabels();
     this.updateHighlight();
+  }
+
+  /** A soft field of its power's colour round each system a power holds, larger at a capital. */
+  private buildFields(holdings: readonly MapHolding[], systems: MapContent['systems']): THREE.Mesh {
+    const geometry = new THREE.InstancedBufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0], 3));
+    geometry.setIndex([0, 1, 2, 0, 2, 3]);
+    const n = Math.max(1, holdings.length);
+    const centre = new Float32Array(n * 3);
+    const tint = new Float32Array(n * 3);
+    const radius = new Float32Array(n);
+    const colour = new THREE.Color();
+    holdings.forEach((h, i) => {
+      centre.set(systems[this.index.get(h.system) ?? 0]?.pos ?? [0, 0, 0], i * 3);
+      colour.set(h.colour).toArray(tint, i * 3);
+      radius[i] = h.capital ? 4.4 : 3.2;
+    });
+    geometry.setAttribute('centre', new THREE.InstancedBufferAttribute(centre, 3));
+    geometry.setAttribute('tint', new THREE.InstancedBufferAttribute(tint, 3));
+    geometry.setAttribute('radius', new THREE.InstancedBufferAttribute(radius, 1));
+    geometry.instanceCount = holdings.length;
+    const mesh = new THREE.Mesh(geometry, this.fieldMaterial);
+    mesh.frustumCulled = false;
+    mesh.renderOrder = -10;
+    mesh.visible = holdings.length > 0;
+    return mesh;
+  }
+
+  /**
+   * Sparks along each power's open lanes (LIVING_MAP.md §3), every lane drawn from the end nearer
+   * the power's capital through its own lanes, so the light runs outward from home.
+   */
+  private buildSparks(
+    lanes: MapContent['lanes'],
+    holdings: readonly MapHolding[],
+    systems: MapContent['systems'],
+  ): LineSegments2 {
+    const open = lanes.filter((l) => l.status === 'open' && l.owner);
+    const hops = new Map<string, number>();
+    for (const h of holdings) {
+      if (!h.capital) continue;
+      const own = open.filter((l) => l.owner === h.faction);
+      const queue = [h.system];
+      hops.set(`${h.faction} ${h.system}`, 0);
+      for (let i = 0; i < queue.length; i++) {
+        const at = queue[i] as SystemId;
+        const d = hops.get(`${h.faction} ${at}`) ?? 0;
+        for (const l of own) {
+          const next = l.a === at ? l.b : l.b === at ? l.a : null;
+          if (!next || hops.has(`${h.faction} ${next}`)) continue;
+          hops.set(`${h.faction} ${next}`, d + 1);
+          queue.push(next);
+        }
+      }
+    }
+    const pos: number[] = [];
+    const col: number[] = [];
+    const colour = new THREE.Color();
+    for (const l of open) {
+      const far = (id: SystemId) => hops.get(`${l.owner} ${id}`) ?? 99;
+      const [a, b] = far(l.a) <= far(l.b) ? [l.a, l.b] : [l.b, l.a];
+      pos.push(
+        ...(systems[this.index.get(a) ?? 0]?.pos ?? [0, 0, 0]),
+        ...(systems[this.index.get(b) ?? 0]?.pos ?? [0, 0, 0]),
+      );
+      colour.set(l.owner ? FACTIONS[l.owner].colour : '#ffffff').lerp(new THREE.Color(1, 1, 1), 0.45);
+      col.push(colour.r, colour.g, colour.b, colour.r, colour.g, colour.b);
+    }
+    const geometry = new LineSegmentsGeometry();
+    geometry.setPositions(pos.length ? pos : [0, 0, 0, 0, 0, 0]);
+    geometry.setColors(col.length ? col : [0, 0, 0, 0, 0, 0]);
+    const line = new LineSegments2(geometry, this.sparkMaterial);
+    line.computeLineDistances();
+    line.visible = open.length > 0;
+    line.renderOrder = 1;
+    return line;
   }
 
   private markPoints(
@@ -735,14 +906,55 @@ export class MapView {
   /** Asks for a frame; nothing is drawn while nothing changes. */
   invalidate(labels = true): void {
     if (labels) this.labelsDirty = true;
-    if (!this.frame) this.frame = requestAnimationFrame((t) => this.draw(t));
+    this.dirty = true;
+    this.schedule();
+  }
+
+  private schedule(): void {
+    if (!this.frame && !this.suspended) this.frame = requestAnimationFrame((t) => this.draw(t));
+  }
+
+  /** Whether anything moves on its own (LIVING_MAP.md §6): never with reduced motion. */
+  get animating(): boolean {
+    return (
+      !this.controller.reducedMotion && (this.sparks.visible || this.tuningLanes.visible || this.selected !== null)
+    );
+  }
+
+  /** The baked sky and its faint stars, made at the first frame and again when the quality changes. */
+  private ensureSky(): NonNullable<MapView['sky']> {
+    if (this.sky) return this.sky;
+    const baked = bakeMilkyWay(this.renderer, this.quality);
+    const backdrop = createSkyBackdrop(baked.texture, 0.6);
+    const stars = createBackgroundStars({ quality: this.quality, dpr: this.dpr, twinkle: false });
+    this.scene.add(backdrop.mesh, stars.points);
+    this.sky = { baked, backdrop, stars };
+    this.container.dataset.sky = 'yes';
+    return this.sky;
+  }
+
+  private dropSky(): void {
+    if (!this.sky) return;
+    this.scene.remove(this.sky.backdrop.mesh, this.sky.stars.points);
+    this.sky.backdrop.dispose();
+    this.sky.stars.dispose();
+    this.sky.baked.dispose();
+    this.sky = null;
   }
 
   private draw(time: number): void {
     this.frame = 0;
     if (this.suspended) return;
+    // Only the ambient motion is running: at most 30 frames a second.
+    if (!this.dirty && this.lastTime && time - this.lastTime < 30) {
+      this.schedule();
+      return;
+    }
+    this.dirty = false;
     const dt = this.lastTime ? Math.min(0.1, (time - this.lastTime) / 1000) : 1 / 60;
     this.lastTime = time;
+    const still = this.controller.reducedMotion;
+    if (!still) this.clock += dt;
     const shifting = this.easeCentre(dt);
     const moving = this.controller.update(dt) || shifting;
     const camera = this.updateCamera();
@@ -763,6 +975,21 @@ export class MapView {
       m.gapSize = 6 * k;
     }
     this.drops.visible = this.mode === '3d';
+    // Sparks of about 7 px every 70 px, running outward at 36 px a second; the tuning dashes creep.
+    this.sparkMaterial.dashSize = 7 * k;
+    this.sparkMaterial.gapSize = 64 * k;
+    this.sparkMaterial.dashOffset = -this.clock * 36 * k;
+    this.tuningMaterial.dashOffset = -this.clock * 6 * k;
+    // The chosen system's ring settles in from larger, then breathes.
+    const breathe = still ? 0 : Math.sin(this.clock * 2.4);
+    const settle = still ? 0 : Math.exp(-(this.clock - this.selectedAt) * 9);
+    this.highlightMaterial.uniforms.pulse.value = 1 + 0.5 * settle + 0.04 * breathe;
+    this.highlightMaterial.uniforms.opacity.value = 0.88 + 0.12 * breathe;
+    this.fieldMaterial.uniforms.strength.value = 0.4;
+    const sky = this.ensureSky();
+    sky.backdrop.setStrength(this.mode === '3d' ? 0.62 : 0.45);
+    sky.backdrop.update(camera, MAP_FOV_DEG, this.width / this.height);
+    sky.stars.update(camera, this.clock, MAP_FOV_DEG, this.width / this.height);
     this.renderer.render(this.scene, camera);
     if (this.controller.version !== this.drawnVersion || this.labelsDirty || shifting) {
       this.project();
@@ -772,6 +999,7 @@ export class MapView {
     }
     this.container.dataset.ready = '1';
     if (moving) this.invalidate();
+    else if (this.animating) this.schedule();
   }
 
   private project(): void {
@@ -794,7 +1022,10 @@ export class MapView {
     if (first) this.centre = this.stageCentre();
     this.renderer.setPixelRatio(this.dpr);
     this.renderer.setSize(w, h, false);
+    const skyDpr = (this.sky?.stars.points.material as THREE.ShaderMaterial | undefined)?.uniforms.uDpr;
+    if (skyDpr) skyDpr.value = this.dpr;
     this.openMaterial.resolution.set(w, h);
+    this.sparkMaterial.resolution.set(w, h);
     this.darkMaterial.resolution.set(w, h);
     this.tuningMaterial.resolution.set(w, h);
     for (const m of Object.values(this.routeMaterials)) m.resolution.set(w, h);
@@ -880,12 +1111,18 @@ export class MapView {
   // ---------------------------------------------------------------- the system view
 
   private suspended = false;
+  /** Where the camera was before it glided into a system, to come back to. */
+  private beforeGlide: OrbitState | null = null;
   /** Sharpest pixel ratio drawn: lower on the low quality setting. */
   private maxDpr = 2;
 
   /** The settings that change how the map draws (M1_PROOF.md §1). */
   configure(opts: { reducedMotion: boolean; quality: 'low' | 'medium' | 'high' }): void {
     this.controller.reducedMotion = opts.reducedMotion;
+    if (opts.quality !== this.quality) {
+      this.quality = opts.quality;
+      this.dropSky();
+    }
     const dpr = opts.quality === 'low' ? 1 : 2;
     if (dpr !== this.maxDpr) {
       this.maxDpr = dpr;
@@ -913,9 +1150,25 @@ export class MapView {
       this.gestures.releaseAll();
       this.setHover(null, 0, 0);
     } else {
+      if (this.beforeGlide) this.controller.jumpTo(this.beforeGlide);
+      this.beforeGlide = null;
       this.lastTime = 0;
       this.invalidate();
     }
+  }
+
+  /**
+   * Glides in on a system before its system view opens (LIVING_MAP.md §5): how long that takes, in
+   * milliseconds, or 0 with reduced motion. The map comes back where it was when it is resumed.
+   */
+  glideInto(id: SystemId): number {
+    const s = this.content.systems[this.index.get(id) ?? -1];
+    if (!s || this.controller.reducedMotion) return 0;
+    this.beforeGlide = cloneOrbit(this.controller.current);
+    const distance = Math.max(0.9, Math.min(2.4, this.controller.current.distance * 0.3));
+    this.controller.transitionTo({ target: [...s.pos], distance }, 0.07);
+    this.invalidate();
+    return 340;
   }
 
   private setHover(id: SystemId | null, x: number, y: number): void {
@@ -953,8 +1206,22 @@ export class MapView {
       this.controller.isAnimating ||
       Math.abs(c.x - this.centre.x) > 0.5 ||
       Math.abs(c.y - this.centre.y) > 0.5 ||
-      this.frame !== 0
+      this.dirty
     );
+  }
+
+  /** Where the camera is, for tests. */
+  get orbit(): OrbitState {
+    return cloneOrbit(this.controller.current);
+  }
+
+  /** How many fields of a power's reach, and lanes with sparks, are drawn: for tests. */
+  get fieldCount(): number {
+    return this.fields.visible ? (this.fields.geometry as THREE.InstancedBufferGeometry).instanceCount : 0;
+  }
+
+  get sparkCount(): number {
+    return this.sparks.visible ? (this.sparks.geometry as LineSegmentsGeometry).instanceCount : 0;
   }
 
   /** Which labels are showing, for tests. */
@@ -975,6 +1242,7 @@ export class MapView {
   setSelected(id: SystemId | null): void {
     if (id === this.selected) return;
     this.selected = id;
+    this.selectedAt = this.clock;
     this.updateHighlight();
     this.invalidate();
   }
@@ -1172,8 +1440,11 @@ export class MapView {
       this.tuningLanes,
       this.darkLanes,
       this.drops,
+      this.fields,
+      this.sparks,
     ])
       o.geometry.dispose();
+    this.dropSky();
     for (const child of this.grid.children) (child as THREE.LineLoop).geometry.dispose();
     this.ships?.geometry.dispose();
     for (const line of this.routeLines) line.geometry.dispose();

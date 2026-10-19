@@ -128,10 +128,11 @@
   animation-delay: 0.3s;
 }
 
+/* Opacity and a scale about the middle, so a card is where it will be even before it has risen. */
 @keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: scale(0.96);
   }
 }
 

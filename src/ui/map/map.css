@@ -870,3 +870,32 @@
   border-left: 3px solid var(--held);
   padding-left: 0.3rem;
 }
+
+/* The veil while the map glides into a system and the system comes up (LIVING_MAP.md §5). */
+.map-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(4, 7, 14, 0.7), #02040a 70%);
+}
+
+.veil-in {
+  animation: veil-in 0.32s ease-in both;
+}
+
+.veil-out {
+  animation: veil-out 0.55s ease-out both;
+}
+
+@keyframes veil-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes veil-out {
+  to {
+    opacity: 0;
+  }
+}
