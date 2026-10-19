@@ -73,7 +73,8 @@ export function openaiRequest(req: ImageRequest, key: string): HttpCall {
 }
 
 // Gemini's Interactions API, which its image guide documents. `store: false` keeps Google from
-// holding the request for later retrieval.
+// holding the request for later retrieval. Its image models return JPEG only: asking for PNG is
+// refused with a 400 (seen 19 October 2026), and approval re-encodes to WebP anyway.
 export function geminiRequest(req: ImageRequest, key: string): HttpCall {
   return {
     url: 'https://generativelanguage.googleapis.com/v1beta/interactions',
@@ -83,7 +84,7 @@ export function geminiRequest(req: ImageRequest, key: string): HttpCall {
       body: JSON.stringify({
         model: req.model,
         input: [{ type: 'text', text: req.prompt }],
-        response_format: { type: 'image', mime_type: 'image/png', aspect_ratio: req.aspect, image_size: '2K' },
+        response_format: { type: 'image', mime_type: 'image/jpeg', aspect_ratio: req.aspect, image_size: '2K' },
         store: false,
       }),
     },
@@ -109,7 +110,7 @@ export function parseGemini(json: unknown): GeneratedImage {
     .map((b) => b.text)
     .join(' ')
     .trim();
-  return { bytes: fromBase64(image.data), mimeType: image.mime_type ?? 'image/png', note: text || undefined };
+  return { bytes: fromBase64(image.data), mimeType: image.mime_type ?? 'image/jpeg', note: text || undefined };
 }
 
 /** A cheap call that proves a key works without making a picture: list the provider's models. */

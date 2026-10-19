@@ -19,7 +19,7 @@ import {
 const root = resolve(import.meta.dirname, '../..');
 const candidateArg = process.argv[2];
 if (!candidateArg) {
-  console.error('Name the candidate picture to approve, e.g. art/out/<brief>/<file>.png');
+  console.error('Name the candidate picture to approve, e.g. art/out/<brief>/<file>.jpg');
   process.exit(1);
 }
 const candidate = resolve(root, candidateArg);

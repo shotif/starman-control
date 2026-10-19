@@ -28,6 +28,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-20 | The M1 start: year, capitals, traits | Decided 2026-10-19 | 2176; Earth, Tau Ceti, Wolf 1061; the draft traits |
 | D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
 | D-22 | The technology stack | Decided 2026-10-19 | **the web platform, with Preact + Signals for the interface** and Biome; see [D-22](#d-22--the-technology-stack--decided) |
+| D-23 | Art direction and image model, from the style test | Open | see [D-23](#d-23--art-direction-and-image-model--open) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -217,6 +218,31 @@ changes (the simulation, data, three.js map and saves do not depend on it), and 
 nothing. Set up the same day: Preact 10.29.8 (the mature line; move to 11 once it has settled),
 Signals 2.11.3, Biome 2.5.15 in `npm run check` and CI, and the placeholder title rebuilt as a
 Preact component.
+
+### D-23 · Art direction and image model — **Open**
+
+The style test ([ART_PIPELINE.md](ART_PIPELINE.md#style-test-the-next-step)) was run on
+19 October 2026: the four style-test briefs, two candidates each from both Gemini models, 16
+pictures for about $1.50. The owner was sent the four contact sheets. No picture is approved into
+the game until this is answered.
+
+What the two models did with the same prompts:
+
+| | `gemini-nano-banana-2.1` (default, about $0.05) | `gemini-3-pro-image` (premium, about $0.13) |
+| --- | --- | --- |
+| Look | smoother, finely detailed, close to a digital painting; the cyan rim light and star field as asked | looser, more visible brushwork, more like a painting; more atmosphere and cyan accents |
+| Following the brief | closely: the cargo ship lifts off on a thin trail, the relic dwarfs the ship | freer: ships hover rather than lift off; one portrait adds a desk and a window |
+| Faults | none seen | painted letters ("ST") on the officer's insignia, against the "no text" rule; black letterbox bars painted into three of the eight pictures |
+
+| Option | What it means |
+| --- | --- |
+| **A. Keep the draft style; `gemini-nano-banana-2.1` for everything** | cheapest and most reliable; add "letterbox bars" to what to avoid and ask for insignia as plain shapes |
+| B. Keep the style; `gemini-3-pro-image` for portraits, the default for illustrations | the more painterly portraits, at about $0.08 more each, with more pictures to discard for stray letters |
+| C. `gemini-3-pro-image` for everything | the most painterly; the faults above in both series |
+| D. Change the style | say what to change (brighter, more stylised, more photographic…) and the test is run again |
+
+**Recommendation: A.** The style works on a phone (one clear subject, dark ground, readable at
+thumbnail size), and the default model kept to the brief and to the rules every time.
 
 ## Round 2: needed later
 

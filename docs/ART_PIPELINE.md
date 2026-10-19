@@ -5,7 +5,10 @@ How Starman Control makes its portraits and illustrations with **Google Gemini**
 
 **Status, 19 October 2026:** the owner has put `GEMINI_API_KEY` in the cloud environment, so new
 Claude Code sessions can generate. An OpenAI key cannot be provided for now; the scripts still
-support OpenAI should one ever be added, and simply skip it while it has no key.
+support OpenAI should one ever be added, and simply skip it while it has no key. The style test
+has been run and the owner is choosing a direction and a model ([D-23](DECISIONS.md#d-23--art-direction-and-image-model--open)).
+Gemini's image models return JPEG only (asking for PNG is refused), so Gemini candidates are
+`.jpg`; approval re-encodes every picture to WebP.
 
 ## Principles
 
@@ -69,13 +72,13 @@ npm run art:generate -- --brief style-test-relic --count 3
 npm run art:generate -- --brief style-test-relic --provider gemini --model gemini-3-pro-image
 ```
 
-Candidates are written to `art/out/<brief>/` (ignored by git) as `<time>-<model>-<n>.png`, each
+Candidates are written to `art/out/<brief>/` (ignored by git) as `<time>-<model>-<n>.jpg` (or `.png`), each
 with a `.json` record of how it was made. Lay them side by side, look, then approve the one you
 want:
 
 ```bash
 npm run art:sheet                                         # art/out/sheets/<brief>.jpg, lettered A, B, C…
-npm run art:approve -- art/out/style-test-relic/20261019-153000-gemini-nano-banana-2.1-2.png
+npm run art:approve -- art/out/style-test-relic/20261019-153000-gemini-nano-banana-2.1-2.jpg
 npm run art:check                                         # also part of npm run check
 ```
 

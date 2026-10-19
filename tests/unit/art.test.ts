@@ -148,7 +148,7 @@ describe('providers', () => {
     expect(JSON.parse(String(call.init.body))).toEqual({
       model: 'm',
       input: [{ type: 'text', text: 'a relic' }],
-      response_format: { type: 'image', mime_type: 'image/png', aspect_ratio: '3:2', image_size: '2K' },
+      response_format: { type: 'image', mime_type: 'image/jpeg', aspect_ratio: '3:2', image_size: '2K' },
       store: false,
     });
   });
