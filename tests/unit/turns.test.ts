@@ -51,8 +51,8 @@ describe('moving along lanes', () => {
   it('costs 1 jump point for a lane up to 6 ly and 2 beyond; the Wake has one more a turn', () => {
     expect(laneCost(60)).toBe(1);
     expect(laneCost(61)).toBe(2);
-    expect(jumpPoints('sta')).toBe(2);
-    expect(jumpPoints('hollow-wake')).toBe(3);
+    expect(jumpPoints(start('sta'), 'sta')).toBe(2);
+    expect(jumpPoints(start('hollow-wake'), 'hollow-wake')).toBe(3);
   });
 
   it('takes a long lane only with the points left for it', () => {

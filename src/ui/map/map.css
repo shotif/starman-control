@@ -184,6 +184,22 @@
   backdrop-filter: blur(8px);
 }
 
+.is-playing .map-bottom {
+  grid-template-columns: repeat(3, 1fr) 1.25fr;
+}
+
+.map-view-switch {
+  position: absolute;
+  right: var(--gutter-right);
+  z-index: 3;
+}
+
+.map-view-switch .toggle-option {
+  min-width: 48px;
+  min-height: 40px;
+  background: rgba(5, 9, 18, 0.85);
+}
+
 .bar-button {
   min-height: 48px;
   border: 1px solid var(--panel-border);
@@ -414,6 +430,11 @@
   border: 1px solid var(--panel-border);
   background: rgba(5, 9, 18, 0.97);
   clip-path: var(--cut);
+}
+
+.popover.menu-popover {
+  right: 12px;
+  width: 240px;
 }
 
 .layout-phone .keys-popover {

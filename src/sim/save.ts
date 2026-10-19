@@ -107,6 +107,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   },
   /** 3 → 4 (M1 increment 6a): lanes can be built and relit. Nothing saved before changes shape. */
   3: (g) => ({ ...g, version: 4 }),
+  /** 4 → 5 (M1 increment 6b): research. Every power starts with nothing researched. */
+  4: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, researched: [], researchQueue: [], techProgress: {} }));
+    return { ...g, version: 5, powers };
+  },
 };
 
 function migrate(game: Record<string, unknown>): Record<string, unknown> {

@@ -7,13 +7,14 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { type ShipType, STARTING_FLEET, shipName } from '../content/ships.ts';
+import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 4;
+export const STATE_VERSION = 5;
 
 export interface Stockpile {
   metals: number;
@@ -31,6 +32,12 @@ export interface PowerState {
   surveyed: SystemId[];
   /** Ships it has ever had, for naming the next. */
   shipsBuilt: number;
+  /** Technologies researched, in the order they were finished (M1_LANES_RESEARCH.md §2). */
+  researched: TechId[];
+  /** Technologies to research, first first; each after what it needs. */
+  researchQueue: TechId[];
+  /** Points put into technologies not yet finished; kept when the queue changes. */
+  techProgress: Partial<Record<TechId, number>>;
 }
 
 /**
@@ -187,6 +194,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       stockpile: { ...RULES.start.stockpile },
       surveyed: [FACTIONS[p.faction].capital.systemId],
       shipsBuilt: 0,
+      researched: [],
+      researchQueue: [],
+      techProgress: {},
     })),
     lanes,
     ships: [],

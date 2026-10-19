@@ -6,13 +6,15 @@ import { RULES } from '../content/rules.ts';
 import { SHIPS } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { ceilDiv } from './geometry.ts';
+import { effects } from './research.ts';
 import type { GameState, ShipState } from './state.ts';
 import { type LaneId, laneEnds, type World } from './world.ts';
 
-/** Jump points a power's ships have each turn: 2, plus any trait (the Wake's +1). */
-export function jumpPoints(faction: FactionId): number {
+/** Jump points a power's ships have each turn: 2, plus any trait (the Wake's +1) and Jump tuning. */
+export function jumpPoints(state: GameState, faction: FactionId): number {
   let points = RULES.movement.jumpPoints;
   for (const t of FACTIONS[faction].traits) if (t.effect.kind === 'extra-jump-points') points += t.effect.points;
+  for (const e of effects(state, faction, 'jump-points')) points += e.points;
   return points;
 }
 
@@ -140,13 +142,13 @@ export function previewMove(
     path.push(...leg);
     at = d;
   }
-  const plan = planJourney(path, jumpPoints(ship.owner));
+  const plan = planJourney(path, jumpPoints(state, ship.owner));
   return { ...plan, jumps: path.length };
 }
 
-/** How far a power's survey ships can jump without a lane (research extends it in increment 6). */
-export function blindReachDeci(_state: GameState, _owner: FactionId): number {
-  return RULES.blindJump.reachDeci;
+/** How far a power's survey ships can jump without a lane: 6 ly, and 2 more for each Lane engineering. */
+export function blindReachDeci(state: GameState, owner: FactionId): number {
+  return RULES.blindJump.reachDeci + effects(state, owner, 'reach').reduce((sum, e) => sum + e.deci, 0);
 }
 
 /** Turns a blind jump takes: one for every 3 ly, rounded up. */

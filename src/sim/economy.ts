@@ -6,11 +6,12 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS, type ShipType } from '../content/ships.ts';
-import { SPECIES } from '../content/species.ts';
 import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
+import { ceilDiv } from './geometry.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
+import { effects, speciesFor } from './research.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile } from './state.ts';
 import type { World } from './world.ts';
 
@@ -35,7 +36,7 @@ export function capacityOf(world: World, state: GameState, h: Holding): number {
   if (h.kind !== 'colony') return 0;
   if (h.capital) return RULES.capital.capacity;
   const body = bodyOf(world, state, h);
-  return body ? habitability(body, SPECIES[FACTIONS[h.owner].species]).capacity * 10 : 0;
+  return body ? habitability(body, speciesFor(state, h.owner)).capacity * 10 : 0;
 }
 
 /** A colony's industry a turn: 1 for each whole unit of people, the capital's, the traits'. An outpost's own, for lanes. */
@@ -98,6 +99,10 @@ export function yieldsOf(
     if (y.fuel) parts.push({ label: 'the capital', value: y.fuel, resource: 'fuel' });
   }
   if (h.projects.includes('mine')) parts.push({ label: 'its mine', value: 1, resource: 'metals' });
+  const mainOf = body ? mainResource(body) : null;
+  if (h.kind === 'outpost' && mainOf)
+    for (const e of effects(state, h.owner, 'outpost-yield'))
+      parts.push({ label: 'automated mining', value: e.amount, resource: mainOf });
   const total: Stockpile = { metals: 0, volatiles: 0, fuel: 0 };
   for (const p of parts) total[p.resource] += p.value;
   return { total, parts };
@@ -120,9 +125,12 @@ export function incomeOf(world: World, state: GameState, faction: FactionId): St
 export function growthOf(world: World, state: GameState, h: Holding): number {
   const cap = capacityOf(world, state, h);
   if (h.kind !== 'colony' || h.people >= cap || cap === 0) return 0;
-  let rate = RULES.colonies.growthPercent;
-  for (const t of FACTIONS[h.owner].traits)
-    if (t.effect.kind === 'growth-percent') rate += Math.floor((rate * t.effect.percent) / 100);
+  // The traits' and technologies' percentages add up, then apply to the base rate.
+  const base = RULES.colonies.growthPercent;
+  let percent = 0;
+  for (const t of FACTIONS[h.owner].traits) if (t.effect.kind === 'growth-percent') percent += t.effect.percent;
+  for (const e of effects(state, h.owner, 'growth-percent')) percent += e.percent;
+  const rate = base + Math.floor((base * percent) / 100);
   const grow = Math.floor((h.people * (cap - h.people) * rate) / (cap * 100));
   return Math.min(cap - h.people, Math.max(1, grow));
 }
@@ -146,9 +154,10 @@ export function settleRefusal(
   if (state.ships.some((s) => s.founding?.body === bodyId && s.owner === faction))
     return `Another ship is already founding on ${body.name}.`;
   if (kind === 'outpost') return null;
-  const h = habitability(body, SPECIES[FACTIONS[faction].species]);
+  const h = habitability(body, speciesFor(state, faction));
   if (h.level === 'uninhabitable') return `Your people cannot live on ${body.name}.`;
-  if (h.level === 'harsh') return `${body.name} is harsh: your people need habitat domes, a technology, to live there.`;
+  if (h.level === 'harsh' && effects(state, faction, 'settle-harsh').length === 0)
+    return `${body.name} is harsh: your people need habitat domes, a technology, to live there.`;
   return null;
 }
 
@@ -168,7 +177,20 @@ export function settleable(
 /** What an item costs where it is queued: a ship's or project's own cost, or the lane's. */
 export function costOf(world: World, state: GameState, h: Holding, item: QueueItem): Cost {
   if (item.kind === 'lane') return laneQuote(world, state, h.owner, h.system, item.to).cost;
-  return itemCost(item);
+  const c = { ...itemCost(item) };
+  if (item.kind === 'ship') {
+    for (const e of effects(state, h.owner, 'ship-industry-discount'))
+      c.industry = ceilDiv(c.industry * (100 - e.percent), 100);
+    for (const e of effects(state, h.owner, 'ship-discount')) {
+      if (e.ship !== item.ship) continue;
+      const keep = 100 - e.percent;
+      c.industry = ceilDiv(c.industry * keep, 100);
+      c.metals = ceilDiv(c.metals * keep, 100);
+      c.volatiles = ceilDiv(c.volatiles * keep, 100);
+      c.fuel = ceilDiv(c.fuel * keep, 100);
+    }
+  }
+  return c;
 }
 
 /** Why a colony or outpost cannot queue an item, or null (M1_COLONIES.md §3, M1_LANES_RESEARCH.md §1). */

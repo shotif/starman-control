@@ -4,9 +4,7 @@
 // yields, then each power's report. Pure: the same world and state always give the same result, on
 // every device.
 
-import { FACTIONS } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
-import { SPECIES } from '../content/species.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
 import { capacityOf, costOf, growthOf, industryOf, settleRefusal, yieldsOf } from './economy.ts';
@@ -14,6 +12,7 @@ import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import type { ReportEvent } from './report.ts';
+import { effects, researchOf, speciesFor, spendResearch } from './research.ts';
 import {
   type GameState,
   hasSurveyed,
@@ -48,7 +47,7 @@ function moveShip(world: World, state: GameState, ship: ShipState, events: Repor
     }
     return;
   }
-  let points = jumpPoints(ship.owner);
+  let points = jumpPoints(state, ship.owner);
   while (ship.destinations.length > 0 && ship.at !== null) {
     const dest = ship.destinations[0] as SystemId;
     if (ship.at === dest) {
@@ -93,11 +92,12 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // then colonies and outposts founded.
   const survey = (power: PowerState, system: SystemId, by: { ship?: number; station?: number }) => {
     if (!markSurveyed(power, system)) return;
-    const species = SPECIES[FACTIONS[power.faction].species];
+    const species = speciesFor(state, power.faction);
+    const domes = effects(state, power.faction, 'settle-harsh').length > 0;
     const bodies = bodiesOf(world, state.seed, system);
     const habitable = bodies.filter((b) => {
       const level = habitability(b, species).level;
-      return level === 'comfortable' || level === 'tolerable';
+      return level === 'comfortable' || level === 'tolerable' || (domes && level === 'harsh');
     });
     (events.get(power.faction) as ReportEvent[]).push({
       kind: 'surveyed',
@@ -113,7 +113,22 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   for (const h of state.holdings) {
     if (!h.projects.includes('survey-station')) continue;
     const power = powerOf(state, h.owner);
-    for (const hop of lanesFor(world, state, h.owner).get(h.system) ?? []) survey(power, hop.to, { station: h.id });
+    // One open lane out, or as many as Long-baseline arrays allow, nearest first.
+    const reach = Math.max(1, ...effects(state, h.owner, 'survey-station-lanes').map((e) => e.lanes));
+    const graph = lanesFor(world, state, h.owner);
+    let ring = [h.system];
+    const seen = new Set<SystemId>(ring);
+    for (let step = 0; step < reach; step++) {
+      const next: SystemId[] = [];
+      for (const at of ring)
+        for (const hop of graph.get(at) ?? []) {
+          if (seen.has(hop.to)) continue;
+          seen.add(hop.to);
+          next.push(hop.to);
+          survey(power, hop.to, { station: h.id });
+        }
+      ring = next;
+    }
   }
   const usedUp = new Set<number>();
   for (const ship of state.ships) {
@@ -189,7 +204,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     }
   }
 
-  // 4. Research arrives with increment 6.
+  // 4. Research: each power's points go into its research queue.
+  for (const p of state.powers) {
+    const done = spendResearch(p, researchOf(state, p.faction).total);
+    for (const tech of done) (events.get(p.faction) as ReportEvent[]).push({ kind: 'researched', tech });
+  }
 
   // 5. Growth, then what every holding yields.
   for (const h of state.holdings) {

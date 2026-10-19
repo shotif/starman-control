@@ -2,6 +2,7 @@
 // interface words.
 
 import type { BuildItem } from '../content/projects.ts';
+import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import type { LaneId } from './world.ts';
 
@@ -29,6 +30,8 @@ export type ReportEvent =
   | { kind: 'lane-begun'; holding: number; to: SystemId; relight: boolean; turns: number }
   /** A lane tuned and open. */
   | { kind: 'lane-opened'; lane: LaneId }
+  /** A technology researched. */
+  | { kind: 'researched'; tech: TechId }
   /** A queued lane that could not be begun when it was paid for, and why. */
   | { kind: 'lane-refused'; holding: number; to: SystemId; reason: string }
   /** A colony has grown to fill its room. */

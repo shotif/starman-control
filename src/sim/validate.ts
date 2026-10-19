@@ -4,6 +4,7 @@
 import { isFactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { SHIPS } from '../content/ships.ts';
+import { isTechId, TECHS } from '../content/techs.ts';
 import { bodiesOf } from './bodies.ts';
 import { beaconSlots, type GameState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
@@ -34,6 +35,12 @@ export function shapeProblems(raw: unknown): string[] {
       if (typeof p.capital !== 'string') out.push(`power ${i} has no capital`);
       if (!isStrings(p.surveyed)) out.push(`power ${i} surveyed systems are not a list`);
       if (!isWhole(p.shipsBuilt)) out.push(`power ${i} ships built is not a whole number`);
+      if (!Array.isArray(p.researched) || !p.researched.every(isTechId))
+        out.push(`power ${i} has researched unknown technologies`);
+      if (!Array.isArray(p.researchQueue) || !p.researchQueue.every(isTechId))
+        out.push(`power ${i} queues unknown technologies`);
+      if (!isRecord(p.techProgress) || !Object.entries(p.techProgress).every(([k, v]) => isTechId(k) && isWhole(v, 1)))
+        out.push(`power ${i} has progress in unknown technologies`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -116,6 +123,19 @@ export function stateProblems(world: World, state: GameState): string[] {
       if (s <= prev) out.push(`${p.faction}'s surveys are out of order or listed twice`);
       prev = s;
     }
+  }
+  for (const p of state.powers) {
+    const seen = new Set<string>(p.researched);
+    if (seen.size !== p.researched.length) out.push(`${p.faction} researched a technology twice`);
+    for (const id of p.researchQueue) {
+      if (seen.has(id)) out.push(`${p.faction} queues ${id}, which is researched or queued already`);
+      for (const n of TECHS[id].needs)
+        if (!seen.has(n)) out.push(`${p.faction} queues ${id} before ${n}, which it needs`);
+      seen.add(id);
+    }
+    for (const [id, v] of Object.entries(p.techProgress))
+      if (p.researched.includes(id as never) || (v ?? 0) >= TECHS[id as keyof typeof TECHS].cost)
+        out.push(`${p.faction} has progress in ${id}, which is done`);
   }
   const used = new Map<string, number>();
   let previous = '';

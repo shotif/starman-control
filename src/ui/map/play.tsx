@@ -6,6 +6,7 @@ import { useState } from 'preact/hooks';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { itemName } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
+import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
@@ -237,12 +238,16 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'lane-refused':
       return `${holding(e.holding)} could not begin the lane to ${name(e.to)}: ${e.reason}`;
+    case 'researched':
+      return `Researched ${TECHS[e.tech].name}: ${TECHS[e.tech].text}`;
   }
 }
 
-/** Where a report item leads: the colony it is about, or its system. */
-function eventPlace(e: ReportEvent): { holding: number } | { system: SystemId } {
+/** Where a report item leads: the colony it is about, its system, or the research screen. */
+function eventPlace(e: ReportEvent): { holding: number } | { system: SystemId } | { research: true } {
   switch (e.kind) {
+    case 'researched':
+      return { research: true };
     case 'jumped':
       return { system: e.to };
     case 'built':
@@ -266,6 +271,7 @@ export function ReportView({
   needs,
   onGo,
   onHolding,
+  onResearch,
 }: {
   world: World;
   game: GameState;
@@ -273,6 +279,7 @@ export function ReportView({
   needs: number;
   onGo: (id: SystemId) => void;
   onHolding: (id: number) => void;
+  onResearch: () => void;
 }) {
   const r = game.reports.find((x) => x.faction === faction);
   return (
@@ -290,6 +297,7 @@ export function ReportView({
                 onClick={() => {
                   const place = eventPlace(e);
                   if ('holding' in place) onHolding(place.holding);
+                  else if ('research' in place) onResearch();
                   else onGo(place.system);
                 }}
               >
@@ -338,7 +346,11 @@ export function NeedsStack({
             <p>{needText(world, game, need)}</p>
             <div class="needs-actions">
               <button type="button" class="button button-primary" onClick={() => onNeed(need)}>
-                {need.kind === 'idle-ship' ? 'Give orders' : 'Open the colony'}
+                {need.kind === 'idle-ship'
+                  ? 'Give orders'
+                  : need.kind === 'no-research'
+                    ? 'Choose research'
+                    : 'Open the colony'}
               </button>
               <button type="button" class="button button-quiet" onClick={() => setAt(at + 1)}>
                 Skip

@@ -21,6 +21,7 @@ import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { findRoute } from '../../sim/movement.ts';
 import type { Need } from '../../sim/needs.ts';
+import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
@@ -41,6 +42,7 @@ import {
   shipStatus,
   TargetBar,
 } from './play.tsx';
+import { ResearchView } from './research.tsx';
 import {
   failed,
   hover,
@@ -177,9 +179,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     view.current?.setSelected(h.system);
     view.current?.focus(h.system);
   }, []);
+  const openResearch = useCallback(() => {
+    targeting.value = null;
+    panel.value = 'research';
+  }, []);
   const onNeed = useCallback(
-    (n: Need) => (n.kind === 'idle-ship' ? pickShip(n.ship) : pickHolding(n.holding)),
-    [pickShip, pickHolding],
+    (n: Need) =>
+      n.kind === 'idle-ship' ? pickShip(n.ship) : n.kind === 'no-research' ? openResearch() : pickHolding(n.holding),
+    [pickShip, pickHolding, openResearch],
   );
 
   /** A star chosen on the map: a destination while choosing one, else a system to look at. */
@@ -383,7 +390,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const p = latest.current.play;
     if (!p || p.needs.length === 0) return;
     const i = p.needs.findIndex((n) =>
-      n.kind === 'idle-ship' ? n.ship === selectedShip.value : n.holding === selectedHolding.value,
+      n.kind === 'idle-ship'
+        ? n.ship === selectedShip.value
+        : n.kind === 'no-research'
+          ? panel.value === 'research'
+          : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -422,6 +433,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'n' && p) nextIdle();
       else if (k === 'r' && p) panel.value = panel.value === 'report' ? null : 'report';
       else if (k === 'p' && p) panel.value = panel.value === 'empire' ? null : 'empire';
+      else if (k === 't' && p) panel.value = panel.value === 'research' ? null : 'research';
       else if (k === 'm' && p && selectedShip.value !== null)
         targeting.value = { ship: selectedShip.value, blind: false, to: null };
       else if (k === 'Escape') {
@@ -470,6 +482,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       onGo={go}
       onCentre={() => view.current?.focus(id)}
       surveyed={power ? hasSurveyed(power, id) : true}
+      species={play ? speciesFor(game, play.faction) : undefined}
       ships={shipsAt(id)}
       onShip={pickShip}
       holdings={game.holdings
@@ -489,6 +502,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const holdingView = (h: NonNullable<typeof holding>) => (
     <HoldingPanel key={h.id} world={world} game={game} holding={h} play={play} table={desktop} onGo={go} />
   );
+  const research = play && <ResearchView game={game} faction={play.faction} play={play} table={desktop} />;
   const empire = play && (
     <EmpireView
       world={world}
@@ -508,6 +522,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       needs={play.needs.length}
       onGo={go}
       onHolding={pickHolding}
+      onResearch={openResearch}
     />
   );
   const keys = play ? [...PLAY_SHORTCUTS, ...SHORTCUTS] : SHORTCUTS;
@@ -565,16 +580,20 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           <>
             <SearchBox world={world} onPick={go} />
             <ViewToggle mode={modeNow} onChange={setMode} />
-            <button
-              type="button"
-              class="chip"
-              onClick={() => (panel.value = panel.value === 'legend' ? null : 'legend')}
-            >
-              Legend
-            </button>
-            <a class="chip" href="#/codex">
-              Codex
-            </a>
+            {!play && (
+              <>
+                <button
+                  type="button"
+                  class="chip"
+                  onClick={() => (panel.value = panel.value === 'legend' ? null : 'legend')}
+                >
+                  Legend
+                </button>
+                <a class="chip" href="#/codex">
+                  Codex
+                </a>
+              </>
+            )}
             <button
               type="button"
               class="chip"
@@ -593,8 +612,21 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 >
                   Empire
                 </button>
-                <button type="button" class="chip" onClick={() => void play.leave()}>
-                  Save and leave
+                <button
+                  type="button"
+                  class="chip"
+                  aria-pressed={panel.value === 'research'}
+                  onClick={() => (panel.value = panel.value === 'research' ? null : 'research')}
+                >
+                  Research
+                </button>
+                <button
+                  type="button"
+                  class="chip"
+                  aria-pressed={panel.value === 'menu'}
+                  onClick={() => (panel.value = panel.value === 'menu' ? null : 'menu')}
+                >
+                  Menu
                 </button>
                 <button
                   type="button"
@@ -679,6 +711,36 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         </aside>
       )}
 
+      {desktop && play && panel.value === 'research' && (
+        <div class="research-overlay" role="dialog" aria-label="Research">
+          <button
+            type="button"
+            class="button button-quiet button-small research-close"
+            onClick={() => (panel.value = null)}
+          >
+            Close
+          </button>
+          {research}
+        </div>
+      )}
+      {desktop && play && panel.value === 'menu' && (
+        <div class="popover menu-popover" role="dialog" aria-label="Menu">
+          <nav class="menu-list">
+            <button type="button" class="button" onClick={() => void play.leave()}>
+              Save and leave
+            </button>
+            <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
+              Legend
+            </button>
+            <a class="button button-quiet" href="#/codex">
+              Codex
+            </a>
+            <button type="button" class="button button-quiet" onClick={() => (panel.value = 'keys')}>
+              Keys
+            </button>
+          </nav>
+        </div>
+      )}
       {desktop && panel.value === 'legend' && (
         <div class="popover legend-popover" role="dialog" aria-label="Legend">
           <Legend />
@@ -716,7 +778,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               >
                 Empire
               </button>
-              <ViewToggle mode={modeNow} onChange={setMode} />
+              <button
+                type="button"
+                class="bar-button"
+                onClick={() => (panel.value = panel.value === 'research' ? null : 'research')}
+              >
+                Research
+              </button>
               <button type="button" class="bar-button bar-primary" disabled={play.resolving} onClick={askEndTurn}>
                 {endLabel}
                 {play.needs.length > 0 && <span class="needs-count-badge">{play.needs.length}</span>}
@@ -755,6 +823,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
       {!desktop && play && <TargetBar world={world} game={game} play={play} />}
 
+      {!desktop && play && (
+        <div class="map-view-switch" style={{ top: `${topHeight + 8}px` }} data-keep-clear>
+          <ViewToggle mode={modeNow} onChange={setMode} />
+        </div>
+      )}
+
       {!desktop &&
         !targeting.value &&
         (() => {
@@ -785,6 +859,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             );
           if (play && panel.value === 'report') return sheet('Report', report, close, 'report');
           if (play && panel.value === 'empire') return sheet('Empire', empire, close, 'empire');
+          if (play && panel.value === 'research') return sheet('Research', research, close, 'research');
           if (play && panel.value === 'menu')
             return sheet(
               'Menu',
@@ -996,7 +1071,9 @@ function PlayOutliner({
       ) : (
         <ul class="needs-list">
           {play.needs.map((n) => (
-            <li key={n.kind === 'idle-ship' ? `s${n.ship}` : `${n.kind}-${n.holding}`}>
+            <li
+              key={n.kind === 'idle-ship' ? `s${n.ship}` : n.kind === 'no-research' ? n.kind : `${n.kind}-${n.holding}`}
+            >
               <button type="button" class="outliner-item" onClick={() => onNeed(n)}>
                 {needText(world, game, n)}
               </button>

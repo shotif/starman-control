@@ -5,6 +5,15 @@
   font-size: 0.85em;
 }
 
+.res-science {
+  border: 2px solid #c9a5ff;
+  transform: rotate(45deg);
+}
+
+.layout-phone .res-research {
+  display: none;
+}
+
 .res-income {
   color: #7fe7a3;
   font-size: 0.85em;
@@ -310,7 +319,7 @@
   text-decoration: underline;
 }
 
-.empire-popover {
+.popover.empire-popover {
   top: 12px;
   right: auto;
   left: 12px;

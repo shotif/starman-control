@@ -82,11 +82,11 @@ test.describe('a game', () => {
       await newGame(page, power, info.project.name);
       await expect(page.locator('.map-date')).toHaveText('Q1 2176');
       await expect(page.getByLabel('Stockpile')).toContainText('40');
-      // The capital is in the middle of the map; four ships need orders, and the idle shipyard.
+      // The capital is in the middle of the map; four ships need orders, the idle shipyard and research.
       expect(
         await starAt(page, capital === 'Sol' ? 'sol' : capital === 'Tau Ceti' ? 'tau-ceti' : 'wolf-1061'),
       ).not.toBeNull();
-      await expect(page.locator('.needs-count-badge').first()).toHaveText('5');
+      await expect(page.locator('.needs-count-badge').first()).toHaveText('6');
       await chooseShip(page, first, info.project.name);
       await expect(page.getByText(`Idle at ${capital}`).first()).toBeVisible();
       expect(errors).toEqual([]);
@@ -118,9 +118,9 @@ test.describe('a game', () => {
       await page.getByRole('button', { name: /End turn/ }).tap();
       // Three ships are still idle, and the shipyard: they come first, as cards.
       const needs = page.getByRole('dialog', { name: 'What needs you' });
-      await expect(needs).toContainText('1 of 4 need you');
+      await expect(needs).toContainText('1 of 5 need you');
       await needs.getByRole('button', { name: 'Skip' }).tap();
-      await expect(needs).toContainText('2 of 4');
+      await expect(needs).toContainText('2 of 5');
       await needs.getByRole('button', { name: /End turn anyway/ }).tap();
       await expect(page.getByRole('dialog', { name: 'Report' })).toContainText('Juniper surveyed Luyten 726-8');
     }
@@ -222,8 +222,8 @@ test.describe('colonies', () => {
     await expect(panel).toContainText('Industry 12 = 10 from people + 2 from the capital');
     await press(panel.getByRole('button', { name: 'Queue a survey ship' }), project);
     await expect(panel).toContainText('in about 3 turns');
-    // The shipyard is busy now: four ships still need orders.
-    await expect(page.locator('.needs-count-badge').first()).toHaveText('4');
+    // The shipyard is busy now: four ships and research still need you.
+    await expect(page.locator('.needs-count-badge').first()).toHaveText('5');
     await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
     await expect(panel.getByRole('button', { name: 'Queue a mine' })).toBeDisabled();
     await expect(panel).toContainText('A mine is already queued.');
@@ -252,6 +252,32 @@ test.describe('colonies', () => {
     for (let i = 0; i < 5; i++) await endTurn(page, project);
     await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
       'Tau Ceti e has paid for a new lane to Epsilon Eridani: its beacons are tuned for 3 turns.',
+    );
+  });
+});
+
+test.describe('research', () => {
+  test('researches a technology from the tree, and the report says so', async ({ page }, info) => {
+    const project = info.project.name;
+    await newGame(page, 'Lead the Transit Authority', project);
+    if (isDesktop(project)) await page.keyboard.press('t');
+    else await page.getByRole('button', { name: 'Research', exact: true }).tap();
+    const screen = page.getByRole('dialog', { name: 'Research' });
+    await expect(screen).toContainText('Research 5 a turn = from 10 million people × ½');
+    await expect(screen).toContainText('Nothing is being researched');
+    await expect(page.locator('.needs-count-badge').first()).toHaveText('6');
+    // Lane engineering II brings Lane engineering I with it.
+    await press(screen.getByRole('button', { name: 'Queue Lane engineering II', exact: true }), project);
+    await expect(screen.locator('.research-queue')).toContainText('Lane engineering I');
+    await expect(screen.locator('.research-queue')).toContainText('Lane engineering II');
+    await press(screen.getByRole('button', { name: 'Research Deep survey now' }), project);
+    await expect(screen.locator('.research-queue li').first()).toContainText('Deep survey');
+    await expect(screen.locator('.research-queue li').first()).toContainText('done in about 6 turns');
+    await expect(page.locator('.needs-count-badge').first()).toHaveText('5');
+    if (!isDesktop(project)) await page.getByRole('button', { name: 'Close' }).first().tap();
+    for (let i = 0; i < 6; i++) await endTurn(page, project);
+    await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
+      'Researched Deep survey: Investigating an anomaly takes one turn less',
     );
   });
 });

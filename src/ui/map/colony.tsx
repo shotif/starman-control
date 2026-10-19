@@ -7,7 +7,6 @@ import { useState } from 'preact/hooks';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { type Cost, itemName, PROJECTS, type QueueItem } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
-import { SPECIES } from '../../content/species.ts';
 import type { SystemId } from '../../data/types.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import {
@@ -29,6 +28,7 @@ import { formatLy } from '../../sim/geometry.ts';
 import { habitability } from '../../sim/habitability.ts';
 import { laneQuote, laneTargets } from '../../sim/lanes.ts';
 import type { Need } from '../../sim/needs.ts';
+import { researchOf, speciesFor } from '../../sim/research.ts';
 import { type GameState, type Holding, powerOf, type ShipState, type Stockpile } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
@@ -93,6 +93,7 @@ export function incomeHelp(world: World, game: GameState, faction: FactionId, r:
 export function Resources({ world, game, faction }: { world: World; game: GameState; faction: FactionId }) {
   const s = powerOf(game, faction).stockpile;
   const income = incomeOf(world, game, faction);
+  const research = researchOf(game, faction);
   const item = (r: Resource, cls: string) => (
     <li title={incomeHelp(world, game, faction, r)}>
       <span class={`res-icon ${cls}`} aria-hidden="true" />
@@ -106,6 +107,11 @@ export function Resources({ world, game, faction }: { world: World; game: GameSt
       {item('metals', 'res-metals')}
       {item('volatiles', 'res-volatiles')}
       {item('fuel', 'res-fuel')}
+      <li class="res-research" title={`Research a turn ${research.parts.map((p) => p.label).join(', ')}`}>
+        <span class="res-icon res-science" aria-hidden="true" />
+        <b>{research.total}</b>
+        <span class="res-name"> research a turn</span>
+      </li>
     </ul>
   );
 }
@@ -458,7 +464,7 @@ export function Founding({ world, game, ship, play }: { world: World; game: Game
   }
   if (!powerOf(game, ship.owner).surveyed.includes(at))
     return <p class="dim">{system} has not been surveyed: survey it to find the worlds this ship could settle.</p>;
-  const species = SPECIES[FACTIONS[ship.owner].species];
+  const species = speciesFor(game, ship.owner);
   const open = bodies.filter((b) => settleRefusal(world, game, ship.owner, at, b.id, kind) === null);
   return (
     <section class="founding" aria-label={kind === 'colony' ? 'Found a colony' : 'Found an outpost'}>
@@ -505,6 +511,7 @@ function outpostYield(riches: Stockpile): string {
 
 /** What a need says, and what choosing it opens. */
 export function needText(world: World, game: GameState, need: Need): string {
+  if (need.kind === 'no-research') return 'Nothing is being researched.';
   const where = world.system(need.system).name;
   if (need.kind === 'idle-ship') {
     const s = game.ships.find((x) => x.id === need.ship);

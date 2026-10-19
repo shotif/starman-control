@@ -7,6 +7,7 @@ import type { Cost } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { ceilDiv, formatLy } from './geometry.ts';
+import { effects } from './research.ts';
 import { beaconSlots, type GameState } from './state.ts';
 import { laneEnds, laneId, type World } from './world.ts';
 
@@ -21,19 +22,13 @@ export interface LaneQuote {
   turns: number;
 }
 
-/** How far a power can build a new lane. */
-export function laneReachDeci(_state: GameState, _faction: FactionId): number {
-  return RULES.lanes.reachDeci;
+/** How far a power can build a new lane: 6 ly, and 2 more for each Lane engineering. */
+export function laneReachDeci(state: GameState, faction: FactionId): number {
+  return RULES.lanes.reachDeci + effects(state, faction, 'reach').reduce((sum, e) => sum + e.deci, 0);
 }
 
 /** What a lane from one star to another costs, new or relit. */
-export function laneQuote(
-  world: World,
-  _state: GameState,
-  _faction: FactionId,
-  from: SystemId,
-  to: SystemId,
-): LaneQuote {
+export function laneQuote(world: World, state: GameState, faction: FactionId, from: SystemId, to: SystemId): LaneQuote {
   const old = world.catalogueLane(from, to);
   const lengthDeci = old?.lengthDeci ?? world.distanceDeci(from, to);
   const r = RULES.lanes;
@@ -49,6 +44,12 @@ export function laneQuote(
     cost.metals = ceilDiv(cost.metals, 2);
     cost.fuel = ceilDiv(cost.fuel, 2);
     turns = ceilDiv(turns, 2);
+  }
+  for (const e of effects(state, faction, 'lane-discount')) {
+    const keep = 100 - e.percent;
+    cost.industry = ceilDiv(cost.industry * keep, 100);
+    cost.metals = ceilDiv(cost.metals * keep, 100);
+    cost.fuel = ceilDiv(cost.fuel * keep, 100);
   }
   return { from, to, lengthDeci, relight: old !== undefined, cost, turns };
 }

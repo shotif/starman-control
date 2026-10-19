@@ -4,6 +4,7 @@
 import type { FactionId } from '../content/factions.ts';
 import type { SystemId } from '../data/types.ts';
 import { costOf, settleable } from './economy.ts';
+import { canResearch } from './research.ts';
 import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
@@ -13,7 +14,9 @@ export type Need =
   /** A colony with a shipyard building nothing. */
   | { kind: 'idle-yard'; holding: number; system: SystemId }
   /** A colony's first item has its industry but waits for resources. */
-  | { kind: 'waiting'; holding: number; system: SystemId };
+  | { kind: 'waiting'; holding: number; system: SystemId }
+  /** Nothing is being researched, and there is something to research. */
+  | { kind: 'no-research' };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
@@ -36,5 +39,7 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
     if (h.industry >= c.industry && (stock.metals < c.metals || stock.volatiles < c.volatiles || stock.fuel < c.fuel))
       out.push({ kind: 'waiting', holding: h.id, system: h.system });
   }
+  const power = powerOf(state, faction);
+  if (power.researchQueue.length === 0 && canResearch(power).length > 0) out.push({ kind: 'no-research' });
   return out;
 }

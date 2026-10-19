@@ -3,6 +3,7 @@ import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/faction
 import type { QueueItem } from '../../src/content/projects.ts';
 import { RULES } from '../../src/content/rules.ts';
 import { SPECIES } from '../../src/content/species.ts';
+import { TECHS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import type { SystemId } from '../../src/data/types.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
@@ -17,10 +18,12 @@ import {
   yieldsOf,
 } from '../../src/sim/economy.ts';
 import { habitability } from '../../src/sim/habitability.ts';
+import { laneTargets } from '../../src/sim/lanes.ts';
 import { findRoute } from '../../src/sim/movement.ts';
 import { needsOf } from '../../src/sim/needs.ts';
 import { applyOrder, type Order, refuse } from '../../src/sim/orders.ts';
 import type { ReportEvent } from '../../src/sim/report.ts';
+import { canResearch } from '../../src/sim/research.ts';
 import { exportSave, parseSave } from '../../src/sim/save.ts';
 import {
   beaconSlots,
@@ -422,7 +425,13 @@ function growerOrders(state: GameState, faction: FactionId): Order[] {
     orders.push({ type: kind === 'colony' ? 'colonise' : 'found-outpost', ship: s.id, body: best.id });
   }
   for (const h of state.holdings) {
-    if (h.owner !== faction || h.kind !== 'colony' || h.queue.length > 0) continue;
+    if (h.owner !== faction || h.queue.length > 0) continue;
+    // Outposts push lanes out: the nearest one they can queue.
+    if (h.kind === 'outpost') {
+      const lane = laneTargets(world, state, faction, h.system).find((t) => t.refusal === null);
+      if (lane) orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.quote.to } });
+      continue;
+    }
     const wants: QueueItem[] = [
       { kind: 'project', project: 'mine' },
       { kind: 'ship', ship: 'colony' },
@@ -432,6 +441,11 @@ function growerOrders(state: GameState, faction: FactionId): Order[] {
     ];
     const item = wants.find((w) => refuse(world, state, faction, { type: 'queue', holding: h.id, item: w }) === null);
     if (item) orders.push({ type: 'queue', holding: h.id, item });
+  }
+  // Research the cheapest technology it can, when nothing is queued.
+  if (power.researchQueue.length === 0) {
+    const next = canResearch(power).sort((a, b) => TECHS[a].cost - TECHS[b].cost || (a < b ? -1 : 1))[0];
+    if (next) orders.push({ type: 'research', tech: next });
   }
   return orders;
 }
@@ -452,13 +466,15 @@ function grow(faction: FactionId, seed: number, n: number, given?: Order[][]) {
 
 describe('a scripted player that grows', () => {
   for (const f of FACTION_IDS) {
-    it(`plays 50 turns as ${f}: founds colonies and outposts, grows and builds, and replays exactly`, () => {
+    it(`plays 50 turns as ${f}: founds colonies and outposts, grows, builds, researches and lays lanes, and replays exactly`, () => {
       const first = grow(f, 42, 50);
       const mine = first.state.holdings.filter((h) => h.owner === f);
       expect(mine.filter((h) => h.kind === 'colony').length).toBeGreaterThanOrEqual(2);
       expect(mine.filter((h) => h.kind === 'outpost').length).toBeGreaterThanOrEqual(1);
       expect(mine.reduce((sum, h) => sum + h.people, 0)).toBeGreaterThan(RULES.capital.people + 20);
       expect(powerOf(first.state, f).shipsBuilt).toBeGreaterThan(4);
+      expect(powerOf(first.state, f).researched.length).toBeGreaterThanOrEqual(5);
+      expect(first.state.lanes.filter((l) => l.owner === f).length).toBeGreaterThan(6);
       const again = grow(f, 42, 50, first.log);
       expect(again.state).toEqual(first.state);
       expect(parseSave(world, exportSave(first.state).json)).toEqual(first.state);

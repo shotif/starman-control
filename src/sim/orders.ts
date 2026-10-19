@@ -4,11 +4,13 @@
 
 import type { FactionId } from '../content/factions.ts';
 import type { QueueItem } from '../content/projects.ts';
+import { isTechId, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { queueRefusal, settleRefusal } from './economy.ts';
 import { formatLy } from './geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
-import type { GameState, ShipState } from './state.ts';
+import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
+import { type GameState, powerOf, type ShipState } from './state.ts';
 import type { World } from './world.ts';
 
 export type Order =
@@ -25,9 +27,14 @@ export type Order =
   /** A colony's or outpost's build queue: add an item at the end, take one out, or move one. */
   | { type: 'queue'; holding: number; item: QueueItem }
   | { type: 'unqueue'; holding: number; index: number }
-  | { type: 'reorder'; holding: number; from: number; to: number };
+  | { type: 'reorder'; holding: number; from: number; to: number }
+  /** Research a technology (and what it needs): after the rest of the queue, or `now`, first. */
+  | { type: 'research'; tech: TechId; now?: boolean }
+  /** Take a technology out of the research queue, with anything later that needs it. */
+  | { type: 'unresearch'; tech: TechId };
 
-type ShipOrder = Extract<Order, { ship: number }>;
+type HoldingOrder = Extract<Order, { holding: number }>;
+type ResearchOrder = Extract<Order, { tech: TechId }>;
 
 export type OrderResult = { ok: true; state: GameState } | { ok: false; reason: string };
 
@@ -38,12 +45,7 @@ function shipOf(state: GameState, faction: FactionId, id: number): ShipState | s
   return ship;
 }
 
-function holdingRefusal(
-  world: World,
-  state: GameState,
-  faction: FactionId,
-  order: Exclude<Order, ShipOrder>,
-): string | null {
+function holdingRefusal(world: World, state: GameState, faction: FactionId, order: HoldingOrder): string | null {
   const h = state.holdings.find((x) => x.id === order.holding);
   if (!h) return 'There is no such colony.';
   if (h.owner !== faction) return 'That colony is not yours.';
@@ -54,8 +56,15 @@ function holdingRefusal(
   return from >= 0 && from < h.queue.length && to >= 0 && to < h.queue.length ? null : 'Nothing is queued there.';
 }
 
+function researchOrderRefusal(state: GameState, faction: FactionId, order: ResearchOrder): string | null {
+  if (!isTechId(order.tech)) return 'There is no such technology.';
+  if (order.type === 'research') return researchRefusal(state, faction, order.tech);
+  return powerOf(state, faction).researchQueue.includes(order.tech) ? null : 'That is not being researched.';
+}
+
 /** Why an order cannot be given, or null if it can. */
 export function refuse(world: World, state: GameState, faction: FactionId, order: Order): string | null {
+  if ('tech' in order) return researchOrderRefusal(state, faction, order);
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -89,6 +98,12 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
   const reason = refuse(world, state, faction, order);
   if (reason) return { ok: false, reason };
   const next = structuredClone(state);
+  if ('tech' in order) {
+    const p = powerOf(next, faction);
+    p.researchQueue =
+      order.type === 'research' ? queueResearch(p, order.tech, order.now === true) : unqueueResearch(p, order.tech);
+    return { ok: true, state: next };
+  }
   if (!('ship' in order)) {
     const h = next.holdings.find((x) => x.id === order.holding);
     if (!h) return { ok: false, reason: 'There is no such colony.' };
