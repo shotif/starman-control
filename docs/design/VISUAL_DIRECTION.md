@@ -66,6 +66,8 @@ luminous and animated without pretending to be a web page.
 | 10 | **The living map** (built: [LIVING_MAP.md](LIVING_MAP.md)) | the Milky Way backdrop on the map; bloom (by quality); stars with glow; lanes that pulse; each power's territory as a soft field of its colour; animated selection; a glide into a system when it is entered |
 | 11 | **Control's console** (built: [CONSOLE.md](CONSOLE.md)) | the interface skin: glass panels with lit corners, an icon set, buttons as lit plates, motion for panels and numbers, the end of a turn as a sweep and the report as illustrated dispatches, and sound for the interface |
 
+| 12 | **In flight** (built: [IN_FLIGHT.md](IN_FLIGHT.md)) | ships seen flying the lanes they took when a turn ends; the system in 3D under the same Milky Way as the map and the title |
+
 Each is designed for the phone and the desktop together (D-04), deployed, and tested as before.
 
 ## Sources

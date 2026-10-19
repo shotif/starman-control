@@ -22,6 +22,7 @@ import {
   type ScreenPoint,
   type Vec3,
 } from './mapMath.ts';
+import { type BackgroundStars, createBackgroundStars, createSkyBackdrop, type SkyBackdrop } from './milkyWay.ts';
 import type { SystemLayout, V3 } from './systemLayout.ts';
 
 const FOV = 45;
@@ -73,6 +74,8 @@ export class SystemScene {
   private readonly basis = new THREE.Matrix4();
   private readonly detach: () => void;
   private readonly savedToneMapping: THREE.ToneMapping;
+  /** The map's Milky Way behind the system, when lent (IN_FLIGHT.md §2). */
+  private readonly sky: { backdrop: SkyBackdrop; stars: BackgroundStars } | null = null;
   private frame = 0;
   private lastTime = 0;
   private time = 0;
@@ -94,7 +97,7 @@ export class SystemScene {
     layout: SystemLayout,
     labels: ReadonlyMap<string, SceneLabel>,
     events: SystemSceneEvents,
-    opts: { reducedMotion: boolean; quality: ArtContext['quality'] },
+    opts: { reducedMotion: boolean; quality: ArtContext['quality']; sky?: THREE.CubeTexture },
   ) {
     this.renderer = renderer;
     this.canvas = renderer.domElement;
@@ -104,6 +107,18 @@ export class SystemScene {
     this.ctx = { quality: opts.quality, reducedMotion: opts.reducedMotion };
     this.savedToneMapping = renderer.toneMapping;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    if (opts.sky) {
+      const backdrop = createSkyBackdrop(opts.sky, 0.5);
+      const stars = createBackgroundStars({
+        quality: opts.quality,
+        dpr: renderer.getPixelRatio(),
+        twinkle: false,
+        brightness: 0.85,
+      });
+      this.scene.add(backdrop.mesh, stars.points);
+      this.sky = { backdrop, stars };
+      container.dataset.systemSky = 'yes';
+    }
     this.labelLayer = document.createElement('div');
     this.labelLayer.className = 'map-labels system-labels';
     this.labelLayer.setAttribute('aria-hidden', 'true');
@@ -396,6 +411,8 @@ export class SystemScene {
     const moving = this.controller.update(dt);
     this.settling = moving;
     this.updateCamera();
+    this.sky?.backdrop.update(this.camera, FOV, this.camera.aspect);
+    this.sky?.stars.update(this.camera, this.time, FOV, this.camera.aspect);
     for (const a of this.art) a.update?.(dt, this.time, this.camera);
     this.renderer.render(this.scene, this.camera);
     this.layoutLabels();
@@ -535,6 +552,9 @@ export class SystemScene {
       (o.material as THREE.Material).dispose();
     }
     this.renderer.toneMapping = this.savedToneMapping;
+    this.sky?.backdrop.dispose();
+    this.sky?.stars.dispose();
+    delete this.container.dataset.systemSky;
     this.labelLayer.remove();
   }
 }

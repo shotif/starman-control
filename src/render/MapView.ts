@@ -202,6 +202,36 @@ void main() {
   gl_FragColor = vec4(mix(body, vec3(0.02, 0.03, 0.06), edge), 1.0);
 }`;
 
+/** A ship in flight after a turn (IN_FLIGHT.md §1): a comet with a fading tail. */
+const FLYER_VERTEX = `
+attribute vec3 tint;
+attribute float fade;
+uniform float scale;
+varying vec3 vTint;
+varying float vFade;
+void main() {
+  vTint = tint;
+  vFade = fade;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  gl_PointSize = (5.0 + 17.0 * fade) * scale;
+}`;
+
+const FLYER_FRAGMENT = `
+varying vec3 vTint;
+varying float vFade;
+void main() {
+  vec2 p = gl_PointCoord * 2.0 - 1.0;
+  float d = length(p);
+  if (d > 1.0) discard;
+  float core = 1.0 - smoothstep(0.1, 0.35, d);
+  float glow = exp(-d * d * 4.0);
+  gl_FragColor = vec4(mix(vTint, vec3(1.0), core * 0.7), (core + glow * 0.6) * vFade);
+}`;
+
+/** Seconds a flight takes, and the comet's points: its head and a fading tail. */
+const FLIGHT_S = 1.5;
+const TAIL = 7;
+
 export interface ShipMark {
   /** Where it is: a system, or partway between two on a blind jump (0 to 1). */
   at: SystemId | null;
@@ -260,6 +290,10 @@ export class MapView {
   private readonly fieldMaterial: THREE.ShaderMaterial;
   private readonly sparkMaterial: LineMaterial;
   private sky: { baked: BakedSky; backdrop: SkyBackdrop; stars: BackgroundStars } | null = null;
+  private readonly flyerMaterial: THREE.ShaderMaterial;
+  private flights: { points: THREE.Vector3[]; along: number[] }[] = [];
+  private flyers: THREE.Points | null = null;
+  private flightStart = 0;
   private quality: 'low' | 'medium' | 'high' = 'medium';
   /** A change waits to be drawn (the camera, the content): drawn at once, not at the ambient rate. */
   private dirty = false;
@@ -354,6 +388,17 @@ export class MapView {
         // Fields of one power join where they meet instead of brightening (LIVING_MAP.md §4).
         blending: THREE.CustomBlending,
         blendEquation: THREE.MaxEquation,
+      }),
+    );
+    this.flyerMaterial = this.own(
+      new THREE.ShaderMaterial({
+        uniforms: { scale: { value: 1 } },
+        vertexShader: FLYER_VERTEX,
+        fragmentShader: FLYER_FRAGMENT,
+        transparent: true,
+        depthTest: false,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
       }),
     );
     this.sparkMaterial = this.own(
@@ -917,7 +962,8 @@ export class MapView {
   /** Whether anything moves on its own (LIVING_MAP.md §6): never with reduced motion. */
   get animating(): boolean {
     return (
-      !this.controller.reducedMotion && (this.sparks.visible || this.tuningLanes.visible || this.selected !== null)
+      !this.controller.reducedMotion &&
+      (this.sparks.visible || this.tuningLanes.visible || this.selected !== null || this.flyers !== null)
     );
   }
 
@@ -975,6 +1021,8 @@ export class MapView {
       m.gapSize = 6 * k;
     }
     this.drops.visible = this.mode === '3d';
+    this.flyerMaterial.uniforms.scale.value = this.dpr;
+    const flying = this.stepFlights();
     // Sparks of about 7 px every 70 px, running outward at 36 px a second; the tuning dashes creep.
     this.sparkMaterial.dashSize = 7 * k;
     this.sparkMaterial.gapSize = 64 * k;
@@ -999,7 +1047,101 @@ export class MapView {
     }
     this.container.dataset.ready = '1';
     if (moving) this.invalidate();
+    else if (flying) this.invalidate(false);
     else if (this.animating) this.schedule();
+  }
+
+  /**
+   * Ships fly the lanes they took when a turn ends (IN_FLIGHT.md §1): each path is the systems it
+   * passed through, start to end. Nothing flies with reduced motion.
+   */
+  flyShips(moves: readonly { path: readonly SystemId[]; colour: string }[]): void {
+    this.endFlights();
+    if (this.controller.reducedMotion) return;
+    const colours: THREE.Color[] = [];
+    for (const m of moves) {
+      const points: THREE.Vector3[] = [];
+      for (const id of m.path) {
+        const p = this.content.systems[this.index.get(id) ?? -1]?.pos;
+        if (p) points.push(new THREE.Vector3(p[0], p[1], p[2]));
+      }
+      if (points.length < 2) continue;
+      const along = [0];
+      for (let i = 1; i < points.length; i++)
+        along.push((along[i - 1] ?? 0) + (points[i] as THREE.Vector3).distanceTo(points[i - 1] as THREE.Vector3));
+      this.flights.push({ points, along });
+      colours.push(new THREE.Color(m.colour));
+    }
+    if (this.flights.length === 0) return;
+    const n = this.flights.length * TAIL;
+    const tint = new Float32Array(n * 3);
+    const fade = new Float32Array(n);
+    for (let i = 0; i < this.flights.length; i++)
+      for (let k = 0; k < TAIL; k++) {
+        (colours[i] as THREE.Color).toArray(tint, (i * TAIL + k) * 3);
+        fade[i * TAIL + k] = (1 - k / TAIL) ** 1.5;
+      }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
+    g.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
+    g.setAttribute('fade', new THREE.BufferAttribute(fade, 1));
+    this.flyers = new THREE.Points(g, this.flyerMaterial);
+    this.flyers.frustumCulled = false;
+    this.flyers.renderOrder = 6;
+    this.scene.add(this.flyers);
+    this.flightStart = this.clock;
+    this.stepFlights();
+    this.invalidate(false);
+  }
+
+  private endFlights(): void {
+    if (this.flyers) {
+      this.scene.remove(this.flyers);
+      this.flyers.geometry.dispose();
+    }
+    this.flyers = null;
+    this.flights = [];
+  }
+
+  /** Moves each comet along its path, easing in and out; false once they have all arrived. */
+  private stepFlights(): boolean {
+    if (!this.flyers) return false;
+    const t = (this.clock - this.flightStart) / FLIGHT_S;
+    if (t >= 1) {
+      this.endFlights();
+      return false;
+    }
+    const attr = this.flyers.geometry.getAttribute('position') as THREE.BufferAttribute;
+    const out = attr.array as Float32Array;
+    const v = new THREE.Vector3();
+    this.flights.forEach((f, i) => {
+      const total = f.along[f.along.length - 1] ?? 0;
+      for (let k = 0; k < TAIL; k++) {
+        const tk = Math.max(0, t - k * 0.03);
+        const eased = tk < 0.5 ? 4 * tk ** 3 : 1 - (-2 * tk + 2) ** 3 / 2;
+        const d = eased * total;
+        let seg = 1;
+        while (seg < f.along.length - 1 && (f.along[seg] ?? 0) < d) seg++;
+        const a = f.points[seg - 1] as THREE.Vector3;
+        const b = f.points[seg] as THREE.Vector3;
+        const start = f.along[seg - 1] ?? 0;
+        const length = (f.along[seg] ?? 0) - start;
+        v.copy(a).lerp(b, length > 0 ? Math.min(1, (d - start) / length) : 1);
+        v.toArray(out, (i * TAIL + k) * 3);
+      }
+    });
+    attr.needsUpdate = true;
+    return true;
+  }
+
+  /** How many ships are in flight after a turn, for tests. */
+  get flying(): number {
+    return this.flights.length;
+  }
+
+  /** The baked sky, lent to the system view so it sits under the same Milky Way (IN_FLIGHT.md §2). */
+  get skyTexture(): THREE.CubeTexture {
+    return this.ensureSky().baked.texture;
   }
 
   private project(): void {
@@ -1444,6 +1586,7 @@ export class MapView {
       this.sparks,
     ])
       o.geometry.dispose();
+    this.endFlights();
     this.dropSky();
     for (const child of this.grid.children) (child as THREE.LineLoop).geometry.dispose();
     this.ships?.geometry.dispose();

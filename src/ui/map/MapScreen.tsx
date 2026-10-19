@@ -333,7 +333,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             scene?.focus(id);
           },
         },
-        { reducedMotion: reducedMotion(), quality: quality() },
+        { reducedMotion: reducedMotion(), quality: quality(), sky: v.skyTexture },
       );
       sceneRef.current = scene;
       scene.setSelected(selectedBody.value);
@@ -490,6 +490,26 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     setSweep(game.turn);
     const t = setTimeout(() => setSweep(null), 1400);
     return () => clearTimeout(t);
+  }, [game.turn]);
+  // Ships fly the lanes they took when a turn ends (IN_FLIGHT.md §1).
+  const shipsBefore = useRef(new Map<number, SystemId | null>(game.ships.map((s) => [s.id, s.at])));
+  const turnOfShips = useRef(game.turn);
+  useEffect(() => {
+    const g = latest.current.game;
+    const before = shipsBefore.current;
+    const next = g.turn === turnOfShips.current + 1;
+    turnOfShips.current = g.turn;
+    shipsBefore.current = new Map(g.ships.map((s) => [s.id, s.at]));
+    const v = view.current;
+    if (!next || !v || !latest.current.play) return;
+    const moves: { path: SystemId[]; colour: string }[] = [];
+    for (const s of g.ships) {
+      const from = before.get(s.id);
+      if (!from || !s.at || from === s.at) continue;
+      const hops = findRoute(world, g, s.owner, from, s.at);
+      moves.push({ path: hops ? [from, ...hops.map((h) => h.to)] : [from, s.at], colour: FACTIONS[s.owner].colour });
+    }
+    v.flyShips(moves);
   }, [game.turn]);
   // A refusal sounds low.
   useEffect(() => {
