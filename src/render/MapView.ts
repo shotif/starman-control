@@ -1,0 +1,878 @@
+// The neighbourhood map (docs/design/M1_FIRST_LIGHT.md §10): the real stars, the lanes and the
+// systems the powers hold, in a flat view (from above the celestial north pole, an orthographic
+// projection) or in 3D (an orbit camera). Labels are HTML laid over the canvas, thinned by
+// priority. It draws only when something changed, so an idle map costs nothing on a phone.
+//
+// The camera maths, gestures and label layout are Starman Reborn's (src/render/mapMath.ts,
+// camera.ts, gestures.ts, labels.ts); the scene itself is written for Control.
+
+import * as THREE from 'three';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+import type { SystemId } from '../data/types.ts';
+import { OrbitController } from './camera.ts';
+import { GestureTracker } from './gestures.ts';
+import { createLabelBox, type LabelBox, layoutLabels, pickLabelAt, pickNearestPoint } from './labels.ts';
+import {
+  createScreenPoint,
+  fitOrbitDistance,
+  ORBIT_LIMITS,
+  type OrbitLimits,
+  type OrbitState,
+  orbitBasis,
+  orbitDirection,
+  projectPoint,
+  type Rect,
+  type ScreenPoint,
+  smoothingFactor,
+  type Vec3,
+  worldPerPixel,
+} from './mapMath.ts';
+import { labelPriority, type MapContent, type MapHolding } from './mapModel.ts';
+
+export type ViewMode = 'flat' | '3d';
+
+export const MAP_FOV_DEG = 50;
+
+const COLOURS = {
+  background: 0x04070e,
+  grid: 0x7eaaff,
+  dark: 0x9b90c9,
+  selected: 0xffffff,
+};
+
+/** Distance rings on the plane of the celestial equator, light-years from Sol. */
+export const RING_RADII_LY = [5, 10, 15, 20, 25];
+
+const FLAT_LIMITS: OrbitLimits = { ...ORBIT_LIMITS, minPitch: Math.PI / 2, maxPitch: Math.PI / 2, minDistance: 0.8 };
+const ORBIT_3D_LIMITS: OrbitLimits = { ...ORBIT_LIMITS, minDistance: 0.8 };
+
+export interface MapViewEvents {
+  /** A tap or click on a star (or on empty space: null). */
+  select(id: SystemId | null): void;
+  /** The mouse is over a star (or none), at container pixels. */
+  hover?(id: SystemId | null, x: number, y: number): void;
+  /** A double click on a star (desktop): centre it. */
+  activate?(id: SystemId): void;
+  /** A right click on a star (desktop), for orders from increment 4. */
+  command?(id: SystemId, x: number, y: number): void;
+}
+
+const STAR_VERTEX = `
+attribute float size;
+attribute vec3 tint;
+uniform float scale;
+varying vec3 vTint;
+void main() {
+  vTint = tint;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  gl_PointSize = size * scale;
+}`;
+
+const STAR_FRAGMENT = `
+varying vec3 vTint;
+void main() {
+  vec2 p = gl_PointCoord * 2.0 - 1.0;
+  float d = length(p);
+  if (d > 1.0) discard;
+  float core = 1.0 - smoothstep(0.2, 0.34, d);
+  float glow = exp(-d * d * 6.0) * 0.5;
+  vec3 col = mix(vTint, vec3(1.0), core * 0.55);
+  gl_FragColor = vec4(col, max(core, glow));
+}`;
+
+/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle). */
+const MARK_VERTEX = `
+attribute float size;
+attribute vec3 tint;
+attribute float shape;
+attribute float weight;
+uniform float scale;
+varying vec3 vTint;
+varying float vShape;
+varying float vWeight;
+void main() {
+  vTint = tint;
+  vShape = shape;
+  vWeight = weight;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  gl_PointSize = size * scale;
+}`;
+
+const MARK_FRAGMENT = `
+varying vec3 vTint;
+varying float vShape;
+varying float vWeight;
+uniform float opacity;
+float triangle(vec2 p, float r) {
+  const float k = 1.7320508;
+  p.x = abs(p.x) - r;
+  p.y = p.y + r / k;
+  if (p.x + k * p.y > 0.0) p = vec2(p.x - k * p.y, -k * p.x - p.y) / 2.0;
+  p.x -= clamp(p.x, -2.0 * r, 0.0);
+  return -length(p) * sign(p.y);
+}
+void main() {
+  vec2 p = gl_PointCoord * 2.0 - 1.0;
+  p.y = -p.y;
+  float d;
+  if (vShape < 0.5) d = length(p) - 0.8;
+  else if (vShape < 1.5) d = max(abs(p.x), abs(p.y)) - 0.68;
+  else d = triangle(p + vec2(0.0, 0.14), 0.82);
+  float w = vWeight;
+  float a = 1.0 - smoothstep(w, w + 0.07, abs(d));
+  if (a <= 0.01) discard;
+  gl_FragColor = vec4(vTint, a * opacity);
+}`;
+
+const SHAPE: Record<MapHolding['mark'], number> = { circle: 0, square: 1, triangle: 2 };
+
+interface Label {
+  el: HTMLDivElement;
+  box: LabelBox;
+  shown: boolean;
+  x: number;
+  y: number;
+}
+
+export class MapView {
+  readonly canvas: HTMLCanvasElement;
+  readonly controller: OrbitController;
+  private readonly container: HTMLElement;
+  private readonly labelLayer: HTMLDivElement;
+  private readonly events: MapViewEvents;
+  private readonly renderer: THREE.WebGLRenderer;
+  private readonly scene = new THREE.Scene();
+  private readonly perspective = new THREE.PerspectiveCamera(MAP_FOV_DEG, 1, 0.01, 600);
+  private readonly ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 1200);
+  private readonly gestures: GestureTracker;
+  private readonly viewProjection = new THREE.Matrix4();
+  private readonly basis = new THREE.Matrix4();
+  private content: MapContent;
+  private index = new Map<SystemId, number>();
+  private holdings = new Map<SystemId, MapHolding>();
+  private points: ScreenPoint[] = [];
+  private labels: Label[] = [];
+  private readonly order: number[] = [];
+  private readonly placed: number[] = [];
+
+  private stars!: THREE.Points;
+  private marks!: THREE.Points;
+  private highlight!: THREE.Points;
+  private openLanes!: LineSegments2;
+  private darkLanes!: LineSegments2;
+  private drops!: THREE.LineSegments;
+  private readonly starMaterial: THREE.ShaderMaterial;
+  private readonly markMaterial: THREE.ShaderMaterial;
+  private readonly highlightMaterial: THREE.ShaderMaterial;
+  private readonly openMaterial: LineMaterial;
+  private readonly darkMaterial: LineMaterial;
+  private readonly grid = new THREE.Group();
+  private readonly disposables: { dispose(): void }[] = [];
+
+  private mode: ViewMode = 'flat';
+  private saved3d = { yaw: 0.55, pitch: 0.55 };
+  private selected: SystemId | null = null;
+  private hovered: SystemId | null = null;
+  private width = 1;
+  private height = 1;
+  private stage: Rect = { x: 0, y: 0, w: 1, h: 1 };
+  /** Where the camera's centre is drawn now: it eases toward the stage's centre when panels open. */
+  private centre = { x: 0.5, y: 0.5 };
+  private obstacles: Rect[] = [];
+  private dpr = 1;
+  private frame = 0;
+  private lastTime = 0;
+  private drawnVersion = -1;
+  private labelsDirty = true;
+  private readonly observer: ResizeObserver;
+  private readonly detach: () => void;
+  private measure: CanvasRenderingContext2D | null = null;
+
+  constructor(container: HTMLElement, content: MapContent, events: MapViewEvents, mode: ViewMode = 'flat') {
+    this.container = container;
+    this.content = content;
+    this.events = events;
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'low-power' });
+    this.renderer.setClearColor(COLOURS.background, 1);
+    this.canvas = this.renderer.domElement;
+    this.canvas.className = 'map-canvas';
+    this.canvas.setAttribute('aria-hidden', 'true');
+    container.appendChild(this.canvas);
+    this.labelLayer = document.createElement('div');
+    this.labelLayer.className = 'map-labels';
+    this.labelLayer.setAttribute('aria-hidden', 'true');
+    container.appendChild(this.labelLayer);
+
+    this.starMaterial = this.own(
+      new THREE.ShaderMaterial({
+        uniforms: { scale: { value: 1 } },
+        vertexShader: STAR_VERTEX,
+        fragmentShader: STAR_FRAGMENT,
+        transparent: true,
+        depthTest: false,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }),
+    );
+    const markOptions = {
+      vertexShader: MARK_VERTEX,
+      fragmentShader: MARK_FRAGMENT,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+    };
+    this.markMaterial = this.own(
+      new THREE.ShaderMaterial({ ...markOptions, uniforms: { scale: { value: 1 }, opacity: { value: 0.95 } } }),
+    );
+    this.highlightMaterial = this.own(
+      new THREE.ShaderMaterial({ ...markOptions, uniforms: { scale: { value: 1 }, opacity: { value: 1 } } }),
+    );
+    this.openMaterial = this.own(
+      new LineMaterial({ linewidth: 3, vertexColors: true, worldUnits: false, transparent: true, opacity: 0.95 }),
+    );
+    this.darkMaterial = this.own(
+      new LineMaterial({
+        color: COLOURS.dark,
+        linewidth: 1.4,
+        worldUnits: false,
+        dashed: true,
+        dashSize: 0.3,
+        gapSize: 0.2,
+        transparent: true,
+        opacity: 0.55,
+      }),
+    );
+    this.buildGrid();
+    this.build();
+
+    this.controller = new OrbitController(this.initialView(mode), mode === 'flat' ? FLAT_LIMITS : ORBIT_3D_LIMITS);
+    this.mode = mode;
+    this.controller.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    this.gestures = new GestureTracker({
+      rotate: (dx, dy) => {
+        if (this.mode === '3d') this.controller.rotateByPixels(dx, dy);
+        else this.controller.pan(dx, dy, this.height, MAP_FOV_DEG);
+        this.invalidate();
+      },
+      pan: (dx, dy) => {
+        this.controller.pan(dx, dy, this.height, MAP_FOV_DEG);
+        this.invalidate();
+      },
+      zoom: (factor, x, y) => {
+        const c = this.projectionCentre();
+        this.controller.zoomAt(factor, x - c.x, y - c.y, this.height, MAP_FOV_DEG);
+        this.invalidate();
+      },
+      tap: (x, y) => {
+        this.events.select(this.systemAt(x, y, this.lastPointerType));
+      },
+      doubleTap: (x, y, type) => {
+        const id = this.systemAt(x, y, type);
+        if (type === 'mouse' && id) {
+          this.events.activate?.(id);
+          return;
+        }
+        // A double tap zooms in there; on a star it also chooses it, as its first tap would have.
+        if (id) this.events.select(id);
+        const c = this.projectionCentre();
+        this.controller.zoomAt(0.5, x - c.x, y - c.y, this.height, MAP_FOV_DEG, true);
+        this.invalidate();
+      },
+    });
+    this.detach = this.attachInput();
+    this.observer = new ResizeObserver(() => this.resize());
+    this.observer.observe(container);
+    this.resize();
+    document.fonts?.ready.then(() => {
+      this.measureLabels();
+      this.invalidate();
+    });
+  }
+
+  // ---------------------------------------------------------------- the scene
+
+  private own<T extends { dispose(): void }>(thing: T): T {
+    this.disposables.push(thing);
+    return thing;
+  }
+
+  private buildGrid(): void {
+    const material = this.own(new THREE.LineBasicMaterial({ color: COLOURS.grid, transparent: true, opacity: 0.13 }));
+    for (const r of RING_RADII_LY) {
+      const pts: THREE.Vector3[] = [];
+      for (let i = 0; i < 128; i++) {
+        const a = (i / 128) * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
+      }
+      const geometry = this.own(new THREE.BufferGeometry().setFromPoints(pts));
+      this.grid.add(new THREE.LineLoop(geometry, material));
+    }
+    this.scene.add(this.grid);
+  }
+
+  /** (Re)builds everything drawn from the content. */
+  private build(): void {
+    for (const o of [this.stars, this.marks, this.highlight, this.openLanes, this.darkLanes, this.drops]) {
+      if (!o) continue;
+      this.scene.remove(o);
+      o.geometry.dispose();
+    }
+    const { systems, lanes, holdings } = this.content;
+    this.index = new Map(systems.map((s, i) => [s.id, i]));
+    this.holdings = new Map(holdings.map((h) => [h.system, h]));
+    const colour = new THREE.Color();
+
+    const pos = new Float32Array(systems.length * 3);
+    const tint = new Float32Array(systems.length * 3);
+    const size = new Float32Array(systems.length);
+    systems.forEach((s, i) => {
+      pos.set(s.pos, i * 3);
+      colour.set(s.colour);
+      tint.set([colour.r, colour.g, colour.b], i * 3);
+      size[i] = s.sizePx * 2.8;
+    });
+    const starGeometry = new THREE.BufferGeometry();
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    starGeometry.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
+    starGeometry.setAttribute('size', new THREE.BufferAttribute(size, 1));
+    this.stars = new THREE.Points(starGeometry, this.starMaterial);
+    this.stars.renderOrder = 3;
+
+    this.marks = this.markPoints(
+      holdings.map((h) => {
+        const s = systems[this.index.get(h.system) ?? 0];
+        return {
+          pos: s?.pos ?? [0, 0, 0],
+          colour: h.colour,
+          shape: SHAPE[h.mark],
+          size: h.capital ? 30 : 22,
+          weight: h.capital ? 0.12 : 0.08,
+        };
+      }),
+      this.markMaterial,
+    );
+    this.marks.renderOrder = 2;
+    this.highlight = this.markPoints([], this.highlightMaterial);
+    this.highlight.renderOrder = 4;
+
+    const open = lanes.filter((l) => l.owner);
+    const openGeometry = new LineSegmentsGeometry();
+    const openPos: number[] = [];
+    const openCol: number[] = [];
+    for (const l of open) {
+      const a = systems[this.index.get(l.a) ?? 0]?.pos ?? [0, 0, 0];
+      const b = systems[this.index.get(l.b) ?? 0]?.pos ?? [0, 0, 0];
+      openPos.push(...a, ...b);
+      colour.set(holdings.find((h) => h.faction === l.owner)?.colour ?? '#ffffff');
+      openCol.push(colour.r, colour.g, colour.b, colour.r, colour.g, colour.b);
+    }
+    openGeometry.setPositions(openPos.length ? openPos : [0, 0, 0, 0, 0, 0]);
+    openGeometry.setColors(openCol.length ? openCol : [0, 0, 0, 0, 0, 0]);
+    this.openLanes = new LineSegments2(openGeometry, this.openMaterial);
+    this.openLanes.visible = open.length > 0;
+    this.openLanes.renderOrder = 1;
+
+    const darkPos: number[] = [];
+    for (const l of lanes) {
+      if (l.owner) continue;
+      darkPos.push(
+        ...(systems[this.index.get(l.a) ?? 0]?.pos ?? [0, 0, 0]),
+        ...(systems[this.index.get(l.b) ?? 0]?.pos ?? [0, 0, 0]),
+      );
+    }
+    const darkGeometry = new LineSegmentsGeometry();
+    darkGeometry.setPositions(darkPos.length ? darkPos : [0, 0, 0, 0, 0, 0]);
+    this.darkLanes = new LineSegments2(darkGeometry, this.darkMaterial);
+    this.darkLanes.computeLineDistances();
+    this.darkLanes.renderOrder = 0;
+
+    const dropPos = new Float32Array(systems.length * 6);
+    systems.forEach((s, i) => {
+      dropPos.set([s.pos[0], s.pos[1], s.pos[2], s.pos[0], 0, s.pos[2]], i * 6);
+    });
+    const dropGeometry = new THREE.BufferGeometry();
+    dropGeometry.setAttribute('position', new THREE.BufferAttribute(dropPos, 3));
+    this.drops = new THREE.LineSegments(
+      dropGeometry,
+      this.own(new THREE.LineBasicMaterial({ color: COLOURS.grid, transparent: true, opacity: 0.07 })),
+    );
+
+    this.scene.add(this.darkLanes, this.openLanes, this.drops, this.marks, this.stars, this.highlight);
+    this.points = systems.map(() => createScreenPoint());
+    this.buildLabels();
+    this.updateHighlight();
+  }
+
+  private markPoints(
+    items: { pos: readonly number[]; colour: string | number; shape: number; size: number; weight: number }[],
+    material: THREE.ShaderMaterial,
+  ): THREE.Points {
+    const colour = new THREE.Color();
+    const n = Math.max(1, items.length);
+    const pos = new Float32Array(n * 3);
+    const tint = new Float32Array(n * 3);
+    const size = new Float32Array(n);
+    const shape = new Float32Array(n);
+    const weight = new Float32Array(n);
+    items.forEach((m, i) => {
+      pos.set(m.pos, i * 3);
+      colour.set(m.colour);
+      tint.set([colour.r, colour.g, colour.b], i * 3);
+      size[i] = m.size;
+      shape[i] = m.shape;
+      weight[i] = m.weight;
+    });
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
+    g.setAttribute('size', new THREE.BufferAttribute(size, 1));
+    g.setAttribute('shape', new THREE.BufferAttribute(shape, 1));
+    g.setAttribute('weight', new THREE.BufferAttribute(weight, 1));
+    g.setDrawRange(0, items.length);
+    return new THREE.Points(g, material);
+  }
+
+  private updateHighlight(): void {
+    const items: Parameters<MapView['markPoints']>[0] = [];
+    const at = (id: SystemId) => this.content.systems[this.index.get(id) ?? -1]?.pos;
+    const hovered = this.hovered && this.hovered !== this.selected ? at(this.hovered) : undefined;
+    if (hovered) items.push({ pos: hovered, colour: 0xcfe4ff, shape: 0, size: 34, weight: 0.05 });
+    const selected = this.selected ? at(this.selected) : undefined;
+    if (selected) items.push({ pos: selected, colour: COLOURS.selected, shape: 0, size: 44, weight: 0.07 });
+    this.scene.remove(this.highlight);
+    this.highlight.geometry.dispose();
+    this.highlight = this.markPoints(items, this.highlightMaterial);
+    this.highlight.renderOrder = 4;
+    this.scene.add(this.highlight);
+  }
+
+  // ---------------------------------------------------------------- labels
+
+  private buildLabels(): void {
+    this.labelLayer.replaceChildren();
+    this.labels = this.content.systems.map((s) => {
+      const el = document.createElement('div');
+      el.className = 'map-label';
+      el.textContent = s.name;
+      el.dataset.system = s.id;
+      if (this.holdings.has(s.id)) el.classList.add('is-held');
+      el.hidden = true;
+      this.labelLayer.appendChild(el);
+      const box = createLabelBox();
+      box.height = 18;
+      box.gap = Math.max(9, s.sizePx * 0.9);
+      return { el, box, shown: false, x: 0, y: 0 };
+    });
+    this.measureLabels();
+  }
+
+  private measureLabels(): void {
+    if (!this.measure) this.measure = document.createElement('canvas').getContext('2d');
+    const ctx = this.measure;
+    const font = getComputedStyle(this.labels[0]?.el ?? this.container).font || '600 13px sans-serif';
+    this.content.systems.forEach((s, i) => {
+      const label = this.labels[i];
+      if (!label) return;
+      if (ctx) {
+        ctx.font = font;
+        label.box.width = Math.ceil(ctx.measureText(s.name).width) + 10;
+      } else {
+        label.box.width = s.name.length * 7 + 10;
+      }
+    });
+    this.labelsDirty = true;
+  }
+
+  private layout(): void {
+    const ctx = { selected: this.selected, hovered: this.hovered, holdings: this.holdings };
+    const c = this.projectionCentre();
+    const reach = Math.max(this.width, this.height) / 2;
+    this.content.systems.forEach((s, i) => {
+      const p = this.points[i] as ScreenPoint;
+      const label = this.labels[i] as Label;
+      const inside = p.visible && p.x >= 0 && p.y >= 0 && p.x <= this.width && p.y <= this.height;
+      const nearness = 1 - Math.hypot(p.x - c.x, p.y - c.y) / reach;
+      label.box.anchorX = p.x;
+      label.box.anchorY = p.y;
+      label.box.active = inside;
+      label.box.priority = labelPriority(s, ctx, nearness);
+    });
+    layoutLabels(
+      this.labels.map((l) => l.box),
+      { x: 4, y: 4, w: this.width - 8, h: this.height - 8 },
+      this.obstacles,
+      this.order,
+      this.placed,
+    );
+    for (const label of this.labels) {
+      const show = label.box.visible;
+      if (show !== label.shown) {
+        label.el.hidden = !show;
+        label.shown = show;
+      }
+      if (show && (label.box.x !== label.x || label.box.y !== label.y)) {
+        label.el.style.transform = `translate(${Math.round(label.box.x)}px, ${Math.round(label.box.y)}px)`;
+        label.x = label.box.x;
+        label.y = label.box.y;
+      }
+    }
+    const selected = this.selected ? this.labels[this.index.get(this.selected) ?? -1] : undefined;
+    for (const l of this.labels) l.el.classList.toggle('is-selected', l === selected);
+  }
+
+  // ---------------------------------------------------------------- the camera
+
+  private initialView(mode: ViewMode): OrbitState {
+    const near = this.content.systems.filter((s) => Math.hypot(...s.pos) <= 12).map((s) => s.pos);
+    const pitch = mode === 'flat' ? Math.PI / 2 : this.saved3d.pitch;
+    const yaw = mode === 'flat' ? 0 : this.saved3d.yaw;
+    const distance = fitOrbitDistance(near, [0, 0, 0], yaw, pitch, MAP_FOV_DEG, 400, 600, 600, 10, 2, 60);
+    return { target: [0, 0, 0], yaw, pitch, distance };
+  }
+
+  /** Where the camera's centre falls on screen: the middle of the visible stage. */
+  private projectionCentre(): { x: number; y: number } {
+    return this.centre;
+  }
+
+  private stageCentre(): { x: number; y: number } {
+    return { x: this.stage.x + this.stage.w / 2, y: this.stage.y + this.stage.h / 2 };
+  }
+
+  /** Eases the drawn centre toward the stage's; returns true while it is still moving. */
+  private easeCentre(dt: number): boolean {
+    const goal = this.stageCentre();
+    const k = this.controller.reducedMotion ? 1 : smoothingFactor(dt, 0.05);
+    const dx = goal.x - this.centre.x;
+    const dy = goal.y - this.centre.y;
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) {
+      const moved = dx !== 0 || dy !== 0;
+      this.centre = goal;
+      return moved;
+    }
+    this.centre = { x: this.centre.x + dx * k, y: this.centre.y + dy * k };
+    return true;
+  }
+
+  private updateCamera(): THREE.Camera {
+    const s = this.controller.current;
+    const right = new THREE.Vector3();
+    const up = new THREE.Vector3();
+    const r: Vec3 = [0, 0, 0];
+    const u: Vec3 = [0, 0, 0];
+    const d: Vec3 = [0, 0, 0];
+    orbitBasis(s.yaw, s.pitch, r, u);
+    orbitDirection(s.yaw, s.pitch, d);
+    right.set(...r);
+    up.set(...u);
+    const back = new THREE.Vector3(...d);
+    this.basis.makeBasis(right, up, back);
+    const centre = this.projectionCentre();
+    const shiftX = centre.x - this.width / 2;
+    const shiftY = centre.y - this.height / 2;
+    const aspect = this.width / this.height;
+    let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
+    if (this.mode === '3d') {
+      camera = this.perspective;
+      camera.aspect = aspect;
+      camera.position.set(
+        s.target[0] + d[0] * s.distance,
+        s.target[1] + d[1] * s.distance,
+        s.target[2] + d[2] * s.distance,
+      );
+    } else {
+      camera = this.ortho;
+      const halfH = s.distance * Math.tan((MAP_FOV_DEG * Math.PI) / 360);
+      camera.top = halfH;
+      camera.bottom = -halfH;
+      camera.left = -halfH * aspect;
+      camera.right = halfH * aspect;
+      camera.position.set(s.target[0] + d[0] * 500, s.target[1] + d[1] * 500, s.target[2] + d[2] * 500);
+    }
+    camera.quaternion.setFromRotationMatrix(this.basis);
+    camera.setViewOffset(this.width, this.height, -shiftX, -shiftY, this.width, this.height);
+    camera.updateProjectionMatrix();
+    camera.updateMatrixWorld(true);
+    this.viewProjection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+    return camera;
+  }
+
+  // ---------------------------------------------------------------- drawing
+
+  /** Asks for a frame; nothing is drawn while nothing changes. */
+  invalidate(labels = true): void {
+    if (labels) this.labelsDirty = true;
+    if (!this.frame) this.frame = requestAnimationFrame((t) => this.draw(t));
+  }
+
+  private draw(time: number): void {
+    this.frame = 0;
+    const dt = this.lastTime ? Math.min(0.1, (time - this.lastTime) / 1000) : 1 / 60;
+    this.lastTime = time;
+    const shifting = this.easeCentre(dt);
+    const moving = this.controller.update(dt) || shifting;
+    const camera = this.updateCamera();
+    const s = this.controller.current;
+    // Stars grow a little as you come closer, and shrink a little far out.
+    const zoomScale = Math.min(1.6, Math.max(0.75, Math.sqrt(14 / s.distance)));
+    this.starMaterial.uniforms.scale.value = this.dpr * zoomScale;
+    this.markMaterial.uniforms.scale.value = this.dpr * Math.min(1.3, Math.max(0.8, zoomScale));
+    this.highlightMaterial.uniforms.scale.value = this.dpr * Math.min(1.3, Math.max(0.8, zoomScale));
+    const k = worldPerPixel(s.distance, MAP_FOV_DEG, this.height);
+    this.darkMaterial.dashSize = 6 * k;
+    this.darkMaterial.gapSize = 5 * k;
+    this.drops.visible = this.mode === '3d';
+    this.renderer.render(this.scene, camera);
+    if (this.controller.version !== this.drawnVersion || this.labelsDirty || shifting) {
+      this.project();
+      this.layout();
+      this.drawnVersion = this.controller.version;
+      this.labelsDirty = false;
+    }
+    this.container.dataset.ready = '1';
+    if (moving) this.invalidate();
+  }
+
+  private project(): void {
+    const m = this.viewProjection.elements;
+    this.content.systems.forEach((s, i) => {
+      projectPoint(m, s.pos[0], s.pos[1], s.pos[2], this.width, this.height, this.points[i] as ScreenPoint);
+    });
+  }
+
+  private resize(): void {
+    const w = Math.max(1, this.container.clientWidth);
+    const h = Math.max(1, this.container.clientHeight);
+    this.dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (w === this.width && h === this.height && this.renderer.getPixelRatio() === this.dpr) return;
+    const centred = this.stage.w === this.width && this.stage.h === this.height;
+    const first = this.width === 1 && this.height === 1;
+    this.width = w;
+    this.height = h;
+    if (centred) this.stage = { x: 0, y: 0, w, h };
+    if (first) this.centre = this.stageCentre();
+    this.renderer.setPixelRatio(this.dpr);
+    this.renderer.setSize(w, h, false);
+    this.openMaterial.resolution.set(w, h);
+    this.darkMaterial.resolution.set(w, h);
+    this.invalidate();
+  }
+
+  // ---------------------------------------------------------------- input
+
+  private lastPointerType = 'mouse';
+
+  private attachInput(): () => void {
+    const el = this.canvas;
+    const local = (e: PointerEvent | WheelEvent | MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    const down = (e: PointerEvent) => {
+      if (e.pointerType === 'touch' && !this.gestures.tracks('touch')) this.gestures.releaseAll();
+      this.lastPointerType = e.pointerType;
+      const p = local(e);
+      // Middle or right button, or Shift, pans; a right click without a drag is a command.
+      const pan = e.button === 1 || e.button === 2 || e.shiftKey;
+      if (this.gestures.down(e.pointerId, p.x, p.y, e.timeStamp, e.pointerType, pan, e.button === 0)) {
+        el.setPointerCapture(e.pointerId);
+        this.rightDown = e.button === 2 ? { x: p.x, y: p.y } : null;
+      }
+    };
+    const move = (e: PointerEvent) => {
+      const p = local(e);
+      if (this.gestures.activePointers > 0) {
+        this.gestures.move(e.pointerId, p.x, p.y);
+        return;
+      }
+      if (e.pointerType === 'mouse') this.setHover(this.systemAt(p.x, p.y, 'mouse'), p.x, p.y);
+    };
+    const up = (e: PointerEvent) => {
+      const p = local(e);
+      this.gestures.up(e.pointerId, p.x, p.y, e.timeStamp);
+      if (this.rightDown && e.button === 2 && Math.hypot(p.x - this.rightDown.x, p.y - this.rightDown.y) < 4) {
+        const id = this.systemAt(p.x, p.y, 'mouse');
+        if (id) this.events.command?.(id, p.x, p.y);
+      }
+      this.rightDown = null;
+    };
+    const cancel = (e: PointerEvent) => this.gestures.cancel(e.pointerId);
+    const leave = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && this.gestures.activePointers === 0) this.setHover(null, 0, 0);
+    };
+    const wheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const p = local(e);
+      const c = this.projectionCentre();
+      const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      this.controller.zoomAt(Math.exp(delta * 0.0015), p.x - c.x, p.y - c.y, this.height, MAP_FOV_DEG);
+      this.invalidate();
+    };
+    const menu = (e: Event) => e.preventDefault();
+    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', cancel);
+    el.addEventListener('pointerleave', leave);
+    el.addEventListener('wheel', wheel, { passive: false });
+    el.addEventListener('contextmenu', menu);
+    return () => {
+      el.removeEventListener('pointerdown', down);
+      el.removeEventListener('pointermove', move);
+      el.removeEventListener('pointerup', up);
+      el.removeEventListener('pointercancel', cancel);
+      el.removeEventListener('pointerleave', leave);
+      el.removeEventListener('wheel', wheel);
+      el.removeEventListener('contextmenu', menu);
+    };
+  }
+
+  private rightDown: { x: number; y: number } | null = null;
+
+  private setHover(id: SystemId | null, x: number, y: number): void {
+    if (id !== this.hovered) {
+      this.hovered = id;
+      this.updateHighlight();
+      this.invalidate();
+    }
+    this.events.hover?.(id, x, y);
+    this.canvas.style.cursor = id ? 'pointer' : '';
+  }
+
+  // ---------------------------------------------------------------- what the screen asks of the map
+
+  /** The system under a point (container pixels): its label, or the nearest star within reach. */
+  systemAt(x: number, y: number, pointerType = 'mouse'): SystemId | null {
+    const boxes = this.labels.map((l) => l.box);
+    const byLabel = pickLabelAt(boxes, x, y, pointerType === 'mouse' ? 2 : 6);
+    const i = byLabel >= 0 ? byLabel : pickNearestPoint(this.points, x, y, pointerType === 'mouse' ? 14 : 24);
+    return i >= 0 ? (this.content.systems[i]?.id ?? null) : null;
+  }
+
+  /** Where a system is drawn (container pixels), for tests and pop-ups. */
+  screenOf(id: SystemId): { x: number; y: number; visible: boolean } | null {
+    const p = this.points[this.index.get(id) ?? -1];
+    return p
+      ? { x: p.x, y: p.y, visible: p.visible && p.x >= 0 && p.y >= 0 && p.x <= this.width && p.y <= this.height }
+      : null;
+  }
+
+  /** True while the camera or the centre is still moving, for tests. */
+  get moving(): boolean {
+    const c = this.stageCentre();
+    return (
+      this.controller.isAnimating ||
+      Math.abs(c.x - this.centre.x) > 0.5 ||
+      Math.abs(c.y - this.centre.y) > 0.5 ||
+      this.frame !== 0
+    );
+  }
+
+  /** Which labels are showing, for tests. */
+  visibleLabels(): SystemId[] {
+    return this.labels.filter((l) => l.shown).map((l) => l.el.dataset.system as SystemId);
+  }
+
+  get viewMode(): ViewMode {
+    return this.mode;
+  }
+
+  setContent(content: MapContent): void {
+    this.content = content;
+    this.build();
+    this.invalidate();
+  }
+
+  setSelected(id: SystemId | null): void {
+    if (id === this.selected) return;
+    this.selected = id;
+    this.updateHighlight();
+    this.invalidate();
+  }
+
+  /** The part of the map not covered by panels (container pixels): the camera centres on it. */
+  setStage(stage: Rect, obstacles: Rect[] = []): void {
+    this.stage = { x: stage.x, y: stage.y, w: Math.max(1, stage.w), h: Math.max(1, stage.h) };
+    this.obstacles = obstacles;
+    this.invalidate();
+  }
+
+  setMode(mode: ViewMode): void {
+    if (mode === this.mode) return;
+    const s = this.controller.current;
+    if (mode === 'flat') {
+      this.saved3d = { yaw: s.yaw, pitch: s.pitch };
+      Object.assign(this.controller.limits, FLAT_LIMITS);
+      this.mode = 'flat';
+      this.controller.transitionTo({ pitch: Math.PI / 2, yaw: 0 }, 0.1);
+    } else {
+      Object.assign(this.controller.limits, ORBIT_3D_LIMITS);
+      this.mode = '3d';
+      this.controller.transitionTo({ pitch: this.saved3d.pitch, yaw: this.saved3d.yaw }, 0.1);
+    }
+    this.invalidate();
+  }
+
+  /** Brings a system to the centre of the stage, closer if the view is far out. */
+  focus(id: SystemId): void {
+    const s = this.content.systems[this.index.get(id) ?? -1];
+    if (!s) return;
+    const distance = Math.min(this.controller.current.distance, 14);
+    this.controller.transitionTo({ target: [...s.pos], distance: Math.max(distance, 3) });
+    this.invalidate();
+  }
+
+  /** Frames the whole neighbourhood. */
+  showAll(): void {
+    const s = this.controller.current;
+    const pts = this.content.systems.map((x) => x.pos);
+    const d = fitOrbitDistance(
+      pts,
+      [0, 0, 0],
+      s.yaw,
+      s.pitch,
+      MAP_FOV_DEG,
+      this.stage.w,
+      this.stage.h,
+      this.height,
+      16,
+      2,
+      120,
+    );
+    this.controller.transitionTo({ target: [0, 0, 0], distance: d });
+    this.invalidate();
+  }
+
+  /** For the keyboard and on-screen buttons. */
+  panBy(dxPx: number, dyPx: number): void {
+    this.controller.pan(dxPx, dyPx, this.height, MAP_FOV_DEG);
+    this.invalidate();
+  }
+
+  rotateBy(dYaw: number, dPitch: number): void {
+    if (this.mode !== '3d') return;
+    this.controller.rotate(dYaw, dPitch);
+    this.invalidate();
+  }
+
+  zoomBy(factor: number): void {
+    this.controller.zoom(factor);
+    this.invalidate();
+  }
+
+  dispose(): void {
+    cancelAnimationFrame(this.frame);
+    this.observer.disconnect();
+    this.detach();
+    for (const o of [this.stars, this.marks, this.highlight, this.openLanes, this.darkLanes, this.drops])
+      o.geometry.dispose();
+    for (const child of this.grid.children) (child as THREE.LineLoop).geometry.dispose();
+    for (const d of this.disposables) d.dispose();
+    this.renderer.dispose();
+    this.canvas.remove();
+    this.labelLayer.remove();
+  }
+}

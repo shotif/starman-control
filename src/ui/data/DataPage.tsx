@@ -13,6 +13,8 @@ import type { World } from '../../sim/world.ts';
 import { layout } from '../layout.ts';
 import { Badge, FactionMark, FactionTag } from '../parts.tsx';
 import { filterRows, type SortKey, type SystemRow, sortRows, systemRows } from './model.ts';
+import '../sheet.css';
+import './data.css';
 
 interface Props {
   world: World;

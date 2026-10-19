@@ -5,8 +5,8 @@
 redesigned around lane building; three details of it are open ([§13](#13-questions-for-the-owner)).
 Everything else follows the decisions and the scope in [../SCOPE.md](../SCOPE.md).
 
-**Progress:** increment 1 (data and simulation core) built 19 October 2026, on the
-recommendations for D-19a to D-19c; see [§12](#increments).
+**Progress:** increments 1 (data and simulation core) and 2 (the map) built 19 October 2026,
+on the recommendations for D-19a to D-19c; see [§12](#increments).
 
 **Goal.** The first playable Starman Control: choose a faction, chart the real neighbourhood,
 build and relight lanes out from your home, survey the systems they reach, settle their planets,
@@ -351,6 +351,24 @@ Rules for every screen: touch targets of at least 44 px; nothing found only by h
 respected; the middle of the map kept clear on a phone; text size from 100% to 150% honoured;
 labels on the map thinned out by priority (yours, selected, notable, the rest) so 207 names never
 pile up.
+
+**As built in increment 2** (small choices made while building; tell Claude to change any):
+
+- **Touch:** in the flat view one finger moves the map; in 3D one finger turns it, as Reborn's map
+  does, and two fingers pinch to zoom and move it in both views (the table above said "two-finger
+  turn"; one finger proved simpler to find). A double tap zooms in there and, on a star, also
+  chooses it.
+- **Mouse:** in 3D the left button turns the map; Shift-drag, the middle button or a right-drag
+  moves it; in the flat view the left button moves it; the wheel zooms towards the pointer. A right
+  click without a drag is kept for orders (increment 4).
+- **The sheet sits on the bottom bar**, so the bar stays within thumb reach while a system is open,
+  and the map recentres in the part left showing, easing there rather than jumping. **On a wide,
+  short screen** (a phone held sideways, a tablet in landscape) the sheet opens beside the map.
+- The flat view looks down from above the celestial north pole with no perspective; heights are
+  given in the system panel. In 3D, faint lines drop from each star to the plane of the celestial
+  equator. Rings mark every 5 light-years from Sol.
+- **A faction's systems carry its shape** (the Authority a square, the Cooperative a circle, the
+  Wake a triangle) in its colour, larger at its capital, so colour is never the only cue.
 
 **Breakpoints:** the phone layout below 700 px wide (or below 500 px tall in landscape); the
 desktop layout from 1100 px wide with a fine pointer; between them (tablets) the phone layout with

@@ -6,6 +6,7 @@ import type { FactionId } from '../../content/factions.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { GameState } from '../../sim/state.ts';
 import type { LaneId, World } from '../../sim/world.ts';
+import { searchKey } from '../search.ts';
 
 export interface LaneRow {
   id: LaneId;
@@ -51,11 +52,6 @@ export function systemRows(world: World, game: GameState): SystemRow[] {
       return { id: l.id, to, toName: world.system(to).name, lengthDeci: l.lengthDeci, owner: owner.get(l.id) ?? null };
     }),
   }));
-}
-
-/** Folds accents and case, so "barnards" finds "Barnard’s Star". */
-export function searchKey(text: string): string {
-  return text.normalize('NFD').replace(/\p{M}/gu, '').replace(/[’'`]/g, '').toLowerCase();
 }
 
 export function filterRows(rows: readonly SystemRow[], query: string, websOnly: boolean): SystemRow[] {

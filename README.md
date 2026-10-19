@@ -17,9 +17,9 @@ desktop experience**. Several factions are playable: the three human powers firs
 species later.
 
 **Status: building milestone M1, First light.** Not playable yet. The live site,
-<https://shotif.github.io/starman-control/>, has a title and a preview of the real neighbourhood's
-data (207 systems, their stars and known planets, and the old lanes) until the first playable
-build.
+<https://shotif.github.io/starman-control/>, has the map of the real neighbourhood (207 systems,
+their stars and known planets, and the old lanes, flat or in 3D, on a phone or a desktop) until
+the first playable build.
 
 ## Design documents
 

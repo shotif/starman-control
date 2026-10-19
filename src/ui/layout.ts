@@ -25,6 +25,16 @@ export function layoutFor(v: Viewport): Layout {
 
 export const layout = signal<Layout>('phone');
 
+/**
+ * The phone layout shows sheets beside the map rather than under it when the screen is wide and
+ * short (a phone held sideways, a tablet in landscape): §10, *Breakpoints*.
+ */
+export const sideSheets = signal(false);
+
+export function sideSheetsFor(width: number, height: number): boolean {
+  return width > height && width >= 600;
+}
+
 /** Keeps `layout` up to date with the window. Returns a function that stops watching. */
 export function watchLayout(win: Window = window): () => void {
   let desktopInput = false;
@@ -38,6 +48,8 @@ export function watchLayout(win: Window = window): () => void {
     });
     if (layout.value !== next) layout.value = next;
     win.document.documentElement.dataset.layout = next;
+    const side = sideSheetsFor(win.innerWidth, win.innerHeight);
+    if (sideSheets.value !== side) sideSheets.value = side;
   };
   const onMouse = (e: PointerEvent) => {
     if (e.pointerType === 'mouse' && !desktopInput) {

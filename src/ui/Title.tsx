@@ -12,10 +12,13 @@ export function Title({ buildId }: { buildId: string }) {
       </p>
       <p class="status">In development: milestone M1, First light</p>
       <p class="preview">
-        <a class="button" href="#/data">
-          Preview the neighbourhood
+        <a class="button" href="#/map">
+          Explore the neighbourhood
         </a>
-        <span>The real systems and the old lanes, before the map arrives.</span>
+        <span>
+          The real stars within 27 light-years and the old lanes between them. Not yet a game:{' '}
+          <a href="#/data">the data as a table</a>.
+        </span>
       </p>
       <p class="build">
         Build {buildId} · <a href="https://github.com/shotif/starman-control/tree/main/docs">Design documents</a>

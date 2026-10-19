@@ -3,8 +3,9 @@ import { FACTION_IDS } from '../../src/content/factions.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { newGame } from '../../src/sim/state.ts';
 import { buildWorld } from '../../src/sim/world.ts';
-import { filterRows, searchKey, sortRows, systemRows } from '../../src/ui/data/model.ts';
-import { layoutFor } from '../../src/ui/layout.ts';
+import { filterRows, sortRows, systemRows } from '../../src/ui/data/model.ts';
+import { layoutFor, sideSheetsFor } from '../../src/ui/layout.ts';
+import { searchKey, searchSystems } from '../../src/ui/search.ts';
 
 describe('the layout breakpoints (§10)', () => {
   const v = (width: number, height: number, finePointer = false, desktopInput = false) => ({
@@ -23,6 +24,13 @@ describe('the layout breakpoints (§10)', () => {
   it('use the desktop layout from 1100 px with a fine pointer', () => {
     expect(layoutFor(v(1440, 900, true))).toBe('desktop');
     expect(layoutFor(v(1100, 700, true))).toBe('desktop');
+  });
+
+  it('put sheets beside the map on a wide, short screen', () => {
+    expect(sideSheetsFor(844, 390)).toBe(true);
+    expect(sideSheetsFor(1180, 820)).toBe(true);
+    expect(sideSheetsFor(390, 844)).toBe(false);
+    expect(sideSheetsFor(568, 320)).toBe(false); // too narrow for two panes
   });
 
   it('keep a tablet on the phone layout until a mouse or keyboard is used', () => {
@@ -59,5 +67,22 @@ describe('the data preview', () => {
     expect(byPlanets[0]?.planets).toBeGreaterThanOrEqual(byPlanets[1]?.planets ?? 0);
     const byName = sortRows(rows, 'name', false).map((r) => r.name);
     expect(byName).toEqual([...byName].sort((a, b) => a.localeCompare(b, 'en')));
+  });
+});
+
+describe('finding a system', () => {
+  const world = buildWorld(SKY);
+
+  it('puts names that start with the query first, then the nearest', () => {
+    expect(searchSystems(world, 'wolf')[0]).toBe('wolf-359');
+    expect(searchSystems(world, 'tau')[0]).toBe('tau-ceti');
+    expect(searchSystems(world, 'barnard')).toEqual(['barnard']);
+  });
+
+  it('finds a system by one of its stars’ names', () => {
+    expect(searchSystems(world, 'proxima')).toEqual(['alpha-centauri']);
+    expect(searchSystems(world, '')).toEqual([]);
+    expect(searchSystems(world, 'zzz')).toEqual([]);
+    expect(searchSystems(world, 'a', 3)).toHaveLength(3);
   });
 });

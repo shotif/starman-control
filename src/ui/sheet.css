@@ -1,0 +1,90 @@
+/* The bottom sheet (src/ui/Sheet.tsx) and the data preview's sheet. */
+
+.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: min(55dvh, 520px);
+  border-top: 1px solid var(--accent);
+  background: #060b16;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.6);
+  transition: height 0.18s ease-out;
+}
+
+.sheet.sheet-full {
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)));
+}
+
+.sheet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter-right) 0 var(--gutter);
+  touch-action: none;
+}
+
+.sheet-grow {
+  flex: 1;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.sheet-grow .grip {
+  display: block;
+  width: 48px;
+  height: 5px;
+  margin: 0 auto;
+  border-radius: 3px;
+  background: var(--text-dim);
+}
+
+.sheet-close {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--gutter-right) max(16px, env(safe-area-inset-bottom)) var(--gutter);
+}
+
+.sheet.is-dragging {
+  transition: none;
+}
+
+.sheet.sheet-side {
+  inset: auto 0 auto auto;
+  width: min(420px, 48vw);
+  height: auto;
+  border-top: 0;
+  border-left: 1px solid var(--accent);
+  transition: none;
+}
+
+.sheet-title {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sheet-side .sheet-bar {
+  min-height: 48px;
+  touch-action: auto;
+}

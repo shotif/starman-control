@@ -1,0 +1,78 @@
+/* The system panel, in the sheet and the inspector */
+
+.system-panel header h2 {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-label);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+
+.system-kind,
+.held {
+  margin: 0.15rem 0;
+  color: var(--text-muted);
+}
+
+.held {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.system-panel header .button {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.system-panel h3 {
+  margin: 1rem 0 0.35rem;
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.system-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.system-panel li {
+  padding: 0.25rem 0;
+}
+
+.system-panel .facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.75rem;
+  margin: 0.75rem 0 0;
+}
+
+.system-panel .facts dt {
+  color: var(--text-dim);
+}
+
+.system-panel .facts dd {
+  margin: 0;
+}
+
+.system-panel .stars a,
+.system-panel .note a {
+  font-size: 0.85em;
+}
+
+.system-panel .lanes li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+
+.system-panel .none {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}

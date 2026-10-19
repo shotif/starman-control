@@ -9,7 +9,7 @@ test.describe('the data preview', () => {
   test('opens from the title', async ({ page }, info) => {
     await page.goto('./');
     await expect(page.getByRole('heading', { name: /Starman Control/i })).toBeVisible();
-    await press(page.getByRole('link', { name: 'Preview the neighbourhood' }), info.project.name);
+    await press(page.getByRole('link', { name: 'the data as a table' }), info.project.name);
     await expect(page.getByRole('heading', { name: /The neighbourhood/ })).toBeVisible();
     await expect(page.locator('.count')).toHaveText('207 of 207');
     await expect(page.locator('.web-card')).toHaveCount(3);

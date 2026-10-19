@@ -31,12 +31,14 @@
     "@fontsource/saira-condensed": "5.3.0",
     "@fontsource/saira-semi-condensed": "5.3.0",
     "@preact/signals": "2.11.3",
-    "preact": "10.29.8"
+    "preact": "10.29.8",
+    "three": "0.186.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@playwright/test": "1.56.1",
     "@types/node": "22.20.4",
+    "@types/three": "0.186.0",
     "sharp": "0.35.5",
     "typescript": "7.0.2",
     "vite": "8.3.1",
