@@ -1,6 +1,6 @@
 // The art direction for generated pictures, one style per series. Every prompt is this style plus a
-// brief's subject (art/briefs.ts), so a series looks like one hand made it. Draft until the owner
-// picks a direction from the style test (docs/ART_PIPELINE.md, "Style test").
+// brief's subject (art/briefs.ts), so a series looks like one hand made it. Chosen by the owner
+// from the style test (D-23): this style, with the default model for every series.
 
 import type { Aspect } from '../scripts/art/providers.ts';
 
@@ -17,7 +17,8 @@ export interface SeriesStyle {
   avoid: string;
 }
 
-const AVOID_ALWAYS = 'text, letters, numbers, logos, signatures, watermarks, frames, borders, user-interface elements';
+const AVOID_ALWAYS =
+  'text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements';
 
 export const SERIES: Record<SeriesId, SeriesStyle> = {
   portrait: {
@@ -26,7 +27,8 @@ export const SERIES: Record<SeriesId, SeriesStyle> = {
     style: [
       'A painted science-fiction character portrait for a strategy game.',
       'Head and shoulders, three-quarter view, looking just past the viewer.',
-      'Grounded and believable: practical clothing and equipment with real materials and wear.',
+      'Grounded and believable: practical clothing and equipment with real materials and wear;',
+      'any insignia or badges are plain geometric shapes.',
       'One warm key light from the side and a thin cool cyan rim light;',
       'a deep navy-black background with a faint, softly blurred field of stars.',
       'Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.',

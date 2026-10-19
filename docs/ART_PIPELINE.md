@@ -6,7 +6,8 @@ How Starman Control makes its portraits and illustrations with **Google Gemini**
 **Status, 19 October 2026:** the owner has put `GEMINI_API_KEY` in the cloud environment, so new
 Claude Code sessions can generate. An OpenAI key cannot be provided for now; the scripts still
 support OpenAI should one ever be added, and simply skip it while it has no key. The style test
-has been run and the owner is choosing a direction and a model ([D-23](DECISIONS.md#d-23--art-direction-and-image-model--open)).
+has been run, and the owner chose the draft style with `gemini-nano-banana-2.1` (Nano Banana) for
+every series ([D-23](DECISIONS.md#d-23--art-direction-and-image-model--decided)).
 Gemini's image models return JPEG only (asking for PNG is refused), so Gemini candidates are
 `.jpg`; approval re-encodes every picture to WebP.
 
@@ -127,7 +128,7 @@ output),
 generated content),
 [Steam content survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey).
 
-## Style test (the next step)
+## Style test (done)
 
 The art direction in `art/styles.ts` is a draft. The four `style-test-*` briefs — two human leader
 portraits (an Authority officer, a Wake captain), a colony on a red dwarf world, and a precursor
@@ -141,9 +142,10 @@ npm run art:generate -- --all --count 2 --model gemini-3-pro-image
 npm run art:sheet
 ```
 
-The owner then chooses a **direction** (keep the style, or change it) and a **model** (or one
-model per series) before any picture goes into the game; the answer is recorded in
-[DECISIONS.md](DECISIONS.md). Alien portraits wait for the species to be designed (D-12).
+The owner then chose a **direction** and a **model** (D-23): the style as drafted, and the default
+model for everything, with black letterbox bars added to what to avoid and insignia asked for as
+plain shapes. The test pictures (16, about $1.50) stay in the git-ignored `art/out/` and are not
+in the game. Alien portraits wait for the species to be designed (D-12).
 
 ## Files
 

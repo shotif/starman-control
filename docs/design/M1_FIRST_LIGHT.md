@@ -8,7 +8,7 @@ Everything else follows the decisions and the scope in [../SCOPE.md](../SCOPE.md
 **Progress:** increments 1 (data and simulation core), 2 (the map), 3 (planets, detailed in
 [M1_PLANETS.md](M1_PLANETS.md)), 4 (ships and turns, detailed in [M1_TURNS.md](M1_TURNS.md)) and
 5 (colonies, detailed in [M1_COLONIES.md](M1_COLONIES.md)) built 19 October 2026, on the
-recommendations for D-19a to D-19c; see [§12](#increments).
+recommendations for D-19a to D-19c, which the owner then confirmed; see [§12](#increments).
 
 **Goal.** The first playable Starman Control: choose a faction, chart the real neighbourhood,
 build and relight lanes out from your home, survey the systems they reach, settle their planets,
@@ -111,7 +111,7 @@ reach out again.
 | **Dark lane**, faint and dashed | one of Reborn's old lanes, out of tune | nobody, until someone **relights** it, for half the cost and time of a new lane |
 | **Lane under construction**, dotted | a lane being built or relit | — |
 
-**At the start** (D-19a, recommended): each power holds its **home web**, Reborn's lanes within
+**At the start** (D-19a, decided): each power holds its **home web**, Reborn's lanes within
 two jumps of its capital, trimmed so that every power starts with the same number of stars in
 reach (about seven: Tau Ceti's web, the smallest, has 7 systems and 6 lanes; Sol's has 13 and
 Wolf 1061's 10). Every other lane of Reborn's network is dark. In M1, played alone, the other
@@ -137,7 +137,7 @@ whoever plays, so a start never depends on the faction chosen):
 | Frontier Cooperative | Tau Ceti; YZ Ceti, Luyten 726-8; Epsilon Eridani, Van Maanen's Star, GJ 1, Lacaille 9352 |
 | Hollow Wake | Wolf 1061; 70 Ophiuchi, Gaia DR3 6305165514134625024, Ross 154; GJ 581, KX Librae, WISE 1741+2553 |
 
-**Building a lane** (D-19c, recommended) is a project in the build queue of a system you hold
+**Building a lane** (D-19c, decided) is a project in the build queue of a system you hold
 (a colony or an outpost), aimed at any star within your **lane-building reach**:
 
 | | New lane | Relighting a dark lane |
@@ -458,8 +458,8 @@ Each increment is deployed to the live site when CI passes.
 the capitals are Earth, Tau Ceti and Wolf 1061; the traits stand as drafted (D-20). For the lanes
 the owner chose **a fraction of Reborn's network, with players building the rest** (D-19).
 
-**Open: the details of lane building** (needed by increment 1 for the first, increment 6 for the
-others; increments 1–5 can start on the recommendations):
+**Answered on 19 October 2026: the details of lane building.** The owner kept the
+recommendations: the home webs, the Lapse, and lanes built as projects (D-19a to D-19c).
 
 | # | Question | Recommendation |
 | --- | --- | --- |

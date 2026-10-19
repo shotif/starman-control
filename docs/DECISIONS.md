@@ -24,11 +24,11 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-11 | What "Control" means | Decided 2026-10-19 | You are Control, the voice the starmen answer to |
 | D-16 | Game length, and what a turn stands for | Decided 2026-10-19 | 150–250 turns; a turn is about three months |
 | D-19 | Jump lanes | Decided 2026-10-19 | **A fraction of Reborn's lanes at the start; players build new lanes as part of the strategy** |
-| D-19a–c | Which lanes survive, why the rest lapsed, how a lane is built | Open | see [D-19](#d-19--jump-lanes--decided-owners-direction-details-open) |
+| D-19a–c | Which lanes survive, why the rest lapsed, how a lane is built | Decided 2026-10-19 | the home webs; the Lapse; a lane is a project at a system you hold |
 | D-20 | The M1 start: year, capitals, traits | Decided 2026-10-19 | 2176; Earth, Tau Ceti, Wolf 1061; the draft traits |
 | D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
 | D-22 | The technology stack | Decided 2026-10-19 | **the web platform, with Preact + Signals for the interface** and Biome; see [D-22](#d-22--the-technology-stack--decided) |
-| D-23 | Art direction and image model, from the style test | Open | see [D-23](#d-23--art-direction-and-image-model--open) |
+| D-23 | Art direction and image model, from the style test | Decided 2026-10-19 | the draft style, with `gemini-nano-banana-2.1` (Nano Banana) for everything |
 | D-24 | Which planet each capital is on | Open (needed by M1 increment 4) | see [D-24](#d-24--the-capital-worlds--open) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
@@ -168,7 +168,7 @@ supply, not by Reborn's raw lane speed.
 The owner accepted the M1 design's recommendations ([design/M1_FIRST_LIGHT.md](design/M1_FIRST_LIGHT.md)
 §13) except the lanes.
 
-### D-19 · Jump lanes — **Decided (owner's direction); details open**
+### D-19 · Jump lanes — **Decided (owner's direction)**
 
 Claude recommended Reborn's exact lane network in every game. **The owner decided otherwise:**
 
@@ -185,6 +185,11 @@ details are open, each with a recommendation there:
 | D-19a | Which part of Reborn's network survives at the start | each power's **home web**: Reborn's lanes within two jumps of its capital, trimmed to the same size for every power; the rest of Reborn's lanes are **dark lanes**, visible and cheaper to relight than a new lane is to build |
 | D-19b | Why the rest lapsed (fiction) | a lane is a pair of tuned beacons that must be tended; in a generation of hard times after Reborn ("the Lapse") the powers tended only their home lanes, and the others drifted out of tune |
 | D-19c | How a lane is built | as a project at a system you hold, aimed at a star within your lane-building reach, paid for in industry, metals and fusion fuel |
+
+**Decided on 19 October 2026, as recommended:** the owner kept the home webs for the lanes, the
+Lapse as the plot point, and a project for building and relighting lanes. The home webs and the
+Lapse were already built on the recommendations (increments 1 to 5); lane projects come with
+increment 6.
 
 ### D-20 · The M1 start — **Decided**
 
@@ -220,7 +225,7 @@ nothing. Set up the same day: Preact 10.29.8 (the mature line; move to 11 once i
 Signals 2.11.3, Biome 2.5.15 in `npm run check` and CI, and the placeholder title rebuilt as a
 Preact component.
 
-### D-23 · Art direction and image model — **Open**
+### D-23 · Art direction and image model — **Decided**
 
 The style test ([ART_PIPELINE.md](ART_PIPELINE.md#style-test-the-next-step)) was run on
 19 October 2026: the four style-test briefs, two candidates each from both Gemini models, 16
@@ -244,6 +249,11 @@ What the two models did with the same prompts:
 
 **Recommendation: A.** The style works on a phone (one clear subject, dark ground, readable at
 thumbnail size), and the default model kept to the brief and to the rules every time.
+
+**Decided on 19 October 2026: A.** The owner: "Keep the style and Nano Banana as the main model
+for everything." `art/styles.ts` now also asks to avoid black letterbox bars, and for insignia as
+plain shapes. The style-test pictures stay out of the game (they were tests, not briefs the game
+needs); the first pictures for the game will be briefed when a screen needs them.
 
 ### D-24 · The capital worlds — **Open**
 
