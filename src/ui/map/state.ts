@@ -16,6 +16,10 @@ export const hover = signal<{ id: SystemId; x: number; y: number } | null>(null)
 export const query = signal('');
 export const failed = signal<string | null>(null);
 
+/** The system seen from inside, in 3D (M1_SYSTEM_VIEW.md), and the world chosen in it or its panel. */
+export const insideSystem = signal<SystemId | null>(null);
+export const selectedBody = signal<string | null>(null);
+
 /** A lane being looked at in a colony's or outpost's list, drawn on the map (desktop hover). */
 export const lanePreview = signal<{ from: SystemId; to: SystemId } | null>(null);
 
@@ -42,5 +46,7 @@ export function resetMapState(): void {
   hover.value = null;
   targeting.value = null;
   lanePreview.value = null;
+  insideSystem.value = null;
+  selectedBody.value = null;
   toast.value = null;
 }

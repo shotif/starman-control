@@ -251,3 +251,9 @@
   color: var(--text-dim);
   font-size: 0.88rem;
 }
+
+.system-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

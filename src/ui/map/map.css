@@ -842,3 +842,31 @@
 .unsurveyed {
   color: var(--warm);
 }
+
+/* The system in 3D: the way back, and that it is not to scale */
+
+.system-bar {
+  position: absolute;
+  left: var(--gutter);
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.layout-desktop .system-bar {
+  left: 12px;
+}
+
+.system-scale {
+  padding: 0.2rem 0.5rem;
+  background: rgba(4, 7, 14, 0.75);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.system-label.is-held {
+  border-left: 3px solid var(--held);
+  padding-left: 0.3rem;
+}

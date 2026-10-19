@@ -26,6 +26,8 @@ interface Props {
   onGo: (id: SystemId) => void;
   /** Centre the map on this system; absent where there is no map. */
   onCentre?: () => void;
+  /** Enter the system in 3D; absent where there is no map. */
+  onEnter?: () => void;
   /** Open one of its worlds; absent in the codex. */
   onBody?: (id: string) => void;
   /** Whose habitability to show (the player's species). */
@@ -175,6 +177,7 @@ export function SystemPanel({
   surveyed = true,
   ships,
   onShip,
+  onEnter,
   holdings = [],
   onHolding,
   anomaly,
@@ -209,10 +212,19 @@ export function SystemPanel({
             <Badge kind="fiction" />
           </p>
         )}
-        {onCentre && (
-          <button type="button" class="button button-small" onClick={onCentre}>
-            Centre on map
-          </button>
+        {(onEnter || onCentre) && (
+          <div class="system-actions">
+            {onEnter && (
+              <button type="button" class="button button-small button-primary" onClick={onEnter}>
+                View in 3D
+              </button>
+            )}
+            {onCentre && (
+              <button type="button" class="button button-small" onClick={onCentre}>
+                Centre on map
+              </button>
+            )}
+          </div>
         )}
       </header>
 
@@ -388,8 +400,16 @@ export function SystemPanel({
 }
 
 /** A system and its worlds: the system panel, or one of its worlds with a way back. */
-export function SystemView(props: Omit<Props, 'onBody' | 'realOnly'>) {
-  const [body, setBody] = useState<string | null>(null);
+export function SystemView(
+  props: Omit<Props, 'onBody' | 'realOnly'> & {
+    /** The world shown, when the caller keeps it (the 3D view chooses worlds too). */
+    body?: string | null;
+    onBodyChange?: (id: string | null) => void;
+  },
+) {
+  const [own, setOwn] = useState<string | null>(null);
+  const body = props.body !== undefined ? props.body : own;
+  const setBody = props.onBodyChange ?? setOwn;
   const bodies = bodiesOf(props.world, props.game.seed, props.id);
   const open = body ? bodies.find((b) => b.id === body) : undefined;
   if (open) {

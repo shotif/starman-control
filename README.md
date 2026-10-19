@@ -22,8 +22,9 @@ and on blind jumps through the real neighbourhood (207 systems, flat or in 3D, o
 desktop), find each system's worlds (the known planets as measured, the rest generated and
 labelled fiction), found colonies and outposts on them, grow your people, gather metals,
 volatiles and fusion fuel, build ships and projects through each colony's queue, and build new
-lanes or relight the dark ones, spend research points on a research tree, and investigate the
-anomalies your surveys find. The 3D view inside each system comes next.
+lanes or relight the dark ones, spend research points on a research tree, investigate the
+anomalies your surveys find, and look inside any system in 3D, its stars and worlds drawn as in
+Starman Reborn. The proof of M1 (settings, a soak test, a real phone, the budgets) comes next.
 
 ## Design documents
 
@@ -32,7 +33,7 @@ anomalies your surveys find. The 3D view inside each system comes next.
 | [docs/VISION.md](docs/VISION.md) | The pitch, the design pillars, and what we take from and fix in *Master of Orion 3* |
 | [docs/SCOPE.md](docs/SCOPE.md) | Draft scope of work: every feature area, what is in 1.0 and what is later, milestones |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Key decisions: the open questions, the options, a recommendation, and the owner's answers |
-| [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone, with its parts in detail: [planets](docs/design/M1_PLANETS.md), [ships and turns](docs/design/M1_TURNS.md), [colonies](docs/design/M1_COLONIES.md), [lanes, research and anomalies](docs/design/M1_LANES_RESEARCH.md), and the [3D system view](docs/design/M1_SYSTEM_VIEW.md) |
+| [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone, with its parts in detail: [planets](docs/design/M1_PLANETS.md), [ships and turns](docs/design/M1_TURNS.md), [colonies](docs/design/M1_COLONIES.md), [lanes, research and anomalies](docs/design/M1_LANES_RESEARCH.md), and [the system in 3D](docs/design/M1_SYSTEM_VIEW.md) |
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with Google Gemini, reviewed and recorded |
 | [docs/research/MASTER_OF_ORION_3.md](docs/research/MASTER_OF_ORION_3.md) | How *Master of Orion 3* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_REBORN_UNIVERSE.md](docs/research/STARMAN_REBORN_UNIVERSE.md) | What the Starman Reborn universe already establishes, and what we can reuse |

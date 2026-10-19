@@ -70,3 +70,25 @@ The neighbourhood map keeps its place, so leaving returns to the view you had.
 
 Unit tests for the layout; browser journeys that enter a system, choose a world and leave, on a
 phone, a tablet and a desktop; screenshots at the six review sizes.
+
+## As built (19 October 2026)
+
+- **Entering:** **View in 3D** on any system's panel (sheet or inspector), or **V** on a desktop;
+  **← Neighbourhood** or Esc leaves, and so does choosing another system or where a ship goes.
+  Double-click still centres a star on the neighbourhood map.
+- **Choosing a world:** a tap or click on a world or star chooses it, the camera glides to it
+  and follows it round its orbit, and the sheet or inspector shows its panel; choosing a world in
+  the panel does the same in the scene. A double tap also glides there.
+- **Drawn:** as §2, with Reborn's star, planet, ring and belt art copied into
+  `src/render/art/` (their source noted in each file); Sol's worlds wear Reborn's looks for them,
+  other worlds a look chosen from their kind, temperature, water and air
+  (`src/render/systemLayout.ts`). A held world's label carries its power's colour.
+- **Scale and time:** orbits at 3,000 + 14,000 × √(au) units, companions at Reborn's logarithmic
+  separations and always clear of every orbit; the innermost world goes round in 24 seconds and
+  the rest in Kepler's ratio. With *reduced motion* the worlds stand still.
+- **The renderer** is the map's own: the map pauses (no drawing, no input, no labels) while the
+  system view uses its canvas. The scene's code is loaded only when a system is entered, about
+  19 KB compressed.
+- **Not yet:** the low-quality setting with plain spheres comes with the settings screen in the
+  proof increment; desktop hover cards over worlds (the labels name them meanwhile).
+

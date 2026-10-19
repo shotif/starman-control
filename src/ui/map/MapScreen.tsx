@@ -18,7 +18,9 @@ import type { SystemId } from '../../data/types.ts';
 import type { MapRoute, MapView, ShipMark, ViewMode } from '../../render/MapView.ts';
 import type { Rect } from '../../render/mapMath.ts';
 import { mapContent } from '../../render/mapModel.ts';
+import type { SceneLabel, SystemScene } from '../../render/SystemScene.ts';
 import { anomalyAt } from '../../sim/anomalies.ts';
+import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindReachDeci, findRoute, lanesFor } from '../../sim/movement.ts';
@@ -48,11 +50,13 @@ import { ResearchView } from './research.tsx';
 import {
   failed,
   hover,
+  insideSystem,
   lanePreview,
   mode,
   panel,
   query,
   selected,
+  selectedBody,
   selectedHolding,
   selectedShip,
   targeting,
@@ -79,6 +83,7 @@ export const SHORTCUTS: readonly [string, string][] = [
   ['0', 'The whole neighbourhood'],
   ['/', 'Find a system'],
   ['C', 'Centre the selection'],
+  ['V', 'Into the selected system, in 3D, and out again'],
   ['Esc', 'Close, cancel, or clear the selection'],
   ['?', 'These keys'],
 ];
@@ -147,6 +152,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const home = play ? powerOf(game, play.faction).capital : 'sol';
 
   const select = useCallback((id: SystemId | null) => {
+    if (id !== selected.value) selectedBody.value = null;
     selected.value = id;
     selectedShip.value = null;
     selectedHolding.value = null;
@@ -271,6 +277,67 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   }, [world, onMapSelect, go, onCommand]);
   const [ready, setReady] = useState(0);
 
+  // The system in 3D (M1_SYSTEM_VIEW.md): it borrows the map's renderer while it is open.
+  const sceneRef = useRef<SystemScene | null>(null);
+  const inside = insideSystem.value;
+  useEffect(() => {
+    const v = view.current;
+    if (!inside || !v) return;
+    let disposed = false;
+    let scene: SystemScene | null = null;
+    void Promise.all([import('../../render/SystemScene.ts'), import('../../render/systemLayout.ts')]).then(
+      ([{ SystemScene }, { systemLayout }]) => {
+        if (disposed) return;
+        const { game: g, play: p } = latest.current;
+        const power = p ? powerOf(g, p.faction) : undefined;
+        const surveyed = power ? hasSurveyed(power, inside) : true;
+        const bodies = bodiesOf(world, g.seed, inside).filter((b) => surveyed || b.origin !== 'generated');
+        const layout = systemLayout(world.system(inside), bodies);
+        const labels = new Map<string, SceneLabel>();
+        for (const st of world.system(inside).sky.stars) labels.set(st.id, { text: st.name });
+        for (const b of bodies) {
+          const h = g.holdings.find((x) => x.body === b.id);
+          labels.set(b.id, h ? { text: b.name, held: FACTIONS[h.owner].colour } : { text: b.name });
+        }
+        v.suspend(true);
+        scene = new SystemScene(
+          v.gl,
+          v.host,
+          layout,
+          labels,
+          {
+            select: (id) => {
+              if (!id) return;
+              const isBody = bodies.some((b) => b.id === id);
+              selected.value = inside;
+              selectedShip.value = null;
+              selectedHolding.value = null;
+              selectedBody.value = isBody ? id : null;
+              scene?.setSelected(id);
+              scene?.focus(id);
+            },
+          },
+          { reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches, quality: 'medium' },
+        );
+        sceneRef.current = scene;
+        scene.setSelected(selectedBody.value);
+        updateStage();
+        if (new URLSearchParams(location.search).has('test'))
+          (window as unknown as { __system: SystemScene }).__system = scene;
+      },
+    );
+    return () => {
+      disposed = true;
+      scene?.dispose();
+      sceneRef.current = null;
+      v.suspend(false);
+    };
+  }, [inside, world, ready]);
+  // Leaving the system: choosing another, choosing where a ship goes.
+  useEffect(() => {
+    if (inside && ((selected.value && selected.value !== inside) || targeting.value)) insideSystem.value = null;
+  }, [inside, selected.value, targeting.value]);
+
   // What the map draws follows the game: its lanes and holdings, its ships, and the routes.
   const lanesKey = [
     ...game.lanes.map((l) => `${l.id}:${l.owner}:${l.status}`),
@@ -354,10 +421,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       bottom -= sheetHeight.current;
       covers.push({ x: 0, y: bottom, w: box.width, h: box.height - bottom });
     }
-    v.setStage({ x: left, y: topY, w: Math.max(80, right - left), h: Math.max(80, bottom - topY) }, [
-      ...covers,
-      ...rects('[data-keep-clear]'),
-    ]);
+    const stage = { x: left, y: topY, w: Math.max(80, right - left), h: Math.max(80, bottom - topY) };
+    const avoid = [...covers, ...rects('[data-keep-clear]')];
+    v.setStage(stage, avoid);
+    sceneRef.current?.setStage(stage, avoid);
   }, []);
 
   useLayoutEffect(() => {
@@ -454,9 +521,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 't' && p) panel.value = panel.value === 'research' ? null : 'research';
       else if (k === 'm' && p && selectedShip.value !== null)
         targeting.value = { ship: selectedShip.value, blind: false, to: null };
+      else if (k === 'v' && selected.value) insideSystem.value = insideSystem.value ? null : selected.value;
       else if (k === 'Escape') {
         if (targeting.value) targeting.value = null;
         else if (panel.value) panel.value = null;
+        else if (insideSystem.value) insideSystem.value = null;
         else select(null);
       } else handled = false;
       if (handled) e.preventDefault();
@@ -498,7 +567,20 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       game={game}
       id={id}
       onGo={go}
-      onCentre={() => view.current?.focus(id)}
+      onCentre={
+        insideSystem.value === id
+          ? undefined
+          : () => {
+              view.current?.focus(id);
+            }
+      }
+      onEnter={insideSystem.value === id ? undefined : () => (insideSystem.value = id)}
+      body={selectedBody.value}
+      onBodyChange={(b) => {
+        selectedBody.value = b;
+        sceneRef.current?.setSelected(b);
+        if (b) sceneRef.current?.focus(b);
+      }}
       surveyed={power ? hasSurveyed(power, id) : true}
       species={play ? speciesFor(game, play.faction) : undefined}
       anomaly={(() => {
@@ -555,6 +637,16 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   return (
     <div ref={root} class={`map-screen layout-${layout.value}${play ? ' is-playing' : ''}`}>
       <div ref={host} class="map-host" data-testid="map">
+        {insideSystem.value && (
+          <div class="system-bar" style={{ top: desktop ? '12px' : `${topHeight + 8}px` }} data-keep-clear>
+            <button type="button" class="chip system-exit" onClick={() => (insideSystem.value = null)}>
+              ← Neighbourhood
+            </button>
+            <span class="system-scale">
+              {world.system(insideSystem.value).name} · not to scale <Badge kind="estimated" />
+            </span>
+          </div>
+        )}
         {failed.value && (
           <div class="map-failed">
             <p>This browser cannot draw the map ({failed.value}).</p>
@@ -603,7 +695,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop ? (
           <>
             <SearchBox world={world} onPick={go} />
-            <ViewToggle mode={modeNow} onChange={setMode} />
+            {!insideSystem.value && <ViewToggle mode={modeNow} onChange={setMode} />}
             {!play && (
               <>
                 <button
@@ -847,7 +939,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
       {!desktop && play && <TargetBar world={world} game={game} play={play} />}
 
-      {!desktop && play && (
+      {!desktop && play && !insideSystem.value && (
         <div class="map-view-switch" style={{ top: `${topHeight + 8}px` }} data-keep-clear>
           <ViewToggle mode={modeNow} onChange={setMode} />
         </div>

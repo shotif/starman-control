@@ -736,6 +736,7 @@ export class MapView {
 
   private draw(time: number): void {
     this.frame = 0;
+    if (this.suspended) return;
     const dt = this.lastTime ? Math.min(0.1, (time - this.lastTime) / 1000) : 1 / 60;
     this.lastTime = time;
     const shifting = this.easeCentre(dt);
@@ -808,6 +809,7 @@ export class MapView {
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     };
     const down = (e: PointerEvent) => {
+      if (this.suspended) return;
       if (e.pointerType === 'touch' && !this.gestures.tracks('touch')) this.gestures.releaseAll();
       this.lastPointerType = e.pointerType;
       const p = local(e);
@@ -819,6 +821,7 @@ export class MapView {
       }
     };
     const move = (e: PointerEvent) => {
+      if (this.suspended) return;
       const p = local(e);
       if (this.gestures.activePointers > 0) {
         this.gestures.move(e.pointerId, p.x, p.y);
@@ -827,6 +830,7 @@ export class MapView {
       if (e.pointerType === 'mouse') this.setHover(this.systemAt(p.x, p.y, 'mouse'), p.x, p.y);
     };
     const up = (e: PointerEvent) => {
+      if (this.suspended) return;
       const p = local(e);
       this.gestures.up(e.pointerId, p.x, p.y, e.timeStamp);
       if (this.rightDown && e.button === 2 && Math.hypot(p.x - this.rightDown.x, p.y - this.rightDown.y) < 4) {
@@ -841,6 +845,7 @@ export class MapView {
     };
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
+      if (this.suspended) return;
       const p = local(e);
       const c = this.projectionCentre();
       const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
@@ -867,6 +872,34 @@ export class MapView {
   }
 
   private rightDown: { x: number; y: number } | null = null;
+
+  // ---------------------------------------------------------------- the system view
+
+  private suspended = false;
+
+  /** The renderer, lent to the system view while the map is paused. */
+  get gl(): THREE.WebGLRenderer {
+    return this.renderer;
+  }
+
+  get host(): HTMLElement {
+    return this.container;
+  }
+
+  /** Pauses the map (no drawing, no input, no labels) while a system view uses its canvas. */
+  suspend(on: boolean): void {
+    this.suspended = on;
+    this.labelLayer.hidden = on;
+    if (on) {
+      cancelAnimationFrame(this.frame);
+      this.frame = 0;
+      this.gestures.releaseAll();
+      this.setHover(null, 0, 0);
+    } else {
+      this.lastTime = 0;
+      this.invalidate();
+    }
+  }
 
   private setHover(id: SystemId | null, x: number, y: number): void {
     if (id !== this.hovered) {

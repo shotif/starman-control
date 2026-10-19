@@ -21,6 +21,8 @@ const SCREENS: {
   mode?: string;
   /** A new game as the Cooperative, then: the map, the empire, or its capital colony. */
   game?: 'map' | 'empire' | 'colony';
+  /** Inside this system, in 3D. */
+  inside?: string;
 }[] = [
   { name: 'title', path: './' },
   { name: 'data', path: './#/data' },
@@ -29,6 +31,8 @@ const SCREENS: {
   { name: 'map-system', path: './?test#/map', star: 'sol' },
   { name: 'map-other-view', path: './?test#/map', mode: 'toggle' },
   { name: 'new-game', path: './#/new' },
+  { name: 'system-3d', path: './?test#/map', star: 'sol', inside: 'sol' },
+  { name: 'system-3d-alpha-centauri', path: './?test#/map', star: 'alpha-centauri', inside: 'alpha-centauri' },
   { name: 'game', path: './?test#/new', game: 'map' },
   { name: 'game-empire', path: './?test#/new', game: 'empire' },
   { name: 'game-colony', path: './?test#/new', game: 'colony' },
@@ -75,6 +79,11 @@ for (const size of SIZES) {
           const target = pressed === 'true' ? page.getByRole('button', { name: '3D', exact: true }) : flat;
           if (size.touch) await target.tap();
           else await target.click();
+        }
+        if (screen.inside) {
+          await press(page.getByRole('button', { name: 'View in 3D' }));
+          await page.locator('.system-labels').waitFor({ timeout: 30_000 });
+          await page.waitForTimeout(1500);
         }
         await page.waitForTimeout(700);
         await page.screenshot({ path: `test-results/screens/${screen.name}-${size.name}.png` });
