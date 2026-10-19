@@ -1,0 +1,30 @@
+{
+  "name": "starman-control",
+  "private": true,
+  "version": "0.0.1",
+  "description": "A 4X strategy game of exploration, colonies and first contact in the Starman Reborn universe.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:host": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@fontsource/saira-condensed": "5.3.0",
+    "@fontsource/saira-semi-condensed": "5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "typescript": "7.0.2",
+    "vite": "8.3.1",
+    "vitest": "5.0.2"
+  }
+}

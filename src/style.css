@@ -1,0 +1,98 @@
+/* Starman Control — design tokens shared with Starman Reborn's interface (docs/research/STARMAN_REBORN_UNIVERSE.md). */
+
+@import '@fontsource/saira-condensed/latin-600.css';
+@import '@fontsource/saira-condensed/latin-700.css';
+@import '@fontsource/saira-semi-condensed/latin-400.css';
+
+:root {
+  color-scheme: dark;
+  --bg: #04060b;
+  --panel: rgba(9, 15, 28, 0.86);
+  --panel-border: rgba(126, 170, 255, 0.24);
+  --text: #e8eef8;
+  --text-muted: #a3b3cb;
+  --text-dim: #7485a0;
+  --accent: #5cc8ff;
+  --warm: #ffb45c;
+  --font-label: 'Saira Condensed', system-ui, sans-serif;
+  --font-read: 'Saira Semi Condensed', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-read);
+}
+
+body {
+  background:
+    radial-gradient(1px 1px at 12% 22%, #fff8, transparent),
+    radial-gradient(1px 1px at 78% 14%, #fff6, transparent),
+    radial-gradient(1.5px 1.5px at 64% 72%, #ffd9a8aa, transparent),
+    radial-gradient(1px 1px at 30% 82%, #fff5, transparent),
+    radial-gradient(1px 1px at 88% 56%, #cfe4ff88, transparent),
+    radial-gradient(ellipse at 50% 120%, #0d1a33 0%, var(--bg) 60%);
+  background-attachment: fixed;
+}
+
+.title {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  gap: 1.25rem;
+  padding: 2rem max(1rem, env(safe-area-inset-left));
+  text-align: center;
+}
+
+.title h1 {
+  margin: 0;
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 9vw, 5.5rem);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.title h1 span {
+  color: var(--accent);
+}
+
+.title .tagline {
+  margin: 0 auto;
+  color: var(--text-muted);
+  font-size: clamp(1rem, 2.6vw, 1.25rem);
+  max-width: 36rem;
+}
+
+.title .status {
+  justify-self: center;
+  margin: 0.5rem 0 0;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+
+.title a {
+  color: var(--accent);
+}
+
+.title .build {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
