@@ -45,7 +45,7 @@ export const BRIEFS: ArtBrief[] = [
     id: 'style-test-relic',
     series: 'illustration',
     subject:
-      'In the dark between stars, a small survey ship\'s floodlights fall on an enormous ancient structure ' +
+      "In the dark between stars, a small survey ship's floodlights fall on an enormous ancient structure " +
       'of no human make: smooth, dark, partly broken, many times larger than the ship. Quiet and uneasy.',
     purpose: 'Style test: a relic illustration (the precursor mystery).',
   },

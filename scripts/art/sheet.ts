@@ -34,7 +34,9 @@ function escapeXml(text: string): string {
 
 for (const brief of briefs) {
   const dir = resolve(outDir, brief);
-  const pictures = readdirSync(dir).filter((f) => /\.(png|jpg|webp)$/.test(f)).sort();
+  const pictures = readdirSync(dir)
+    .filter((f) => /\.(png|jpg|webp)$/.test(f))
+    .sort();
   if (pictures.length === 0) continue;
   const cols = Math.min(4, pictures.length);
   const rows = Math.ceil(pictures.length / cols);
@@ -42,7 +44,9 @@ for (const brief of briefs) {
     pictures.map(async (file, i) => {
       const record = JSON.parse(readFileSync(resolve(dir, file.replace(/\.\w+$/, '.json')), 'utf8')) as CandidateRecord;
       const letter = String.fromCharCode(65 + i);
-      const image = await sharp(resolve(dir, file)).resize(TILE, TILE, { fit: 'contain', background: '#04060b' }).toBuffer();
+      const image = await sharp(resolve(dir, file))
+        .resize(TILE, TILE, { fit: 'contain', background: '#04060b' })
+        .toBuffer();
       const caption = Buffer.from(
         `<svg width="${TILE}" height="${CAPTION}"><rect width="100%" height="100%" fill="#0a1120"/>` +
           `<text x="12" y="36" font-family="sans-serif" font-size="26" fill="#e8eef8">` +

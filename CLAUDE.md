@@ -31,6 +31,13 @@ The project owner decides; Claude designs, documents, builds and tests.
 - **API keys never reach the game or the repository** (D-09). Generated art is made by build-time
   scripts and committed with its provenance ([docs/ART_PIPELINE.md](docs/ART_PIPELINE.md)).
 
+## Stack (D-22)
+
+TypeScript, Vite, Vitest and Playwright; **Preact + Signals** for every screen (JSX via
+`jsxImportSource: preact`, never React); three.js for the map; the simulation is pure TypeScript
+in a Web Worker using whole-number arithmetic; Biome for linting and formatting. See
+[docs/research/TECH_STACK.md](docs/research/TECH_STACK.md).
+
 ## Writing style (shared with Starman Reborn)
 
 - British English (*colonise*, *neighbourhood*, *labelled*), plain words, short sentences.
@@ -44,5 +51,6 @@ The project owner decides; Claude designs, documents, builds and tests.
 ```bash
 npm ci          # install the locked dependencies (Node 22.18+)
 npm run dev     # dev server at http://localhost:5173
-npm run check   # typecheck, unit tests, production build
+npm run check   # typecheck, lint (Biome), art records, unit tests, production build
+npm run format  # apply Biome's formatting and safe fixes
 ```

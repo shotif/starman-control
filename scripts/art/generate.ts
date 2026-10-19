@@ -12,9 +12,9 @@ import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { BRIEFS } from '../../art/briefs.ts';
 import { SERIES } from '../../art/styles.ts';
-import { buildPrompt, findBrief, type CandidateRecord } from './catalogue.ts';
+import { buildPrompt, type CandidateRecord, findBrief } from './catalogue.ts';
 import { apiKey, missingKeyHelp } from './env.ts';
-import { DEFAULT_MODELS, chooseProviders, generate, type ProviderId } from './providers.ts';
+import { chooseProviders, DEFAULT_MODELS, generate, type ProviderId } from './providers.ts';
 
 const { values } = parseArgs({
   options: {
@@ -30,7 +30,7 @@ const { values } = parseArgs({
 
 const briefIds = values.all ? BRIEFS.map((b) => b.id) : (values.brief ?? []).flatMap((s) => s.split(','));
 if (briefIds.length === 0) {
-  console.error('Name a brief with --brief <id> (or --all). Briefs:\n  ' + BRIEFS.map((b) => b.id).join('\n  '));
+  console.error(`Name a brief with --brief <id> (or --all). Briefs:\n  ${BRIEFS.map((b) => b.id).join('\n  ')}`);
   process.exit(1);
 }
 const dryRun = values['dry-run'];
@@ -43,18 +43,21 @@ try {
   process.exit(1);
 }
 if (values.model && providers.length > 1) {
-  console.error('--model names one service\'s model: pick that service with --provider.');
+  console.error("--model names one service's model: pick that service with --provider.");
   process.exit(1);
 }
 const count = Math.max(1, Math.min(8, Number(values.count) || 1));
 const quality = values.quality as 'low' | 'medium' | 'high';
 
+const keys = new Map<ProviderId, string>();
 if (!dryRun) {
   for (const p of providers) {
-    if (!apiKey(p)) {
+    const key = apiKey(p);
+    if (!key) {
       console.error(missingKeyHelp(p));
       process.exit(1);
     }
+    keys.set(p, key);
   }
 }
 
@@ -68,7 +71,9 @@ for (const id of briefIds) {
   const aspect = SERIES[brief.series].aspect;
   for (const provider of providers) {
     const model = values.model ?? DEFAULT_MODELS[provider];
-    if (dryRun) {
+    const key = keys.get(provider);
+    // Only a dry run has no keys here: it shows the prompt instead of calling the service.
+    if (!key) {
       console.log(`--- ${id} · ${provider} · ${model} · ${aspect}\n${prompt}\n`);
       continue;
     }
@@ -77,7 +82,7 @@ for (const id of briefIds) {
     for (let n = 1; n <= count; n++) {
       const name = `${stamp}-${model}-${n}`;
       try {
-        const image = await generate(provider, { prompt, aspect, model, quality }, apiKey(provider)!, fetch);
+        const image = await generate(provider, { prompt, aspect, model, quality }, key, fetch);
         const ext = image.mimeType === 'image/jpeg' ? 'jpg' : image.mimeType === 'image/webp' ? 'webp' : 'png';
         const record: CandidateRecord = {
           briefId: id,
@@ -90,7 +95,7 @@ for (const id of briefIds) {
           note: image.note,
         };
         writeFileSync(resolve(dir, `${name}.${ext}`), image.bytes);
-        writeFileSync(resolve(dir, `${name}.json`), JSON.stringify(record, null, 2) + '\n');
+        writeFileSync(resolve(dir, `${name}.json`), `${JSON.stringify(record, null, 2)}\n`);
         console.log(`made art/out/${id}/${name}.${ext}`);
         made++;
       } catch (err) {

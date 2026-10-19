@@ -3,6 +3,9 @@
 Research for decision D-22, 19 October 2026. The owner asked whether Control should use a
 different stack from Starman Reborn, if another would be more effective.
 
+**Decided the same day:** the recommendation below, Preact + Signals on the web platform
+([../DECISIONS.md](../DECISIONS.md#d-22--the-technology-stack--decided)).
+
 ## What the stack has to do
 
 1. **Run completely on phones and on desktops** (D-04), in the browser, from a static site

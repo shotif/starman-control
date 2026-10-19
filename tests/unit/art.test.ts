@@ -1,17 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import { BRIEFS } from '../../art/briefs.ts';
 import { SERIES } from '../../art/styles.ts';
-import { auditArt, buildPrompt, findBrief, publishedPath, upsertEntry, type ManifestEntry } from '../../scripts/art/catalogue.ts';
+import {
+  auditArt,
+  buildPrompt,
+  findBrief,
+  type ManifestEntry,
+  publishedPath,
+  upsertEntry,
+} from '../../scripts/art/catalogue.ts';
 import { apiKey, parseDotEnv } from '../../scripts/art/env.ts';
 import {
   chooseProviders,
-  generate,
+  type Fetch,
   geminiRequest,
+  generate,
   imageModelsFromPing,
   openaiRequest,
   parseGemini,
   parseOpenai,
-  type Fetch,
 } from '../../scripts/art/providers.ts';
 
 const PNG_B64 = Buffer.from('fake png bytes').toString('base64');
@@ -72,7 +79,16 @@ describe('the manifest', () => {
 
   it('rejects malformed and duplicate brief ids', () => {
     const b = { series: 'portrait' as const, subject: 's', purpose: 'p' };
-    const problems = auditArt([{ id: 'Bad Id', ...b }, { id: 'x', ...b }, { id: 'x', ...b }], { images: [] }, [], () => true);
+    const problems = auditArt(
+      [
+        { id: 'Bad Id', ...b },
+        { id: 'x', ...b },
+        { id: 'x', ...b },
+      ],
+      { images: [] },
+      [],
+      () => true,
+    );
     expect(problems).toHaveLength(2);
   });
 });
@@ -116,14 +132,20 @@ describe('providers', () => {
     const call = openaiRequest(req, 'sk');
     expect(call.url).toBe('https://api.openai.com/v1/images/generations');
     expect(call.init.headers.Authorization).toBe('Bearer sk');
-    expect(JSON.parse(call.init.body!)).toMatchObject({ model: 'm', prompt: 'a relic', size: '1536x1024', quality: 'low', n: 1 });
+    expect(JSON.parse(String(call.init.body))).toMatchObject({
+      model: 'm',
+      prompt: 'a relic',
+      size: '1536x1024',
+      quality: 'low',
+      n: 1,
+    });
   });
 
   it('builds a Gemini interactions request with the key header, aspect ratio and no storage', () => {
     const call = geminiRequest(req, 'gk');
     expect(call.url).toBe('https://generativelanguage.googleapis.com/v1beta/interactions');
     expect(call.init.headers['x-goog-api-key']).toBe('gk');
-    expect(JSON.parse(call.init.body!)).toEqual({
+    expect(JSON.parse(String(call.init.body))).toEqual({
       model: 'm',
       input: [{ type: 'text', text: 'a relic' }],
       response_format: { type: 'image', mime_type: 'image/png', aspect_ratio: '3:2', image_size: '2K' },
@@ -139,7 +161,13 @@ describe('providers', () => {
       status: 'completed',
       steps: [
         { type: 'thought', content: [{ type: 'image', data: 'ignored' }] },
-        { type: 'model_output', content: [{ type: 'text', text: 'here' }, { type: 'image', mime_type: 'image/png', data: PNG_B64 }] },
+        {
+          type: 'model_output',
+          content: [
+            { type: 'text', text: 'here' },
+            { type: 'image', mime_type: 'image/png', data: PNG_B64 },
+          ],
+        },
       ],
     });
     expect(Buffer.from(g.bytes).toString()).toBe('fake png bytes');
@@ -152,16 +180,28 @@ describe('providers', () => {
   });
 
   it('reports a refused request with the status and message', async () => {
-    const fetchFn: Fetch = async () => ({ ok: false, status: 401, json: async () => ({}), text: async () => 'bad key' });
+    const fetchFn: Fetch = async () => ({
+      ok: false,
+      status: 401,
+      json: async () => ({}),
+      text: async () => 'bad key',
+    });
     await expect(generate('openai', req, 'sk', fetchFn)).rejects.toThrow('openai answered 401: bad key');
   });
 
   it('picks the image models out of a model list', () => {
-    expect(imageModelsFromPing('openai', { data: [{ id: 'gpt-5' }, { id: 'gpt-image-2.5-sunburst' }, { id: 'gpt-image-2' }] }),
+    expect(
+      imageModelsFromPing('openai', {
+        data: [{ id: 'gpt-5' }, { id: 'gpt-image-2.5-sunburst' }, { id: 'gpt-image-2' }],
+      }),
     ).toEqual(['gpt-image-2', 'gpt-image-2.5-sunburst']);
     expect(
       imageModelsFromPing('gemini', {
-        models: [{ name: 'models/gemini-3.6-flash' }, { name: 'models/gemini-nano-banana-2.1' }, { name: 'models/gemini-3-pro-image' }],
+        models: [
+          { name: 'models/gemini-3.6-flash' },
+          { name: 'models/gemini-nano-banana-2.1' },
+          { name: 'models/gemini-3-pro-image' },
+        ],
       }),
     ).toEqual(['gemini-3-pro-image', 'gemini-nano-banana-2.1']);
   });

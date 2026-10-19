@@ -7,7 +7,14 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
 import sharp from 'sharp';
 import { SERIES } from '../../art/styles.ts';
-import { findBrief, publishedPath, upsertEntry, type CandidateRecord, type Manifest, type ManifestFile } from './catalogue.ts';
+import {
+  type CandidateRecord,
+  findBrief,
+  type Manifest,
+  type ManifestFile,
+  publishedPath,
+  upsertEntry,
+} from './catalogue.ts';
 
 const root = resolve(import.meta.dirname, '../..');
 const candidateArg = process.argv[2];
@@ -47,5 +54,5 @@ const next = upsertEntry(manifest, {
   files,
   aiGenerated: true,
 });
-writeFileSync(manifestPath, JSON.stringify(next, null, 2) + '\n');
+writeFileSync(manifestPath, `${JSON.stringify(next, null, 2)}\n`);
 console.log(`recorded ${brief.id} in art/manifest.json`);

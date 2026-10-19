@@ -5,7 +5,7 @@
 //   npm run art:ping
 
 import { apiKey, KEY_NAMES } from './env.ts';
-import { DEFAULT_MODELS, PROVIDERS, imageModelsFromPing, pingRequest } from './providers.ts';
+import { DEFAULT_MODELS, imageModelsFromPing, PROVIDERS, pingRequest } from './providers.ts';
 
 let working = 0;
 let failures = 0;

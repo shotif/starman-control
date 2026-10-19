@@ -42,7 +42,8 @@ npm ci            # install the exact locked dependencies
 npm run dev       # development server at http://localhost:5173
 npm run build     # production static site in dist/ (relative asset paths)
 npm run preview   # serve dist/ at http://localhost:4173
-npm run check     # typecheck, art records, unit tests and the production build
+npm run check     # typecheck, lint, art records, unit tests and the production build
+npm run format    # apply Biome's formatting
 npm run art:ping  # check the Gemini key (see docs/ART_PIPELINE.md)
 ```
 

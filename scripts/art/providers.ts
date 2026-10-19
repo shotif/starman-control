@@ -104,7 +104,11 @@ export function parseGemini(json: unknown): GeneratedImage {
   const blocks = (body.steps ?? []).filter((s) => s.type === 'model_output').flatMap((s) => s.content ?? []);
   const image = blocks.filter((b) => b.type === 'image' && b.data).at(-1);
   if (!image?.data) throw new Error(`Gemini returned no image (status ${body.status ?? 'unknown'}): ${brief(json)}`);
-  const text = blocks.filter((b) => b.type === 'text' && b.text).map((b) => b.text).join(' ').trim();
+  const text = blocks
+    .filter((b) => b.type === 'text' && b.text)
+    .map((b) => b.text)
+    .join(' ')
+    .trim();
   return { bytes: fromBase64(image.data), mimeType: image.mime_type ?? 'image/png', note: text || undefined };
 }
 
@@ -122,7 +126,10 @@ export function pingRequest(provider: ProviderId, key: string): HttpCall {
 export function imageModelsFromPing(provider: ProviderId, json: unknown): string[] {
   if (provider === 'openai') {
     const data = (json as { data?: { id: string }[] }).data ?? [];
-    return data.map((m) => m.id).filter((id) => /image|dall-e/i.test(id)).sort();
+    return data
+      .map((m) => m.id)
+      .filter((id) => /image|dall-e/i.test(id))
+      .sort();
   }
   const models = (json as { models?: { name: string }[] }).models ?? [];
   return models
@@ -131,9 +138,17 @@ export function imageModelsFromPing(provider: ProviderId, json: unknown): string
     .sort();
 }
 
-export type Fetch = (url: string, init: HttpCall['init']) => Promise<{ ok: boolean; status: number; json(): Promise<unknown>; text(): Promise<string> }>;
+export type Fetch = (
+  url: string,
+  init: HttpCall['init'],
+) => Promise<{ ok: boolean; status: number; json(): Promise<unknown>; text(): Promise<string> }>;
 
-export async function generate(provider: ProviderId, req: ImageRequest, key: string, fetchFn: Fetch): Promise<GeneratedImage> {
+export async function generate(
+  provider: ProviderId,
+  req: ImageRequest,
+  key: string,
+  fetchFn: Fetch,
+): Promise<GeneratedImage> {
   const call = provider === 'openai' ? openaiRequest(req, key) : geminiRequest(req, key);
   const res = await fetchFn(call.url, call.init);
   if (!res.ok) throw new Error(`${provider} answered ${res.status}: ${(await res.text()).slice(0, 600)}`);

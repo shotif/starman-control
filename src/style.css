@@ -1,8 +1,8 @@
 /* Starman Control — design tokens shared with Starman Reborn's interface (docs/research/STARMAN_REBORN_UNIVERSE.md). */
 
-@import '@fontsource/saira-condensed/latin-600.css';
-@import '@fontsource/saira-condensed/latin-700.css';
-@import '@fontsource/saira-semi-condensed/latin-400.css';
+@import "@fontsource/saira-condensed/latin-600.css";
+@import "@fontsource/saira-condensed/latin-700.css";
+@import "@fontsource/saira-semi-condensed/latin-400.css";
 
 :root {
   color-scheme: dark;
@@ -14,8 +14,8 @@
   --text-dim: #7485a0;
   --accent: #5cc8ff;
   --warm: #ffb45c;
-  --font-label: 'Saira Condensed', system-ui, sans-serif;
-  --font-read: 'Saira Semi Condensed', system-ui, sans-serif;
+  --font-label: "Saira Condensed", system-ui, sans-serif;
+  --font-read: "Saira Semi Condensed", system-ui, sans-serif;
 }
 
 * {
@@ -33,8 +33,7 @@ body {
 
 body {
   background:
-    radial-gradient(1px 1px at 12% 22%, #fff8, transparent),
-    radial-gradient(1px 1px at 78% 14%, #fff6, transparent),
+    radial-gradient(1px 1px at 12% 22%, #fff8, transparent), radial-gradient(1px 1px at 78% 14%, #fff6, transparent),
     radial-gradient(1.5px 1.5px at 64% 72%, #ffd9a8aa, transparent),
     radial-gradient(1px 1px at 30% 82%, #fff5, transparent),
     radial-gradient(1px 1px at 88% 56%, #cfe4ff88, transparent),
@@ -43,7 +42,6 @@ body {
 }
 
 .title {
-  min-height: 100vh;
   min-height: 100dvh;
   display: grid;
   place-content: center;

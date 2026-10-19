@@ -422,8 +422,9 @@ deterministic and the map is rebuilt from its seed.
   Worker in the game and directly in tests.
 - **Rules in data files** with automated guardrails, as Reborn's procedural generation does
   ([Reborn's PROCGEN.md](https://github.com/shotif/starman-reborn/blob/main/docs/PROCGEN.md)).
-- **Rendering:** three.js for the map and battle replays (likely, *D-10*); HTML and CSS for every
-  panel and text, as in Reborn.
+- **Rendering:** three.js for the map and battle replays; every panel and all text in HTML and CSS,
+  as in Reborn, built as **Preact + Signals** components *(D-22,
+  [research](research/TECH_STACK.md))*.
 - **Data:** the astronomy dataset copied from Reborn with its provenance, extended with Reborn's
   own fetch pipeline (run on GitHub's runners) to the radius chosen in *D-02*.
 - **Tests:** unit tests for every rule; **AI-against-AI games played headless in CI** for hundreds

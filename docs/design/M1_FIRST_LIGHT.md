@@ -347,7 +347,7 @@ src/
   data/       the astronomy dataset copied from Reborn, with its provenance and licences
   worker/     runs the simulation in a Web Worker
   render/     the three.js map (adapted from Reborn's star map)
-  ui/         screens, shared components, and the phone and desktop layouts (framework: D-22)
+  ui/         screens and components in Preact + Signals (D-22), with the phone and desktop layouts
   app/        boot, settings, saves (IndexedDB), the bridge to the worker
 ```
 

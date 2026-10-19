@@ -1,7 +1,7 @@
 // Prompts from briefs, and the manifest that records every picture in the game: which brief, which
 // service and model, which prompt, when made and when approved. Pure functions, unit-tested.
 
-import { BRIEFS, type ArtBrief } from '../../art/briefs.ts';
+import { type ArtBrief, BRIEFS } from '../../art/briefs.ts';
 import { SERIES, type SeriesId } from '../../art/styles.ts';
 import type { Aspect, ProviderId } from './providers.ts';
 
@@ -64,7 +64,12 @@ export function upsertEntry(manifest: Manifest, entry: ManifestEntry): Manifest 
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Problems with the briefs and the manifest; empty when all is well. `exists` checks a path under public/. */
-export function auditArt(briefs: ArtBrief[], manifest: Manifest, published: string[], exists: (path: string) => boolean): string[] {
+export function auditArt(
+  briefs: ArtBrief[],
+  manifest: Manifest,
+  published: string[],
+  exists: (path: string) => boolean,
+): string[] {
   const problems: string[] = [];
   const ids = new Set<string>();
   for (const b of briefs) {
@@ -78,14 +83,16 @@ export function auditArt(briefs: ArtBrief[], manifest: Manifest, published: stri
   for (const e of manifest.images) {
     if (!ids.has(e.briefId)) problems.push(`Manifest "${e.id}": no brief "${e.briefId}".`);
     if (e.aiGenerated !== true) problems.push(`Manifest "${e.id}": aiGenerated must be true.`);
-    if (!e.provider || !e.model || !e.prompt) problems.push(`Manifest "${e.id}": provider, model and prompt are required.`);
+    if (!e.provider || !e.model || !e.prompt)
+      problems.push(`Manifest "${e.id}": provider, model and prompt are required.`);
     for (const f of e.files) {
       listed.add(f.path);
       if (!exists(f.path)) problems.push(`Manifest "${e.id}": missing file public/${f.path}.`);
     }
   }
   for (const path of published) {
-    if (!listed.has(path)) problems.push(`public/${path} is not in art/manifest.json (approve it with npm run art:approve).`);
+    if (!listed.has(path))
+      problems.push(`public/${path} is not in art/manifest.json (approve it with npm run art:approve).`);
   }
   return problems;
 }

@@ -27,7 +27,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-19a–c | Which lanes survive, why the rest lapsed, how a lane is built | Open | see [D-19](#d-19--jump-lanes--decided-owners-direction-details-open) |
 | D-20 | The M1 start: year, capitals, traits | Decided 2026-10-19 | 2176; Earth, Tau Ceti, Wolf 1061; the draft traits |
 | D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
-| D-22 | The technology stack | Open | keep the web platform; add Preact + Signals for the interface and Biome; see [D-22](#d-22--the-technology-stack--open) |
+| D-22 | The technology stack | Decided 2026-10-19 | **the web platform, with Preact + Signals for the interface** and Biome; see [D-22](#d-22--the-technology-stack--decided) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -198,7 +198,7 @@ request for each increment; the owner accepted the suggestions without naming on
 is pushed to `main`, and so deployed, once `npm run check` and CI pass. Tell Claude if you would
 rather review pull requests.
 
-### D-22 · The technology stack — **Open**
+### D-22 · The technology stack — **Decided**
 
 The owner asked on 19 October 2026 whether a stack other than Reborn's would be more effective.
 The full comparison, with measured sizes, is in
@@ -212,9 +212,11 @@ The full comparison, with measured sizes, is in
 | D. As B with React 19 | about 68 KB; the largest ecosystem, little gain for this game |
 | E. A game engine (Godot 4) | strong native exports, but a multi-megabyte web build, weaker in phone browsers, nothing of Reborn carried over |
 
-**Recommendation: B.** Nothing built so far changes (the simulation, data, three.js map and saves
-do not depend on it), and switching now costs nothing, whereas switching after M1's screens would
-mean rewriting them. M1's increment 1 has no interface code and can start either way.
+**Decided 19 October 2026: B**, as recommended ("Go with Preact + Signals"). Nothing built so far
+changes (the simulation, data, three.js map and saves do not depend on it), and switching now cost
+nothing. Set up the same day: Preact 10.29.8 (the mature line; move to 11 once it has settled),
+Signals 2.11.3, Biome 2.5.15 in `npm run check` and CI, and the placeholder title rebuilt as a
+Preact component.
 
 ## Round 2: needed later
 
@@ -233,8 +235,9 @@ Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
-| 2026-10-19 | Same toolchain as Reborn: Node 22, TypeScript, Vite, Vitest, the same pinned versions (the interface layer is open: D-22) | one way of working across both games; proven on GitHub Pages |
-| 2026-10-19 | No rendering library yet (three.js is the likely choice) | nothing is drawn yet but a placeholder title |
+| 2026-10-19 | Same toolchain as Reborn: Node 22, TypeScript, Vite, Vitest, the same pinned versions, plus Preact + Signals and Biome (D-22) | one way of working across both games; proven on GitHub Pages |
+| 2026-10-19 | three.js for the map and battle replays, added with the map in M1's increment 2 (D-22) | Reborn's star map is three.js and is copied from there |
+| 2026-10-19 | Biome's style: two spaces, single quotes, semicolons, trailing commas, lines up to 120 characters; its recommended lint rules, none switched off | close to how the code was already written; the rules caught real issues on the first run |
 | 2026-10-19 | The interface borrows Reborn's design tokens and typefaces (Saira, dark navy glass, cyan accent) | the two games read as one universe |
 | 2026-10-19 | CI runs on every branch and pull request; Pages deploys from `main` | catches problems before they reach the live site |
 | 2026-10-19 | The simulation will be a pure, deterministic TypeScript core with no DOM access, separate from the interface | testable without a browser, AI turns can run in a worker, replays and multiplayer stay possible |
