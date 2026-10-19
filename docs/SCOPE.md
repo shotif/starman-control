@@ -196,6 +196,9 @@ planet's viceroy to the plan you set.*
 *MoO3: six research schools advancing by levels; which technology unlocks at which levels was
 randomised each game, so some had to be traded for or stolen.*
 
+- **Research points** (the game's science) are made by colonies and pooled empire-wide; they buy
+  technologies one at a time from a **research tree**, where each technology lists what it needs
+  first.
 - **Six fields:** Propulsion, Construction, Life Sciences, Energy and Weapons, Society, and
   **Xenology** — the last opened only by meeting aliens and studying relics, so the unknown drives
   science.
@@ -355,7 +358,8 @@ You lose when your last colony is lost or you are subdued.
 
 ### 4.18 Interface and learning
 
-- **Screens:** the neighbourhood map (3D, and flat), a system view, a planet screen, the empire
+- **Screens:** the neighbourhood map (3D, and flat), a **3D system view** (enter a system to see its
+  star or stars and its worlds; [design](design/M1_SYSTEM_VIEW.md)), a planet screen, the empire
   overview (every colony at a glance), research, the ship designer, fleets, diplomacy, the
   council, the turn report, and a **codex** of real astronomy (each entry badged *Observed* or
   *Fiction*, as in Reborn).
@@ -445,7 +449,7 @@ deploys to the live site. The exit criterion says when the milestone is done.
 | | Milestone | Contents | Done when |
 | --- | --- | --- | --- |
 | **M0** | Foundations | Repository, CI, GitHub Pages, these documents, the first round of decisions, the art pipeline | Round 1 answered, the site live *(done 19 October 2026)* |
-| **M1** | First light | The real map (207 systems), building and relighting lanes, the turn loop, survey and colony ships, planets (real and generated), colonies and outposts with simple output, the first research, saves — on phone and desktop ([design](design/M1_FIRST_LIGHT.md)) | You can explore and settle the neighbourhood alone for 50 turns, on a phone and on a desktop |
+| **M1** | First light | The real map (207 systems), building and relighting lanes, the turn loop, survey and colony ships, planets (real and generated), colonies and outposts with simple output, the first research tree, the 3D system view (if D-25 agrees), saves — on phone and desktop ([design](design/M1_FIRST_LIGHT.md)) | You can explore and settle the neighbourhood alone for 50 turns, on a phone and on a desktop |
 | **M2** | Worlds | Districts and zoning, projects, population and approval, food, credits and strategic resources, the research fields, governors, the turn report and number breakdowns | A 100-turn solo game has real economic choices, and every number explains itself |
 | **M3** | Neighbours | The other human powers as AI, the first two or three alien species, first contact and translation, treaties, borders, memory of what you did | You meet, trade with and quarrel with AI powers that behave believably |
 | **M4** | Fleets | The ship designer, fleets and task forces, battles with orders and replays, invasion and defences, war and peace, the council, the first victory conditions | A full game can be won by conquest or by the council's vote |

@@ -30,6 +30,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-22 | The technology stack | Decided 2026-10-19 | **the web platform, with Preact + Signals for the interface** and Biome; see [D-22](#d-22--the-technology-stack--decided) |
 | D-23 | Art direction and image model, from the style test | Decided 2026-10-19 | the draft style, with `gemini-nano-banana-2.1` (Nano Banana) for everything |
 | D-24 | Which planet each capital is on | Open (needed by M1 increment 4) | see [D-24](#d-24--the-capital-worlds--open) |
+| D-25 | The 3D system view: when, at what scale, with what look | Open | see [D-25](#d-25--the-3d-system-view--open) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -278,6 +279,19 @@ system, standing on no world, and are named after the system. Nothing in the rul
 world (the capital's room is fixed at 12), so the game is fully playable. Until you answer, the
 candidate worlds can be settled like any other; when the answer is built, a save that has settled
 the chosen world will have that colony folded into the capital.
+
+### D-25 · The 3D system view — **Open**
+
+The owner asked on 19 October 2026 for a view inside a star system: "enter a star system and see
+the sun and the planets in 3D (the sun or multiple suns, if that's the case)". The plans had a
+system *screen* (a panel of facts) but no 3D view, so it is now designed in
+[M1_SYSTEM_VIEW.md](design/M1_SYSTEM_VIEW.md). Three things to settle:
+
+| | Options | Recommendation |
+| --- | --- | --- |
+| **When** | (a) in M1, as a new increment 7 after lanes and research, the proof becoming increment 8; (b) now, before lanes and research; (c) in M2 | **(a)**: lanes and research finish M1's 50-turn game first, and the view then shows a game with something in it; it costs M1 one more increment |
+| **Scale** | (a) compressed and labelled "not to scale", true figures in the panels; (b) true scale, zooming to find each world; (c) compressed with a true-scale switch | **(a)**: at true scale the worlds are invisible dots; (c) could follow later as a codex feature |
+| **Look** | (a) Reborn's procedural shaders for stars, planets, rings and belts, copied (D-10); (b) simple lit spheres; (c) generated pictures as planet textures | **(a)**: the same look as Reborn, no art cost, and every one of the game's ~700 worlds gets its own; (b) stays as the low-quality setting for slow phones |
 
 ## Round 2: needed later
 

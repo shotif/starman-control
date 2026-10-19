@@ -31,7 +31,7 @@ building and research come next.
 | [docs/VISION.md](docs/VISION.md) | The pitch, the design pillars, and what we take from and fix in *Master of Orion 3* |
 | [docs/SCOPE.md](docs/SCOPE.md) | Draft scope of work: every feature area, what is in 1.0 and what is later, milestones |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Key decisions: the open questions, the options, a recommendation, and the owner's answers |
-| [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone, with its parts in detail: [planets](docs/design/M1_PLANETS.md), [ships and turns](docs/design/M1_TURNS.md), [colonies](docs/design/M1_COLONIES.md) |
+| [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone, with its parts in detail: [planets](docs/design/M1_PLANETS.md), [ships and turns](docs/design/M1_TURNS.md), [colonies](docs/design/M1_COLONIES.md), and the proposed [3D system view](docs/design/M1_SYSTEM_VIEW.md) |
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with Google Gemini, reviewed and recorded |
 | [docs/research/MASTER_OF_ORION_3.md](docs/research/MASTER_OF_ORION_3.md) | How *Master of Orion 3* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_REBORN_UNIVERSE.md](docs/research/STARMAN_REBORN_UNIVERSE.md) | What the Starman Reborn universe already establishes, and what we can reuse |
