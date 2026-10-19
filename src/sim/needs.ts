@@ -3,14 +3,18 @@
 
 import type { FactionId } from '../content/factions.ts';
 import type { SystemId } from '../data/types.ts';
+import { investigateRefusal } from './anomalies.ts';
 import { costOf, settleable } from './economy.ts';
 import { canResearch } from './research.ts';
 import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 export type Need =
-  /** A ship with nothing to do; `canFound` counts the worlds here a colony or outpost ship could settle. */
-  | { kind: 'idle-ship'; ship: number; system: SystemId; canFound: number }
+  /**
+   * A ship with nothing to do; `canFound` counts the worlds here a colony or outpost ship could
+   * settle, and `canInvestigate` says a survey ship could investigate an anomaly here.
+   */
+  | { kind: 'idle-ship'; ship: number; system: SystemId; canFound: number; canInvestigate: boolean }
   /** A colony with a shipyard building nothing. */
   | { kind: 'idle-yard'; holding: number; system: SystemId }
   /** A colony's first item has its industry but waits for resources. */
@@ -21,11 +25,25 @@ export type Need =
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
   for (const s of state.ships) {
-    if (s.owner !== faction || s.at === null || s.destinations.length > 0 || s.blindJump || s.hold || s.founding)
+    if (
+      s.owner !== faction ||
+      s.at === null ||
+      s.destinations.length > 0 ||
+      s.blindJump ||
+      s.hold ||
+      s.founding ||
+      s.investigating
+    )
       continue;
     const canFound =
       s.type === 'colony' || s.type === 'outpost' ? settleable(world, state, faction, s.at, s.type).length : 0;
-    out.push({ kind: 'idle-ship', ship: s.id, system: s.at, canFound });
+    out.push({
+      kind: 'idle-ship',
+      ship: s.id,
+      system: s.at,
+      canFound,
+      canInvestigate: investigateRefusal(state, s) === null,
+    });
   }
   const stock = powerOf(state, faction).stockpile;
   for (const h of state.holdings) {

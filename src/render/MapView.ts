@@ -962,6 +962,34 @@ export class MapView {
     this.invalidate();
   }
 
+  /**
+   * Centres a system and draws back far enough to show the others too, within the stage (never
+   * closer than now): for choosing where a ship goes, with every place it can go in view.
+   */
+  frameAround(centre: SystemId, around: readonly SystemId[]): void {
+    const c = this.content.systems[this.index.get(centre) ?? -1];
+    if (!c) return;
+    const pts = [c, ...around.map((id) => this.content.systems[this.index.get(id) ?? -1])]
+      .filter((x) => x !== undefined)
+      .map((x) => x.pos);
+    const s = this.controller.current;
+    const fit = fitOrbitDistance(
+      pts,
+      c.pos,
+      s.yaw,
+      s.pitch,
+      MAP_FOV_DEG,
+      this.stage.w,
+      this.stage.h,
+      this.height,
+      40,
+      3,
+      60,
+    );
+    this.controller.transitionTo({ target: [...c.pos], distance: Math.max(s.distance, fit) });
+    this.invalidate();
+  }
+
   /** Frames the whole neighbourhood. */
   showAll(): void {
     const s = this.controller.current;

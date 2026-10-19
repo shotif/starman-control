@@ -3,11 +3,13 @@
 // layouts; the map screen places them as sheets on a phone and as panels on a desktop.
 
 import { useState } from 'preact/hooks';
+import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { itemName } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
+import { anomalyAt, investigateRefusal, investigationTurns } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
@@ -17,7 +19,7 @@ import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import type { GameState, ShipState } from '../../sim/state.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
-import { FactionMark } from '../parts.tsx';
+import { Badge, FactionMark } from '../parts.tsx';
 import { Founding, holdingName, needText } from './colony.tsx';
 import { say, targeting } from './state.ts';
 
@@ -54,6 +56,11 @@ export function shipStatus(world: World, game: GameState, ship: ShipState): stri
     return p
       ? `At ${here}, bound for ${last}${via}: ${p.turns} turn${p.turns === 1 ? '' : 's'}`
       : `At ${here}, bound for ${last}`;
+  }
+  if (ship.investigating) {
+    const id = anomalyAt(game.seed, ship.investigating.system);
+    const left = ship.investigating.left;
+    return `Investigating ${id ? ANOMALIES[id].name.replace(/^An? /, (m) => m.toLowerCase()) : 'an anomaly'} at ${here}: ${left === 1 ? 'done when this turn ends' : `${left} turns left`}`;
   }
   if (ship.founding && ship.at) {
     const b = bodiesOf(world, game.seed, ship.at).find((x) => x.id === ship.founding?.body);
@@ -154,6 +161,7 @@ export function ShipPanel({
         </p>
       )}
       {!inFlight && <Founding world={world} game={game} ship={ship} play={play} />}
+      {!inFlight && <Investigate game={game} ship={ship} play={play} />}
     </article>
   );
 }
@@ -170,7 +178,8 @@ export function ShipsList({
   faction: FactionId;
   onPick: (id: number) => void;
 }) {
-  const idle = (s: ShipState) => s.at !== null && s.destinations.length === 0 && !s.blindJump && !s.hold && !s.founding;
+  const idle = (s: ShipState) =>
+    s.at !== null && s.destinations.length === 0 && !s.blindJump && !s.hold && !s.founding && !s.investigating;
   const ships = game.ships
     .filter((s) => s.owner === faction)
     .sort((a, b) => Number(idle(b)) - Number(idle(a)) || a.id - b.id);
@@ -191,6 +200,57 @@ export function ShipsList({
   );
 }
 
+/** "Reward: 25 research points." */
+export function rewardText(r: AnomalyReward): string {
+  switch (r.kind) {
+    case 'research':
+      return `${r.points} research points.`;
+    case 'tech':
+      return `${r.points} research points towards ${TECHS[r.tech].name}.`;
+    case 'resources': {
+      const parts: string[] = [];
+      if (r.metals) parts.push(`${r.metals} metals`);
+      if (r.volatiles) parts.push(`${r.volatiles} volatiles`);
+      if (r.fuel) parts.push(`${r.fuel} fusion fuel`);
+      return `${parts.join(' and ')} for the stockpile.`;
+    }
+    case 'story':
+      return '';
+  }
+}
+
+/** A survey ship's panel: the anomaly where it is, and the order to investigate it. */
+function Investigate({ game, ship, play }: { game: GameState; ship: ShipState; play: Play }) {
+  if (ship.type !== 'survey' || ship.at === null) return null;
+  const id = anomalyAt(game.seed, ship.at);
+  const power = game.powers.find((p) => p.faction === ship.owner);
+  if (!id || !power?.surveyed.includes(ship.at)) return null;
+  const a = ANOMALIES[id];
+  if (power?.investigated.includes(ship.at))
+    return (
+      <p class="dim">
+        {a.name} here has been investigated <Badge kind="fiction" />
+      </p>
+    );
+  const refusal = investigateRefusal(game, ship);
+  const turns = investigationTurns(game, ship.owner, id);
+  return (
+    <section class="anomaly" aria-label="Anomaly">
+      <h3>
+        {a.name} <Badge kind="fiction" />
+      </h3>
+      <p>{a.seen}</p>
+      {ship.investigating ? null : refusal ? (
+        <p class="dim">{refusal}</p>
+      ) : (
+        <button type="button" class="button" onClick={() => give(play, { type: 'investigate', ship: ship.id })}>
+          Investigate: {turns} turn{turns === 1 ? '' : 's'}
+        </button>
+      )}
+    </section>
+  );
+}
+
 export function eventText(world: World, game: GameState, e: ReportEvent): string {
   const shipOf = (id: number | undefined) => game.ships.find((s) => s.id === id)?.name ?? 'A ship';
   const holding = (id: number) => {
@@ -204,9 +264,14 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'surveyed': {
       const n = e.habitable.length;
       const by = e.station !== undefined ? `The survey station at ${holding(e.station)}` : shipOf(e.ship);
+      const found = e.anomaly ? ` An anomaly: ${ANOMALIES[e.anomaly].seen}` : '';
       return `${by} surveyed ${name(e.system)}: ${e.worlds} world${e.worlds === 1 ? '' : 's'}${
         n > 0 ? `, ${n} your people could live on` : ', none your people could live on without domes'
-      }.`;
+      }.${found}`;
+    }
+    case 'investigated': {
+      const a = ANOMALIES[e.anomaly];
+      return `${shipOf(e.ship)} investigated ${a.name.replace(/^An? /, (m) => m.toLowerCase())} at ${name(e.system)}. ${a.found} ${rewardText(a.reward)}`;
     }
     case 'arrived':
       return `${shipOf(e.ship)} reached ${name(e.system)}.`;

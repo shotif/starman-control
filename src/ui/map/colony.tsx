@@ -520,7 +520,8 @@ export function needText(world: World, game: GameState, need: Need): string {
       need.canFound > 0
         ? `: it could found ${s.type === 'colony' ? 'a colony' : 'an outpost'} on ${need.canFound} world${need.canFound === 1 ? '' : 's'} here`
         : '';
-    return `${SHIPS[s.type].name} ${s.name} is idle at ${where}${found}.`;
+    const look = need.canInvestigate ? ': it could investigate the anomaly here' : '';
+    return `${SHIPS[s.type].name} ${s.name} is idle at ${where}${found}${look}.`;
   }
   const h = game.holdings.find((x) => x.id === need.holding);
   if (!h) return '';

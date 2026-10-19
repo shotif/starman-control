@@ -2,10 +2,12 @@
 // the AI. Each is checked when it is given and refused with a reason; it takes effect in the state
 // at once, and the movement it sets going happens when the turn ends.
 
+import type { AnomalyId } from '../content/anomalies.ts';
 import type { FactionId } from '../content/factions.ts';
 import type { QueueItem } from '../content/projects.ts';
 import { isTechId, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
+import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
 import { queueRefusal, settleRefusal } from './economy.ts';
 import { formatLy } from './geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
@@ -21,6 +23,8 @@ export type Order =
   | { type: 'stop'; ship: number }
   | { type: 'hold'; ship: number; hold: boolean }
   | { type: 'auto-survey'; ship: number; on: boolean }
+  /** Investigate the anomaly where a survey ship is; it stays for the turns that takes. */
+  | { type: 'investigate'; ship: number }
   /** Found a colony (colony ship) or an outpost (outpost ship) on a body of the system it is at, when the turn ends. */
   | { type: 'colonise'; ship: number; body: string }
   | { type: 'found-outpost'; ship: number; body: string }
@@ -69,6 +73,7 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
   if (order.type === 'stop' || order.type === 'hold') return null;
+  if (order.type === 'investigate') return investigateRefusal(state, ship);
   if (order.type === 'auto-survey') return ship.type === 'survey' ? null : 'Only survey ships survey.';
   if (ship.at === null) return `${ship.name} is on a blind jump and cannot be reached until it lands.`;
   if (order.type === 'colonise' || order.type === 'found-outpost') {
@@ -117,6 +122,14 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
   }
   const ship = next.ships.find((s) => s.id === order.ship) as ShipState;
   switch (order.type) {
+    case 'investigate': {
+      const at = ship.at as SystemId;
+      const id = anomalyAt(next.seed, at) as AnomalyId;
+      ship.investigating = { system: at, left: investigationTurns(next, faction, id) };
+      ship.destinations = [];
+      ship.blindJump = null;
+      break;
+    }
     case 'colonise':
     case 'found-outpost':
       ship.founding = { kind: order.type === 'colonise' ? 'colony' : 'outpost', body: order.body };
@@ -128,6 +141,7 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
       ship.blindJump = null;
       ship.hold = false;
       ship.founding = null;
+      ship.investigating = null;
       break;
     case 'blind-jump': {
       const at = ship.at as SystemId;
@@ -135,11 +149,13 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
       ship.blindJump = { from: at, to: order.to, turns, left: turns };
       ship.destinations = [];
       ship.hold = false;
+      ship.investigating = null;
       break;
     }
     case 'stop':
       ship.destinations = [];
       ship.founding = null;
+      ship.investigating = null;
       if (ship.blindJump && ship.blindJump.left === ship.blindJump.turns) ship.blindJump = null;
       break;
     case 'hold':

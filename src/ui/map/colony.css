@@ -239,6 +239,24 @@
   text-transform: uppercase;
 }
 
+.anomaly {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(201, 165, 255, 0.45);
+  background: rgba(201, 165, 255, 0.06);
+}
+
+.anomaly h3 {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-label);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.anomaly p {
+  margin: 0.3rem 0;
+}
+
 .world-held {
   color: var(--text);
 }

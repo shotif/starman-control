@@ -6,6 +6,7 @@
 
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
+import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { capacityOf, costOf, growthOf, industryOf, settleRefusal, yieldsOf } from './economy.ts';
 import { habitability } from './habitability.ts';
@@ -86,7 +87,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   const log = (ship: ShipState) => events.get(ship.owner) as ReportEvent[];
 
   // 1. Movement. A ship founding a colony or outpost stays to do it.
-  for (const ship of state.ships) if (!ship.founding) moveShip(world, state, ship, log(ship));
+  for (const ship of state.ships) if (!ship.founding && !ship.investigating) moveShip(world, state, ship, log(ship));
 
   // 2. Arrivals: surveys (one per system and power, by the first ship there), survey stations,
   // then colonies and outposts founded.
@@ -99,12 +100,14 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       const level = habitability(b, species).level;
       return level === 'comfortable' || level === 'tolerable' || (domes && level === 'harsh');
     });
+    const anomaly = anomalyAt(state.seed, system);
     (events.get(power.faction) as ReportEvent[]).push({
       kind: 'surveyed',
       ...by,
       system,
       worlds: bodies.length,
       habitable: habitable.map((b) => b.id),
+      ...(anomaly ? { anomaly } : {}),
     });
   };
   for (const ship of state.ships) {
@@ -129,6 +132,23 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
         }
       ring = next;
     }
+  }
+  // Investigations: a survey ship that has spent its turns on an anomaly gets its reward.
+  for (const ship of state.ships) {
+    const inv = ship.investigating;
+    if (!inv) continue;
+    if (inv.left > 1) {
+      inv.left -= 1;
+      continue;
+    }
+    ship.investigating = null;
+    const power = powerOf(state, ship.owner);
+    const id = anomalyAt(state.seed, inv.system);
+    if (!id || power.investigated.includes(inv.system)) continue;
+    power.investigated.push(inv.system);
+    power.investigated.sort();
+    log(ship).push({ kind: 'investigated', ship: ship.id, system: inv.system, anomaly: id });
+    for (const tech of grantReward(power, id)) log(ship).push({ kind: 'researched', tech });
   }
   const usedUp = new Set<number>();
   for (const ship of state.ships) {

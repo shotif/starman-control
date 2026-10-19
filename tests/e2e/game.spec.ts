@@ -281,3 +281,40 @@ test.describe('research', () => {
     );
   });
 });
+
+test.describe('anomalies', () => {
+  test('a survey finds an anomaly, and the survey ship investigates it', async ({ page }, info) => {
+    const project = info.project.name;
+    // With seed 1, Barnard's Star, one lane from Sol, holds a silent relay.
+    await newGame(page, 'Lead the Transit Authority', project, '1');
+    await chooseShip(page, 'Petrel', project);
+    if (isDesktop(project)) {
+      await page.keyboard.press('f');
+      const barnard = await starAt(page, 'barnard');
+      if (!barnard) throw new Error("Barnard's Star is off screen");
+      await page.mouse.click(barnard.x, barnard.y, { button: 'right' });
+    } else {
+      await page.getByRole('button', { name: 'Move', exact: true }).tap();
+      const barnard = await starAt(page, 'barnard');
+      if (!barnard) throw new Error("Barnard's Star is off screen");
+      await page.touchscreen.tap(barnard.x, barnard.y);
+      await page.getByRole('button', { name: 'Confirm' }).tap();
+    }
+    await endTurn(page, project);
+    await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
+      'An anomaly: A communications relay from Reborn’s days, silent.',
+    );
+    if (!isDesktop(project)) await page.getByRole('button', { name: 'Close' }).first().tap();
+    await chooseShip(page, 'Petrel', project);
+    const panel = selection(page, project, 'Petrel');
+    await expect(panel).toContainText('A silent relay');
+    await press(panel.getByRole('button', { name: 'Investigate: 2 turns' }), project);
+    await expect(panel).toContainText('Investigating a silent relay at Barnard’s Star: 2 turns left');
+    await endTurn(page, project);
+    await endTurn(page, project);
+    await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
+      'Petrel investigated a silent relay at Barnard’s Star. Its memory is full of messages that were never delivered.',
+    );
+    await expect(page.getByRole('dialog', { name: 'Report' })).toContainText('20 research points.');
+  });
+});

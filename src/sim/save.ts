@@ -113,6 +113,13 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, researched: [], researchQueue: [], techProgress: {} }));
     return { ...g, version: 5, powers };
   },
+  /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
+  5: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, investigated: [] }));
+    const ships = (g.ships as Raw[]).map((s) => ({ ...s, investigating: null }));
+    return { ...g, version: 6, powers, ships };
+  },
 };
 
 function migrate(game: Record<string, unknown>): Record<string, unknown> {

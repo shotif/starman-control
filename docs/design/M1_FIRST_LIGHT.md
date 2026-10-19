@@ -8,7 +8,9 @@ Everything else follows the decisions and the scope in [../SCOPE.md](../SCOPE.md
 **Progress:** increments 1 (data and simulation core), 2 (the map), 3 (planets, detailed in
 [M1_PLANETS.md](M1_PLANETS.md)), 4 (ships and turns, detailed in [M1_TURNS.md](M1_TURNS.md)) and
 5 (colonies, detailed in [M1_COLONIES.md](M1_COLONIES.md)) built 19 October 2026, on the
-recommendations for D-19a to D-19c, which the owner then confirmed; see [§12](#increments).
+recommendations for D-19a to D-19c, which the owner then confirmed; 6 (lanes, research and
+anomalies, detailed in [M1_LANES_RESEARCH.md](M1_LANES_RESEARCH.md)) the same day; see
+[§12](#increments).
 
 **Goal.** The first playable Starman Control: choose a faction, chart the real neighbourhood,
 build and relight lanes out from your home, survey the systems they reach, settle their planets,

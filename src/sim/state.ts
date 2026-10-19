@@ -14,7 +14,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 5;
+export const STATE_VERSION = 6;
 
 export interface Stockpile {
   metals: number;
@@ -38,6 +38,8 @@ export interface PowerState {
   researchQueue: TechId[];
   /** Points put into technologies not yet finished; kept when the queue changes. */
   techProgress: Partial<Record<TechId, number>>;
+  /** Systems whose anomaly it has investigated, in id order (M1_LANES_RESEARCH.md §3). */
+  investigated: SystemId[];
 }
 
 /**
@@ -73,6 +75,8 @@ export interface ShipState {
   autoSurvey: boolean;
   /** A colony or outpost it will found when the turn ends, on a body of the system it is at. */
   founding: { kind: 'colony' | 'outpost'; body: string } | null;
+  /** The anomaly it is investigating where it is, and the turns left. */
+  investigating: { system: SystemId; left: number } | null;
 }
 
 /** A colony or an outpost (M1_COLONIES.md §1). */
@@ -133,6 +137,7 @@ export function makeShip(state: GameState, faction: FactionId, type: ShipType, a
     hold: false,
     autoSurvey: type === 'survey',
     founding: null,
+    investigating: null,
   };
   state.nextShipId++;
   power.shipsBuilt++;
@@ -197,6 +202,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       researched: [],
       researchQueue: [],
       techProgress: {},
+      investigated: [],
     })),
     lanes,
     ships: [],

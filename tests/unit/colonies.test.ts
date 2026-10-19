@@ -6,6 +6,7 @@ import { SPECIES } from '../../src/content/species.ts';
 import { TECHS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import type { SystemId } from '../../src/data/types.ts';
+import { investigateRefusal } from '../../src/sim/anomalies.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
 import {
   capacityOf,
@@ -384,9 +385,21 @@ function growerOrders(state: GameState, faction: FactionId): Order[] {
       .filter((id) => id === from || findRoute(world, state, faction, from, id))
       .sort((a, b) => world.distanceDeci(from, a) - world.distanceDeci(from, b) || (a < b ? -1 : 1));
   for (const s of state.ships) {
-    if (s.owner !== faction || s.at === null || s.destinations.length > 0 || s.blindJump || s.founding) continue;
+    if (
+      s.owner !== faction ||
+      s.at === null ||
+      s.destinations.length > 0 ||
+      s.blindJump ||
+      s.founding ||
+      s.investigating
+    )
+      continue;
     const at = s.at;
     if (s.type === 'survey') {
+      if (investigateRefusal(state, s) === null) {
+        orders.push({ type: 'investigate', ship: s.id });
+        continue;
+      }
       const unsurveyed = world.systems
         .map((x) => x.id)
         .filter((id) => !power.surveyed.includes(id) && !claimed.has(id) && id !== at);
@@ -466,7 +479,7 @@ function grow(faction: FactionId, seed: number, n: number, given?: Order[][]) {
 
 describe('a scripted player that grows', () => {
   for (const f of FACTION_IDS) {
-    it(`plays 50 turns as ${f}: founds colonies and outposts, grows, builds, researches and lays lanes, and replays exactly`, () => {
+    it(`plays 50 turns as ${f}: settles, grows, builds, researches, lays lanes and investigates, and replays exactly`, () => {
       const first = grow(f, 42, 50);
       const mine = first.state.holdings.filter((h) => h.owner === f);
       expect(mine.filter((h) => h.kind === 'colony').length).toBeGreaterThanOrEqual(2);
@@ -475,6 +488,7 @@ describe('a scripted player that grows', () => {
       expect(powerOf(first.state, f).shipsBuilt).toBeGreaterThan(4);
       expect(powerOf(first.state, f).researched.length).toBeGreaterThanOrEqual(5);
       expect(first.state.lanes.filter((l) => l.owner === f).length).toBeGreaterThan(6);
+      expect(powerOf(first.state, f).investigated.length).toBeGreaterThanOrEqual(1);
       const again = grow(f, 42, 50, first.log);
       expect(again.state).toEqual(first.state);
       expect(parseSave(world, exportSave(first.state).json)).toEqual(first.state);

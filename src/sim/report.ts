@@ -1,6 +1,7 @@
 // What a turn tells each power (M1_TURNS.md §5, M1_COLONIES.md §4): what happened, as plain data the
 // interface words.
 
+import type { AnomalyId } from '../content/anomalies.ts';
 import type { BuildItem } from '../content/projects.ts';
 import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
@@ -11,7 +12,18 @@ export type ReportEvent =
    * A system surveyed, by a survey ship or a survey station: how many worlds, and which are
    * tolerable or better for the power's species.
    */
-  | { kind: 'surveyed'; ship?: number; station?: number; system: SystemId; worlds: number; habitable: string[] }
+  | {
+      kind: 'surveyed';
+      ship?: number;
+      station?: number;
+      system: SystemId;
+      worlds: number;
+      habitable: string[];
+      /** An anomaly found there. */
+      anomaly?: AnomalyId;
+    }
+  /** A survey ship finished investigating an anomaly; its reward has been given. */
+  | { kind: 'investigated'; ship: number; system: SystemId; anomaly: AnomalyId }
   /** A ship reached the last of its destinations. */
   | { kind: 'arrived'; ship: number; system: SystemId }
   /** A survey ship began a blind jump. */

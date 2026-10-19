@@ -37,6 +37,8 @@ interface Props {
   /** The viewing power's ships here, and what to do when one is chosen. */
   ships?: readonly { id: number; name: string; kind: string; status: string }[];
   onShip?: (id: number) => void;
+  /** An anomaly the viewer has found here: what the survey saw, or, once investigated, what was found. */
+  anomaly?: { name: string; text: string; investigated: boolean };
   /** Colonies and outposts here, anyone's; the viewer's own open with `onHolding`. */
   holdings?: readonly HoldingRow[];
   onHolding?: (id: number) => void;
@@ -175,6 +177,7 @@ export function SystemPanel({
   onShip,
   holdings = [],
   onHolding,
+  anomaly,
 }: Props) {
   const system = world.system(id);
   const s = system.sky;
@@ -212,6 +215,16 @@ export function SystemPanel({
           </button>
         )}
       </header>
+
+      {anomaly && (
+        <section class="anomaly" aria-label="Anomaly">
+          <h3>
+            {anomaly.name} <Badge kind="fiction" />
+          </h3>
+          <p>{anomaly.text}</p>
+          {!anomaly.investigated && <p class="dim">Not yet investigated: a survey ship here can look closer.</p>}
+        </section>
+      )}
 
       {holdings.length > 0 && (
         <>

@@ -11,15 +11,17 @@
 
 import { type ComponentChildren, Fragment } from 'preact';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { ANOMALIES } from '../../content/anomalies.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { MapRoute, MapView, ShipMark, ViewMode } from '../../render/MapView.ts';
 import type { Rect } from '../../render/mapMath.ts';
 import { mapContent } from '../../render/mapModel.ts';
+import { anomalyAt } from '../../sim/anomalies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
-import { findRoute } from '../../sim/movement.ts';
+import { blindReachDeci, findRoute, lanesFor } from '../../sim/movement.ts';
 import type { Need } from '../../sim/needs.ts';
 import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
@@ -305,6 +307,22 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     v.setRoutes(routes);
   }, [shipsKey, queuesKey, ready, t, hoverId, desktop, selectedShip.value, lanePreview.value, world, play]);
 
+  // Choosing where a ship goes: every star it can reach in one go is framed above the bars.
+  const targetShip = t?.ship ?? null;
+  const targetBlind = t?.blind ?? false;
+  useEffect(() => {
+    const v = view.current;
+    if (targetShip === null || !v) return;
+    const { game: g } = latest.current;
+    const ship = g.ships.find((s) => s.id === targetShip);
+    if (!ship?.at) return;
+    const from = ship.at;
+    const around = targetBlind
+      ? world.systems.filter((s) => world.distanceDeci(from, s.id) <= blindReachDeci(g, ship.owner)).map((s) => s.id)
+      : (lanesFor(world, g, ship.owner).get(from) ?? []).map((h) => h.to);
+    v.frameAround(from, around);
+  }, [targetShip, targetBlind, world]);
+
   /** Tells the map which part of it is not covered by bars, panels and sheets. */
   const updateStage = useCallback(() => {
     const v = view.current;
@@ -483,6 +501,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       onCentre={() => view.current?.focus(id)}
       surveyed={power ? hasSurveyed(power, id) : true}
       species={play ? speciesFor(game, play.faction) : undefined}
+      anomaly={(() => {
+        const a = power && hasSurveyed(power, id) ? anomalyAt(game.seed, id) : null;
+        if (!a || !power) return undefined;
+        const done = power.investigated.includes(id);
+        return { name: ANOMALIES[a].name, text: done ? ANOMALIES[a].found : ANOMALIES[a].seen, investigated: done };
+      })()}
       ships={shipsAt(id)}
       onShip={pickShip}
       holdings={game.holdings

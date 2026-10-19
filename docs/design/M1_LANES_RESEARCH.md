@@ -1,6 +1,7 @@
 # M1 · Lanes, research and anomalies in detail (increment 6)
 
-**Status:** written 19 October 2026, before increment 6 is built. It fills in
+**Status:** written 19 October 2026 before increment 6 was built, and built the same day in its
+three parts (see *As built* at the end). It fills in
 [M1 §3, §8 and §9](M1_FIRST_LIGHT.md) and follows them and the owner's answers to D-19a to D-19c
 (the home webs, the Lapse, lanes built as projects). The numbers are starting points for M2.
 It is built and deployed in three parts: **6a** lanes, **6b** research, **6c** anomalies.
@@ -83,7 +84,7 @@ when what it needs is researched or queued before it; queueing one also queues w
 | | Long-baseline arrays | 60 | Deep survey | survey stations survey two lanes out |
 | Xenology | — | — | locked | *Nothing to study yet.* |
 
-The tree costs 700 points in all; a power makes about 400 in 50 turns, so research is a choice.
+The tree costs 700 points in all; a power makes about 500 in 50 turns, so research is a choice.
 A power starts with nothing researched.
 
 ### On screen
@@ -113,9 +114,10 @@ A power starts with nothing researched.
 
 ## 4. The state
 
-Version 4: each power gains `researched`, `researchQueue` and `techProgress` (6b) and
-`investigated` (6c); a lane can be `building` with the turns left; a queue item can be a `lane`;
-a ship can be `investigating`. Earlier saves are migrated.
+Each part raised the state's version, with a migration, so a save made between them still loads:
+version 4 (6a) lets a lane be `building` with the turns left and a queue item be a `lane`;
+version 5 (6b) gives each power `researched`, `researchQueue` and `techProgress`; version 6 (6c)
+gives each power `investigated` and each ship `investigating`.
 
 ## 5. Tests
 
@@ -129,3 +131,24 @@ a ship can be `investigating`. Earlier saves are migrated.
 - **Scripted 50-turn games** as each power that build lanes, research and investigate, replayed
   exactly; **browser journeys** that queue a lane, research a technology and investigate an
   anomaly on a phone, a tablet and a desktop.
+
+## As built
+
+- **Lanes (6a).** As in §1. On a phone, choosing a lane in the list queues it at once (like any
+  item), and queued lanes are drawn faintly on the map in amber, as ships' orders are; on a
+  desktop, hovering a lane in the list draws it. The queue says when a lane will be paid for
+  "then tuned for 3 turns". A queued lane whose place was taken before it was paid for is
+  dropped, and the report says why.
+- **Research (6b).** As in §2. Each technology card has *Queue* (with what it needs, if anything)
+  and *Now*. An anomaly's progress towards a named technology stops a point short of finishing
+  it, so it is still researched in its place in the tree. The phone's flat/3D switch is a small
+  button at the top right of the map; on a desktop, Legend, Codex, the keys and *Save and leave*
+  are under **Menu**, and research covers everything right of the outliner.
+- **Anomalies (6c).** As in §3: twenty kinds in `src/content/anomalies.ts`, about one system in
+  six (28 to 34 of 207 for the seeds tested). A survey ship investigating stays put, and moving
+  it calls the investigation off.
+- **Choosing a destination** now frames the ship's system and every star it can reach (by its
+  lanes, or within its blind-jump reach) above the bars, so none hides under the phone's bar.
+- **Scripted 50-turn games** as each power now also research (10 or 11 technologies), lay lanes
+  from their outposts and investigate anomalies, and replay exactly.
+

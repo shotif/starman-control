@@ -5,6 +5,7 @@ import { isFactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { SHIPS } from '../content/ships.ts';
 import { isTechId, TECHS } from '../content/techs.ts';
+import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { beaconSlots, type GameState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
@@ -41,6 +42,7 @@ export function shapeProblems(raw: unknown): string[] {
         out.push(`power ${i} queues unknown technologies`);
       if (!isRecord(p.techProgress) || !Object.entries(p.techProgress).every(([k, v]) => isTechId(k) && isWhole(v, 1)))
         out.push(`power ${i} has progress in unknown technologies`);
+      if (!isStrings(p.investigated)) out.push(`power ${i} investigated is not a list`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -64,6 +66,9 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isStrings(s.destinations)) out.push(`ship ${i} destinations are not a list`);
       if (typeof s.hold !== 'boolean' || typeof s.autoSurvey !== 'boolean')
         out.push(`ship ${i} flags are not true or false`);
+      const inv = s.investigating;
+      if (inv !== null && !(isRecord(inv) && typeof inv.system === 'string' && isWhole(inv.left, 1)))
+        out.push(`ship ${i} is investigating nothing`);
       const f = s.founding;
       if (f !== null && !(isRecord(f) && (f.kind === 'colony' || f.kind === 'outpost') && typeof f.body === 'string'))
         out.push(`ship ${i} is founding nothing it can`);
@@ -123,6 +128,19 @@ export function stateProblems(world: World, state: GameState): string[] {
       if (s <= prev) out.push(`${p.faction}'s surveys are out of order or listed twice`);
       prev = s;
     }
+  }
+  for (const p of state.powers) {
+    let last = '';
+    for (const sys of p.investigated) {
+      if (sys <= last) out.push(`${p.faction}'s investigations are out of order or listed twice`);
+      if (anomalyAt(state.seed, sys) === null) out.push(`${p.faction} investigated ${sys}, which has no anomaly`);
+      last = sys;
+    }
+  }
+  for (const s of state.ships) {
+    const inv = s.investigating;
+    if (inv && (s.at !== inv.system || s.type !== 'survey' || anomalyAt(state.seed, inv.system) === null))
+      out.push(`ship ${s.id} is investigating ${inv.system}, where it cannot`);
   }
   for (const p of state.powers) {
     const seen = new Set<string>(p.researched);

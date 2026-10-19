@@ -109,6 +109,33 @@ export function canResearch(power: PowerState): TechId[] {
 }
 
 /**
+ * Research points from elsewhere (an anomaly): into the queue, or, with nothing queued, into the
+ * first technology the power could research, without queueing it. Returns what they finish.
+ */
+export function grantResearch(power: PowerState, points: number): TechId[] {
+  if (power.researchQueue.length > 0) return spendResearch(power, points);
+  const open = TECH_IDS.find(
+    (id) => !power.researched.includes(id) && TECHS[id].needs.every((n) => power.researched.includes(n)),
+  );
+  if (!open) return [];
+  power.researchQueue = [open];
+  const done = spendResearch(power, points);
+  power.researchQueue = [];
+  return done;
+}
+
+/**
+ * Progress towards one technology (an anomaly's reward). It brings the technology to within a
+ * point of done, never past, so it is still researched in its place in the tree; if it is
+ * researched already, the points go to the current research instead.
+ */
+export function grantTechProgress(power: PowerState, tech: TechId, points: number): TechId[] {
+  if (power.researched.includes(tech)) return grantResearch(power, points);
+  power.techProgress[tech] = Math.min(TECHS[tech].cost - 1, (power.techProgress[tech] ?? 0) + points);
+  return [];
+}
+
+/**
  * Puts a turn's points into the queue: the first technology, then the next with what is left.
  * Points with nothing queued are lost. Returns the technologies finished, in order.
  */
