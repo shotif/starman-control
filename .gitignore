@@ -28,3 +28,6 @@ certs/
 
 # Agent worktrees (local only)
 .claude/worktrees/
+
+# Generated art candidates awaiting review (docs/ART_PIPELINE.md); approved pictures go to public/art/
+art/out/

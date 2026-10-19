@@ -15,7 +15,11 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run typecheck && npm test && npm run build"
+    "art:ping": "node scripts/art/ping.ts",
+    "art:generate": "node scripts/art/generate.ts",
+    "art:approve": "node scripts/art/approve.ts",
+    "art:check": "node scripts/art/check.ts",
+    "check": "npm run typecheck && npm run art:check && npm test && npm run build"
   },
   "dependencies": {
     "@fontsource/saira-condensed": "5.3.0",
@@ -23,6 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "22.20.4",
+    "sharp": "0.35.5",
     "typescript": "7.0.2",
     "vite": "8.3.1",
     "vitest": "5.0.2"
