@@ -17,6 +17,76 @@
     <meta name="apple-mobile-web-app-title" content="Starman Control" />
   </head>
   <body>
+    <!-- The boot screen (FIRST_IMPRESSION.md §5): the game's own look before any script runs. -->
+    <style>
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 18px;
+        background: radial-gradient(ellipse at 50% 120%, #0d1a33 0%, #04060b 62%);
+        color: #e8eef8;
+        font-family: "Saira Condensed", system-ui, sans-serif;
+        text-transform: uppercase;
+        transition: opacity 0.5s ease;
+      }
+      #boot.gone {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #boot .boot-starman {
+        margin-right: -0.6em;
+        color: #cfe0f5;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.6em;
+      }
+      #boot .boot-control {
+        margin: -10px -0.1em 0 0;
+        color: #dcf4ff;
+        font-size: 44px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-shadow: 0 0 22px rgba(92, 200, 255, 0.5);
+      }
+      #boot .boot-line {
+        position: relative;
+        width: 160px;
+        height: 1px;
+        overflow: hidden;
+        background: rgba(126, 170, 255, 0.2);
+      }
+      #boot .boot-line::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        width: 40%;
+        background: linear-gradient(90deg, transparent, #5cc8ff, transparent);
+        animation: boot-run 1.2s ease-in-out infinite;
+      }
+      @keyframes boot-run {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(250%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot .boot-line::after {
+          animation: none;
+          width: 100%;
+        }
+      }
+    </style>
+    <div id="boot" aria-hidden="true">
+      <div class="boot-starman">Starman</div>
+      <div class="boot-control">Control</div>
+      <div class="boot-line"></div>
+    </div>
     <div id="app"></div>
     <noscript>
       <p style="color:#e8eef8;font-family:system-ui;padding:2rem">Starman Control needs JavaScript to run.</p>

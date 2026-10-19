@@ -1,0 +1,446 @@
+/* The title (FIRST_IMPRESSION.md §2): the logotype and lit plates over the live neighbourhood. */
+
+.title {
+  position: relative;
+  min-height: 100dvh;
+  isolation: isolate;
+}
+
+.title-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  /* Until the scene is up, or without WebGL: a soft band across a dark sky. */
+  background:
+    radial-gradient(ellipse 140% 22% at 62% 46%, rgba(120, 140, 210, 0.1), transparent 70%),
+    radial-gradient(ellipse at 50% 120%, #0d1a33 0%, var(--bg) 62%);
+}
+
+.title-sky canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 2.4s ease;
+}
+
+.title-sky[data-ready="yes"] canvas {
+  opacity: 1;
+}
+
+.title-shade {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 38%, transparent 45%, rgba(2, 4, 8, 0.65) 100%),
+    linear-gradient(to bottom, rgba(3, 5, 10, 0.55) 0%, transparent 22%, transparent 48%, rgba(3, 5, 10, 0.86) 100%);
+}
+
+.title-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 100dvh;
+  padding: max(8vh, calc(env(safe-area-inset-top) + 1.5rem)) var(--gutter-right) 1.25rem var(--gutter);
+}
+
+.title-head {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ the logotype */
+
+.logotype {
+  display: grid;
+  justify-items: inherit;
+  margin: 0;
+  font-family: var(--font-label);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.logo-starman {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin-right: -0.62em;
+  color: #cfe0f5;
+  font-size: clamp(0.95rem, 3.6vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0.62em;
+  animation: title-rise 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+
+.logo-starman::before,
+.logo-starman::after {
+  content: "";
+  width: 2.4em;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(92, 200, 255, 0.85));
+}
+
+.logo-starman::after {
+  margin-left: -0.62em;
+  background: linear-gradient(270deg, transparent, rgba(92, 200, 255, 0.85));
+}
+
+.logo-control {
+  margin-right: -0.1em;
+  padding: 0.04em 0;
+  font-size: clamp(3.4rem, 16vw, 7.6rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: transparent;
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%) no-repeat,
+    linear-gradient(180deg, #ffffff 0%, #dcf4ff 42%, #74d2ff 100%);
+  background-size:
+    260% 100%,
+    100% 100%;
+  background-position:
+    160% 0,
+    0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 2px rgba(190, 235, 255, 0.55)) drop-shadow(0 0 22px rgba(92, 200, 255, 0.45));
+  animation:
+    title-rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both,
+    logo-shine 2.6s ease-in-out 1.1s both;
+}
+
+@keyframes title-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes logo-shine {
+  from {
+    background-position:
+      160% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      -60% 0,
+      0 0;
+  }
+}
+
+.tagline {
+  max-width: 30rem;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: clamp(0.92rem, 2.4vw, 1.08rem);
+  line-height: 1.45;
+  text-shadow:
+    0 1px 2px rgba(2, 4, 8, 0.9),
+    0 0 14px rgba(2, 4, 8, 0.9);
+  text-wrap: balance;
+  animation: title-rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s both;
+}
+
+.tagline a,
+.title-foot a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(92, 200, 255, 0.35);
+}
+
+/* ------------------------------------------------------------------ the menu */
+
+.title-menu {
+  display: grid;
+  gap: 0.45rem;
+  width: min(100%, 26rem);
+}
+
+.plate {
+  --plate-bg: #08101d;
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr auto;
+  align-items: center;
+  gap: 0 0.7rem;
+  min-height: 3.4rem;
+  padding: 0.45rem 1rem 0.45rem 0.7rem;
+  color: var(--text);
+  text-decoration: none;
+  background: linear-gradient(90deg, rgba(10, 20, 36, 0.82), rgba(10, 20, 36, 0.48));
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+  animation: plate-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 0.55s);
+}
+
+.plate::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: rgba(126, 170, 255, 0.45);
+  transition:
+    width 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(126, 170, 255, 0.5), transparent 78%) top / 100% 1px no-repeat,
+    linear-gradient(90deg, rgba(126, 170, 255, 0.22), transparent 60%) bottom / 100% 1px no-repeat;
+}
+
+.plate-glyph {
+  justify-self: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  color: var(--accent);
+  filter: drop-shadow(0 0 6px rgba(92, 200, 255, 0.5));
+}
+
+.plate-text {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.plate-title {
+  font-family: var(--font-label);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.plate-line {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plate-chevron {
+  width: 0.75rem;
+  height: 1.5rem;
+  color: var(--text-dim);
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.plate:hover,
+.plate:focus-visible {
+  background: linear-gradient(90deg, rgba(92, 200, 255, 0.2), rgba(10, 20, 36, 0.55));
+  transform: translateX(4px);
+}
+
+.plate:focus-visible {
+  outline-offset: -3px;
+}
+
+.plate:hover::before,
+.plate:focus-visible::before {
+  width: 4px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.plate:hover .plate-chevron,
+.plate:focus-visible .plate-chevron {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.plate:active {
+  transform: translateX(2px) scale(0.99);
+}
+
+.plate-primary {
+  background: linear-gradient(90deg, rgba(92, 200, 255, 0.26), rgba(10, 24, 44, 0.6));
+}
+
+.plate-primary::before {
+  width: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 14px rgba(92, 200, 255, 0.9);
+}
+
+.plate-primary .plate-title {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(92, 200, 255, 0.6);
+}
+
+.plate-primary .plate-line {
+  color: #cfe6f7;
+}
+
+@keyframes plate-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ------------------------------------------------------------------ the foot */
+
+.title-foot {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  padding: 0.5rem var(--gutter-right) max(1.25rem, env(safe-area-inset-bottom)) var(--gutter);
+  color: var(--text-dim);
+  font-size: 0.76rem;
+  text-align: center;
+  animation: title-rise 1.2s ease 1.2s both;
+}
+
+.title-foot p {
+  margin: 0;
+}
+
+.title-foot .status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  color: var(--warm);
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title-foot .status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warm);
+  box-shadow: 0 0 8px var(--warm);
+  animation: status-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Short phones: a smaller logotype, so the menu stays within the first screen. */
+@media (max-height: 700px) and (max-aspect-ratio: 23 / 20) {
+  .title-content {
+    gap: 1.25rem;
+    padding-top: max(5vh, calc(env(safe-area-inset-top) + 1rem));
+  }
+  .logo-control {
+    font-size: clamp(3rem, 14vw, 5rem);
+  }
+  .plate {
+    min-height: 3.1rem;
+  }
+}
+
+/* A wide screen: the logotype and the menu on the left, the neighbourhood turning on the right. */
+@media (min-aspect-ratio: 23 / 20) and (min-width: 600px) {
+  .title-content {
+    align-items: flex-start;
+    justify-content: center;
+    width: min(38rem, 48vw);
+    min-width: 21rem;
+    padding: max(2rem, env(safe-area-inset-top)) 1rem 5.5rem max(clamp(1.25rem, 6vw, 6.5rem), env(safe-area-inset-left));
+  }
+  .title-head {
+    justify-items: start;
+    text-align: left;
+  }
+  .logo-starman {
+    margin-right: 0;
+  }
+  .logo-starman::before {
+    display: none;
+  }
+  .logo-control {
+    font-size: clamp(3.2rem, min(9vw, 15vh), 7.6rem);
+  }
+  .title-menu {
+    width: min(100%, 24rem);
+  }
+  .title-foot {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    justify-items: start;
+    gap: 1.5rem;
+    padding: 1rem max(clamp(1.25rem, 6vw, 6.5rem), env(safe-area-inset-left)) max(1rem, env(safe-area-inset-bottom));
+    text-align: left;
+  }
+  .title-foot .build {
+    justify-self: end;
+  }
+  .title-shade {
+    background:
+      linear-gradient(90deg, rgba(3, 5, 10, 0.88) 0%, rgba(3, 5, 10, 0.55) 30%, transparent 58%),
+      radial-gradient(ellipse 90% 90% at 65% 45%, transparent 50%, rgba(2, 4, 8, 0.6) 100%),
+      linear-gradient(to bottom, transparent 80%, rgba(3, 5, 10, 0.7) 100%);
+  }
+  @keyframes plate-in {
+    from {
+      opacity: 0;
+      transform: translateX(-16px);
+    }
+  }
+}
+
+/* A low, wide phone: everything smaller, so it fits beside the scene. */
+@media (min-aspect-ratio: 23 / 20) and (max-height: 500px) {
+  .title-content {
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: 3.5rem;
+  }
+  .title-head {
+    gap: 0.5rem;
+  }
+  .logo-control {
+    font-size: clamp(2.4rem, 15vh, 4rem);
+  }
+  .tagline {
+    display: none;
+  }
+  .title-menu {
+    gap: 0.3rem;
+    margin-top: -0.75rem;
+  }
+  .plate {
+    min-height: 2.9rem;
+    padding-block: 0.25rem;
+  }
+  .plate-line {
+    display: none;
+  }
+  .title-foot .credit {
+    display: none;
+  }
+}

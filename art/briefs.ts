@@ -49,4 +49,57 @@ export const BRIEFS: ArtBrief[] = [
       'of no human make: smooth, dark, partly broken, many times larger than the ship. Quiet and uneasy.',
     purpose: 'Style test: a relic illustration (the precursor mystery).',
   },
+  // The first pictures for the game (D-26, VISUAL_DIRECTION.md §4, increment 9): each power's scene
+  // and leader, for the new-game screen. The places are real; everything built there is fiction.
+  {
+    id: 'power-sta-scene',
+    series: 'illustration',
+    subject:
+      'High orbit over Earth at dawn: a vast wheel-shaped customs station with green navigation lights, ' +
+      'cargo ships waiting in an orderly line of lights towards a slender lane beacon; the Sun rising over ' +
+      'the curve of the Earth, the Moon small and grey in the distance.',
+    purpose: 'New-game screen: the Sol Transit Authority at home (Earth, D-20).',
+  },
+  {
+    id: 'power-frontier-scene',
+    series: 'illustration',
+    subject:
+      'A settlement of the Frontier Cooperative on a warm, hazy super-Earth: clusters of white habitat domes ' +
+      'and green terraced farms on rolling hills, a shared landing field with small ships under blue lights, ' +
+      'a pale yellow-orange sun a little smaller than ours in a golden, dusty sky.',
+    purpose: 'New-game screen: the Frontier Cooperative at home (Tau Ceti e, D-24).',
+  },
+  {
+    id: 'power-wake-scene',
+    series: 'illustration',
+    subject:
+      'A raiders’ den in the dark: a hollowed asteroid fitted with docking arms and floodlights, patched-together ' +
+      'ships with red running lights, sparks from welding; a small dim red dwarf sun and the dark crescent of ' +
+      'a large rocky planet beyond.',
+    purpose: 'New-game screen: the Hollow Wake at home (Wolf 1061 and Wolf 1061 c, D-24).',
+  },
+  {
+    id: 'power-sta-leader',
+    series: 'portrait',
+    subject:
+      'The Director of the Sol Transit Authority, a calm man in his sixties with a neatly trimmed white beard, ' +
+      'in a dark green civil-service uniform with plain geometric insignia; composed, watchful, a little weary.',
+    purpose: 'New-game screen: the face of the Authority.',
+  },
+  {
+    id: 'power-frontier-leader',
+    series: 'portrait',
+    subject:
+      'An elected Elder of the Frontier Cooperative, a woman in her forties with sun-weathered skin and braided ' +
+      'dark hair, in a practical blue work jacket with a small round pin; warm, determined, ready to argue.',
+    purpose: 'New-game screen: the face of the Cooperative.',
+  },
+  {
+    id: 'power-wake-leader',
+    series: 'portrait',
+    subject:
+      'The chief of the Hollow Wake raiders, a lean woman in her thirties with a shaved head and a thin faded ' +
+      'scar at her temple, in a patched dark red flight jacket; a cool, appraising, faintly amused look.',
+    purpose: 'New-game screen: the face of the Wake.',
+  },
 ];

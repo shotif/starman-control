@@ -1,3 +1,156 @@
 {
-  "images": []
+  "images": [
+    {
+      "briefId": "power-frontier-leader",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: An elected Elder of the Frontier Cooperative, a woman in her forties with sun-weathered skin and braided dark hair, in a practical blue work jacket with a small round pin; warm, determined, ready to argue.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-19T21:25:51.634Z",
+      "id": "power-frontier-leader",
+      "series": "portrait",
+      "approvedAt": "2026-10-19T21:27:17.271Z",
+      "candidate": "art/out/power-frontier-leader/20261019-212532-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 384,
+          "path": "art/portrait/power-frontier-leader-384.webp",
+          "bytes": 26910
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/power-frontier-leader-768.webp",
+          "bytes": 89234
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "power-frontier-scene",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A settlement of the Frontier Cooperative on a warm, hazy super-Earth: clusters of white habitat domes and green terraced farms on rolling hills, a shared landing field with small ships under blue lights, a pale yellow-orange sun a little smaller than ours in a golden, dusty sky.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T21:23:44.367Z",
+      "note": "Here is a grounded, painted widescreen illustration for your strategy game event, featuring the Frontier Cooperative's settlement on a warm, hazy super-Earth.",
+      "id": "power-frontier-scene",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T21:27:15.301Z",
+      "candidate": "art/out/power-frontier-scene/20261019-212328-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/power-frontier-scene-640.webp",
+          "bytes": 23884
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/power-frontier-scene-1280.webp",
+          "bytes": 69554
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "power-sta-leader",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Director of the Sol Transit Authority, a calm man in his sixties with a neatly trimmed white beard, in a dark green civil-service uniform with plain geometric insignia; composed, watchful, a little weary.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-19T21:25:10.248Z",
+      "id": "power-sta-leader",
+      "series": "portrait",
+      "approvedAt": "2026-10-19T21:27:16.598Z",
+      "candidate": "art/out/power-sta-leader/20261019-212452-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 384,
+          "path": "art/portrait/power-sta-leader-384.webp",
+          "bytes": 21378
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/power-sta-leader-768.webp",
+          "bytes": 63272
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "power-sta-scene",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: High orbit over Earth at dawn: a vast wheel-shaped customs station with green navigation lights, cargo ships waiting in an orderly line of lights towards a slender lane beacon; the Sun rising over the curve of the Earth, the Moon small and grey in the distance.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T21:22:59.453Z",
+      "id": "power-sta-scene",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T21:27:14.636Z",
+      "candidate": "art/out/power-sta-scene/20261019-212240-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/power-sta-scene-640.webp",
+          "bytes": 21066
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/power-sta-scene-1280.webp",
+          "bytes": 63130
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "power-wake-leader",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The chief of the Hollow Wake raiders, a lean woman in her thirties with a shaved head and a thin faded scar at her temple, in a patched dark red flight jacket; a cool, appraising, faintly amused look.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-19T21:26:50.910Z",
+      "note": "Here is a painted science-fiction character portrait for a strategy game, depicting the grounded and observant chief of the Hollow Wake raiders:",
+      "id": "power-wake-leader",
+      "series": "portrait",
+      "approvedAt": "2026-10-19T21:27:17.869Z",
+      "candidate": "art/out/power-wake-leader/20261019-212609-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 384,
+          "path": "art/portrait/power-wake-leader-384.webp",
+          "bytes": 19100
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/power-wake-leader-768.webp",
+          "bytes": 50520
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "power-wake-scene",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A raiders’ den in the dark: a hollowed asteroid fitted with docking arms and floodlights, patched-together ships with red running lights, sparks from welding; a small dim red dwarf sun and the dark crescent of a large rocky planet beyond.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T21:24:52.440Z",
+      "id": "power-wake-scene",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T21:27:15.981Z",
+      "candidate": "art/out/power-wake-scene/20261019-212405-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/power-wake-scene-640.webp",
+          "bytes": 18370
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/power-wake-scene-1280.webp",
+          "bytes": 56766
+        }
+      ],
+      "aiGenerated": true
+    }
+  ]
 }

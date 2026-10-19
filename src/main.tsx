@@ -41,7 +41,14 @@ function Lazy({ load }: { load: () => Promise<{ default: ComponentType<{ buildId
       live = false;
     };
   }, [load]);
-  return Screen ? <Screen buildId={__BUILD_ID__} /> : <p class="loading">Loading…</p>;
+  return Screen ? (
+    <Screen buildId={__BUILD_ID__} />
+  ) : (
+    <div class="loading" role="status">
+      <span class="loading-ring" aria-hidden="true" />
+      Loading…
+    </div>
+  );
 }
 
 const loadData = () => import('./ui/data/route.tsx');
@@ -95,4 +102,11 @@ applySettings();
 watchLayout();
 const app = document.querySelector<HTMLDivElement>('#app');
 if (app) render(<App />, app);
+// The boot screen fades once the first screen is drawn.
+const boot = document.getElementById('boot');
+if (boot)
+  requestAnimationFrame(() => {
+    boot.classList.add('gone');
+    setTimeout(() => boot.remove(), 600);
+  });
 window.addEventListener('load', () => setTimeout(keepForOffline, 1500));

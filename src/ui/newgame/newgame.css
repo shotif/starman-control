@@ -1,83 +1,446 @@
+/* Choosing a power (FIRST_IMPRESSION.md §3): tall cards with each power's home, face and emblem. */
+
 .new-game {
-  max-width: 1200px;
+  position: relative;
+  max-width: 1320px;
+  min-height: 100dvh;
   margin: 0 auto;
   padding: max(12px, env(safe-area-inset-top)) var(--gutter-right) max(24px, env(safe-area-inset-bottom)) var(--gutter);
+  isolation: isolate;
 }
 
-.new-game h1 {
-  margin: 0.5rem 0 0.25rem;
-  font-family: var(--font-label);
-  font-size: clamp(1.6rem, 6vw, 2.4rem);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+/* Each power's colour, faint in the sky above its card. */
+.new-game::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 40% 35% at 12% 18%, rgba(98, 227, 154, 0.07), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 50% 8%, rgba(92, 200, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 88% 18%, rgba(255, 95, 95, 0.07), transparent 70%);
+}
+
+.ng-head {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
 }
 
 .new-game .back {
   display: inline-flex;
   align-items: center;
+  gap: 0.45rem;
   min-height: 44px;
+  margin-bottom: 0.5rem;
+  padding: 0 1rem 0 0.75rem;
+  color: var(--text-muted);
+  background: rgba(10, 20, 36, 0.62);
+  clip-path: var(--cut-small);
   font-family: var(--font-label);
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-decoration: none;
   text-transform: uppercase;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
 }
 
-.faction-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
+.new-game .back:hover,
+.new-game .back:focus-visible {
+  color: var(--text);
+  background: rgba(92, 200, 255, 0.18);
 }
 
-.faction-card {
+.new-game .back:focus-visible {
+  outline-offset: -3px;
+}
+
+.ng-head .kicker {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 1px solid var(--panel-border);
-  border-top: 3px solid var(--faction);
-  background: var(--panel);
-  clip-path: var(--cut);
-}
-
-.faction-card h2 {
-  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   margin: 0;
+  color: var(--accent);
   font-family: var(--font-label);
-  font-size: 1.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
-.faction-card .plays-as {
+.ng-head h1 {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: clamp(1.9rem, 6.5vw, 3.1rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.05;
+  text-shadow: 0 0 24px rgba(92, 200, 255, 0.35);
+  text-transform: uppercase;
+}
+
+.new-game .dim {
+  color: var(--text-dim);
+}
+
+.ng-head .dim {
+  max-width: 40rem;
   margin: 0;
   color: var(--text-muted);
 }
 
-.faction-card dl {
+/* ------------------------------------------------------------------ the cards: swiped on a phone */
+
+.power-cards {
+  display: flex;
+  gap: 12px;
+  margin: 1rem calc(-1 * var(--gutter-right)) 0.25rem calc(-1 * var(--gutter));
+  padding: 0.5rem var(--gutter-right) 1rem var(--gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding: 0 var(--gutter);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.power-cards::-webkit-scrollbar {
+  display: none;
+}
+
+.power-card {
+  flex: 0 0 min(86vw, 25rem);
+  scroll-snap-align: center;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.35s ease;
+  animation: card-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+
+.power-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.power-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.power-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(9, 15, 28, 0.7), rgba(8, 13, 24, 0.94) 45%);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+
+/* The power's colour as light along the card's edge, brightest at the top. */
+.power-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-top: 2px solid var(--faction);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--faction) 26%, transparent),
+    inset 0 12px 24px -12px color-mix(in srgb, var(--faction) 55%, transparent);
+}
+
+/* Lit corners: the console's brackets at the two square corners. */
+.power-frame::after {
+  --c: color-mix(in srgb, var(--faction) 85%, #ffffff);
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 16px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / 1px 16px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 16px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 1px 16px no-repeat;
+  opacity: 0.8;
+}
+
+.power-art {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.power-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform 8s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.power-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, transparent 40%, rgba(8, 13, 24, 0.96) 100%),
+    linear-gradient(to top, color-mix(in srgb, var(--faction) 16%, transparent), transparent 50%);
+}
+
+.power-badge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 1;
+  background: rgba(4, 6, 11, 0.62);
+}
+
+.power-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: -3.8rem;
+  padding: 0 1rem 1.1rem;
+}
+
+.power-id {
+  display: grid;
+  grid-template-columns: 5.75rem 1fr;
+  align-items: end;
+  gap: 0.9rem;
+}
+
+.power-leader {
+  position: relative;
+  margin: 0;
+  padding: 1px;
+  background: linear-gradient(160deg, var(--faction), rgba(8, 13, 24, 0.2) 55%, var(--faction));
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.power-leader img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 384 / 572;
+  object-fit: cover;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+}
+
+.power-leader figcaption {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
+  padding: 1rem 0 0.3rem;
+  background: linear-gradient(transparent, rgba(4, 6, 11, 0.85));
+  color: #ffffff;
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.power-name {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  padding-bottom: 0.15rem;
+}
+
+.power-name .emblem {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--faction) 70%, transparent));
+}
+
+.power-name h2 {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.power-body .plays-as {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.power-facts {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.3rem 0.75rem;
+  gap: 0.4rem 0.9rem;
   margin: 0 0 auto;
+  font-size: 0.92rem;
 }
 
-.faction-card dt {
-  color: var(--text-dim);
+.power-facts dt {
+  padding-top: 0.12rem;
+  color: color-mix(in srgb, var(--faction) 70%, #ffffff);
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.faction-card dd {
+.power-facts dd {
   margin: 0;
 }
 
-.faction-card .button {
-  margin-top: 0.5rem;
+/* The choice: a lit plate in the power's colour. */
+.power-lead {
+  position: relative;
+  min-height: 50px;
+  margin-top: 0.4rem;
+  padding: 0 1rem;
+  border: 0;
+  color: #ffffff;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--faction) 34%, #08101d),
+    color-mix(in srgb, var(--faction) 14%, #08101d)
+  );
+  clip-path: var(--cut);
+  cursor: pointer;
+  font-family: var(--font-label);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--faction) 80%, transparent);
+  text-transform: uppercase;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.power-lead::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--faction), transparent 85%) top / 100% 1px no-repeat,
+    linear-gradient(90deg, var(--faction), var(--faction)) left / 3px 100% no-repeat;
+}
+
+.power-lead:hover,
+.power-lead:focus-visible {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--faction) 55%, #08101d),
+    color-mix(in srgb, var(--faction) 22%, #08101d)
+  );
+}
+
+.power-lead:focus-visible {
+  outline-offset: -3px;
+}
+
+.power-lead:active {
+  transform: scale(0.985);
+}
+
+.power-lead:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+/* The dots under the cards on a phone: which power is in view. */
+.power-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.power-dots button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.power-dots button::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--faction);
+  transform: rotate(45deg);
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.power-dots button.on::before {
+  background: var(--faction);
+  box-shadow: 0 0 10px var(--faction);
+}
+
+/* ------------------------------------------------------------------ the foot */
+
+.ng-foot {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.ng-foot > p {
+  max-width: 48rem;
+  margin: 0;
+  font-size: 0.85rem;
 }
 
 .seed summary {
-  min-height: 44px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
   color: var(--accent);
   cursor: pointer;
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.seed summary::-webkit-details-marker {
+  display: none;
+}
+
+.seed summary::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+
+.seed[open] summary::before {
+  transform: rotate(45deg);
 }
 
 .seed label {
@@ -89,8 +452,40 @@
 .seed input {
   min-height: 44px;
   padding: 0 0.75rem;
-  border: 1px solid var(--panel-border);
-  background: var(--panel);
+  border: 0;
+  border-bottom: 1px solid rgba(92, 200, 255, 0.5);
+  background: rgba(10, 20, 36, 0.72);
   color: var(--text);
   font: inherit;
+}
+
+.seed input:focus-visible {
+  outline-offset: 0;
+}
+
+/* ------------------------------------------------------------------ side by side on a desktop */
+
+@media (min-width: 960px) {
+  .new-game {
+    padding-top: max(24px, env(safe-area-inset-top));
+  }
+  .power-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0 0.5rem;
+    padding: 0;
+    overflow: visible;
+  }
+  .power-card:hover,
+  .power-card:focus-within {
+    filter: drop-shadow(0 14px 34px color-mix(in srgb, var(--faction) 30%, transparent));
+    transform: translateY(-6px);
+  }
+  .power-card:hover .power-scene {
+    transform: scale(1.09);
+  }
+  .power-dots {
+    display: none;
+  }
 }

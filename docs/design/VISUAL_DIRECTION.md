@@ -62,7 +62,7 @@ luminous and animated without pretending to be a web page.
 | # | Increment | What changes |
 | --- | --- | --- |
 | 8 | **Proof** (M1's last) | settings (text size, reduced motion, quality), the saves screen, installable and offline, the budgets, nine screenshot sizes ([M1_PROOF.md](M1_PROOF.md)) |
-| 9 | **First impression** | the title as a live 3D scene of the neighbourhood under the Milky Way, slowly turning; the logotype; the new-game screen with each power's emblem and picture; the app's own loading screen; no web furniture anywhere |
+| 9 | **First impression** (built: [FIRST_IMPRESSION.md](FIRST_IMPRESSION.md)) | the title as a live 3D scene of the neighbourhood under the Milky Way, slowly turning; the logotype; the new-game screen with each power's emblem and picture; the app's own loading screen; no web furniture anywhere |
 | 10 | **The living map** | the Milky Way backdrop on the map; bloom (by quality); stars with glow; lanes that pulse; each power's territory as a soft field of its colour; animated selection; a glide into a system when it is entered |
 | 11 | **Control's console** | the interface skin: glass panels with lit corners, an icon set, buttons as lit plates, motion for panels and numbers, the end of a turn as a sweep and the report as illustrated dispatches, and sound for the interface |
 
