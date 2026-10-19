@@ -102,4 +102,54 @@ export const BRIEFS: ArtBrief[] = [
       'scar at her temple, in a patched dark red flight jacket; a cool, appraising, faintly amused look.',
     purpose: 'New-game screen: the face of the Wake.',
   },
+  // The report's dispatches (increment 13): one picture for what mattered most in a turn. Every ship,
+  // colony and structure is fiction; the stars are generic, not any real system.
+  {
+    id: 'dispatch-survey',
+    series: 'illustration',
+    subject:
+      'A small survey ship with a long sensor boom drifting past a newly charted system of a dim orange star, ' +
+      'faint fans of scanning light reaching towards two distant planets, deep space all round.',
+    purpose: 'Report: a system surveyed.',
+  },
+  {
+    id: 'dispatch-colony',
+    series: 'illustration',
+    subject:
+      'The first prefabricated habitat domes being set down on the rocky plain of an alien world at dusk, ' +
+      'landing lights glowing, a small lander and a few settlers in suits, a pale sun low on the horizon.',
+    purpose: 'Report: a colony or outpost founded.',
+  },
+  {
+    id: 'dispatch-ship',
+    series: 'illustration',
+    subject:
+      'A newly built starship easing out of the open frame of an orbital shipyard above a hazy planet, ' +
+      'work lights along the frame, two small tugs guiding it, sparks from a last weld.',
+    purpose: 'Report: a ship built.',
+  },
+  {
+    id: 'dispatch-research',
+    series: 'illustration',
+    subject:
+      'A dim research station laboratory where three scientists stand round a glowing holographic model of a ' +
+      'lane beacon, benches of instruments and screens of plain geometric diagrams, a window onto the stars.',
+    purpose: 'Report: a technology researched.',
+  },
+  {
+    id: 'dispatch-anomaly',
+    series: 'illustration',
+    subject:
+      'A strange ancient ring of dark stone-like material floating alone in deep space, faint geometric lights ' +
+      'along its inner edge, a tiny survey ship approaching with its floodlights on, for scale.',
+    purpose: 'Report: an anomaly found or investigated (the precursor mystery, fiction).',
+  },
+  {
+    id: 'dispatch-lane',
+    series: 'illustration',
+    subject:
+      'A slender lane beacon tower in space igniting, sending a bright straight thread of light out towards a ' +
+      'distant star, two crew in suits watching from a work platform at its base.',
+    purpose: 'Report: a lane opened.',
+  },
 ];

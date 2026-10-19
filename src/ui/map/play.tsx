@@ -348,6 +348,56 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   full: { icon: 'report', tone: 'needs' },
 };
 
+/** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
+export function dispatchPicture(events: readonly ReportEvent[]): DispatchPicture | null {
+  const has = (k: ReportEvent['kind']) => events.some((e) => e.kind === k);
+  if (has('investigated') || events.some((e) => e.kind === 'surveyed' && e.anomaly)) return 'dispatch-anomaly';
+  if (has('founded')) return 'dispatch-colony';
+  if (has('researched')) return 'dispatch-research';
+  if (has('lane-opened')) return 'dispatch-lane';
+  if (events.some((e) => e.kind === 'built' && e.ship !== undefined)) return 'dispatch-ship';
+  if (has('surveyed')) return 'dispatch-survey';
+  return null;
+}
+
+export type DispatchPicture =
+  | 'dispatch-anomaly'
+  | 'dispatch-colony'
+  | 'dispatch-research'
+  | 'dispatch-lane'
+  | 'dispatch-ship'
+  | 'dispatch-survey';
+
+/** What each picture shows, for those who cannot see it. */
+const PICTURE_TEXT: Record<DispatchPicture, string> = {
+  'dispatch-anomaly': 'An ancient ring of dark stone floating in deep space, a small survey ship approaching it.',
+  'dispatch-colony': 'The first habitat domes set down on the rocky plain of an alien world at dusk.',
+  'dispatch-research': 'Scientists round a glowing model of a lane beacon in a research station.',
+  'dispatch-lane': 'A lane beacon igniting, sending a thread of light towards a distant star.',
+  'dispatch-ship': 'A new starship easing out of an orbital shipyard above a hazy planet.',
+  'dispatch-survey': 'A survey ship drifting past a newly charted system, its scanners reaching out.',
+};
+
+function DispatchArt({ picture }: { picture: DispatchPicture }) {
+  const base = `${import.meta.env.BASE_URL}art/illustration/${picture}`;
+  return (
+    <figure class="dispatch-art" data-picture={picture}>
+      <img
+        src={`${base}-640.webp`}
+        srcset={`${base}-640.webp 640w, ${base}-1280.webp 1280w`}
+        sizes="(min-width: 900px) 460px, 100vw"
+        width={640}
+        height={427}
+        alt={PICTURE_TEXT[picture]}
+        decoding="async"
+      />
+      <span class="badge badge-fiction" title="Made with the game’s art pipeline; not a photograph">
+        Illustration
+      </span>
+    </figure>
+  );
+}
+
 export function ReportView({
   world,
   game,
@@ -366,8 +416,10 @@ export function ReportView({
   onResearch: () => void;
 }) {
   const r = game.reports.find((x) => x.faction === faction);
+  const picture = r ? dispatchPicture(r.events) : null;
   return (
     <section class="report" aria-label="Report">
+      {picture && <DispatchArt key={`${r?.turn}-${picture}`} picture={picture} />}
       <h2 class="report-title">{r ? `${formatDate(r.turn)}: what happened` : 'Report'}</h2>
       {!r && <p class="dim">The first report comes when you end the first turn.</p>}
       {r && r.events.length === 0 && <p class="dim">A quiet quarter: nothing to report.</p>}

@@ -67,6 +67,7 @@ luminous and animated without pretending to be a web page.
 | 11 | **Control's console** (built: [CONSOLE.md](CONSOLE.md)) | the interface skin: glass panels with lit corners, an icon set, buttons as lit plates, motion for panels and numbers, the end of a turn as a sweep and the report as illustrated dispatches, and sound for the interface |
 
 | 12 | **In flight** (built: [IN_FLIGHT.md](IN_FLIGHT.md)) | ships seen flying the lanes they took when a turn ends; the system in 3D under the same Milky Way as the map and the title |
+| 13 | **Illustrated dispatches** (built: [DISPATCHES.md](DISPATCHES.md)) | the report headed by a picture of the turn's most notable event: a survey, a colony, a ship, a technology, a lane or an anomaly |
 
 Each is designed for the phone and the desktop together (D-04), deployed, and tested as before.
 

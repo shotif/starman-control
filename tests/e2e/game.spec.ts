@@ -129,6 +129,13 @@ test.describe('a game', () => {
     const survey = page.getByRole('dialog', { name: 'Report' }).locator('.report-surveyed');
     await expect(survey).toHaveClass(/tone-news/);
     await expect(survey.locator('.icon')).toHaveCount(1);
+    // The turn's picture heads the report: the survey's, badged as an illustration (DISPATCHES.md).
+    const picture = page.getByRole('dialog', { name: 'Report' }).locator('.dispatch-art');
+    await expect(picture).toHaveAttribute('data-picture', 'dispatch-survey');
+    await expect(picture.getByText('Illustration')).toBeVisible();
+    await expect
+      .poll(() => picture.locator('img').evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0))
+      .toBe(true);
   });
 
   test('refuses a destination no lane leads to, and says why', async ({ page }, info) => {

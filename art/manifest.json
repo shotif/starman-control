@@ -1,6 +1,158 @@
 {
   "images": [
     {
+      "briefId": "dispatch-anomaly",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A strange ancient ring of dark stone-like material floating alone in deep space, faint geometric lights along its inner edge, a tiny survey ship approaching with its floodlights on, for scale.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T23:03:06.170Z",
+      "id": "dispatch-anomaly",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T23:04:43.593Z",
+      "candidate": "art/out/dispatch-anomaly/20261019-225927-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-anomaly-640.webp",
+          "bytes": 20198
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-anomaly-1280.webp",
+          "bytes": 62688
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-colony",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: The first prefabricated habitat domes being set down on the rocky plain of an alien world at dusk, landing lights glowing, a small lander and a few settlers in suits, a pale sun low on the horizon.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T23:00:36.293Z",
+      "note": "I hope this captures the quiet, vast atmosphere of the sci-fi event you had in mind. Here is the painted illustration of the first habitat domes being set down on a rocky alien plain at dusk.",
+      "id": "dispatch-colony",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T23:04:40.909Z",
+      "candidate": "art/out/dispatch-colony/20261019-225927-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-colony-640.webp",
+          "bytes": 19582
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-colony-1280.webp",
+          "bytes": 53958
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-lane",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A slender lane beacon tower in space igniting, sending a bright straight thread of light out towards a distant star, two crew in suits watching from a work platform at its base.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T23:04:04.432Z",
+      "id": "dispatch-lane",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T23:04:44.367Z",
+      "candidate": "art/out/dispatch-lane/20261019-225927-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-lane-640.webp",
+          "bytes": 20902
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-lane-1280.webp",
+          "bytes": 58404
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-research",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A dim research station laboratory where three scientists stand round a glowing holographic model of a lane beacon, benches of instruments and screens of plain geometric diagrams, a window onto the stars.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T23:02:30.217Z",
+      "id": "dispatch-research",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T23:04:42.792Z",
+      "candidate": "art/out/dispatch-research/20261019-225927-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-research-640.webp",
+          "bytes": 30248
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-research-1280.webp",
+          "bytes": 79762
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-ship",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A newly built starship easing out of the open frame of an orbital shipyard above a hazy planet, work lights along the frame, two small tugs guiding it, sparks from a last weld.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T23:02:00.946Z",
+      "note": "Here is the widescreen illustration of the newly built starship easing out of the orbital shipyard:",
+      "id": "dispatch-ship",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T23:04:41.897Z",
+      "candidate": "art/out/dispatch-ship/20261019-225927-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-ship-640.webp",
+          "bytes": 28226
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-ship-1280.webp",
+          "bytes": 80892
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-survey",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A small survey ship with a long sensor boom drifting past a newly charted system of a dim orange star, faint fans of scanning light reaching towards two distant planets, deep space all round.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-19T23:00:17.958Z",
+      "id": "dispatch-survey",
+      "series": "illustration",
+      "approvedAt": "2026-10-19T23:04:40.155Z",
+      "candidate": "art/out/dispatch-survey/20261019-225927-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-survey-640.webp",
+          "bytes": 10566
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-survey-1280.webp",
+          "bytes": 33668
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "power-frontier-leader",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",

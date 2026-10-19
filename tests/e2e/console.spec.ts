@@ -62,6 +62,9 @@ test('a turn ends with a sweep of light and the new date', async ({ page }, info
   await expect(page.locator('.map-date')).toHaveText('Q2 2176');
   // The stockpile counts up to its new value.
   await expect(page.getByLabel('Stockpile')).toContainText('44');
+  // A quiet turn's report has no picture (DISPATCHES.md §2).
+  await expect(page.getByRole('dialog', { name: 'Report' })).toContainText('A quiet quarter');
+  await expect(page.locator('.dispatch-art')).toHaveCount(0);
 });
 
 test('sound can be turned off, and then nothing plays', async ({ page }, info) => {

@@ -32,7 +32,7 @@ power has its picture, its leader's face and its emblem, the map lies under the 
 each power's reach in its colour and light running along its lanes, and the interface is Control's
 console: glass and lit plates, icons with their words, a sweep of light at each turn's end, the
 report as dispatches, and quiet sounds. When a turn ends, your ships are seen flying the lanes they
-took.
+took, and the report comes headed by a picture of what mattered most.
 
 ## Design documents
 
@@ -42,7 +42,7 @@ took.
 | [docs/SCOPE.md](docs/SCOPE.md) | Draft scope of work: every feature area, what is in 1.0 and what is later, milestones |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Key decisions: the open questions, the options, a recommendation, and the owner's answers |
 | [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone, with its parts in detail: [planets](docs/design/M1_PLANETS.md), [ships and turns](docs/design/M1_TURNS.md), [colonies](docs/design/M1_COLONIES.md), [lanes, research and anomalies](docs/design/M1_LANES_RESEARCH.md), and [the system in 3D](docs/design/M1_SYSTEM_VIEW.md) |
-| [docs/design/VISUAL_DIRECTION.md](docs/design/VISUAL_DIRECTION.md) | The look: Control's console, what the best of the genre do, and the visual increments, starting with [the first impression](docs/design/FIRST_IMPRESSION.md), [the living map](docs/design/LIVING_MAP.md), [Control's console](docs/design/CONSOLE.md) and [in flight](docs/design/IN_FLIGHT.md) |
+| [docs/design/VISUAL_DIRECTION.md](docs/design/VISUAL_DIRECTION.md) | The look: Control's console, what the best of the genre do, and the visual increments, starting with [the first impression](docs/design/FIRST_IMPRESSION.md), [the living map](docs/design/LIVING_MAP.md), [Control's console](docs/design/CONSOLE.md), [in flight](docs/design/IN_FLIGHT.md) and [illustrated dispatches](docs/design/DISPATCHES.md) |
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with Google Gemini, reviewed and recorded |
 | [docs/research/MASTER_OF_ORION_3.md](docs/research/MASTER_OF_ORION_3.md) | How *Master of Orion 3* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_REBORN_UNIVERSE.md](docs/research/STARMAN_REBORN_UNIVERSE.md) | What the Starman Reborn universe already establishes, and what we can reuse |
