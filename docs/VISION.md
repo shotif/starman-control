@@ -1,6 +1,6 @@
 # Vision
 
-**Status:** first draft for discussion, 19 October 2026.
+**Status:** draft 2, 19 October 2026, with the first round of [decisions](DECISIONS.md) answered.
 
 ## The pitch
 
@@ -11,8 +11,10 @@
 > fleets and the money that hold an empire together, and meet the species waiting beyond the
 > lanes — and the relics of one that is gone.
 
-Starman Control is a single-player, turn-based 4X strategy game in the browser, set in the
-universe of [Starman Reborn](https://github.com/shotif/starman-reborn). Reborn is the view from one
+Starman Control is a single-player, turn-based 4X strategy game in the browser — completely
+playable on a phone, with a dedicated desktop experience — set in the universe of
+[Starman Reborn](https://github.com/shotif/starman-reborn). Several factions are playable: the
+three human powers first, the alien species later. Reborn is the view from one
 cockpit; Control is the view from the top. In Reborn you are a starman. **In Control you are
 Control** — the voice the starmen answer to *(D-11)*.
 
@@ -45,8 +47,9 @@ Control** — the voice the starmen answer to *(D-11)*.
    differently, and wants different things — so peace, trade and the council are as rich as war.
 5. **The unknown pulls you outward.** Relic sites, anomalies and the precursor mystery keep
    exploration meaningful to the last turn.
-6. **Fits a life.** A few turns in a lunch break, a campaign over a week of evenings; save
-   anywhere; nothing to install.
+6. **Fits a life.** A few turns on a phone on the bus, a campaign over a week of evenings at a
+   desk. The whole game is playable on a phone, and the desktop has an experience of its own
+   *(D-04)*. Save anywhere; nothing to install.
 
 ## What we take from *Master of Orion 3*, and what we fix
 

@@ -1,8 +1,8 @@
 # Scope of work — draft 1
 
-**Status:** first draft for discussion, 19 October 2026. Nothing here is final until the owner
-has answered the open questions in [DECISIONS.md](DECISIONS.md); where this draft depends on one,
-it says so (for example *(D-01)*) and follows the recommendation.
+**Status:** draft 2, 19 October 2026. The first round of decisions is answered (see
+[DECISIONS.md](DECISIONS.md)); references such as *(D-01)* point to them. Areas that still depend on
+an open question say so.
 
 This document says **what** Starman Control will contain and in what order it gets built. Each
 feature area will get its own detailed design document before it is built.
@@ -22,7 +22,7 @@ feature area will get its own detailed design document before it is built.
 ## 1. The game in brief
 
 **Genre:** single-player, turn-based 4X strategy (explore, expand, exploit, exterminate) in the
-browser.
+browser — **completely playable on a phone, with a dedicated desktop experience** *(D-04)*.
 
 **Setting** *(D-01, D-02)*: the real stellar neighbourhood — every star real, every known planet
 real, everything else generated and labelled fiction — some generations after Starman Reborn. The
@@ -30,8 +30,9 @@ three human powers of Reborn, the Sol Transit Authority, the Frontier Cooperativ
 Wake, hold the old 27-light-year sphere and are pushing the jump lanes past it. Out beyond the
 frontier are other species, and the relics of one that is gone.
 
-**The player** *(D-08, D-11)* leads one human power. You are *Control*: the voice your captains,
-governors and admirals answer to. You chart the neighbourhood, settle its real planets, build them
+**The player** *(D-08, D-11)* leads one of several playable factions: in 1.0 the three human
+powers, the Authority, the Cooperative and the Wake; the alien species become playable later. You
+are *Control*: the voice your captains, governors and admirals answer to. You chart the neighbourhood, settle its real planets, build them
 up, manage resources and fleets, deal with the other powers, human and alien, and hunt for the
 artefacts.
 
@@ -65,8 +66,8 @@ These come from [VISION.md](VISION.md) and settle arguments about what to build.
    differently, so peace is as interesting as war.
 5. **The unknown pulls you outward.** Mysteries keep exploration meaningful for the whole game,
    not just the first fifty turns.
-6. **Fits a life.** Play a few turns in a lunch break or an evening's campaign; save anywhere;
-   resume on any computer.
+6. **Fits a life.** A few turns on a phone on the bus, an evening's campaign at a desk; the whole
+   game on either; save anywhere.
 
 ## 3. The turn
 
@@ -84,6 +85,27 @@ The simulation is deterministic: the same game seed and the same orders give the
 
 Each area lists what 1.0 contains and what comes later. *MoO3* marks the mechanic in *Master of
 Orion 3* it answers to.
+
+### 4.0 Playable factions
+
+*MoO3: every one of its sixteen races could be played.*
+
+*(D-08)* In 1.0 all three human powers are playable, each with its own traits, start, shipmakers
+and way of playing; the AI plays the others. First sketches, to be designed in M1–M3:
+
+| Faction | Plays as | Starts | Shipmakers |
+| --- | --- | --- | --- |
+| **Sol Transit Authority** | The lawful centre: strong administration, the lanes and their customs, steady growth, slow to change | Sol and the old core | Halden (balanced), Ares (armoured) |
+| **Frontier Cooperative** | Many settlements run by vote: good at colonising and farming, happiest at peace, decisions shaped by its members | Alpha Centauri, Sirius, Epsilon Eridani | Toliman (frugal), Horizon (fast), Eridani (cheap haulers) |
+| **Hollow Wake** | An outlaw power: lives off raids, tolls and black markets, hides its bases, weak at governing, dangerous at the edges | the raider dens of lawless space | Wake Salvage (stolen hulls rebuilt) |
+
+Starts are balanced by design, not copied from Reborn's map, where the powers differ greatly in
+size.
+
+**Built for more factions.** A faction is data: a species, a government, traits, a start,
+shipbuilding styles, names and art. No rule assumes the player is human; the player and the AI
+give orders through the same interface; every screen works for any faction. Adding an alien
+faction later means adding its data and its own mechanics, not rewriting the game.
 
 ### 4.1 The map and exploration
 
@@ -240,7 +262,8 @@ Principles: every species is original, grounded in a real idea from astrobiology
 kinds of stars that really fill the neighbourhood, and **mechanically different**: it lives on
 different worlds, expands differently, fights differently, and talks differently. Their homes
 are real stars beyond the frontier *(D-01, D-02)*; the species themselves are fiction, and the game
-says so.
+says so. In 1.0 they are played by the AI, but each is designed with enough depth to be played
+later *(D-08)*.
 
 Draft concepts for discussion *(D-12)*; the names are placeholders:
 
@@ -325,11 +348,30 @@ You lose when your last colony is lost or you are subdued.
 ### 4.18 Interface and learning
 
 - **Screens:** the neighbourhood map (3D, and flat), a system view, a planet screen, the empire
-  overview (every colony in a sortable table), research, the ship designer, fleets, diplomacy, the
+  overview (every colony at a glance), research, the ship designer, fleets, diplomacy, the
   council, the turn report, and a **codex** of real astronomy (each entry badged *Observed* or
   *Fiction*, as in Reborn).
-- **Every number explains itself:** hover or tap any figure for its breakdown.
+- **Every number explains itself:** hover (desktop) or tap (phone) any figure for its breakdown.
 - **What needs you:** a list at the start of each turn, so nothing important is hidden.
+
+**Two first-class layouts** *(D-04)*. The whole game is playable on a phone, and the desktop gets
+an experience of its own. They share the simulation, the screens' content and the visual language;
+they differ in layout and input:
+
+| | Phone | Desktop |
+| --- | --- | --- |
+| Shape | Portrait first, landscape supported; one thing at a time, full-screen sheets that slide up over the map | Several panels at once around the map (empire, selection, report), resizable |
+| Map | Pinch to zoom, drag to turn, tap to select; the flat view is the default for clarity | Mouse orbit and zoom, hover cards, box-select fleets; 3D by default |
+| Detail | Progressive: a summary card first, the full breakdown a tap away | Dense: tables, side-by-side comparisons, tooltips on hover |
+| Orders | Large targets (at least 44 px), long-press for more, a bottom action bar within thumb reach | Right-click orders, drag and drop, keyboard shortcuts for every action |
+| Lists | Cards that sort and filter (colonies, fleets, technologies) | Sortable tables with many columns |
+| Turn | "What needs you" as a stack of cards to work through, then *End turn* | The same list as a panel beside the map |
+
+Rules for every screen: designed for both layouts before it is built; tested at Reborn's range of
+phone, tablet and desktop sizes with screenshots; safe areas respected; the middle of the map kept
+clear on a phone, as Reborn keeps its flight view clear; text size setting honoured; nothing that
+needs a hover to be found. Tablets take whichever layout fits their width, by touch or with a
+keyboard and mouse.
 - **Learning:** a guided opening teaches each system in turn, as Reborn's first job chain does;
   advisors (your starmen) give short, plain, optional advice.
 - **Accessibility:** text size, colour always paired with shape and word, full keyboard play,
@@ -339,9 +381,11 @@ You lose when your last colony is lost or you are subdued.
 
 ### 4.19 Art and sound
 
-*(D-09)* Procedural 3D for the map, planets, ships and battles, reusing Reborn's generators;
-portraits and event art to be decided; music and sound from Reborn's procedural audio engine,
-adapted for a calmer strategic mood.
+*(D-09)* Procedural 3D for the map, planets, ships and battles, reusing Reborn's generators.
+Portraits (species, leaders, advisors) and illustrations (events, relics) are generated with
+OpenAI or Google Gemini at build time, reviewed, and committed with a record of how each was made
+([ART_PIPELINE.md](ART_PIPELINE.md)); pictures are sized and compressed for phones. Music and sound
+from Reborn's procedural audio engine, adapted for a calmer strategic mood.
 
 ### 4.20 Saves and settings
 
@@ -352,8 +396,9 @@ deterministic and the map is rebuilt from its seed.
 ## 5. Out of scope for 1.0
 
 - Online or real-time multiplayer *(D-06)*; real-time play *(D-05)*.
-- Playing an alien species *(D-08)*.
-- A phone layout *(D-04)*; tablets are supported.
+- Playing an alien species *(D-08)*: designed for, added after 1.0.
+- Syncing one campaign between phone and desktop automatically (there is no server); a save can
+  be moved by exporting and importing a file, as in Reborn.
 - Tactical command of battles *(D-07)*; flying a ship yourself.
 - Live AI-written text while playing *(D-17)*.
 - Mods (the rules will live in data files, so this is possible later).
@@ -374,8 +419,14 @@ deterministic and the map is rebuilt from its seed.
 - **Data:** the astronomy dataset copied from Reborn with its provenance, extended with Reborn's
   own fetch pipeline (run on GitHub's runners) to the radius chosen in *D-02*.
 - **Tests:** unit tests for every rule; **AI-against-AI games played headless in CI** for hundreds
-  of turns, to catch crashes, stalls and runaway balance; browser journeys for the main screens.
-- **A first-load budget**, as Reborn has, so the game starts quickly.
+  of turns, to catch crashes, stalls and runaway balance; browser journeys for the main screens on
+  both a phone and a desktop viewport; layout screenshots at every test size.
+- **Phones set the budgets,** as in Reborn: a first-load budget for a mobile connection, a frame
+  budget for the map on a mid-range phone, an end-of-turn time budget, quality presets that step
+  down on slow devices, and the game kept for offline play after the first visit.
+- **Generated art** comes from a build-time pipeline using the OpenAI and Gemini APIs; the keys
+  live only in environment variables, never in the repository or the site
+  ([ART_PIPELINE.md](ART_PIPELINE.md)).
 
 ## 7. Milestones
 
@@ -384,8 +435,8 @@ deploys to the live site. The exit criterion says when the milestone is done.
 
 | | Milestone | Contents | Done when |
 | --- | --- | --- | --- |
-| **M0** | Foundations | Repository, CI, GitHub Pages, these documents, the first round of decisions | The owner has answered round 1 *(this milestone)* |
-| **M1** | First light | The real map (207 systems) and lanes, the turn loop, survey and colony ships, planets (real and generated), colonies and outposts with simple output, drive research, saves | You can explore and settle the neighbourhood alone for 50 turns in the browser |
+| **M0** | Foundations | Repository, CI, GitHub Pages, these documents, the first round of decisions, the art pipeline | Round 1 answered, the site live *(done 19 October 2026)* |
+| **M1** | First light | The real map (207 systems) and lanes, the turn loop, survey and colony ships, planets (real and generated), colonies and outposts with simple output, drive research, saves — on phone and desktop | You can explore and settle the neighbourhood alone for 50 turns, on a phone and on a desktop |
 | **M2** | Worlds | Districts and zoning, projects, population and approval, food, credits and strategic resources, the research fields, governors, the turn report and number breakdowns | A 100-turn solo game has real economic choices, and every number explains itself |
 | **M3** | Neighbours | The other human powers as AI, the first two or three alien species, first contact and translation, treaties, borders, memory of what you did | You meet, trade with and quarrel with AI powers that behave believably |
 | **M4** | Fleets | The ship designer, fleets and task forces, battles with orders and replays, invasion and defences, war and peace, the council, the first victory conditions | A full game can be won by conquest or by the council's vote |
@@ -404,15 +455,17 @@ and M1 is designed in detail.
 | **The AI.** A weak AI ruins a 4X. | AI is built with each system from M1, not bolted on at the end; AI-against-AI games in CI; personalities over cleverness. |
 | **Opacity**, *Master of Orion 3*'s great failure. | "Every number explains itself", the turn report and "what needs you" are built in M1–M2, before the content. |
 | **Balance.** | Rules in data files; headless games measure win rates and economies. |
-| **Performance** in a browser with hundreds of systems and fleets. | Simulation in a worker; instanced rendering; a performance budget per screen. |
-| **Portrait art** for species and leaders. | Decide on a source before M3 *(D-09)*; placeholders until then. |
+| **A 4X on a phone screen.** Dense information, hundreds of stars, small fingers. | Both layouts designed from M1, not adapted later; progressive detail; the flat map by default on phones; every screen tested at phone sizes; a real phone tried at every milestone. |
+| **Performance** in a browser with hundreds of systems and fleets, on phones. | Simulation in a worker; instanced rendering; budgets measured on a mid-range phone. |
+| **Generated art** that varies in style, or that a store or player objects to. | A written style guide and reference images per series; every picture reviewed; provenance recorded; AI use disclosed where stores require it. |
 | **Real data gaps** (faint brown dwarfs, uncertain planets). | Show uncertainty as Reborn does; generated bodies always labelled. |
 | **Data licence:** HYG-derived values are CC BY-SA 4.0. | Prefer the archive snapshot values; credit and keep the licence for anything HYG-derived. |
 | **Canon** drifting from Reborn. | The universe digest is the reference; new canon is recorded in a lore document and agreed with the owner. |
 
 ## 9. Next steps
 
-1. **The owner answers round 1** in [DECISIONS.md](DECISIONS.md) (D-01 to D-11, and D-16).
-2. Claude writes the M1 design documents: the game rules for the map, the turn, planets and
-   colonisation; the planet generation model; the architecture.
-3. The owner reviews them; then M1 is built in increments, each deployed to the live site.
+1. ~~The owner answers round 1~~ — done 19 October 2026.
+2. The M1 design: [design/M1_FIRST_LIGHT.md](design/M1_FIRST_LIGHT.md) — the rules for the map,
+   the turn, planets and colonisation, the phone and desktop screens, and the architecture.
+3. The owner reviews it and answers its questions; then M1 is built in increments, each deployed
+   to the live site.

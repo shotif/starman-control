@@ -21,6 +21,16 @@ The project owner decides; Claude designs, documents, builds and tests.
 5. **Tests with every rule.** Simulation rules get unit tests; player journeys get browser tests
    once the game has screens. `npm run check` must pass before a push.
 
+## Standing requirements from the owner
+
+- **Phone and desktop, both first-class** (D-04). The whole game must be completely playable on a
+  phone, as Starman Reborn is, and the desktop must have a dedicated experience of its own. Design
+  every screen for both layouts before building it, and test it at phone, tablet and desktop sizes.
+- **Several playable factions** (D-08). The three human powers first; alien species later. No
+  rule, screen or piece of code may assume the player is human or is one particular faction.
+- **API keys never reach the game or the repository** (D-09). Generated art is made by build-time
+  scripts and committed with its provenance ([docs/ART_PIPELINE.md](docs/ART_PIPELINE.md)).
+
 ## Writing style (shared with Starman Reborn)
 
 - British English (*colonise*, *neighbourhood*, *labelled*), plain words, short sentences.
