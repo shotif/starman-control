@@ -391,7 +391,7 @@ keyboard and mouse.
 
 *(D-09)* Procedural 3D for the map, planets, ships and battles, reusing Reborn's generators.
 Portraits (species, leaders, advisors) and illustrations (events, relics) are generated with
-OpenAI or Google Gemini at build time, reviewed, and committed with a record of how each was made
+Google Gemini at build time, reviewed, and committed with a record of how each was made
 ([ART_PIPELINE.md](ART_PIPELINE.md)); pictures are sized and compressed for phones. Music and sound
 from Reborn's procedural audio engine, adapted for a calmer strategic mood.
 
@@ -432,8 +432,8 @@ deterministic and the map is rebuilt from its seed.
 - **Phones set the budgets,** as in Reborn: a first-load budget for a mobile connection, a frame
   budget for the map on a mid-range phone, an end-of-turn time budget, quality presets that step
   down on slow devices, and the game kept for offline play after the first visit.
-- **Generated art** comes from a build-time pipeline using the OpenAI and Gemini APIs; the keys
-  live only in environment variables, never in the repository or the site
+- **Generated art** comes from a build-time pipeline using the Gemini API (OpenAI support kept
+  for later); the key lives only in environment variables, never in the repository or the site
   ([ART_PIPELINE.md](ART_PIPELINE.md)).
 
 ## 7. Milestones

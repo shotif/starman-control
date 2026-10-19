@@ -1,8 +1,11 @@
 # The art pipeline
 
-How Starman Control makes its portraits and illustrations with the **OpenAI** and **Google
-Gemini** image services (decision D-09), and how those pictures get into the game. Set up on
-19 October 2026.
+How Starman Control makes its portraits and illustrations with **Google Gemini**'s image models
+(decision D-09), and how those pictures get into the game. Set up on 19 October 2026.
+
+**Status, 19 October 2026:** the owner has put `GEMINI_API_KEY` in the cloud environment, so new
+Claude Code sessions can generate. An OpenAI key cannot be provided for now; the scripts still
+support OpenAI should one ever be added, and simply skip it while it has no key.
 
 ## Principles
 
@@ -23,56 +26,61 @@ Gemini** image services (decision D-09), and how those pictures get into the gam
 
 ## What is procedural and what is generated
 
-| Made by the game itself (procedural, as in Reborn) | Generated with OpenAI or Gemini |
+| Made by the game itself (procedural, as in Reborn) | Generated with Gemini |
 | --- | --- |
 | The star map, planets, ships, battles, the interface, music and sound | Species, leader and advisor portraits; event and relic illustrations; concept art for design |
 
 ## Setting up the keys (the owner)
 
-Use the variable names **`OPENAI_API_KEY`** and **`GEMINI_API_KEY`**. Never paste a key into a
-chat, an issue or a commit.
+Use the variable name **`GEMINI_API_KEY`** (and `OPENAI_API_KEY`, should an OpenAI key ever be
+added). Never paste a key into a chat, an issue or a commit, and never print one in a log.
 
 - **For Claude Code cloud sessions** (how this project is usually worked on): open the cloud
   environment's settings (the environment menu in the session's title bar, then *Edit*) and add
-  both as environment variables (or as network secrets, where that section is offered, under the
-  same names). A **new session** picks them up.
+  the key as an environment variable (or as a network secret, where that section is offered, under
+  the same name). A **new session** picks it up; a session already running does not see it.
 - **On your own computer:** copy `.env.example` to `.env` in the repository root and fill it in.
   Git ignores `.env`.
 
 Things to know about the accounts:
 
-- **OpenAI:** the image models may need *API Organization Verification* on the OpenAI platform
-  before they work. There is no free tier for the current image models.
 - **Gemini:** image models are only available on the paid tier. Paid use is not used to train
   Google's models; in the EEA, Switzerland and the UK only paid services may be used anyway. The
   scripts send `store: false` so Google does not keep the requests for later retrieval. Every
   Gemini picture carries Google's invisible SynthID watermark.
+- **OpenAI** (not in use): the image models may need *API Organization Verification* on the
+  OpenAI platform before they work, and have no free tier.
 
-Then check the keys (this makes no pictures and costs nothing):
+Then check the key (this makes no pictures and costs nothing):
 
 ```bash
 npm run art:ping
 ```
 
-It says whether each key works, lists the image models the key can use, and warns if a default
-model is not among them.
+It says whether each key works, lists the image models the key can use, warns if a default
+model is not among them, and skips a service with no key.
 
 ## Making pictures
 
 ```bash
 npm run art:generate -- --all --dry-run                  # show every prompt; calls nothing
-npm run art:generate -- --brief style-test-relic         # one candidate from each service
-npm run art:generate -- --brief style-test-relic --provider gemini --count 3
-npm run art:generate -- --brief style-test-wake-captain --provider openai --model gpt-image-2.5-flare --quality high
+npm run art:generate -- --brief style-test-relic         # one candidate from each service with a key
+npm run art:generate -- --brief style-test-relic --count 3
+npm run art:generate -- --brief style-test-relic --provider gemini --model gemini-3-pro-image
 ```
 
-Candidates are written to `art/out/<brief>/` (ignored by git), each with a `.json` record of how
-it was made. Look at them, then approve the one you want:
+Candidates are written to `art/out/<brief>/` (ignored by git) as `<time>-<model>-<n>.png`, each
+with a `.json` record of how it was made. Lay them side by side, look, then approve the one you
+want:
 
 ```bash
-npm run art:approve -- art/out/style-test-relic/20261019-153000-gemini-2.png
+npm run art:sheet                                         # art/out/sheets/<brief>.jpg, lettered A, B, C…
+npm run art:approve -- art/out/style-test-relic/20261019-153000-gemini-nano-banana-2.1-2.png
 npm run art:check                                         # also part of npm run check
 ```
+
+A contact sheet is one JPEG per brief, each candidate captioned with a letter and its model, small
+enough to send to the owner's phone so they can answer "B" rather than a file name.
 
 Approval writes `public/art/<series>/<brief>-<width>.webp` at the series' widths and records the
 picture in `art/manifest.json`. Approving a brief again replaces its picture.
@@ -97,10 +105,10 @@ against what each key can actually use, and `--model` picks another.
 
 | Service | Default | Other choices | Approximate cost per picture |
 | --- | --- | --- | --- |
-| OpenAI | `gpt-image-2.5-sunburst` (most capable) | `gpt-image-2.5-flare` (fast, everyday), `gpt-image-2` | charged by tokens ($30 per million output tokens); `gpt-image-2` at medium quality is about $0.05 for a square picture |
-| Gemini | `gemini-nano-banana-2.1` | `gemini-3-pro-image` (premium) | about $0.05 at the 2K size the scripts ask for; $0.13 for the premium model |
+| Gemini (in use) | `gemini-nano-banana-2.1` | `gemini-3-pro-image` (premium) | about $0.05 at the 2K size the scripts ask for; $0.13 for the premium model |
+| OpenAI (no key) | `gpt-image-2.5-sunburst` (most capable) | `gpt-image-2.5-flare` (fast, everyday), `gpt-image-2` | charged by tokens ($30 per million output tokens); `gpt-image-2` at medium quality is about $0.05 for a square picture |
 
-A style test of four briefs from both services costs well under a dollar. Neither service promises
+The style test below (16 pictures) costs about $1.50. Neither service promises
 the same picture twice from the same prompt, which is why approved pictures are committed rather
 than regenerated.
 
@@ -116,13 +124,23 @@ output),
 generated content),
 [Steam content survey](https://partner.steamgames.com/doc/gettingstarted/contentsurvey).
 
-## Style test (next step, once the keys are in)
+## Style test (the next step)
 
 The art direction in `art/styles.ts` is a draft. The four `style-test-*` briefs — two human leader
 portraits (an Authority officer, a Wake captain), a colony on a red dwarf world, and a precursor
-relic — will be generated with both services so the owner can choose a **direction** and a
-**service** (or one service per series) before any picture goes into the game. Alien portraits wait
-for the species to be designed (D-12).
+relic — are generated with **both Gemini models**, two candidates each, and shown to the owner as
+contact sheets:
+
+```bash
+npm run art:ping
+npm run art:generate -- --all --count 2
+npm run art:generate -- --all --count 2 --model gemini-3-pro-image
+npm run art:sheet
+```
+
+The owner then chooses a **direction** (keep the style, or change it) and a **model** (or one
+model per series) before any picture goes into the game; the answer is recorded in
+[DECISIONS.md](DECISIONS.md). Alien portraits wait for the species to be designed (D-12).
 
 ## Files
 
@@ -135,5 +153,5 @@ for the species to be designed (D-12).
 | `public/art/` | approved pictures, served with the game |
 | `scripts/art/providers.ts` | the two services' requests and responses |
 | `scripts/art/catalogue.ts` | prompts, the manifest and its checks |
-| `scripts/art/{ping,generate,approve,check}.ts` | the commands above |
+| `scripts/art/{ping,generate,sheet,approve,check}.ts` | the commands above |
 | `.env.example` | the key names, for a local `.env` |

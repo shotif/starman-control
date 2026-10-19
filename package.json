@@ -18,6 +18,7 @@
     "art:ping": "node scripts/art/ping.ts",
     "art:generate": "node scripts/art/generate.ts",
     "art:approve": "node scripts/art/approve.ts",
+    "art:sheet": "node scripts/art/sheet.ts",
     "art:check": "node scripts/art/check.ts",
     "check": "npm run typecheck && npm run art:check && npm test && npm run build"
   },

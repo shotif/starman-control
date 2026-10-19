@@ -4,6 +4,7 @@ import { SERIES } from '../../art/styles.ts';
 import { auditArt, buildPrompt, findBrief, publishedPath, upsertEntry, type ManifestEntry } from '../../scripts/art/catalogue.ts';
 import { apiKey, parseDotEnv } from '../../scripts/art/env.ts';
 import {
+  chooseProviders,
   generate,
   geminiRequest,
   imageModelsFromPing,
@@ -86,6 +87,25 @@ describe('keys', () => {
 
   it('prefers the environment', () => {
     expect(apiKey('openai', { OPENAI_API_KEY: 'from-env' })).toBe('from-env');
+  });
+});
+
+describe('choosing services', () => {
+  const onlyGemini = (p: string) => p === 'gemini';
+
+  it('auto uses only the services with a key', () => {
+    expect(chooseProviders('auto', onlyGemini)).toEqual(['gemini']);
+    expect(chooseProviders('auto', () => true)).toEqual(['openai', 'gemini']);
+  });
+
+  it('auto with no key says which key to set', () => {
+    expect(() => chooseProviders('auto', () => false)).toThrow(/GEMINI_API_KEY/);
+  });
+
+  it('a named service or both is taken as asked', () => {
+    expect(chooseProviders('openai', onlyGemini)).toEqual(['openai']);
+    expect(chooseProviders('both', onlyGemini)).toEqual(['openai', 'gemini']);
+    expect(() => chooseProviders('midjourney', onlyGemini)).toThrow(/auto, gemini, openai or both/);
   });
 });
 

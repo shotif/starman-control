@@ -1,10 +1,11 @@
 // Makes candidate pictures for briefs, for review. Nothing goes into the game until it is approved.
 //
-//   npm run art:generate -- --brief style-test-relic [--provider openai|gemini|both] [--count 2]
+//   npm run art:generate -- --brief style-test-relic [--provider auto|gemini|openai|both] [--count 2]
 //                           [--model <id>] [--quality low|medium|high] [--dry-run]
 //   npm run art:generate -- --all --dry-run        # every brief; --dry-run prints prompts, calls nothing
 //
-// Candidates land in art/out/<brief>/ (ignored by git) with a .json record beside each picture.
+// `auto` (the default) uses every service that has a key. Candidates land in art/out/<brief>/
+// (ignored by git) with a .json record beside each picture.
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -13,13 +14,13 @@ import { BRIEFS } from '../../art/briefs.ts';
 import { SERIES } from '../../art/styles.ts';
 import { buildPrompt, findBrief, type CandidateRecord } from './catalogue.ts';
 import { apiKey, missingKeyHelp } from './env.ts';
-import { DEFAULT_MODELS, PROVIDERS, generate, type ProviderId } from './providers.ts';
+import { DEFAULT_MODELS, chooseProviders, generate, type ProviderId } from './providers.ts';
 
 const { values } = parseArgs({
   options: {
     brief: { type: 'string', multiple: true },
     all: { type: 'boolean', default: false },
-    provider: { type: 'string', default: 'both' },
+    provider: { type: 'string', default: 'auto' },
     count: { type: 'string', default: '1' },
     model: { type: 'string' },
     quality: { type: 'string', default: 'medium' },
@@ -32,10 +33,13 @@ if (briefIds.length === 0) {
   console.error('Name a brief with --brief <id> (or --all). Briefs:\n  ' + BRIEFS.map((b) => b.id).join('\n  '));
   process.exit(1);
 }
-const providers: ProviderId[] =
-  values.provider === 'both' ? [...PROVIDERS] : PROVIDERS.filter((p) => p === values.provider);
-if (providers.length === 0) {
-  console.error(`--provider must be openai, gemini or both (not "${values.provider}").`);
+const dryRun = values['dry-run'];
+let providers: ProviderId[];
+try {
+  // A dry run calls nothing, so it may show every service's prompt without keys.
+  providers = chooseProviders(values.provider, (p) => dryRun || apiKey(p) !== undefined);
+} catch (err) {
+  console.error((err as Error).message);
   process.exit(1);
 }
 if (values.model && providers.length > 1) {
@@ -44,7 +48,6 @@ if (values.model && providers.length > 1) {
 }
 const count = Math.max(1, Math.min(8, Number(values.count) || 1));
 const quality = values.quality as 'low' | 'medium' | 'high';
-const dryRun = values['dry-run'];
 
 if (!dryRun) {
   for (const p of providers) {
@@ -72,7 +75,7 @@ for (const id of briefIds) {
     const dir = resolve(import.meta.dirname, '../../art/out', id);
     mkdirSync(dir, { recursive: true });
     for (let n = 1; n <= count; n++) {
-      const name = `${stamp}-${provider}-${n}`;
+      const name = `${stamp}-${model}-${n}`;
       try {
         const image = await generate(provider, { prompt, aspect, model, quality }, apiKey(provider)!, fetch);
         const ext = image.mimeType === 'image/jpeg' ? 'jpg' : image.mimeType === 'image/webp' ? 'webp' : 'png';

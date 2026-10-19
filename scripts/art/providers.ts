@@ -4,6 +4,22 @@
 export type ProviderId = 'openai' | 'gemini';
 export const PROVIDERS: readonly ProviderId[] = ['openai', 'gemini'];
 
+/**
+ * Which services a command uses: `auto` (the default) means every service with a key, so the
+ * scripts work with only one key set; `both`, `openai` or `gemini` name them outright.
+ */
+export function chooseProviders(choice: string, hasKey: (p: ProviderId) => boolean): ProviderId[] {
+  if (choice === 'auto') {
+    const keyed = PROVIDERS.filter(hasKey);
+    if (keyed.length === 0) throw new Error('No image service has a key: set GEMINI_API_KEY (docs/ART_PIPELINE.md).');
+    return keyed;
+  }
+  if (choice === 'both') return [...PROVIDERS];
+  const one = PROVIDERS.find((p) => p === choice);
+  if (!one) throw new Error(`--provider must be auto, gemini, openai or both (not "${choice}").`);
+  return [one];
+}
+
 export type Aspect = '1:1' | '2:3' | '3:2';
 
 /**

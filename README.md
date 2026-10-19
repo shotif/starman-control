@@ -27,7 +27,7 @@ shows a placeholder title until the first playable build.
 | [docs/SCOPE.md](docs/SCOPE.md) | Draft scope of work: every feature area, what is in 1.0 and what is later, milestones |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Key decisions: the open questions, the options, a recommendation, and the owner's answers |
 | [docs/design/M1_FIRST_LIGHT.md](docs/design/M1_FIRST_LIGHT.md) | The detailed design of the first playable milestone |
-| [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with OpenAI and Gemini, reviewed and recorded |
+| [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How portraits and illustrations are made with Google Gemini, reviewed and recorded |
 | [docs/research/MASTER_OF_ORION_3.md](docs/research/MASTER_OF_ORION_3.md) | How *Master of Orion 3* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_REBORN_UNIVERSE.md](docs/research/STARMAN_REBORN_UNIVERSE.md) | What the Starman Reborn universe already establishes, and what we can reuse |
 | [CLAUDE.md](CLAUDE.md) | How we work: documentation first, decisions by the owner, style rules |
@@ -42,7 +42,7 @@ npm run dev       # development server at http://localhost:5173
 npm run build     # production static site in dist/ (relative asset paths)
 npm run preview   # serve dist/ at http://localhost:4173
 npm run check     # typecheck, art records, unit tests and the production build
-npm run art:ping  # check the OpenAI and Gemini keys (see docs/ART_PIPELINE.md)
+npm run art:ping  # check the Gemini key (see docs/ART_PIPELINE.md)
 ```
 
 ## Deploy
