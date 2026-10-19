@@ -29,6 +29,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-21 | How finished work reaches `main` | Assumed 2026-10-19 | pushed to `main` once the checks pass, as in Reborn |
 | D-22 | The technology stack | Decided 2026-10-19 | **the web platform, with Preact + Signals for the interface** and Biome; see [D-22](#d-22--the-technology-stack--decided) |
 | D-23 | Art direction and image model, from the style test | Open | see [D-23](#d-23--art-direction-and-image-model--open) |
+| D-24 | Which planet each capital is on | Open (needed by M1 increment 4) | see [D-24](#d-24--the-capital-worlds--open) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -244,6 +245,24 @@ What the two models did with the same prompts:
 **Recommendation: A.** The style works on a phone (one clear subject, dark ground, readable at
 thumbnail size), and the default model kept to the brief and to the rules every time.
 
+### D-24 · The capital worlds — **Open**
+
+D-20 placed the capitals in Sol, Tau Ceti and Wolf 1061; the new game (M1 increment 4) needs the
+planet each stands on. Earth is Earth. The other two are less simple: **all four of Tau Ceti's
+reported planets are disputed** (neither archive confirms them; the game keeps them and says so),
+and Wolf 1061 has three confirmed planets.
+
+| Option | Tau Ceti (Frontier Cooperative) | Wolf 1061 (Hollow Wake) |
+| --- | --- | --- |
+| **A. The planet nearest the habitable zone** | **Tau Ceti e**, disputed: 0.54 au from its star, about 1.8 times the sunlight Earth gets (estimated), so a warm world | **Wolf 1061 c**, confirmed: 0.09 au from its red dwarf, in its habitable zone, at least 3.4 Earth masses |
+| B. The cooler choice for Tau Ceti | **Tau Ceti f**, disputed: 1.33 au out, about a third of Earth's sunlight, a cold world under domes | as A |
+| C. Stations, not planets | a great orbital habitat at Tau Ceti, so no capital stands on a planet astronomers dispute | Maw Roost, a station, as the Wake's den is in Reborn |
+
+**Recommendation: A.** Both are the worlds a settler would choose, and a capital on a disputed
+planet is a good way to show the player what *disputed* means: the planet screen says so, and the
+capital's own description says it is fiction. C is the cautious choice if you would rather no
+capital rests on a planet that may not exist.
+
 ## Round 2: needed later
 
 | ID | Question | Needed by | Recommendation in brief |
@@ -268,3 +287,9 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-19 | CI runs on every branch and pull request; Pages deploys from `main` | catches problems before they reach the live site |
 | 2026-10-19 | The simulation will be a pure, deterministic TypeScript core with no DOM access, separate from the interface | testable without a browser, AI turns can run in a worker, replays and multiplayer stay possible |
 | 2026-10-19 | API keys are read from environment variables (`GEMINI_API_KEY`, and `OPENAI_API_KEY` if one is ever provided) or a git-ignored `.env`; approved pictures are committed with a provenance record | keys stay out of the repository and the public site; every picture can be traced and regenerated |
+| 2026-10-19 | Reborn's sky and lanes are copied as data: `npm run data:import` loads Reborn's own modules from a checkout and writes `src/data/sky.json` (207 systems, 253 stars, 99 planets, 9 belts, 271 lanes, every value with its source); a test pins the lanes' fingerprint | the lanes are exactly Reborn's without copying its station generator, and a later re-import cannot change them unnoticed |
+| 2026-10-19 | Home webs (D-19a as recommended) never overlap, respect the beacon slots and are 7 systems and 6 lanes for every power; each capital starts with a lane station; the starting stockpile is 40 metals, 20 volatiles and 40 fusion fuel ([M1 §3](design/M1_FIRST_LIGHT.md#3-the-map-and-the-lanes)) | equal starts; Sol's web needs four lanes at its capital; the stockpile is a first guess for balancing |
+| 2026-10-19 | The rules measure distance in whole tenths of a light-year, worked out with `Math.sqrt` (never `Math.hypot`) | the same on every device (D-06); a tenth of a light-year is finer than any rule needs |
+| 2026-10-19 | One save envelope for exported files, the autosave (with the previous one kept as a backup) and three slots; the state's version stays 1 until the first playable build, after which every change ships with a migration | nobody can have a save before increment 4, so the shape is free to change until then |
+| 2026-10-19 | Browser journeys with Playwright 1.56.1 (Reborn's version) on a phone, a tablet and a desktop, in CI on every push; `npm run screenshots` for the six review sizes | phone and desktop are both tested on every change (D-04) |
+| 2026-10-19 | Until the map arrives, the live site has a data preview at `#/data`, reached from the title | each increment shows something on the site, as §12 asks |

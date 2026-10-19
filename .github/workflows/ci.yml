@@ -31,3 +31,25 @@ jobs:
           name: starman-control-dist
           path: dist
           retention-days: 30
+
+  journeys:
+    name: Browser journeys (phone, tablet, desktop)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          CI: '1'
+      - name: Upload traces of failed journeys
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: journey-traces
+          path: test-results
+          retention-days: 14

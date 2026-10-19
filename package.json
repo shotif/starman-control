@@ -15,11 +15,14 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test --project=phone --project=tablet --project=desktop",
+    "screenshots": "playwright test --project=screenshots",
     "art:ping": "node scripts/art/ping.ts",
     "art:generate": "node scripts/art/generate.ts",
     "art:approve": "node scripts/art/approve.ts",
     "art:sheet": "node scripts/art/sheet.ts",
     "art:check": "node scripts/art/check.ts",
+    "data:import": "node scripts/data/import-reborn.ts",
     "lint": "biome check .",
     "format": "biome check --write .",
     "check": "npm run typecheck && npm run lint && npm run art:check && npm test && npm run build"
@@ -32,6 +35,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
+    "@playwright/test": "1.56.1",
     "@types/node": "22.20.4",
     "sharp": "0.35.5",
     "typescript": "7.0.2",

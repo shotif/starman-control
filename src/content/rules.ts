@@ -1,0 +1,27 @@
+// The numbers of M1's rules (docs/design/M1_FIRST_LIGHT.md), in one place so they can be balanced.
+// Distances are in tenths of a light-year (src/sim/geometry.ts); everything here is a whole number.
+
+export const RULES = {
+  calendar: {
+    /** The first turn is the first quarter of this year (D-20). */
+    startYear: 2176,
+    /** A turn is a quarter of a year (D-16). */
+    turnsPerYear: 4,
+  },
+  beacons: {
+    /** Lanes a star can anchor (§3). */
+    slots: 3,
+    /** With a lane station built there. */
+    slotsWithStation: 5,
+  },
+  start: {
+    /** Every power starts with the same small stockpile (§5). */
+    stockpile: { metals: 40, volatiles: 20, fuel: 40 },
+  },
+  homeWeb: {
+    /** Reborn's lanes within this many jumps of a capital make its home web (D-19a). */
+    jumps: 2,
+    /** Every power's web is trimmed to this many systems, Tau Ceti's being the smallest (§3). */
+    systems: 7,
+  },
+} as const;

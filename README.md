@@ -16,8 +16,10 @@ It is made to be **completely playable on a phone**, as Starman Reborn is, **wit
 desktop experience**. Several factions are playable: the three human powers first, the alien
 species later.
 
-**Status: in design.** No game yet. The live site, <https://shotif.github.io/starman-control/>,
-shows a placeholder title until the first playable build.
+**Status: building milestone M1, First light.** Not playable yet. The live site,
+<https://shotif.github.io/starman-control/>, has a title and a preview of the real neighbourhood's
+data (207 systems, their stars and known planets, and the old lanes) until the first playable
+build.
 
 ## Design documents
 
@@ -43,7 +45,10 @@ npm run dev       # development server at http://localhost:5173
 npm run build     # production static site in dist/ (relative asset paths)
 npm run preview   # serve dist/ at http://localhost:4173
 npm run check     # typecheck, lint, art records, unit tests and the production build
+npm run test:e2e  # browser journeys on a phone, a tablet and a desktop (Playwright)
+npm run screenshots  # every screen at the review sizes, into test-results/screens/
 npm run format    # apply Biome's formatting
+npm run data:import  # copy the sky and lanes from a Starman Reborn checkout (../starman-reborn)
 npm run art:ping  # check the Gemini key (see docs/ART_PIPELINE.md)
 ```
 
@@ -57,4 +62,6 @@ GitHub Pages (`https://shotif.github.io/starman-control/`). One-time setup in th
 ## Credits and rights
 
 All code, text and design are original to this project. Typefaces: Saira Condensed and Saira Semi
-Condensed (SIL Open Font License), bundled, as in Starman Reborn.
+Condensed (SIL Open Font License), bundled, as in Starman Reborn. The astronomy data comes from
+the archives by way of Starman Reborn; two stars' values are CC BY-SA 4.0 and a few planets are
+from the Open Exoplanet Catalogue ([src/data/NOTICE.md](src/data/NOTICE.md)).

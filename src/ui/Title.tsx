@@ -1,4 +1,4 @@
-// Placeholder title until the first playable build (docs/design/M1_FIRST_LIGHT.md, increment 2).
+// Placeholder title until the first playable build (docs/design/M1_FIRST_LIGHT.md §12, increment 4).
 
 export function Title({ buildId }: { buildId: string }) {
   return (
@@ -10,7 +10,13 @@ export function Title({ buildId }: { buildId: string }) {
         A 4X strategy game of exploration, colonies and first contact among real nearby stars, in the{' '}
         <a href="https://shotif.github.io/starman-reborn/">Starman Reborn</a> universe.
       </p>
-      <p class="status">In design — first playable build to come</p>
+      <p class="status">In development: milestone M1, First light</p>
+      <p class="preview">
+        <a class="button" href="#/data">
+          Preview the neighbourhood
+        </a>
+        <span>The real systems and the old lanes, before the map arrives.</span>
+      </p>
       <p class="build">
         Build {buildId} · <a href="https://github.com/shotif/starman-control/tree/main/docs">Design documents</a>
       </p>

@@ -5,6 +5,9 @@
 redesigned around lane building; three details of it are open ([§13](#13-questions-for-the-owner)).
 Everything else follows the decisions and the scope in [../SCOPE.md](../SCOPE.md).
 
+**Progress:** increment 1 (data and simulation core) built 19 October 2026, on the
+recommendations for D-19a to D-19c; see [§12](#increments).
+
 **Goal.** The first playable Starman Control: choose a faction, chart the real neighbourhood,
 build and relight lanes out from your home, survey the systems they reach, settle their planets,
 and keep going for 50 turns — **on a phone and on a desktop**.
@@ -112,6 +115,26 @@ reach (about seven: Tau Ceti's web, the smallest, has 7 systems and 6 lanes; Sol
 Wolf 1061's 10). Every other lane of Reborn's network is dark. In M1, played alone, the other
 powers' home webs are dark too.
 
+How the webs are trimmed (built in increment 1, `src/sim/homeWeb.ts`; worked out the same way
+whoever plays, so a start never depends on the faction chosen):
+
+1. A system within two jumps of more than one capital is tended by the nearest (fewest jumps,
+   then shortest distance), so **webs never overlap**: Barnard's Star, two jumps from Wolf 1061,
+   stays with Sol, one jump away; Epsilon Eridani, two jumps from both Sol and Tau Ceti, goes to
+   Tau Ceti, 5.5 ly away rather than 10.5.
+2. Each web grows from its capital through its own systems, nearest first. Each system joins by
+   **one lane**: the shortest to a system one jump nearer the capital that still has a **free
+   beacon slot**. A system with no such lane is left out and the next nearest tried.
+3. Every web is cut to the size of the smallest: **7 systems and 6 lanes each**. Old lanes among a
+   web's own systems that were not kept (two in Sol's web) are dark, cheap to relight.
+4. **A capital starts with a lane station** (five beacon slots), which Sol's four lanes need.
+
+| Power | Its home web (nearest first) |
+| --- | --- |
+| Transit Authority | Sol; Alpha Centauri, Barnard's Star, Wolf 359, Sirius; Luhman 16, WISE 0855−0714 |
+| Frontier Cooperative | Tau Ceti; YZ Ceti, Luyten 726-8; Epsilon Eridani, Van Maanen's Star, GJ 1, Lacaille 9352 |
+| Hollow Wake | Wolf 1061; 70 Ophiuchi, Gaia DR3 6305165514134625024, Ross 154; GJ 581, KX Librae, WISE 1741+2553 |
+
 **Building a lane** (D-19c, recommended) is a project in the build queue of a system you hold
 (a colony or an outpost), aimed at any star within your **lane-building reach**:
 
@@ -213,9 +236,11 @@ M3. Every faction starts with **the same assets**; they differ in place and in t
 | **Hollow Wake** | Wolf 1061 (14.1 ly): a red dwarf with three confirmed planets | Maw Roost, its best-known den in Reborn | ships make one extra jump a turn |
 
 The capital is a developed home world whatever its planet, after generations of building. Every
-faction starts with: the capital (population 10, a shipyard), one outpost in the home system, its
-home web of lanes (§3), two survey ships, one colony ship, one outpost ship, the founding
-technologies, and a small stockpile. The traits are sketches to be balanced in M2 and M3.
+faction starts with: the capital (population 10, a shipyard and a lane station), one outpost in
+the home system, its home web of lanes (§3), two survey ships, one colony ship, one outpost ship,
+the founding technologies, and a small stockpile (40 metals, 20 volatiles, 40 fusion fuel). Which
+planet each capital is on is open ([D-24](../DECISIONS.md#d-24--the-capital-worlds--open)), since
+all four of Tau Ceti's reported planets are disputed. The traits are sketches to be balanced in M2 and M3.
 
 ## 6. Ships and movement
 
@@ -358,9 +383,12 @@ src/
   the seed, so a save holds only what changed: small enough to export and move between devices.
 - **The simulation runs in a Web Worker** from the start, so the interface never stutters at the
   end of a turn and the AI can be added in M3 without restructuring.
-- **Copied from Reborn** (D-10), each file noting its source: the astronomy data, the lane network
-  generator and its frozen core, the star map's projection and drawing, the save storage, the design
-  tokens and fonts.
+- **Copied from Reborn** (D-10), each file noting its source: the astronomy data, the lane
+  network, the star map's projection and drawing, the save storage, the design tokens and fonts.
+  The lanes are copied as data rather than by copying Reborn's generator: `npm run data:import`
+  loads Reborn's own modules from a checkout and writes `src/data/sky.json` (the systems, stars,
+  planets and belts with their sources, and the 271 lanes), so the lanes are exactly the ones
+  Reborn's players fly, and a test pins their fingerprint.
 - **Saves:** an autosave every turn, three slots, export and import as a file
   (`{ format: 'starman-control-save', version, … }`), versioned and migrated, with a backup slot.
 - **Offline:** after the first visit the game is kept for offline play, as Reborn is.
