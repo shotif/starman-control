@@ -45,9 +45,22 @@ export class SaveStore {
     this.world = world;
   }
 
-  /** Saves the running game, keeping the previous autosave as the backup. */
-  autosave(game: GameState, now = new Date()): Promise<void> {
-    return this.backend.write({ [AUTO]: envelope(game, now) }, { key: BACKUP, from: AUTO });
+  /**
+   * Saves the running game. At the end of a turn the previous autosave is kept as the backup;
+   * saves between turns (after an order) leave the backup alone.
+   */
+  autosave(game: GameState, now = new Date(), keepBackup = true): Promise<void> {
+    return this.backend.write({ [AUTO]: envelope(game, now) }, keepBackup ? { key: BACKUP, from: AUTO } : undefined);
+  }
+
+  /** Whether there is a game to continue, without reading it all. */
+  async hasGame(): Promise<boolean> {
+    return (await this.backend.get(AUTO)) !== undefined || (await this.backend.get(BACKUP)) !== undefined;
+  }
+
+  /** Forgets the running game (its slots are kept). */
+  clearAutosave(): Promise<void> {
+    return this.backend.remove([AUTO, BACKUP]);
   }
 
   /**

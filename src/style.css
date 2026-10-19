@@ -216,3 +216,26 @@ button.link {
 .faction-mark {
   flex: none;
 }
+
+.title-menu {
+  display: grid;
+  justify-items: stretch;
+  gap: 0.6rem;
+  width: min(100%, 22rem);
+  margin: 0 auto;
+}
+
+.button-primary {
+  border-color: var(--accent);
+  background: rgba(92, 200, 255, 0.24);
+}
+
+.button-quiet {
+  border-color: var(--panel-border);
+  background: var(--panel);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

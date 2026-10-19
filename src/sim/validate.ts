@@ -2,11 +2,13 @@
 // forbid. Used when a save is loaded or imported, and by the tests after every turn.
 
 import { isFactionId } from '../content/factions.ts';
+import { SHIPS } from '../content/ships.ts';
 import { beaconSlots, type GameState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const isWhole = (v: unknown, min = 0): v is number => typeof v === 'number' && Number.isInteger(v) && v >= min;
+const isStrings = (v: unknown): v is string[] => Array.isArray(v) && v.every((s) => typeof s === 'string');
 
 /** Problems with the shape of a state (types and whole numbers), before it is trusted as a GameState. */
 export function shapeProblems(raw: unknown): string[] {
@@ -16,6 +18,7 @@ export function shapeProblems(raw: unknown): string[] {
   if (!isWhole(raw.seed, 1) || (raw.seed as number) > 0xffffffff)
     out.push('seed is not a whole number from 1 to 2^32 − 1');
   if (!isWhole(raw.turn, 1)) out.push('turn is not a whole number from 1');
+  if (!isWhole(raw.nextShipId, 1)) out.push('nextShipId is not a whole number from 1');
   if (!Array.isArray(raw.powers)) out.push('powers is not a list');
   else
     for (const [i, p] of raw.powers.entries()) {
@@ -26,8 +29,9 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isFactionId(p.faction)) out.push(`power ${i} has an unknown faction`);
       if (p.controller !== 'player' && p.controller !== 'ai') out.push(`power ${i} has no controller`);
       if (typeof p.capital !== 'string') out.push(`power ${i} has no capital`);
-      if (!Array.isArray(p.laneStations) || !p.laneStations.every((s) => typeof s === 'string'))
-        out.push(`power ${i} lane stations are not a list of systems`);
+      if (!isStrings(p.laneStations)) out.push(`power ${i} lane stations are not a list of systems`);
+      if (!isStrings(p.surveyed)) out.push(`power ${i} surveyed systems are not a list`);
+      if (!isWhole(p.shipsBuilt)) out.push(`power ${i} ships built is not a whole number`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -38,6 +42,32 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isRecord(l) || typeof l.id !== 'string' || !isFactionId(l.owner) || l.status !== 'open')
         out.push(`lane ${i} is not an open lane with an owner`);
     }
+  if (!Array.isArray(raw.ships)) out.push('ships is not a list');
+  else
+    for (const [i, s] of raw.ships.entries()) {
+      if (!isRecord(s) || !isWhole(s.id, 1) || !isFactionId(s.owner) || typeof s.name !== 'string') {
+        out.push(`ship ${i} is not a ship`);
+        continue;
+      }
+      if (typeof s.type !== 'string' || !(s.type in SHIPS)) out.push(`ship ${i} is of an unknown type`);
+      if (s.at !== null && typeof s.at !== 'string') out.push(`ship ${i} is nowhere`);
+      if (!isStrings(s.destinations)) out.push(`ship ${i} destinations are not a list`);
+      if (typeof s.hold !== 'boolean' || typeof s.autoSurvey !== 'boolean')
+        out.push(`ship ${i} flags are not true or false`);
+      const j = s.blindJump;
+      if (
+        j !== null &&
+        !(
+          isRecord(j) &&
+          typeof j.from === 'string' &&
+          typeof j.to === 'string' &&
+          isWhole(j.turns, 1) &&
+          isWhole(j.left)
+        )
+      )
+        out.push(`ship ${i} blind jump is not a jump`);
+    }
+  if (!Array.isArray(raw.reports)) out.push('reports is not a list');
   return out;
 }
 
@@ -51,6 +81,12 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (!world.hasSystem(p.capital)) out.push(`${p.faction}'s capital ${p.capital} is not a system`);
     for (const s of p.laneStations)
       if (!world.hasSystem(s)) out.push(`${p.faction}'s lane station at ${s} is not a system`);
+    let prev = '';
+    for (const s of p.surveyed) {
+      if (!world.hasSystem(s)) out.push(`${p.faction} surveyed ${s}, which is not a system`);
+      if (s <= prev) out.push(`${p.faction}'s surveys are out of order or listed twice`);
+      prev = s;
+    }
   }
   const used = new Map<string, number>();
   let previous = '';
@@ -68,6 +104,23 @@ export function stateProblems(world: World, state: GameState): string[] {
   for (const [system, n] of used) {
     const slots = beaconSlots(state, system);
     if (n > slots) out.push(`${system} anchors ${n} lanes but has ${slots} beacon slots`);
+  }
+  let lastShip = 0;
+  for (const s of state.ships) {
+    if (s.id <= lastShip) out.push(`ship ${s.id} is out of order or listed twice`);
+    if (s.id >= state.nextShipId) out.push(`ship ${s.id} is numbered past the next ship`);
+    lastShip = s.id;
+    if (!factions.has(s.owner)) out.push(`ship ${s.name} belongs to ${s.owner}, who is not in play`);
+    if (s.at === null && !s.blindJump) out.push(`ship ${s.name} is nowhere and not on a jump`);
+    if (s.at !== null && !world.hasSystem(s.at)) out.push(`ship ${s.name} is at ${s.at}, which is not a system`);
+    for (const d of s.destinations)
+      if (!world.hasSystem(d)) out.push(`ship ${s.name} is bound for ${d}, which is not a system`);
+    if (s.blindJump) {
+      const j = s.blindJump;
+      if (!world.hasSystem(j.from) || !world.hasSystem(j.to)) out.push(`ship ${s.name} jumps to or from nowhere`);
+      if (j.left > j.turns) out.push(`ship ${s.name} has more of its jump left than it takes`);
+      if (s.at === null && j.left === j.turns) out.push(`ship ${s.name} has left without its jump beginning`);
+    }
   }
   return out;
 }

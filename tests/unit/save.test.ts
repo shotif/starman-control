@@ -85,3 +85,18 @@ describe('the save store', () => {
     expect(slots[0]).toEqual({ slot: 1, empty: false, summary: null });
   });
 });
+
+describe('the save store between turns', () => {
+  it('knows whether there is a game, and leaves the backup alone for saves between turns', async () => {
+    const backend = new MemoryBackend();
+    const store = new SaveStore(backend, world);
+    expect(await store.hasGame()).toBe(false);
+    await store.autosave(game, when);
+    await store.autosave({ ...game, turn: 2 }, when);
+    await store.autosave({ ...game, turn: 2, seed: 778 }, when, false);
+    expect(await store.hasGame()).toBe(true);
+    expect((backend.data.get('save:auto:backup') as { game: { turn: number } }).game.turn).toBe(1);
+    await store.clearAutosave();
+    expect(await store.hasGame()).toBe(false);
+  });
+});

@@ -55,8 +55,8 @@ export interface MapViewEvents {
   hover?(id: SystemId | null, x: number, y: number): void;
   /** A double click on a star (desktop): centre it. */
   activate?(id: SystemId): void;
-  /** A right click on a star (desktop), for orders from increment 4. */
-  command?(id: SystemId, x: number, y: number): void;
+  /** A right click on a star (desktop): an order for the selected ship. Shift adds a waypoint. */
+  command?(id: SystemId, x: number, y: number, shift: boolean): void;
 }
 
 const STAR_VERTEX = `
@@ -128,6 +128,53 @@ void main() {
 
 const SHAPE: Record<MapHolding['mark'], number> = { circle: 0, square: 1, triangle: 2 };
 
+/** Ships: small chevrons drawn a fixed number of pixels from their star, so they never hide it. */
+const SHIP_VERTEX = `
+attribute vec3 tint;
+attribute vec2 offset;
+uniform float scale;
+uniform vec2 viewport;
+varying vec3 vTint;
+void main() {
+  vTint = tint;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  gl_Position.xy += offset * scale * 2.0 / viewport * gl_Position.w;
+  gl_PointSize = 18.0 * scale;
+}`;
+
+const SHIP_FRAGMENT = `
+varying vec3 vTint;
+void main() {
+  vec2 p = gl_PointCoord * 2.0 - 1.0;
+  // A chevron pointing up and to the right: two strokes meeting at the tip.
+  vec2 q = vec2(p.x - p.y, p.x + p.y) * 0.7071;
+  float arm = max(abs(q.x + 0.15) - 0.75, abs(q.y - 0.45) - 0.16);
+  float arm2 = max(abs(q.y - 0.15) - 0.75, abs(q.x - 0.45) - 0.16);
+  float d = min(arm, arm2);
+  if (d > 0.12) discard;
+  float edge = smoothstep(0.0, 0.12, d);
+  // Lighter than the power's colour, so a ship stands out against its own rings and lanes.
+  vec3 body = mix(vTint, vec3(1.0), 0.45);
+  gl_FragColor = vec4(mix(body, vec3(0.02, 0.03, 0.06), edge), 1.0);
+}`;
+
+export interface ShipMark {
+  /** Where it is: a system, or partway between two on a blind jump (0 to 1). */
+  at: SystemId | null;
+  from?: SystemId;
+  to?: SystemId;
+  progress?: number;
+  colour: string;
+}
+
+export interface MapRoute {
+  systems: SystemId[];
+  /** `plan`: the route being chosen; `orders`: a ship's standing orders. */
+  kind: 'plan' | 'orders';
+  /** A blind jump, drawn dashed. */
+  blind?: boolean;
+}
+
 interface Label {
   el: HTMLDivElement;
   box: LabelBox;
@@ -169,6 +216,10 @@ export class MapView {
   private readonly openMaterial: LineMaterial;
   private readonly darkMaterial: LineMaterial;
   private readonly grid = new THREE.Group();
+  private ships: THREE.Points | null = null;
+  private readonly shipMaterial: THREE.ShaderMaterial;
+  private readonly routeLines: LineSegments2[] = [];
+  private readonly routeMaterials: Record<'plan' | 'orders' | 'planBlind' | 'ordersBlind', LineMaterial>;
   private readonly disposables: { dispose(): void }[] = [];
 
   private mode: ViewMode = 'flat';
@@ -229,6 +280,36 @@ export class MapView {
     this.highlightMaterial = this.own(
       new THREE.ShaderMaterial({ ...markOptions, uniforms: { scale: { value: 1 }, opacity: { value: 1 } } }),
     );
+    this.shipMaterial = this.own(
+      new THREE.ShaderMaterial({
+        uniforms: { scale: { value: 1 }, viewport: { value: new THREE.Vector2(1, 1) } },
+        vertexShader: SHIP_VERTEX,
+        fragmentShader: SHIP_FRAGMENT,
+        transparent: true,
+        depthTest: false,
+        depthWrite: false,
+      }),
+    );
+    const routeMaterial = (opacity: number, width: number, dashed: boolean) =>
+      this.own(
+        new LineMaterial({
+          // Amber: unlike every power's colour, so a route shows over any lane.
+          color: 0xffc95c,
+          linewidth: width,
+          worldUnits: false,
+          transparent: true,
+          opacity,
+          dashed,
+          dashSize: 0.3,
+          gapSize: 0.2,
+        }),
+      );
+    this.routeMaterials = {
+      plan: routeMaterial(1, 4, false),
+      planBlind: routeMaterial(1, 3, true),
+      orders: routeMaterial(0.55, 2, false),
+      ordersBlind: routeMaterial(0.55, 2, true),
+    };
     this.openMaterial = this.own(
       new LineMaterial({ linewidth: 3, vertexColors: true, worldUnits: false, transparent: true, opacity: 0.95 }),
     );
@@ -624,6 +705,11 @@ export class MapView {
     const k = worldPerPixel(s.distance, MAP_FOV_DEG, this.height);
     this.darkMaterial.dashSize = 6 * k;
     this.darkMaterial.gapSize = 5 * k;
+    this.shipMaterial.uniforms.scale.value = this.dpr;
+    for (const m of [this.routeMaterials.planBlind, this.routeMaterials.ordersBlind]) {
+      m.dashSize = 8 * k;
+      m.gapSize = 6 * k;
+    }
     this.drops.visible = this.mode === '3d';
     this.renderer.render(this.scene, camera);
     if (this.controller.version !== this.drawnVersion || this.labelsDirty || shifting) {
@@ -658,6 +744,8 @@ export class MapView {
     this.renderer.setSize(w, h, false);
     this.openMaterial.resolution.set(w, h);
     this.darkMaterial.resolution.set(w, h);
+    for (const m of Object.values(this.routeMaterials)) m.resolution.set(w, h);
+    this.shipMaterial.uniforms.viewport.value.set(w * this.dpr, h * this.dpr);
     this.invalidate();
   }
 
@@ -695,7 +783,7 @@ export class MapView {
       this.gestures.up(e.pointerId, p.x, p.y, e.timeStamp);
       if (this.rightDown && e.button === 2 && Math.hypot(p.x - this.rightDown.x, p.y - this.rightDown.y) < 4) {
         const id = this.systemAt(p.x, p.y, 'mouse');
-        if (id) this.events.command?.(id, p.x, p.y);
+        if (id) this.events.command?.(id, p.x, p.y, e.shiftKey);
       }
       this.rightDown = null;
     };
@@ -816,12 +904,13 @@ export class MapView {
     this.invalidate();
   }
 
-  /** Brings a system to the centre of the stage, closer if the view is far out. */
-  focus(id: SystemId): void {
+  /** Brings a system to the centre of the stage, closer if the view is far out; `instant` skips the easing. */
+  focus(id: SystemId, instant = false): void {
     const s = this.content.systems[this.index.get(id) ?? -1];
     if (!s) return;
-    const distance = Math.min(this.controller.current.distance, 14);
-    this.controller.transitionTo({ target: [...s.pos], distance: Math.max(distance, 3) });
+    const distance = Math.max(3, Math.min(this.controller.current.distance, 14));
+    if (instant) this.controller.jumpTo({ ...this.controller.current, target: [...s.pos], distance });
+    else this.controller.transitionTo({ target: [...s.pos], distance });
     this.invalidate();
   }
 
@@ -863,6 +952,88 @@ export class MapView {
     this.invalidate();
   }
 
+  /** The ships to draw: one chevron per power at each system, and one for each blind jump. */
+  setShips(marks: readonly ShipMark[]): void {
+    if (this.ships) {
+      this.scene.remove(this.ships);
+      this.ships.geometry.dispose();
+      this.ships = null;
+    }
+    const at = (id: SystemId | undefined) => this.content.systems[this.index.get(id ?? '') ?? -1]?.pos;
+    const items: { pos: readonly number[]; colour: string; offset: [number, number] }[] = [];
+    const seen = new Map<string, number>();
+    for (const m of marks) {
+      if (m.at) {
+        const key = `${m.at}|${m.colour}`;
+        if (seen.has(key)) continue;
+        seen.set(key, 1);
+        const pos = at(m.at);
+        // Powers at the same system sit one above another.
+        const n = [...seen.keys()].filter((k) => k.startsWith(`${m.at}|`)).length - 1;
+        if (pos) items.push({ pos, colour: m.colour, offset: [19, 17 + n * 15] });
+      } else {
+        const a = at(m.from);
+        const b = at(m.to);
+        const t = Math.max(0, Math.min(1, m.progress ?? 0.5));
+        if (a && b)
+          items.push({
+            pos: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t],
+            colour: m.colour,
+            offset: [0, 0],
+          });
+      }
+    }
+    if (items.length > 0) {
+      const colour = new THREE.Color();
+      const pos = new Float32Array(items.length * 3);
+      const tint = new Float32Array(items.length * 3);
+      const offset = new Float32Array(items.length * 2);
+      items.forEach((it, i) => {
+        pos.set(it.pos, i * 3);
+        colour.set(it.colour);
+        tint.set([colour.r, colour.g, colour.b], i * 3);
+        offset.set(it.offset, i * 2);
+      });
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      g.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
+      g.setAttribute('offset', new THREE.BufferAttribute(offset, 2));
+      this.ships = new THREE.Points(g, this.shipMaterial);
+      this.ships.renderOrder = 5;
+      this.scene.add(this.ships);
+    }
+    this.invalidate(false);
+  }
+
+  /** Routes to draw: the one being planned, bright, and ships' standing orders, fainter. */
+  setRoutes(routes: readonly MapRoute[]): void {
+    for (const line of this.routeLines) {
+      this.scene.remove(line);
+      line.geometry.dispose();
+    }
+    this.routeLines.length = 0;
+    const at = (id: SystemId) => this.content.systems[this.index.get(id) ?? -1]?.pos;
+    for (const r of routes) {
+      const pts: number[] = [];
+      for (let i = 1; i < r.systems.length; i++) {
+        const a = at(r.systems[i - 1] as SystemId);
+        const b = at(r.systems[i] as SystemId);
+        if (a && b) pts.push(...a, ...b);
+      }
+      if (pts.length === 0) continue;
+      const g = new LineSegmentsGeometry();
+      g.setPositions(pts);
+      const material =
+        this.routeMaterials[r.kind === 'plan' ? (r.blind ? 'planBlind' : 'plan') : r.blind ? 'ordersBlind' : 'orders'];
+      const line = new LineSegments2(g, material);
+      if (r.blind) line.computeLineDistances();
+      line.renderOrder = r.kind === 'plan' ? 2 : 1;
+      this.scene.add(line);
+      this.routeLines.push(line);
+    }
+    this.invalidate(false);
+  }
+
   dispose(): void {
     cancelAnimationFrame(this.frame);
     this.observer.disconnect();
@@ -870,6 +1041,8 @@ export class MapView {
     for (const o of [this.stars, this.marks, this.highlight, this.openLanes, this.darkLanes, this.drops])
       o.geometry.dispose();
     for (const child of this.grid.children) (child as THREE.LineLoop).geometry.dispose();
+    this.ships?.geometry.dispose();
+    for (const line of this.routeLines) line.geometry.dispose();
     for (const d of this.disposables) d.dispose();
     this.renderer.dispose();
     this.canvas.remove();

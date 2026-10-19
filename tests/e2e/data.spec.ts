@@ -9,7 +9,7 @@ test.describe('the codex', () => {
   test('opens from the title', async ({ page }, info) => {
     await page.goto('./');
     await expect(page.getByRole('heading', { name: /Starman Control/i })).toBeVisible();
-    await press(page.getByRole('link', { name: 'the codex' }), info.project.name);
+    await press(page.getByRole('link', { name: 'Codex', exact: true }), info.project.name);
     await expect(page.getByRole('heading', { name: /Codex/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /How the game works out/ })).toBeVisible();
     await expect(page.locator('.count')).toHaveText('207 of 207');

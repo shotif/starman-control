@@ -20,6 +20,7 @@ const SCREENS: { name: string; path: string; select?: string; star?: string; mod
   { name: 'map', path: './?test#/map' },
   { name: 'map-system', path: './?test#/map', star: 'sol' },
   { name: 'map-other-view', path: './?test#/map', mode: 'toggle' },
+  { name: 'new-game', path: './#/new' },
 ];
 
 for (const size of SIZES) {

@@ -18,6 +18,18 @@ export const RULES = {
     /** Every power starts with the same small stockpile (§5). */
     stockpile: { metals: 40, volatiles: 20, fuel: 40 },
   },
+  movement: {
+    /** Jump points a ship has each turn (§6), before traits and research. */
+    jumpPoints: 2,
+    /** A lane up to this long costs 1 jump point; a longer one 2. */
+    shortLaneDeci: 60,
+  },
+  blindJump: {
+    /** How far a survey ship can jump without a lane, until research extends it (§3, §6). */
+    reachDeci: 60,
+    /** One turn for every 3 light-years, rounded up. */
+    deciPerTurn: 30,
+  },
   homeWeb: {
     /** Reborn's lanes within this many jumps of a capital make its home web (D-19a). */
     jumps: 2,

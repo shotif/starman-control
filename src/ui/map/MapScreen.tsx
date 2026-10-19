@@ -1,31 +1,46 @@
 // The map screen (§10), the home of the game. Both layouts are designed together (D-04):
 //
 // Phone: the map fills the screen, flat by default; a top bar and a bottom bar within thumb reach;
-// tapping a star opens its system as a bottom sheet; search and the legend are sheets too.
+// a star opens its system as a bottom sheet; ships, the report and the menu are sheets too.
 // Desktop: 3D by default; a top bar, an outliner on the left, the inspector on the right; hover
-// cards, double-click to centre, and a shortcut for every action (listed under ?).
+// cards, double-click to centre, right-click to order the selected ship, and a key for every action.
 //
-// The map element stays the same whichever layout is showing, so a tablet that switches layout
+// It shows the neighbourhood to explore before playing, or a game (`play`), as M1_TURNS.md §6 sets
+// out. The map element stays the same whichever layout is showing, so a tablet that switches layout
 // when a mouse is used keeps its view.
 
-import { signal } from '@preact/signals';
-import { Fragment } from 'preact';
+import { type ComponentChildren, Fragment } from 'preact';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
+import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
-import type { MapView, ViewMode } from '../../render/MapView.ts';
+import type { MapRoute, MapView, ShipMark, ViewMode } from '../../render/MapView.ts';
 import type { Rect } from '../../render/mapMath.ts';
 import { mapContent } from '../../render/mapModel.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
+import { findRoute } from '../../sim/movement.ts';
 import { starKindWord } from '../../sim/stars.ts';
-import type { GameState } from '../../sim/state.ts';
+import { type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { layout, sideSheets } from '../layout.ts';
 import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
 import { SystemView } from '../system/SystemPanel.tsx';
+import {
+  give,
+  NeedsStack,
+  type Play,
+  planFor,
+  ReportView,
+  Resources,
+  ShipPanel,
+  ShipsList,
+  shipStatus,
+  TargetBar,
+} from './play.tsx';
+import { failed, hover, mode, panel, query, selected, selectedShip, targeting, toast } from './state.ts';
 import '../sheet.css';
 import './map.css';
 
@@ -33,14 +48,9 @@ interface Props {
   world: World;
   game: GameState;
   buildId: string;
+  /** A game being played; absent when exploring. */
+  play?: Play;
 }
-
-const selected = signal<SystemId | null>(null);
-const mode = signal<ViewMode | null>(null);
-const panel = signal<'search' | 'legend' | 'keys' | null>(null);
-const hover = signal<{ id: SystemId; x: number; y: number } | null>(null);
-const query = signal('');
-const failed = signal<string | null>(null);
 
 /** Keys for the desktop (§10: a shortcut for every action, listed under ?). */
 export const SHORTCUTS: readonly [string, string][] = [
@@ -48,15 +58,55 @@ export const SHORTCUTS: readonly [string, string][] = [
   ['Q and E', 'Turn the map (3D)'],
   ['+ and −', 'Zoom in and out'],
   ['F', 'Flat or 3D view'],
-  ['H', 'Back to Sol'],
+  ['H', 'Back home'],
   ['0', 'The whole neighbourhood'],
   ['/', 'Find a system'],
-  ['C', 'Centre the selected system'],
-  ['Esc', 'Close, or clear the selection'],
+  ['C', 'Centre the selection'],
+  ['Esc', 'Close, cancel, or clear the selection'],
   ['?', 'These keys'],
 ];
 
-export function MapScreen({ world, game, buildId }: Props) {
+export const PLAY_SHORTCUTS: readonly [string, string][] = [
+  ['Enter', 'End the turn'],
+  ['N', 'The next idle ship'],
+  ['M', 'Move the selected ship'],
+  ['Right click', 'Send the selected ship there (Shift: add a waypoint)'],
+  ['R', 'The report'],
+];
+
+function shipMarks(game: GameState): ShipMark[] {
+  return game.ships.map((s) => {
+    const colour = FACTIONS[s.owner].colour;
+    if (s.at !== null || !s.blindJump) return { at: s.at, colour };
+    const j = s.blindJump;
+    return { at: null, from: j.from, to: j.to, progress: (j.turns - j.left + 0.5) / j.turns, colour };
+  });
+}
+
+/** Standing orders, drawn faintly: each ship's route through its destinations, or its blind jump. */
+function orderRoutes(world: World, game: GameState, faction: string): MapRoute[] {
+  const out: MapRoute[] = [];
+  for (const s of game.ships) {
+    if (s.owner !== faction) continue;
+    if (s.blindJump) {
+      out.push({ systems: [s.blindJump.from, s.blindJump.to], kind: 'orders', blind: true });
+      continue;
+    }
+    if (s.at === null || s.destinations.length === 0) continue;
+    const path: SystemId[] = [s.at];
+    let at = s.at;
+    for (const d of s.destinations) {
+      const leg = findRoute(world, game, s.owner, at, d);
+      if (!leg) break;
+      path.push(...leg.map((h) => h.to));
+      at = d;
+    }
+    out.push({ systems: path, kind: 'orders' });
+  }
+  return out;
+}
+
+export function MapScreen({ world, game, buildId, play }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const view = useRef<MapView | null>(null);
@@ -66,9 +116,14 @@ export function MapScreen({ world, game, buildId }: Props) {
   const [barHeight, setBarHeight] = useState(0);
   const [topHeight, setTopHeight] = useState(56);
   const desktop = layout.value === 'desktop';
+  // The latest game and play for callbacks the map holds on to.
+  const latest = useRef({ game, play });
+  latest.current = { game, play };
+  const home = play ? powerOf(game, play.faction).capital : 'sol';
 
   const select = useCallback((id: SystemId | null) => {
     selected.value = id;
+    selectedShip.value = null;
     view.current?.setSelected(id);
     if (id && panel.value === 'search') panel.value = null;
   }, []);
@@ -79,8 +134,52 @@ export function MapScreen({ world, game, buildId }: Props) {
     },
     [select],
   );
+  const pickShip = useCallback((id: number) => {
+    const s = latest.current.game.ships.find((x) => x.id === id);
+    if (!s) return;
+    selectedShip.value = id;
+    selected.value = s.at;
+    panel.value = null;
+    const where = s.at ?? s.blindJump?.to ?? null;
+    view.current?.setSelected(where);
+    if (where) view.current?.focus(where);
+  }, []);
 
-  // The map itself, made once.
+  /** A star chosen on the map: a destination while choosing one, else a system to look at. */
+  const onMapSelect = useCallback(
+    (id: SystemId | null) => {
+      const t = targeting.value;
+      if (t) {
+        if (id) targeting.value = { ...t, to: id };
+        return;
+      }
+      select(id);
+    },
+    [select],
+  );
+
+  /** A right click (desktop): send the selected ship there, along lanes if it can, else blind. */
+  const onCommand = useCallback(
+    (id: SystemId, shift: boolean) => {
+      const { game: g, play: p } = latest.current;
+      const shipId = selectedShip.value;
+      const ship = shipId === null ? undefined : g.ships.find((s) => s.id === shipId);
+      if (!p || !ship) return;
+      if (shift) {
+        give(p, { type: 'move', ship: ship.id, to: id, append: true });
+        return;
+      }
+      const plan = planFor(world, g, ship, id, false);
+      if (!plan.ok) {
+        give(p, { type: 'move', ship: ship.id, to: id });
+        return;
+      }
+      give(p, plan.blind ? { type: 'blind-jump', ship: ship.id, to: id } : { type: 'move', ship: ship.id, to: id });
+    },
+    [world],
+  );
+
+  // The map itself, made once for this world.
   useEffect(() => {
     const el = host.current;
     if (!el) return;
@@ -91,22 +190,26 @@ export function MapScreen({ world, game, buildId }: Props) {
         try {
           const initial = mode.value ?? (layout.value === 'desktop' ? '3d' : 'flat');
           mode.value = initial;
+          const { game: g, play: p } = latest.current;
           const v = new MapView(
             el,
-            mapContent(world, game),
+            mapContent(world, g),
             {
-              select: (id) => select(id),
+              select: (id) => onMapSelect(id),
               hover: (id, x, y) => {
                 hover.value = id ? { id, x, y } : null;
               },
               activate: (id) => go(id),
+              command: (id, _x, _y, shift) => onCommand(id, shift),
             },
             initial,
           );
           view.current = v;
           v.setSelected(selected.value);
+          if (p) v.focus(powerOf(g, p.faction).capital, true);
           if (new URLSearchParams(location.search).has('test')) (window as unknown as { __map: MapView }).__map = v;
           updateStage();
+          setReady((n) => n + 1);
         } catch (err) {
           failed.value = (err as Error).message || 'WebGL is not available';
         }
@@ -119,7 +222,38 @@ export function MapScreen({ world, game, buildId }: Props) {
       view.current?.dispose();
       view.current = null;
     };
-  }, [world, game, select, go]);
+  }, [world, onMapSelect, go, onCommand]);
+  const [ready, setReady] = useState(0);
+
+  // What the map draws follows the game: its lanes and holdings, its ships, and the routes.
+  const lanesKey = game.lanes.map((l) => `${l.id}:${l.owner}`).join(',');
+  useEffect(() => {
+    view.current?.setContent(mapContent(world, latest.current.game));
+    view.current?.setSelected(selected.value);
+  }, [world, lanesKey, ready]);
+  const shipsKey = JSON.stringify(game.ships.map((s) => [s.at, s.blindJump?.left, s.destinations]));
+  useEffect(() => {
+    view.current?.setShips(play ? shipMarks(latest.current.game) : []);
+  }, [shipsKey, ready, play]);
+  const t = targeting.value;
+  const hoverId = hover.value?.id ?? null;
+  useEffect(() => {
+    const v = view.current;
+    if (!v) return;
+    const { game: g, play: p } = latest.current;
+    if (!p) {
+      v.setRoutes([]);
+      return;
+    }
+    const routes = orderRoutes(world, g, p.faction);
+    const ship = g.ships.find((s) => s.id === (t?.ship ?? selectedShip.value));
+    const to = t ? t.to : desktop && selectedShip.value !== null ? hoverId : null;
+    if (ship && to) {
+      const plan = planFor(world, g, ship, to, t?.blind ?? false);
+      if (plan.ok) routes.push({ systems: plan.path, kind: 'plan', blind: plan.blind });
+    }
+    v.setRoutes(routes);
+  }, [shipsKey, ready, t, hoverId, desktop, selectedShip.value, world, play]);
 
   /** Tells the map which part of it is not covered by bars, panels and sheets. */
   const updateStage = useCallback(() => {
@@ -133,13 +267,13 @@ export function MapScreen({ world, game, buildId }: Props) {
         .map((e) => rel(e.getBoundingClientRect()))
         .filter((r) => r.w > 0 && r.h > 0);
     const covers = rects('[data-covers-map]');
-    let top = 0;
+    let topY = 0;
     let bottom = box.height;
     let left = 0;
     let right = box.width;
     for (const r of covers) {
       if (r.w >= box.width * 0.6) {
-        if (r.y + r.h / 2 < box.height / 2) top = Math.max(top, r.y + r.h);
+        if (r.y + r.h / 2 < box.height / 2) topY = Math.max(topY, r.y + r.h);
         else bottom = Math.min(bottom, r.y);
       } else if (r.h >= box.height * 0.5) {
         // A panel down one side (a side sheet).
@@ -152,7 +286,7 @@ export function MapScreen({ world, game, buildId }: Props) {
       bottom -= sheetHeight.current;
       covers.push({ x: 0, y: bottom, w: box.width, h: box.height - bottom });
     }
-    v.setStage({ x: left, y: top, w: Math.max(80, right - left), h: Math.max(80, bottom - top) }, [
+    v.setStage({ x: left, y: topY, w: Math.max(80, right - left), h: Math.max(80, bottom - topY) }, [
       ...covers,
       ...rects('[data-keep-clear]'),
     ]);
@@ -189,6 +323,27 @@ export function MapScreen({ world, game, buildId }: Props) {
     view.current?.setMode(m);
   };
 
+  const endTurn = useCallback(async () => {
+    const p = latest.current.play;
+    if (!p || p.resolving) return;
+    targeting.value = null;
+    panel.value = null;
+    await p.endTurn();
+    panel.value = 'report';
+  }, []);
+  /** The phone's End turn: what needs you first, if anything does. */
+  const askEndTurn = () => {
+    if (play && play.needs.length > 0) panel.value = 'needs';
+    else void endTurn();
+  };
+  const nextIdle = useCallback(() => {
+    const p = latest.current.play;
+    if (!p || p.needs.length === 0) return;
+    const i = p.needs.findIndex((n) => n.ship === selectedShip.value);
+    const next = p.needs[(i + 1) % p.needs.length];
+    if (next) pickShip(next.ship);
+  }, [pickShip]);
+
   // Keys (desktop, and any keyboard on a tablet).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -198,6 +353,7 @@ export function MapScreen({ world, game, buildId }: Props) {
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const { play: p } = latest.current;
       const step = 60;
       const k = e.key;
       let handled = true;
@@ -210,22 +366,28 @@ export function MapScreen({ world, game, buildId }: Props) {
       else if (k === '+' || k === '=') v?.zoomBy(0.8);
       else if (k === '-' || k === '_') v?.zoomBy(1.25);
       else if (k === 'f') setMode(mode.value === 'flat' ? '3d' : 'flat');
-      else if (k === 'h') go('sol');
+      else if (k === 'h') go(home);
       else if (k === '0') v?.showAll();
       else if (k === 'c' && selected.value) v?.focus(selected.value);
       else if (k === '/') {
         panel.value = 'search';
         requestAnimationFrame(() => document.querySelector<HTMLInputElement>('#map-search')?.focus());
       } else if (k === '?') panel.value = panel.value === 'keys' ? null : 'keys';
+      else if (k === 'Enter' && p) void endTurn();
+      else if (k === 'n' && p) nextIdle();
+      else if (k === 'r' && p) panel.value = panel.value === 'report' ? null : 'report';
+      else if (k === 'm' && p && selectedShip.value !== null)
+        targeting.value = { ship: selectedShip.value, blind: false, to: null };
       else if (k === 'Escape') {
-        if (panel.value) panel.value = null;
+        if (targeting.value) targeting.value = null;
+        else if (panel.value) panel.value = null;
         else select(null);
       } else handled = false;
       if (handled) e.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go, select]);
+  }, [go, select, endTurn, nextIdle, home]);
 
   const onSheetHeight = useCallback(
     (px: number) => {
@@ -236,11 +398,43 @@ export function MapScreen({ world, game, buildId }: Props) {
   );
 
   const current = selected.value;
+  const ship = selectedShip.value === null ? undefined : game.ships.find((s) => s.id === selectedShip.value);
   const date = formatDate(game.turn);
   const modeNow = mode.value ?? (desktop ? '3d' : 'flat');
+  const power = play ? powerOf(game, play.faction) : undefined;
+  const shipsAt = (id: SystemId) =>
+    play
+      ? game.ships
+          .filter((s) => s.owner === play.faction && s.at === id)
+          .map((s: ShipState) => ({
+            id: s.id,
+            name: s.name,
+            kind: SHIPS[s.type].name,
+            status: shipStatus(world, game, s),
+          }))
+      : undefined;
+  const systemView = (id: SystemId) => (
+    <SystemView
+      key={id}
+      world={world}
+      game={game}
+      id={id}
+      onGo={go}
+      onCentre={() => view.current?.focus(id)}
+      surveyed={power ? hasSurveyed(power, id) : true}
+      ships={shipsAt(id)}
+      onShip={pickShip}
+    />
+  );
+  const shipView = (s: ShipState) => play && <ShipPanel world={world} game={game} ship={s} play={play} onGo={go} />;
+  const report = play && (
+    <ReportView world={world} game={game} faction={play.faction} needs={play.needs.length} onGo={go} />
+  );
+  const keys = play ? [...PLAY_SHORTCUTS, ...SHORTCUTS] : SHORTCUTS;
+  const endLabel = play?.resolving ? 'Ending…' : 'End turn';
 
   return (
-    <div ref={root} class={`map-screen layout-${layout.value}`}>
+    <div ref={root} class={`map-screen layout-${layout.value}${play ? ' is-playing' : ''}`}>
       <div ref={host} class="map-host" data-testid="map">
         {failed.value && (
           <div class="map-failed">
@@ -250,21 +444,35 @@ export function MapScreen({ world, game, buildId }: Props) {
             </p>
           </div>
         )}
-        {desktop && hover.value && hover.value.id !== current && <HoverCard world={world} at={hover.value} />}
+        {desktop && hover.value && hover.value.id !== current && (
+          <HoverCard world={world} game={game} at={hover.value} ship={play ? ship : undefined} />
+        )}
         {desktop && (
           <p class="map-credit" data-keep-clear>
             Stars: Gaia DR3 and SIMBAD, as copied from Starman Reborn · Lanes and powers: fiction · Build {buildId}
           </p>
         )}
+        {desktop && play && panel.value === 'report' && (
+          <div class="popover report-popover" role="dialog" aria-label="Report" data-keep-clear>
+            {report}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
+        {desktop && play && <TargetBar world={world} game={game} play={play} />}
       </div>
 
       <header ref={top} class="map-top" data-covers-map>
-        <a class="brand" href="#/" aria-label="Starman Control: back to the title">
-          Starman <span>Control</span>
-        </a>
+        {(desktop || !play) && (
+          <a class="brand" href="#/" aria-label="Starman Control: back to the title">
+            Starman <span>Control</span>
+          </a>
+        )}
         <span class="map-date" title="A turn is three months">
           {date}
         </span>
+        {power && <Resources power={power} />}
         {desktop ? (
           <>
             <SearchBox world={world} onPick={go} />
@@ -287,7 +495,31 @@ export function MapScreen({ world, game, buildId }: Props) {
             >
               ?
             </button>
+            {play && (
+              <>
+                <button type="button" class="chip" onClick={() => void play.leave()}>
+                  Save and leave
+                </button>
+                <button
+                  type="button"
+                  class="button button-primary end-turn"
+                  disabled={play.resolving}
+                  onClick={() => void endTurn()}
+                >
+                  {endLabel}
+                  {play.needs.length > 0 && <span class="needs-count-badge">{play.needs.length}</span>}
+                </button>
+              </>
+            )}
           </>
+        ) : play ? (
+          <button
+            type="button"
+            class="chip menu-chip"
+            onClick={() => (panel.value = panel.value === 'menu' ? null : 'menu')}
+          >
+            Menu
+          </button>
         ) : (
           <>
             <a class="chip" href="#/codex">
@@ -300,30 +532,39 @@ export function MapScreen({ world, game, buildId }: Props) {
         )}
       </header>
 
-      {desktop && <Outliner world={world} game={game} onGo={go} />}
+      {desktop &&
+        (play ? (
+          <PlayOutliner world={world} game={game} play={play} onShip={pickShip} onGo={go} />
+        ) : (
+          <Outliner world={world} game={game} onGo={go} />
+        ))}
 
       {desktop && (
-        <aside class="map-inspector" aria-label="Selected system">
-          {current ? (
-            <SystemView
-              key={current}
-              world={world}
-              game={game}
-              id={current}
-              onGo={go}
-              onCentre={() => view.current?.focus(current)}
-            />
+        <aside class="map-inspector" aria-label={ship ? 'Selected ship' : 'Selected system'}>
+          {ship ? (
+            shipView(ship)
+          ) : current ? (
+            systemView(current)
           ) : (
             <div class="inspector-hint">
-              <h2>The neighbourhood</h2>
-              <p>
-                {world.systems.length} real star systems within 27 light-years of the Sun, and the old lanes between
-                them. Click a star to see what astronomers know of it; double-click to centre it.
-              </p>
-              <p class="dim">
-                Drag to turn the map, Shift-drag or the right button to move it, the wheel to zoom. Press ? for every
-                key.
-              </p>
+              <h2>{play ? `The ${FACTIONS[play.faction].name}` : 'The neighbourhood'}</h2>
+              {play ? (
+                <p>
+                  Choose a ship on the left, or a star. With a ship chosen, the route follows the pointer: right-click a
+                  star to send it. Press Enter to end the turn, ? for every key.
+                </p>
+              ) : (
+                <>
+                  <p>
+                    {world.systems.length} real star systems within 27 light-years of the Sun, and the old lanes between
+                    them. Click a star to see what astronomers know of it; double-click to centre it.
+                  </p>
+                  <p class="dim">
+                    Drag to turn the map, Shift-drag or the right button to move it, the wheel to zoom. Press ? for
+                    every key.
+                  </p>
+                </>
+              )}
             </div>
           )}
         </aside>
@@ -338,7 +579,7 @@ export function MapScreen({ world, game, buildId }: Props) {
         <div class="popover keys-popover" role="dialog" aria-label="Keyboard shortcuts">
           <h2>Keys</h2>
           <dl class="keys">
-            {SHORTCUTS.map(([key, what]) => (
+            {keys.map(([key, what]) => (
               <Fragment key={key}>
                 <dt>{key}</dt>
                 <dd>{what}</dd>
@@ -350,24 +591,50 @@ export function MapScreen({ world, game, buildId }: Props) {
 
       {!desktop && (
         <nav ref={bar} class="map-bottom" aria-label="Map" data-covers-map>
-          <button
-            type="button"
-            class="bar-button"
-            onClick={() => (panel.value = panel.value === 'search' ? null : 'search')}
-          >
-            Find
-          </button>
-          <ViewToggle mode={modeNow} onChange={setMode} />
-          <button type="button" class="bar-button" onClick={() => go('sol')}>
-            Sol
-          </button>
-          <button
-            type="button"
-            class="bar-button"
-            onClick={() => (panel.value = panel.value === 'legend' ? null : 'legend')}
-          >
-            Legend
-          </button>
+          {play ? (
+            <>
+              <button
+                type="button"
+                class="bar-button"
+                onClick={() => (panel.value = panel.value === 'report' ? null : 'report')}
+              >
+                Report
+              </button>
+              <button
+                type="button"
+                class="bar-button"
+                onClick={() => (panel.value = panel.value === 'ships' ? null : 'ships')}
+              >
+                Ships
+              </button>
+              <ViewToggle mode={modeNow} onChange={setMode} />
+              <button type="button" class="bar-button bar-primary" disabled={play.resolving} onClick={askEndTurn}>
+                {endLabel}
+                {play.needs.length > 0 && <span class="needs-count-badge">{play.needs.length}</span>}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                class="bar-button"
+                onClick={() => (panel.value = panel.value === 'search' ? null : 'search')}
+              >
+                Find
+              </button>
+              <ViewToggle mode={modeNow} onChange={setMode} />
+              <button type="button" class="bar-button" onClick={() => go('sol')}>
+                Sol
+              </button>
+              <button
+                type="button"
+                class="bar-button"
+                onClick={() => (panel.value = panel.value === 'legend' ? null : 'legend')}
+              >
+                Legend
+              </button>
+            </>
+          )}
         </nav>
       )}
 
@@ -377,30 +644,77 @@ export function MapScreen({ world, game, buildId }: Props) {
         </div>
       )}
 
-      {!desktop && current && (
-        <Sheet
-          key={current}
-          label={world.system(current).name}
-          onClose={() => select(null)}
-          onHeight={onSheetHeight}
-          bottomInset={barHeight}
-          topInset={topHeight}
-          side={sideSheets.value}
-        >
-          <SystemView world={world} game={game} id={current} onGo={go} onCentre={() => view.current?.focus(current)} />
-        </Sheet>
-      )}
-      {!desktop && !current && panel.value === 'legend' && (
-        <Sheet
-          label="Legend"
-          onClose={() => (panel.value = null)}
-          onHeight={onSheetHeight}
-          bottomInset={barHeight}
-          topInset={topHeight}
-          side={sideSheets.value}
-        >
-          <Legend />
-        </Sheet>
+      {!desktop && play && <TargetBar world={world} game={game} play={play} />}
+
+      {!desktop &&
+        !targeting.value &&
+        (() => {
+          const sheet = (label: string, body: ComponentChildren, onClose: () => void, key: string) => (
+            <Sheet
+              key={key}
+              label={label}
+              onClose={onClose}
+              onHeight={onSheetHeight}
+              bottomInset={barHeight}
+              topInset={topHeight}
+              side={sideSheets.value}
+            >
+              {body}
+            </Sheet>
+          );
+          const close = () => (panel.value = null);
+          if (play && panel.value === 'needs')
+            return (
+              <NeedsStack
+                world={world}
+                game={game}
+                needs={play.needs}
+                onOrders={(id) => pickShip(id)}
+                onEnd={() => void endTurn()}
+                onClose={close}
+              />
+            );
+          if (play && panel.value === 'report') return sheet('Report', report, close, 'report');
+          if (play && panel.value === 'ships')
+            return sheet(
+              'Ships',
+              <>
+                <h2 class="sheet-heading">Your ships</h2>
+                <ShipsList world={world} game={game} faction={play.faction} onPick={pickShip} />
+              </>,
+              close,
+              'ships',
+            );
+          if (play && panel.value === 'menu')
+            return sheet(
+              'Menu',
+              <nav class="menu-list">
+                <button type="button" class="button" onClick={() => void play.leave()}>
+                  Save and leave
+                </button>
+                <button type="button" class="button button-quiet" onClick={() => (panel.value = 'search')}>
+                  Find a system
+                </button>
+                <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
+                  Legend
+                </button>
+                <a class="button button-quiet" href="#/codex">
+                  Codex
+                </a>
+              </nav>,
+              close,
+              'menu',
+            );
+          if (panel.value === 'legend') return sheet('Legend', <Legend />, close, 'legend');
+          if (ship) return sheet(ship.name, shipView(ship), () => (selectedShip.value = null), `ship-${ship.id}`);
+          if (current) return sheet(world.system(current).name, systemView(current), () => select(null), current);
+          return null;
+        })()}
+
+      {toast.value && (
+        <p class="toast" role="status">
+          {toast.value}
+        </p>
       )}
     </div>
   );
@@ -454,7 +768,10 @@ function SearchBox({
             query.value = (e.target as HTMLInputElement).value;
           }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && results[0]) pick(results[0]);
+            if (e.key === 'Enter' && results[0]) {
+              e.stopPropagation();
+              pick(results[0]);
+            }
             if (e.key === 'ArrowDown') {
               e.preventDefault();
               document.querySelector<HTMLButtonElement>('.search-results .result')?.focus();
@@ -499,32 +816,9 @@ function Outliner({ world, game, onGo }: { world: World; game: GameState; onGo: 
   return (
     <aside class="outliner" aria-label="The powers">
       <h2>The powers</h2>
-      {FACTION_IDS.filter((f) => game.powers.some((p) => p.faction === f)).map((f) => {
-        const lanes = game.lanes.filter((l) => l.owner === f);
-        const capital = FACTIONS[f].capital.systemId;
-        const systems = [capital, ...new Set(lanes.flatMap((l) => l.id.split('~')).filter((s) => s !== capital))];
-        return (
-          <section key={f} class="outliner-power" style={{ '--faction': FACTIONS[f].colour }}>
-            <h3>
-              <FactionMark faction={f} size={13} /> {FACTIONS[f].name}
-            </h3>
-            <ul>
-              {systems.map((id) => (
-                <li key={id}>
-                  <button
-                    type="button"
-                    class={`outliner-item${selected.value === id ? ' is-selected' : ''}`}
-                    onClick={() => onGo(id)}
-                  >
-                    {world.system(id).name}
-                    {id === capital && <span class="capital"> capital</span>}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
+      {FACTION_IDS.filter((f) => game.powers.some((p) => p.faction === f)).map((f) => (
+        <HomeWeb key={f} world={world} game={game} faction={f} onGo={onGo} />
+      ))}
       <p class="dim">
         Each power’s home web: the lanes it kept tending through the Lapse <Badge kind="fiction" />
       </p>
@@ -532,9 +826,99 @@ function Outliner({ world, game, onGo }: { world: World; game: GameState; onGo: 
   );
 }
 
-function HoverCard({ world, at }: { world: World; at: { id: SystemId; x: number; y: number } }) {
+function HomeWeb({
+  world,
+  game,
+  faction: f,
+  onGo,
+}: {
+  world: World;
+  game: GameState;
+  faction: (typeof FACTION_IDS)[number];
+  onGo: (id: SystemId) => void;
+}) {
+  const lanes = game.lanes.filter((l) => l.owner === f);
+  const capital = powerOf(game, f).capital;
+  const systems = [capital, ...new Set(lanes.flatMap((l) => l.id.split('~')).filter((s) => s !== capital))];
+  return (
+    <section class="outliner-power" style={{ '--faction': FACTIONS[f].colour }}>
+      <h3>
+        <FactionMark faction={f} size={13} /> {FACTIONS[f].name}
+      </h3>
+      <ul>
+        {systems.map((id) => (
+          <li key={id}>
+            <button
+              type="button"
+              class={`outliner-item${selected.value === id && selectedShip.value === null ? ' is-selected' : ''}`}
+              onClick={() => onGo(id)}
+            >
+              {world.system(id).name}
+              {id === capital && <span class="capital"> capital</span>}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function PlayOutliner({
+  world,
+  game,
+  play,
+  onShip,
+  onGo,
+}: {
+  world: World;
+  game: GameState;
+  play: Play;
+  onShip: (id: number) => void;
+  onGo: (id: SystemId) => void;
+}) {
+  return (
+    <aside class="outliner" aria-label="Your power">
+      <h2>Needs you</h2>
+      {play.needs.length === 0 ? (
+        <p class="dim">Nothing. End the turn when you are ready.</p>
+      ) : (
+        <ul class="needs-list">
+          {play.needs.map((n) => {
+            const s = game.ships.find((x) => x.id === n.ship);
+            return (
+              s && (
+                <li key={n.ship}>
+                  <button type="button" class="outliner-item" onClick={() => onShip(n.ship)}>
+                    {s.name} is idle at {world.system(n.system).name}
+                  </button>
+                </li>
+              )
+            );
+          })}
+        </ul>
+      )}
+      <h2>Ships</h2>
+      <ShipsList world={world} game={game} faction={play.faction} onPick={onShip} />
+      <h2>Home</h2>
+      <HomeWeb world={world} game={game} faction={play.faction} onGo={onGo} />
+    </aside>
+  );
+}
+
+function HoverCard({
+  world,
+  game,
+  at,
+  ship,
+}: {
+  world: World;
+  game: GameState;
+  at: { id: SystemId; x: number; y: number };
+  ship?: ShipState;
+}) {
   const s = world.system(at.id);
   const lanes = world.catalogueAt(at.id).length;
+  const plan = ship ? planFor(world, game, ship, at.id, false) : null;
   return (
     <div class="hover-card" style={{ transform: `translate(${Math.round(at.x + 16)}px, ${Math.round(at.y + 12)}px)` }}>
       <b>{s.name}</b>
@@ -546,6 +930,11 @@ function HoverCard({ world, at }: { world: World; at: { id: SystemId; x: number;
         {s.sky.planets.length > 0 ? `${s.sky.planets.length} known planets` : 'No known planets'} · {lanes} old lane
         {lanes === 1 ? '' : 's'}
       </span>
+      {plan && (
+        <span class={plan.ok ? 'plan-ok' : 'plan-no'}>
+          {plan.ok ? `${plan.text}. Right-click to send.` : plan.text}
+        </span>
+      )}
     </div>
   );
 }
@@ -569,6 +958,10 @@ export function Legend() {
             a larger one its capital
           </li>
         ))}
+        <li>
+          <span class="legend-chevron" aria-hidden="true" /> Ships, beside their star in their power’s colour; a bright
+          amber line is the route being chosen, a faint one a ship’s orders, dashed for a blind jump
+        </li>
         <li>
           <span class="legend-star" aria-hidden="true" /> A star, where astronomers measure it, coloured by its kind
           (red dwarfs red, the Sun yellow-white) <Badge kind="observed" />

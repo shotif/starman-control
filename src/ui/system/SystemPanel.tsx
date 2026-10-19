@@ -31,6 +31,11 @@ interface Props {
   species?: SpeciesDef;
   /** The codex: observed facts only. */
   realOnly?: boolean;
+  /** Whether the viewing power has surveyed it; if only charted, generated worlds stay hidden. */
+  surveyed?: boolean;
+  /** The viewing power's ships here, and what to do when one is chosen. */
+  ships?: readonly { id: number; name: string; kind: string; status: string }[];
+  onShip?: (id: number) => void;
 }
 
 const COUNT = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
@@ -124,7 +129,19 @@ function WorldRow({ b, species, onOpen }: { b: Body; species: SpeciesDef; onOpen
   );
 }
 
-export function SystemPanel({ world, game, id, onGo, onCentre, onBody, species = SPECIES.human, realOnly }: Props) {
+export function SystemPanel({
+  world,
+  game,
+  id,
+  onGo,
+  onCentre,
+  onBody,
+  species = SPECIES.human,
+  realOnly,
+  surveyed = true,
+  ships,
+  onShip,
+}: Props) {
   const system = world.system(id);
   const s = system.sky;
   const height = s.positionLy[2];
@@ -132,7 +149,8 @@ export function SystemPanel({ world, game, id, onGo, onCentre, onBody, species =
   const owners = new Map(game.lanes.map((l) => [l.id, l.owner]));
   const capitalOf = game.powers.find((p) => p.capital === id)?.faction;
   const heldBy = capitalOf ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
-  const bodies = realOnly ? [] : bodiesOf(world, game.seed, id);
+  // Charted only: astronomers' worlds (known planets, observed belts, all of Sol's), not the rest.
+  const bodies = realOnly ? [] : bodiesOf(world, game.seed, id).filter((b) => surveyed || b.origin !== 'generated');
 
   return (
     <article class="system-panel" aria-label={s.name}>
@@ -150,6 +168,23 @@ export function SystemPanel({ world, game, id, onGo, onCentre, onBody, species =
           </button>
         )}
       </header>
+
+      {ships && ships.length > 0 && (
+        <>
+          <h3>Your ships here</h3>
+          <ul class="ships-here">
+            {ships.map((sh) => (
+              <li key={sh.id}>
+                <button type="button" class="ship-row" onClick={() => onShip?.(sh.id)}>
+                  <b>{sh.name}</b>
+                  <span class="ship-type">{sh.kind}</span>
+                  <span class="ship-line">{sh.status}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       <dl class="facts">
         <dt>From Sol</dt>
@@ -217,14 +252,20 @@ export function SystemPanel({ world, game, id, onGo, onCentre, onBody, species =
           <h3>
             Worlds <span class="dim">· for {species.name.toLowerCase()}</span>
           </h3>
-          {bodies.length > 0 ? (
+          {bodies.length > 0 && (
             <ul class="worlds">
               {bodies.map((b) => (
                 <WorldRow key={b.id} b={b} species={species} onOpen={() => onBody?.(b.id)} />
               ))}
             </ul>
+          )}
+          {surveyed ? (
+            bodies.length === 0 && <p class="none">Nothing but the star.</p>
           ) : (
-            <p class="none">Nothing but the star.</p>
+            <p class="none unsurveyed">
+              Charted, not surveyed: {bodies.length > 0 ? 'these are the worlds astronomers know. ' : ''}Send a survey
+              ship to find every world here.
+            </p>
           )}
         </>
       )}

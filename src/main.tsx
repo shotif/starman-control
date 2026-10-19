@@ -5,7 +5,7 @@ import { watchLayout } from './ui/layout.ts';
 import { Title } from './ui/Title.tsx';
 import './style.css';
 
-/** The screen, from the address: "#/map", "#/codex" (once "#/data"), or the title. */
+/** The screen, from the address: "#/game", "#/new", "#/map", "#/codex" (once "#/data"), or the title. */
 const route = signal(location.hash);
 window.addEventListener('hashchange', () => {
   route.value = location.hash;
@@ -14,7 +14,15 @@ window.addEventListener('hashchange', () => {
 });
 
 function screenName(hash: string): string {
-  return hash.startsWith('#/map') ? 'map' : hash.startsWith('#/codex') || hash.startsWith('#/data') ? 'codex' : 'title';
+  for (const [prefix, name] of [
+    ['#/map', 'map'],
+    ['#/game', 'game'],
+    ['#/new', 'new'],
+    ['#/codex', 'codex'],
+    ['#/data', 'codex'],
+  ])
+    if (hash.startsWith(prefix)) return name;
+  return 'title';
 }
 document.documentElement.dataset.screen = screenName(location.hash);
 
@@ -35,10 +43,15 @@ function Lazy({ load }: { load: () => Promise<{ default: ComponentType<{ buildId
 
 const loadData = () => import('./ui/data/route.tsx');
 const loadMap = () => import('./ui/map/route.tsx');
+const loadNew = () => import('./ui/newgame/NewGame.tsx');
+const loadGame = () => import('./ui/game/route.tsx');
 
 function App() {
-  if (route.value.startsWith('#/codex') || route.value.startsWith('#/data')) return <Lazy load={loadData} />;
-  if (route.value.startsWith('#/map')) return <Lazy load={loadMap} />;
+  const r = route.value;
+  if (r.startsWith('#/codex') || r.startsWith('#/data')) return <Lazy key="codex" load={loadData} />;
+  if (r.startsWith('#/map')) return <Lazy key="map" load={loadMap} />;
+  if (r.startsWith('#/new')) return <Lazy key="new" load={loadNew} />;
+  if (r.startsWith('#/game')) return <Lazy key="game" load={loadGame} />;
   return <Title buildId={__BUILD_ID__} />;
 }
 

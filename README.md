@@ -16,11 +16,11 @@ It is made to be **completely playable on a phone**, as Starman Reborn is, **wit
 desktop experience**. Several factions are playable: the three human powers first, the alien
 species later.
 
-**Status: building milestone M1, First light.** Not playable yet. The live site,
-<https://shotif.github.io/starman-control/>, has the map of the real neighbourhood (207 systems,
-flat or in 3D, on a phone or a desktop): every star, its worlds (the known planets as measured,
-the rest generated and labelled fiction) and the old lanes, and a codex of the real data, until
-the first playable build.
+**Status: building milestone M1, First light.** The first turns are playable at
+<https://shotif.github.io/starman-control/>: choose a power, send survey ships along your lanes
+and on blind jumps through the real neighbourhood (207 systems, flat or in 3D, on a phone or a
+desktop), find each system's worlds (the known planets as measured, the rest generated and
+labelled fiction), and end turns. Colonies, lane building and research come next.
 
 ## Design documents
 

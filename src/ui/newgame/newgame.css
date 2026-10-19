@@ -1,0 +1,96 @@
+.new-game {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top)) var(--gutter-right) max(24px, env(safe-area-inset-bottom)) var(--gutter);
+}
+
+.new-game h1 {
+  margin: 0.5rem 0 0.25rem;
+  font-family: var(--font-label);
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.new-game .back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.faction-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.faction-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--panel-border);
+  border-top: 3px solid var(--faction);
+  background: var(--panel);
+  clip-path: var(--cut);
+}
+
+.faction-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 1.3rem;
+}
+
+.faction-card .plays-as {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.faction-card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.75rem;
+  margin: 0 0 auto;
+}
+
+.faction-card dt {
+  color: var(--text-dim);
+}
+
+.faction-card dd {
+  margin: 0;
+}
+
+.faction-card .button {
+  margin-top: 0.5rem;
+}
+
+.seed summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.seed label {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 24rem;
+}
+
+.seed input {
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
