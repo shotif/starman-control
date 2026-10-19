@@ -4,12 +4,18 @@ import { DEFAULT_SETTINGS, parseSettings, quality, reducedMotion } from '../../s
 describe('settings (M1_PROOF.md §1)', () => {
   it('keep only values the game knows, falling back to the defaults', () => {
     expect(parseSettings(null)).toEqual(DEFAULT_SETTINGS);
-    expect(parseSettings({ textScale: 1.3, motion: 'reduce', quality: 'low' })).toEqual({
+    expect(parseSettings({ textScale: 1.3, motion: 'reduce', quality: 'low', sound: 'off' })).toEqual({
       textScale: 1.3,
       motion: 'reduce',
       quality: 'low',
+      sound: 'off',
     });
-    expect(parseSettings({ textScale: 9, motion: 'wild', quality: 'ultra', extra: 1 })).toEqual(DEFAULT_SETTINGS);
+    expect(parseSettings({ textScale: 9, motion: 'wild', quality: 'ultra', sound: 'loud', extra: 1 })).toEqual(
+      DEFAULT_SETTINGS,
+    );
+    // Settings kept before sound was a setting still read, with the sound on.
+    expect(parseSettings({ textScale: 1.15 })).toEqual({ ...DEFAULT_SETTINGS, textScale: 1.15 });
+    expect(DEFAULT_SETTINGS.sound).toBe('on');
   });
 
   it('say whether to reduce motion and what quality to draw at', () => {

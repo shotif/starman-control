@@ -125,6 +125,10 @@ test.describe('a game', () => {
       await expect(page.getByRole('dialog', { name: 'Report' })).toContainText('Juniper surveyed Luyten 726-8');
     }
     await expect(page.locator('.map-date')).toHaveText('Q2 2176');
+    // Each dispatch comes with the icon of what happened (CONSOLE.md §4).
+    const survey = page.getByRole('dialog', { name: 'Report' }).locator('.report-surveyed');
+    await expect(survey).toHaveClass(/tone-news/);
+    await expect(survey.locator('.icon')).toHaveCount(1);
   });
 
   test('refuses a destination no lane leads to, and says why', async ({ page }, info) => {

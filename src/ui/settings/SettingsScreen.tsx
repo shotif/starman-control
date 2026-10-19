@@ -1,5 +1,5 @@
-// The settings screen (M1_PROOF.md §1): text size, reduced motion and quality, the same on a phone
-// and a desktop. Every change applies at once and is kept on the device.
+// The settings screen (M1_PROOF.md §1, CONSOLE.md §5): text size, reduced motion, quality and
+// sound, the same on a phone and a desktop. Every change applies at once and is kept on the device.
 
 import { quality, reducedMotion, type Settings, settings, TEXT_SCALES, updateSettings } from '../../app/settings.ts';
 import '../page.css';
@@ -89,6 +89,19 @@ export default function SettingsScreen() {
             { value: 'high', text: 'High' },
           ]}
           onPick={(q) => updateSettings({ quality: q })}
+        />
+      </section>
+      <section class="page-section" aria-labelledby="set-sound">
+        <h2 id="set-sound">Sound</h2>
+        <p>Quiet sounds for presses, the end of a turn and the report. There is no music yet.</p>
+        <Choice
+          label="Sound"
+          value={s.sound}
+          options={[
+            { value: 'on', text: 'On' },
+            { value: 'off', text: 'Off' },
+          ]}
+          onPick={(sound) => updateSettings({ sound })}
         />
       </section>
     </main>

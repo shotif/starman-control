@@ -334,7 +334,7 @@
 .sort:hover,
 .sort:focus-visible {
   color: var(--text);
-  text-decoration: underline;
+  text-shadow: 0 0 10px rgba(92, 200, 255, 0.45);
 }
 
 .popover.empire-popover {

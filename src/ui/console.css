@@ -1,0 +1,480 @@
+/*
+ * Control's console (docs/design/CONSOLE.md): the interface over the map as glass and light.
+ * Loaded after the screens' own styles; it changes how things look, never what they hold.
+ */
+
+:root {
+  --glass: linear-gradient(180deg, rgba(11, 19, 35, 0.9), rgba(6, 11, 22, 0.94));
+  --glass-strong: linear-gradient(180deg, rgba(12, 21, 38, 0.97), rgba(6, 11, 22, 0.985));
+  --hairline: rgba(126, 170, 255, 0.16);
+  --lit: rgba(143, 220, 255, 0.85);
+  --corner: 14px;
+  /* The console's brackets at the top-left and bottom-right corners of a panel (§1). */
+  --corners:
+    linear-gradient(var(--lit), var(--lit)) top left / var(--corner) 1px no-repeat,
+    linear-gradient(var(--lit), var(--lit)) top left / 1px var(--corner) no-repeat,
+    linear-gradient(var(--lit), var(--lit)) bottom right / var(--corner) 1px no-repeat,
+    linear-gradient(var(--lit), var(--lit)) bottom right / 1px var(--corner) no-repeat;
+  --plate: linear-gradient(180deg, rgba(126, 170, 255, 0.1), rgba(126, 170, 255, 0.025)), rgba(8, 14, 27, 0.8);
+  --plate-lit: linear-gradient(180deg, rgba(92, 200, 255, 0.26), rgba(92, 200, 255, 0.08)), rgba(8, 14, 27, 0.86);
+  --plate-primary: linear-gradient(180deg, rgba(92, 200, 255, 0.46), rgba(92, 200, 255, 0.16)), rgba(8, 16, 30, 0.9);
+}
+
+/* ------------------------------------------------------------------ panels */
+
+.map-top {
+  border-bottom: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(92, 200, 255, 0.5) 25%, rgba(92, 200, 255, 0.5) 75%, transparent) bottom /
+    100% 1px no-repeat,
+    var(--glass);
+}
+
+.map-bottom {
+  border-top: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(92, 200, 255, 0.5) 25%, rgba(92, 200, 255, 0.5) 75%, transparent) top /
+    100% 1px no-repeat,
+    var(--glass);
+}
+
+.outliner,
+.map-inspector {
+  background: var(--corners), var(--glass);
+}
+
+.outliner {
+  border-right: 1px solid var(--hairline);
+}
+
+.map-inspector {
+  border-left: 1px solid var(--hairline);
+}
+
+.popover,
+.needs-card {
+  border: 0;
+  background: var(--corners), var(--glass-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(143, 220, 255, 0.28),
+    0 24px 60px rgba(0, 0, 0, 0.55);
+  clip-path: none;
+  animation: panel-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.sheet {
+  border-top: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(92, 200, 255, 0.75) 20%, rgba(92, 200, 255, 0.75) 80%, transparent) top /
+    100% 1px no-repeat,
+    var(--corners),
+    var(--glass-strong);
+  animation: sheet-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.sheet-grow .grip {
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(92, 200, 255, 0.7);
+  opacity: 0.75;
+}
+
+.hover-card {
+  border: 0;
+  background: var(--corners), var(--glass-strong);
+  box-shadow: inset 0 1px 0 rgba(143, 220, 255, 0.28);
+  clip-path: none;
+}
+
+.target-bar {
+  border: 0;
+  background:
+    linear-gradient(90deg, transparent, var(--warm) 20%, var(--warm) 80%, transparent) top / 100% 1px no-repeat,
+    linear-gradient(90deg, transparent, var(--warm) 20%, var(--warm) 80%, transparent) bottom / 100% 1px no-repeat,
+    var(--glass-strong);
+}
+
+.toast {
+  border: 0;
+  background:
+    linear-gradient(var(--warm), var(--warm)) left / 3px 100% no-repeat,
+    var(--glass-strong);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  animation: panel-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.needs-stack {
+  background: radial-gradient(ellipse at 50% 50%, rgba(2, 4, 9, 0.55), rgba(2, 4, 9, 0.85));
+}
+
+/* Panels fade and scale about their middle as they open, so what is pressed in them stays put. */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Headings in panels: small capitals after a diamond, with a hairline running out (§1). */
+.outliner h2,
+.inspector-hint h2,
+.legend h2,
+.keys-popover h2,
+.sheet-heading,
+.report .report-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.outliner h2::before,
+.inspector-hint h2::before,
+.legend h2::before,
+.keys-popover h2::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  transform: rotate(45deg);
+}
+
+.outliner h2::after,
+.inspector-hint h2::after,
+.legend h2::after,
+.keys-popover h2::after,
+.sheet-heading::after,
+.report .report-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(126, 170, 255, 0.38), transparent);
+}
+
+/* ------------------------------------------------------------------ lit plates (§2) */
+
+.chip,
+.bar-button,
+.toggle-option,
+.sheet-close {
+  border: 0;
+  background: var(--plate);
+  box-shadow:
+    inset 0 1px 0 rgba(143, 220, 255, 0.3),
+    inset 0 -1px 0 rgba(126, 170, 255, 0.08);
+  color: var(--text);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.chip:hover,
+.chip:focus-visible,
+.bar-button:hover,
+.bar-button:focus-visible,
+.toggle-option:hover,
+.toggle-option:focus-visible,
+.sheet-close:hover,
+.sheet-close:focus-visible {
+  background: var(--plate-lit);
+  box-shadow:
+    inset 0 1px 0 rgba(180, 235, 255, 0.75),
+    inset 0 -1px 0 rgba(126, 170, 255, 0.12),
+    0 0 16px rgba(92, 200, 255, 0.16);
+}
+
+.chip:active,
+.bar-button:active,
+.toggle-option:active {
+  transform: translateY(1px);
+}
+
+.toggle-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0 0.7rem;
+  color: var(--text-muted);
+}
+
+.map-view-switch .toggle-option .icon {
+  display: none;
+}
+
+.toggle-option + .toggle-option {
+  margin-left: 1px;
+}
+
+.chip[aria-pressed="true"],
+.toggle-option[aria-pressed="true"] {
+  background: var(--plate-lit);
+  box-shadow:
+    inset 0 -2px 0 var(--accent),
+    inset 0 1px 0 rgba(143, 220, 255, 0.35),
+    0 8px 18px -10px rgba(92, 200, 255, 0.9);
+  color: #ffffff;
+}
+
+.end-turn {
+  white-space: nowrap;
+}
+
+.bar-primary,
+.end-turn.button-primary {
+  background: var(--plate-primary);
+  box-shadow:
+    inset 0 1px 0 rgba(210, 244, 255, 0.95),
+    inset 0 0 0 1px rgba(92, 200, 255, 0.35),
+    0 0 22px rgba(92, 200, 255, 0.22);
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(92, 200, 255, 0.8);
+}
+
+.bar-primary:hover,
+.end-turn.button-primary:hover {
+  background: linear-gradient(180deg, rgba(92, 200, 255, 0.6), rgba(92, 200, 255, 0.24)), rgba(8, 16, 30, 0.9);
+}
+
+.chip .icon,
+.bar-button .icon {
+  flex: none;
+  color: var(--accent);
+  filter: drop-shadow(0 0 5px rgba(92, 200, 255, 0.45));
+}
+
+.chip:has(.icon) {
+  gap: 0.45rem;
+}
+
+/* The phone's bottom bar as a dock: each icon above its word (§3). */
+.bar-button {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: 56px;
+  padding: 4px 2px;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+}
+
+.bar-button .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.bar-primary .needs-count-badge {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+}
+
+.bar-primary {
+  position: relative;
+}
+
+/* The desktop's top bar at every width (§6): nothing in it shrinks but the search box; below
+   1600 px the resources keep only their symbols and numbers, and below 1280 px the chips only their
+   icons. The words stay for screen readers and as tips. */
+.layout-desktop .map-top > * {
+  flex-shrink: 0;
+}
+
+.layout-desktop .map-top > .search-box {
+  flex: 1 1 14rem;
+  min-width: 8rem;
+}
+
+@media (max-width: 1599px) {
+  .layout-desktop .map-top .res-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1279px) {
+  .layout-desktop .map-top .chip-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .layout-desktop .map-top {
+    gap: 0.45rem;
+  }
+  /* The menu still leads back to the title. */
+  .layout-desktop .map-top .brand {
+    display: none;
+  }
+}
+
+.search-box input {
+  border: 0;
+  background: rgba(6, 11, 22, 0.9);
+  box-shadow:
+    inset 0 -1px 0 rgba(92, 200, 255, 0.45),
+    inset 0 1px 0 rgba(126, 170, 255, 0.12);
+}
+
+.search-box input:focus-visible {
+  outline: 0;
+  box-shadow:
+    inset 0 -2px 0 var(--accent),
+    0 0 16px rgba(92, 200, 255, 0.2);
+}
+
+/* ------------------------------------------------------------------ lists (§1) */
+
+.ship-row,
+.outliner-item,
+.result {
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.ship-row {
+  border-bottom-color: var(--hairline);
+}
+
+.ship-row:hover,
+.ship-row:focus-visible,
+.outliner-item:hover,
+.outliner-item.is-selected {
+  background: linear-gradient(90deg, rgba(92, 200, 255, 0.14), transparent 85%);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* ------------------------------------------------------------------ the report's dispatches (§4) */
+
+.report-items li {
+  --tone: var(--accent);
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: start;
+  gap: 0.6rem;
+  margin: 0 0 0.4rem;
+  padding: 0.5rem 0.6rem 0.5rem 0.55rem;
+  border: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tone) 12%, transparent), rgba(10, 18, 33, 0.35) 70%);
+  box-shadow: inset 2px 0 0 var(--tone);
+  animation: dispatch-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+.report-items li .icon {
+  margin-top: 0.35rem;
+  color: var(--tone);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--tone) 60%, transparent));
+}
+
+.report-items .tone-growth {
+  --tone: #62e39a;
+}
+
+.report-items .tone-needs {
+  --tone: var(--warm);
+}
+
+.report-items .tone-wrong {
+  --tone: #ff7a6b;
+}
+
+.report-items .link {
+  color: var(--text);
+}
+
+@keyframes dispatch-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+
+/* ------------------------------------------------------------------ the end of a turn (§4) */
+
+.turn-sweep {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.turn-sweep::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(92, 200, 255, 0.08) 35%,
+    rgba(190, 236, 255, 0.28) 50%,
+    rgba(92, 200, 255, 0.08) 65%,
+    transparent
+  );
+  animation: turn-sweep 0.9s cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+
+.turn-sweep-date {
+  position: relative;
+  color: #ffffff;
+  font-family: var(--font-label);
+  font-size: clamp(2.4rem, 9vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-shadow:
+    0 0 24px rgba(92, 200, 255, 0.8),
+    0 0 4px rgba(190, 236, 255, 0.9);
+  animation: turn-date 1.3s ease both;
+}
+
+@keyframes turn-sweep {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(260%);
+  }
+}
+
+@keyframes turn-date {
+  0% {
+    opacity: 0;
+    transform: scale(1.06);
+    letter-spacing: 0.3em;
+  }
+  25% {
+    opacity: 1;
+    transform: none;
+    letter-spacing: 0.16em;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

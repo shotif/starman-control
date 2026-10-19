@@ -2,6 +2,7 @@ import { signal } from '@preact/signals';
 import { type ComponentType, render } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { applySettings } from './app/settings.ts';
+import { listenForPresses } from './app/sound.ts';
 import { watchLayout } from './ui/layout.ts';
 import { Title } from './ui/Title.tsx';
 import './style.css';
@@ -100,6 +101,7 @@ function keepForOffline(): void {
 
 applySettings();
 watchLayout();
+listenForPresses();
 const app = document.querySelector<HTMLDivElement>('#app');
 if (app) render(<App />, app);
 // The boot screen fades once the first screen is drawn.

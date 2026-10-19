@@ -36,6 +36,7 @@ import { HABITABILITY_WORD } from '../system/words.ts';
 import { give, type Play } from './play.tsx';
 import { lanePreview } from './state.ts';
 import './colony.css';
+import { Count } from '../count.tsx';
 
 /** People and room are counted in tenths of a unit of about a million: "10.4", "12". */
 export function millions(tenths: number): string {
@@ -97,7 +98,9 @@ export function Resources({ world, game, faction }: { world: World; game: GameSt
   const item = (r: Resource, cls: string) => (
     <li title={incomeHelp(world, game, faction, r)}>
       <span class={`res-icon ${cls}`} aria-hidden="true" />
-      <b>{s[r]}</b>
+      <b>
+        <Count value={s[r]} />
+      </b>
       <span class="res-name"> {resourceWord(r)}</span>
       <span class="res-income">{income[r] > 0 ? ` +${income[r]}` : ''}</span>
     </li>
@@ -109,7 +112,9 @@ export function Resources({ world, game, faction }: { world: World; game: GameSt
       {item('fuel', 'res-fuel')}
       <li class="res-research" title={`Research a turn ${research.parts.map((p) => p.label).join(', ')}`}>
         <span class="res-icon res-science" aria-hidden="true" />
-        <b>{research.total}</b>
+        <b>
+          <Count value={research.total} />
+        </b>
         <span class="res-name"> research a turn</span>
       </li>
     </ul>

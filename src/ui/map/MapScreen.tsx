@@ -12,6 +12,7 @@
 import { type ComponentChildren, Fragment } from 'preact';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { quality, reducedMotion, settings } from '../../app/settings.ts';
+import { play as sound } from '../../app/sound.ts';
 import { ANOMALIES } from '../../content/anomalies.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { SHIPS } from '../../content/ships.ts';
@@ -30,6 +31,7 @@ import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
+import { Icon } from '../icons.tsx';
 import { layout, sideSheets } from '../layout.ts';
 import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
@@ -65,6 +67,7 @@ import {
 } from './state.ts';
 import '../sheet.css';
 import './map.css';
+import '../console.css';
 
 interface Props {
   world: World;
@@ -474,6 +477,25 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     view.current?.setMode(m);
   };
 
+  // The end of a turn (CONSOLE.md §4): a rising tone, a sweep of light and the new date.
+  const [sweep, setSweep] = useState<number | null>(null);
+  const turnSeen = useRef(game.turn);
+  useEffect(() => {
+    if (game.turn === turnSeen.current) return;
+    const later = game.turn > turnSeen.current;
+    turnSeen.current = game.turn;
+    if (!later || !latest.current.play) return;
+    sound('turn');
+    if (reducedMotion()) return;
+    setSweep(game.turn);
+    const t = setTimeout(() => setSweep(null), 1400);
+    return () => clearTimeout(t);
+  }, [game.turn]);
+  // A refusal sounds low.
+  useEffect(() => {
+    if (toast.value) sound('refused');
+  }, [toast.value]);
+
   const endTurn = useCallback(async () => {
     const p = latest.current.play;
     if (!p || p.resolving) return;
@@ -718,12 +740,15 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 <button
                   type="button"
                   class="chip"
+                  title="Legend"
                   onClick={() => (panel.value = panel.value === 'legend' ? null : 'legend')}
                 >
-                  Legend
+                  <Icon name="legend" />
+                  <span class="chip-word">Legend</span>
                 </button>
-                <a class="chip" href="#/codex">
-                  Codex
+                <a class="chip" href="#/codex" title="Codex">
+                  <Icon name="codex" />
+                  <span class="chip-word">Codex</span>
                 </a>
               </>
             )}
@@ -731,9 +756,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               type="button"
               class="chip"
               aria-label="Keyboard shortcuts"
+              title="Keyboard shortcuts (?)"
               onClick={() => (panel.value = panel.value === 'keys' ? null : 'keys')}
             >
-              ?
+              <Icon name="keys" />
             </button>
             {play && (
               <>
@@ -741,25 +767,31 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   type="button"
                   class="chip"
                   aria-pressed={panel.value === 'empire'}
+                  title="Empire (P)"
                   onClick={() => (panel.value = panel.value === 'empire' ? null : 'empire')}
                 >
-                  Empire
+                  <Icon name="empire" />
+                  <span class="chip-word">Empire</span>
                 </button>
                 <button
                   type="button"
                   class="chip"
                   aria-pressed={panel.value === 'research'}
+                  title="Research (T)"
                   onClick={() => (panel.value = panel.value === 'research' ? null : 'research')}
                 >
-                  Research
+                  <Icon name="research" />
+                  <span class="chip-word">Research</span>
                 </button>
                 <button
                   type="button"
                   class="chip"
                   aria-pressed={panel.value === 'menu'}
+                  title="Menu"
                   onClick={() => (panel.value = panel.value === 'menu' ? null : 'menu')}
                 >
-                  Menu
+                  <Icon name="menu" />
+                  <span class="chip-word">Menu</span>
                 </button>
                 <button
                   type="button"
@@ -767,6 +799,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   disabled={play.resolving}
                   onClick={() => void endTurn()}
                 >
+                  <Icon name="end-turn" />
                   {endLabel}
                   {play.needs.length > 0 && <span class="needs-count-badge">{play.needs.length}</span>}
                 </button>
@@ -779,6 +812,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             class="chip menu-chip"
             onClick={() => (panel.value = panel.value === 'menu' ? null : 'menu')}
           >
+            <Icon name="menu" />
             Menu
           </button>
         ) : (
@@ -908,6 +942,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 class="bar-button"
                 onClick={() => (panel.value = panel.value === 'report' ? null : 'report')}
               >
+                <Icon name="report" />
                 Report
               </button>
               <button
@@ -915,6 +950,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 class="bar-button"
                 onClick={() => (panel.value = panel.value === 'empire' ? null : 'empire')}
               >
+                <Icon name="empire" />
                 Empire
               </button>
               <button
@@ -922,9 +958,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 class="bar-button"
                 onClick={() => (panel.value = panel.value === 'research' ? null : 'research')}
               >
+                <Icon name="research" />
                 Research
               </button>
               <button type="button" class="bar-button bar-primary" disabled={play.resolving} onClick={askEndTurn}>
+                <Icon name="end-turn" />
                 {endLabel}
                 {play.needs.length > 0 && <span class="needs-count-badge">{play.needs.length}</span>}
               </button>
@@ -936,10 +974,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 class="bar-button"
                 onClick={() => (panel.value = panel.value === 'search' ? null : 'search')}
               >
+                <Icon name="find" />
                 Find
               </button>
               <ViewToggle mode={modeNow} onChange={setMode} />
               <button type="button" class="bar-button" onClick={() => go('sol')}>
+                <Icon name="sol" />
                 Sol
               </button>
               <button
@@ -947,6 +987,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 class="bar-button"
                 onClick={() => (panel.value = panel.value === 'legend' ? null : 'legend')}
               >
+                <Icon name="legend" />
                 Legend
               </button>
             </>
@@ -1038,6 +1079,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           return null;
         })()}
 
+      {sweep !== null && (
+        <div key={sweep} class="turn-sweep" aria-hidden="true">
+          <span class="turn-sweep-date">{formatDate(sweep)}</span>
+        </div>
+      )}
       {toast.value && (
         <p class="toast" role="status">
           {toast.value}
@@ -1052,9 +1098,11 @@ function ViewToggle({ mode: m, onChange }: { mode: ViewMode; onChange: (m: ViewM
     <fieldset class="view-toggle">
       <legend class="visually-hidden">View</legend>
       <button type="button" class="toggle-option" aria-pressed={m === 'flat'} onClick={() => onChange('flat')}>
+        <Icon name="flat" size={16} />
         Flat
       </button>
       <button type="button" class="toggle-option" aria-pressed={m === '3d'} onClick={() => onChange('3d')}>
+        <Icon name="3d" size={16} />
         3D
       </button>
     </fieldset>

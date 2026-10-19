@@ -19,6 +19,7 @@ import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import type { GameState, ShipState } from '../../sim/state.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
+import { Icon, type IconName } from '../icons.tsx';
 import { Badge, FactionMark } from '../parts.tsx';
 import { Founding, holdingName, needText } from './colony.tsx';
 import { say, targeting } from './state.ts';
@@ -329,6 +330,24 @@ function eventPlace(e: ReportEvent): { holding: number } | { system: SystemId } 
   }
 }
 
+/** Each dispatch's icon and tone (CONSOLE.md §4): news, growth, what needs you, what went wrong. */
+const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'growth' | 'needs' | 'wrong' }> = {
+  surveyed: { icon: 'survey', tone: 'news' },
+  investigated: { icon: 'anomaly', tone: 'news' },
+  arrived: { icon: 'ship', tone: 'news' },
+  jumped: { icon: 'ship', tone: 'news' },
+  landed: { icon: 'ship', tone: 'news' },
+  blocked: { icon: 'refused', tone: 'needs' },
+  founded: { icon: 'colony', tone: 'growth' },
+  'not-founded': { icon: 'refused', tone: 'wrong' },
+  built: { icon: 'growth', tone: 'growth' },
+  'lane-begun': { icon: 'lane', tone: 'growth' },
+  'lane-opened': { icon: 'lane', tone: 'growth' },
+  researched: { icon: 'research', tone: 'growth' },
+  'lane-refused': { icon: 'refused', tone: 'wrong' },
+  full: { icon: 'report', tone: 'needs' },
+};
+
 export function ReportView({
   world,
   game,
@@ -355,7 +374,12 @@ export function ReportView({
       {r && r.events.length > 0 && (
         <ul class="report-items">
           {r.events.map((e, i) => (
-            <li key={`${e.kind}-${i}`} class={`report-${e.kind}`}>
+            <li
+              key={`${e.kind}-${i}`}
+              class={`report-${e.kind} tone-${DISPATCH[e.kind].tone}`}
+              style={{ '--i': Math.min(i, 12) }}
+            >
+              <Icon name={DISPATCH[e.kind].icon} size={20} />
               <button
                 type="button"
                 class="link"

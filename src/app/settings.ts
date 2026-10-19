@@ -1,5 +1,5 @@
 // Settings (M1_PROOF.md §1), kept on the device as Starman Reborn keeps them (src/app/settings.ts
-// at ba4ef73, D-10, in spirit): text size, reduced motion and quality. They are read at start-up,
+// at ba4ef73, D-10, in spirit): text size, reduced motion, quality and sound (CONSOLE.md §5). They are read at start-up,
 // before anything is drawn, so they live in localStorage rather than the save store.
 
 import { signal } from '@preact/signals';
@@ -9,15 +9,17 @@ export type TextScale = (typeof TEXT_SCALES)[number];
 export type MotionSetting = 'system' | 'reduce' | 'full';
 export type QualitySetting = 'auto' | 'low' | 'medium' | 'high';
 export type Quality = 'low' | 'medium' | 'high';
+export type SoundSetting = 'on' | 'off';
 
 export interface Settings {
   textScale: TextScale;
   motion: MotionSetting;
   quality: QualitySetting;
+  sound: SoundSetting;
 }
 
 const KEY = 'starman-control:settings';
-export const DEFAULT_SETTINGS: Settings = { textScale: 1, motion: 'system', quality: 'auto' };
+export const DEFAULT_SETTINGS: Settings = { textScale: 1, motion: 'system', quality: 'auto', sound: 'on' };
 
 /** Reads stored settings, keeping only values the game knows. */
 export function parseSettings(raw: unknown): Settings {
@@ -28,6 +30,7 @@ export function parseSettings(raw: unknown): Settings {
   if (r.motion === 'system' || r.motion === 'reduce' || r.motion === 'full') s.motion = r.motion;
   if (r.quality === 'auto' || r.quality === 'low' || r.quality === 'medium' || r.quality === 'high')
     s.quality = r.quality;
+  if (r.sound === 'on' || r.sound === 'off') s.sound = r.sound;
   return s;
 }
 
