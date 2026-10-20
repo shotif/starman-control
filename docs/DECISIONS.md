@@ -32,8 +32,10 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $15 in all** (raised from about $5); about $8.35 spent by 20 October 2026 |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $8.35 spent by 20 October 2026 |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
+| D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
+| D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -327,7 +329,11 @@ bit more room to build assets." **About $15 in all** may now be spent without as
 about $1.50 on the style test, $0.60 on the powers' pictures and $0.60 on the report's pictures,
 **about $2.70**, leaving about $12.30; then about $1.25 on the colony view's style slice (20 October 2026),
 **about $3.95** in all; then about $3.30 on the diorama's pictures, **about $7.25** in all; then about $0.40 on its vehicles, **about $7.65** in all; then about $0.70 on its halls, rigs and fields, **about $8.35** in all. Each batch is recorded below under *Made without waiting*
-with its cost and the running total; the owner is asked before the total would pass $15.
+with its cost and the running total; the owner is asked before the total would pass the allowance.
+
+**Raised again on 20 October 2026:** "I'm also increasing your budget to $25 for the Gemini API, so
+you can use it to continue working on the game." **About $25 in all** may now be spent without
+asking; about $8.35 is spent, so about **$16.65** is left.
 
 ### D-28 · The colony view — **Decided**
 
@@ -352,6 +358,44 @@ the human powers become about three times as many, so the plan is now about 60 p
 (fewer home pictures, placed in numbers, offset most of the rise), at about $6 to $8 with
 candidates and re-rolls, still within D-27. The style slice (increment 14) now shows all three
 architectures before the rest is made.
+
+### D-29 · The "Illustration" labels — **Decided (owner's direction)**
+
+Since increment 9, every generated picture in the game carried an *Illustration* label (the
+new-game cards, the report's pictures, and from increment 14 the colony's still and its scene's
+bar). On 20 October 2026 the owner asked for them to go: "I would like to remove the text … where
+it says 'illustrated', like on the colony screen." Asked whether everywhere or only on the colony's
+screens, the owner chose **everywhere** (option 1a).
+
+So: no picture is labelled *Illustration* on screen. That the pictures are made with an image model
+is said once, in the codex's credits, and every picture keeps `aiGenerated: true` in
+`art/manifest.json`, which is what a store's declaration needs (ART_PIPELINE.md, *Principles*).
+The *Fiction* labels on invented worlds, places and powers stay: they say the content is made up,
+which CLAUDE.md requires; *Illustration* only said how a picture was made. Built in the next
+increment (D-30).
+
+### D-30 · What comes next — **Decided (owner's choices)**
+
+After the colony view (increments 14 to 17), Claude proposed a menu on 20 October 2026 and the owner
+chose "1a, 2a and 2c, track A with B, C, D, E, G":
+
+| | Chosen | In short |
+| --- | --- | --- |
+| 1a | The *Illustration* labels removed everywhere | D-29 |
+| 2a | **Two more versions of every home** | 3 sizes × open and domed × 3 powers: 36 pictures, about $4; each slot picks its own version, so neighbouring homes differ |
+| 2c | **Small props between the buildings** | water tanks, masts, cargo stacks, greenhouses, solar fields, landing beacons, a monument: about 25 pictures (some for each power, some shared), about $2.50, so a town looks lived-in |
+| A | **M2 "Worlds"** as the main track ([SCOPE.md §7](SCOPE.md#7-milestones)) | districts and zoning (the colony scene's slots become districts, and zoning shows as buildings), food, credits, approval and unrest, about 15 projects, governors (D-15), the research fields, the turn report and every number explained |
+| B | **Rivals that play** (from M3) | a simple AI for the other human powers, by the same rules: they survey, settle, build lanes and claim worlds; no war yet (M4) |
+| C | **Events and stories** (from M5) | now and then an event with a picture and a choice that has a cost and a consequence |
+| D | **Leaders and advisors** (from M5) | a face for each department, who comments in the report and gives advice |
+| E | **A guided opening** (from M6) | the first turns explained, on the phone and the desktop |
+| G | **Music** | needs the owner: a composer, a licensed library, or music generated at build time; to be put to the owner as a decision with options before anything is built |
+
+Not chosen for now: second versions of the projects, halls and rigs (2b); cold and hot versions of
+the homes (2d); more for the colony scene (F). Claude recommended doing A first with E inside it,
+and B after the economy exists so the rivals play by M2's rules; the order, and every rule that
+shapes the game, comes first as a written design with its decisions put to the owner. The art for
+all of it is planned at about $12 of the $16.65 left (D-27).
 
 ## Round 2: needed later
 

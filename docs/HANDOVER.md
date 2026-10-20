@@ -1,4 +1,4 @@
-# Handover: Starman Control, 20 October 2026 (updated after the colony view)
+# Handover: Starman Control, 20 October 2026 (updated after the colony view and the owner's choices)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -38,19 +38,43 @@ way in.
 
 ## 2. The next job
 
-**None is set: ask the owner.** The colony in pictures, which the owner asked for on 20 October
-2026, is done (increments 14 to 17). Things the owner might choose next, none decided:
+The owner chose what comes next on 20 October 2026: **D-29 and D-30** in
+[DECISIONS.md](DECISIONS.md). Read both first. In order:
 
-- M2 (see [SCOPE.md](SCOPE.md)), whose districts can use the colony view's slots (each world's
-  `size`), and whose Round 2 decisions (D-12 to D-18) start with D-15 (governors) for M2.
-- More of the colony view: home variants so towns repeat less, a parent planet in a moon's sky,
-  a ship's hull on the shipyard's pad while one is being built, each alien species' architecture
-  when D-12 settles them.
-- The owner's try of the game on a real phone (still open since M1).
+1. **Increment 18, the owner's feedback on the colony view.**
+   - **No *Illustration* labels anywhere (D-29).** They are in the colony's still
+     (`src/ui/map/ColonyStill.tsx`), the scene's bar (`src/ui/map/MapScreen.tsx`), the report's
+     pictures (`src/ui/map/play.tsx`) and the new-game cards (`src/ui/newgame/NewGame.tsx`); the
+     journeys that look for them are in `tests/e2e/colony.spec.ts`, `game.spec.ts` and
+     `title.spec.ts`. Say once, in the codex's *Sources and licences* (`src/ui/data/DataPage.tsx`),
+     that the pictures are made with an image model from the game's own briefs; every record keeps
+     `aiGenerated: true`. The *Fiction* labels stay.
+   - **Two more versions of every home (D-30, 2a):** 3 sizes × open and domed × 3 architectures,
+     36 pictures to keep. Each home picks its version from its colony and slot, so neighbours
+     differ and a home keeps its picture as the town grows. Same series, keying and metres as the
+     first versions.
+   - **Small props between the buildings (D-30, 2c):** about 25 (some for each architecture, some
+     shared). Write where they stand into COLONY_VIEW.md before generating: in the gaps between
+     slots, never covering a building or taking its tap, suited to the ground and the envelope.
+   - Send the owner **lettered contact sheets** of the candidates as you choose; keep the
+     colony's first pictures on a phone under their 1 MB budget.
+2. **Put music (D-30, G) to the owner early,** as a new decision with options (a composer, a
+   licensed library, or music generated at build time), costs and a recommendation. Build nothing
+   for it until they answer.
+3. **M2 "Worlds" (D-30, A) as the main track, with B, C, D and E.** Write its design first
+   (`docs/design/`, goals, out of scope, the decisions it needs), from [SCOPE.md](SCOPE.md) §7:
+   districts and zoning on the colony scene's slots (each world's `size`), food, credits, approval
+   and unrest, about 15 projects that show as buildings, governors and edicts (D-15, still open),
+   the research fields, the turn report and every number explained. Fold in the guided opening (E)
+   and leaders and advisors (D, a face for each department, speaking in the report); then events
+   and stories (C) and rivals that play by M2's rules (B, the other human powers; no war until
+   M4). Put every rule that shapes the game to the owner before building it, and split the work
+   into increments that each ship.
 
-If the owner overrules any picture (every pick is lettered on the contact sheets they were sent,
-and listed in COLONY_VIEW.md §8 and DECISIONS.md), regenerate or re-approve it with the art
-scripts; a candidate's file is gone with the old session, so a new pick means new candidates.
+The art for all of this is planned at about $12 of the $16.65 left (D-27). If the owner overrules
+any picture (every pick is lettered on the contact sheets they were sent, and listed in
+COLONY_VIEW.md §8 and DECISIONS.md), regenerate or re-approve it with the art scripts; a
+candidate's file is gone with the old session, so a new pick means new candidates.
 
 ## 3. Standing instructions from the owner
 
@@ -60,13 +84,15 @@ scripts; a candidate's file is gone with the old session, so a new pick means ne
 - **The Gemini key** is in the environment as `GEMINI_API_KEY`. **Never print, log, commit or echo
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
-- **Art spend (D-27):** about **$15 in all** may be spent without asking; about **$8.35** is spent
-  (after the colony view), so about **$6.65** is left. Nano Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for
-  everything (D-23). Record every batch with its cost and the running total in DECISIONS.md.
+- **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
+  2026); about **$8.35** is spent (after the colony view), so about **$16.65** is left. Nano
+  Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
+  batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
   Send the owner a **lettered contact sheet** of the candidates (as a file) when you choose, so
   they can overrule. Approve with `npm run art:approve`; every published picture needs its record,
-  and `npm run check` fails without one. Pictures are badged *Illustration* in the game.
+  and `npm run check` fails without one. Pictures carry **no *Illustration* label** (D-29): that
+  they are made with an image model is said in the codex's credits and in the records.
 - **Phone and desktop, both first-class (D-04); several powers, never assume the player is human or
   one particular power (D-08).**
 - **British English**, plain words, short sentences; real astronomy is real and **everything
@@ -154,10 +180,14 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
+- Music (D-30, G): a decision to put to the owner (§2).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
   and any of the colony view's (COLONY_VIEW.md §8).
 - CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a
   starved machine took longer to load); increment 17 gave scene updates 30 s and made taps aim
-  where a building really shows. Look at the latest run before starting.
-- Round 2 decisions (D-12 to D-18) are for later milestones; M2's districts will use the same
-  `size` slots the colony view lays out.
+  where a building really shows, and CI passed on 16 and 17. Look at the latest run before
+  starting.
+- Round 2 decisions (D-12 to D-18) are for later milestones, except D-15 (governors and edicts),
+  which M2 needs.
+- Not chosen for now (D-30): second versions of the projects, halls and rigs; cold and hot homes;
+  more for the colony scene (a parent planet in a moon's sky, a hull on the shipyard's pad).
