@@ -9,6 +9,8 @@ interface ColonyHook {
   __colony: {
     look: { cx: number; cy: number; k: number };
     info: { biome: string; architecture: string; buildings: number };
+    life: { people: number; vehicles: number; shuttle: boolean; weather: string | null; night: number; clock: number };
+    setClock(seconds: number): void;
     buildingsOnScreen(): { kind: string; slot: number; x: number; y: number; w: number; h: number }[];
   };
 }
@@ -36,6 +38,21 @@ async function enterColony(page: Page, panel: Locator, name: string, project: st
 const colony = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.info);
 const onScreen = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.buildingsOnScreen());
 const look = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.look);
+const life = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.life);
+
+/** Taps (or clicks) the middle of the lower part of a building in the scene, by its kind. */
+async function pressBuilding(page: Page, kind: string, project: string) {
+  const map = await page.getByTestId('map').boundingBox();
+  const all = await onScreen(page);
+  const b = all
+    .filter((x) => x.kind === kind && map && x.x > 0 && x.x + x.w < map.width && x.y > 0)
+    .sort((a, c) => c.w - a.w)[0];
+  if (!b || !map) throw new Error(`no ${kind} in view`);
+  const x = map.x + b.x + b.w * 0.5;
+  const y = map.y + b.y + b.h * 0.72;
+  if (isDesktop(project)) await page.mouse.click(x, y);
+  else await page.touchscreen.tap(x, y);
+}
 
 test('the Cooperative’s capital is drawn as a domed city on a warm shore, and shows what it builds', async ({
   page,
@@ -146,13 +163,76 @@ test('each power builds in its own way, on its own ground', async ({ page }, inf
   }
 });
 
+test('the colony lives: people walk, a rover drives, the shuttle visits, the day turns, and a building has a card', async ({
+  page,
+}, info) => {
+  test.slow();
+  const project = info.project.name;
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  // The high quality setting: weather, and the most people. (A machine of four cores starts low.)
+  await page.addInitScript(() => localStorage.setItem('starman-control:settings', JSON.stringify({ quality: 'high' })));
+  const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
+  await enterColony(page, panel, 'Tau Ceti e', project);
+  const now = await life(page);
+  expect(now.people).toBeGreaterThan(10);
+  expect(now.vehicles).toBeGreaterThanOrEqual(1);
+  expect(now.shuttle).toBe(true);
+  expect(now.weather).toBe('dust');
+  // Time passes on its own.
+  await expect.poll(async () => (await life(page)).clock).toBeGreaterThan(now.clock + 0.5);
+  // Night falls.
+  await page.evaluate(() => (window as unknown as ColonyHook).__colony.setClock(72));
+  await expect.poll(async () => (await life(page)).night).toBeGreaterThan(0.9);
+  await page.evaluate(() => (window as unknown as ColonyHook).__colony.setClock(20));
+  await expect.poll(async () => (await life(page)).night).toBe(0);
+
+  // A building, tapped, is lit and has a card.
+  await pressBuilding(page, 'homes', project);
+  const card = page.locator('.colony-card');
+  await expect(card).toBeVisible();
+  await expect(card.getByRole('heading')).toHaveText('Homes, sealed');
+  await expect(card).toContainText('10 million people live in the colony’s 3 homes.');
+  await press(card.getByRole('button', { name: 'Close' }), project);
+  await expect(card).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('a finished mine stands where its scaffold was', async ({ page }, info) => {
+  test.skip(!isDesktop(info.project.name), 'ending turns is tested on every size elsewhere');
+  test.slow();
+  const project = info.project.name;
+  const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
+  await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
+  await enterColony(page, panel, 'Tau Ceti e', project);
+  await expect.poll(async () => (await onScreen(page)).map((b) => b.kind)).toContain('scaffold');
+  const slot = (await onScreen(page)).find((b) => b.kind === 'scaffold')?.slot;
+  // 30 industry at 12 a turn: finished in the third turn.
+  for (let i = 0; i < 3; i++) {
+    const date = await page.locator('.map-date').textContent();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
+    await page.keyboard.press('Escape');
+  }
+  await expect
+    .poll(async () => (await onScreen(page)).find((b) => b.slot === slot)?.kind, { timeout: 20_000 })
+    .toBe('mine');
+  expect((await onScreen(page)).some((b) => b.kind === 'scaffold')).toBe(false);
+});
+
 test.describe('with reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
-  test('the colony opens without a glide or a veil', async ({ page }, info) => {
+  test('the colony opens without a glide or a veil, and nothing in it moves', async ({ page }, info) => {
     const project = info.project.name;
     const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
     await enterColony(page, panel, 'Tau Ceti e', project);
     await expect(page.locator('.map-veil')).toHaveCount(0);
+    const still = await life(page);
+    expect(still.people).toBe(0);
+    expect(still.weather).toBeNull();
+    expect(still.night).toBe(0);
+    await page.waitForTimeout(600);
+    expect((await life(page)).clock).toBe(still.clock);
   });
 });

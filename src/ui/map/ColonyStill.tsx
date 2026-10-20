@@ -49,7 +49,6 @@ export function ColonyStill({
 }) {
   const scene = stillScene(world, game, holding);
   const key = scene ? JSON.stringify(scene) : '';
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the key stands for the scene.
   const stable = useMemo(() => scene, [key]);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [drawn, setDrawn] = useState(false);

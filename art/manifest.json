@@ -452,6 +452,56 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-shuttle",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. Not a building but a small cargo shuttle seen from the side and a little above: a tidy, boxy lifting body with stubby wings, landing legs down, small engine nozzles at the back, green navigation lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T08:31:20.957Z",
+      "id": "authority-shuttle",
+      "series": "structure",
+      "approvedAt": "2026-10-20T08:34:15.888Z",
+      "candidate": "art/out/authority-shuttle/20261020-083101-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/authority-shuttle-512.webp",
+          "bytes": 39468
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-shuttle-1024.webp",
+          "bytes": 97972
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 195,
+        "top": 432,
+        "width": 1756,
+        "height": 1256
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-survey-station",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -951,6 +1001,56 @@
         "top": 271,
         "width": 1874,
         "height": 1362
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-shuttle",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. Not a building but a small cargo shuttle seen from the side and a little above: a rounded, sand-coloured lifting body with patched panels, landing legs down, small engine nozzles at the back, soft blue navigation lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T08:32:26.357Z",
+      "id": "cooperative-shuttle",
+      "series": "structure",
+      "approvedAt": "2026-10-20T08:34:18.924Z",
+      "candidate": "art/out/cooperative-shuttle/20261020-083101-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-shuttle-512.webp",
+          "bytes": 49848
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-shuttle-1024.webp",
+          "bytes": 130534
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 216,
+        "top": 371,
+        "width": 1627,
+        "height": 1389
       },
       "aiGenerated": true
     },
@@ -1705,6 +1805,56 @@
       "aiGenerated": true
     },
     {
+      "briefId": "rover",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: Not a building but a six-wheeled surface rover seen from the side and a little above: a pressurised grey cabin with a dark windscreen, a small cargo bed behind, big tyres, two headlights; plain markings, no emblem.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T08:33:23.435Z",
+      "id": "rover",
+      "series": "structure",
+      "approvedAt": "2026-10-20T08:34:24.969Z",
+      "candidate": "art/out/rover/20261020-083101-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/rover-512.webp",
+          "bytes": 43292
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/rover-1024.webp",
+          "bytes": 115598
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 162,
+        "top": 477,
+        "width": 1769,
+        "height": 1259
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "scaffold",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -2203,6 +2353,56 @@
         "top": 250,
         "width": 1906,
         "height": 1369
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-shuttle",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. Not a building but a small cargo shuttle seen from the side and a little above: an angular, patched gunmetal hull welded from salvage, landing legs down, oversized engine nozzles at the back, red navigation lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T08:33:04.360Z",
+      "id": "wake-shuttle",
+      "series": "structure",
+      "approvedAt": "2026-10-20T08:34:21.501Z",
+      "candidate": "art/out/wake-shuttle/20261020-083101-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/wake-shuttle-512.webp",
+          "bytes": 43340
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-shuttle-1024.webp",
+          "bytes": 113594
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 153,
+        "top": 512,
+        "width": 1812,
+        "height": 1049
       },
       "aiGenerated": true
     },

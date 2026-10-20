@@ -18,6 +18,7 @@ import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { ColonyView } from '../../render/ColonyView.ts';
+import type { SceneBuilding } from '../../render/colonyScene.ts';
 import type { MapRoute, MapView, ShipMark, ViewMode } from '../../render/MapView.ts';
 import type { Rect } from '../../render/mapMath.ts';
 import { mapContent } from '../../render/mapModel.ts';
@@ -38,6 +39,7 @@ import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
 import { SystemView } from '../system/SystemPanel.tsx';
+import { ColonyCard } from './ColonyCard.tsx';
 import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
 import {
@@ -61,6 +63,7 @@ import {
   mode,
   panel,
   query,
+  queueHover,
   selected,
   selectedBody,
   selectedHolding,
@@ -364,6 +367,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   // A colony as a living diorama (COLONY_VIEW.md): it borrows the map's renderer as the system does.
   const colonyRef = useRef<ColonyView | null>(null);
   const colony = insideColony.value;
+  /** The building chosen in the colony's scene, for its card. */
+  const [picked, setPicked] = useState<SceneBuilding | null>(null);
   useEffect(() => {
     const v = view.current;
     if (colony === null || !v) return;
@@ -386,11 +391,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     ]).then(([{ ColonyView }, { LANDSCAPES }]) => {
       if (disposed) return;
       v.suspend(true);
-      cv = new ColonyView(v.gl, v.host, scene, LANDSCAPES[scene.biome], {
-        reducedMotion: reducedMotion(),
-        quality: quality(),
-        base: import.meta.env.BASE_URL,
-      });
+      cv = new ColonyView(
+        v.gl,
+        v.host,
+        scene,
+        LANDSCAPES[scene.biome],
+        { reducedMotion: reducedMotion(), quality: quality(), base: import.meta.env.BASE_URL },
+        { select: (b) => setPicked(b) },
+      );
       colonyRef.current = cv;
       updateStage();
       void cv.ready.then(() => {
@@ -403,6 +411,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       disposed = true;
       cv?.dispose();
       colonyRef.current = null;
+      setPicked(null);
       v.suspend(false);
       if (!reducedMotion()) setVeil((w) => ({ kind: 'out', n: (w?.n ?? 0) + 1 }));
       else setVeil(null);
@@ -417,7 +426,19 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const h = g.holdings.find((x) => x.id === colony);
     const scene = h ? stillScene(world, g, h) : null;
     if (cv && scene) cv.setScene(scene);
+    // A chosen building that is gone (a scaffold become its project) gives up its card.
+    setPicked((p) => (p && scene?.buildings.some((b) => b.slot === p.slot && b.kind === p.kind) ? p : null));
   }, [colonyKey]);
+  // Desktop: the pointer over the queue's first project lights its scaffold in the scene.
+  const hoverQueue = queueHover.value;
+  useEffect(() => {
+    const cv = colonyRef.current;
+    if (!cv || colony === null) return;
+    const h = latest.current.game.holdings.find((x) => x.id === colony);
+    const scene = h ? stillScene(world, latest.current.game, h) : null;
+    const scaffold = scene?.buildings.find((b) => b.kind === 'scaffold');
+    cv.setSelected(hoverQueue === colony && scaffold ? scaffold.slot : (picked?.slot ?? null));
+  }, [hoverQueue, colony, picked]);
   // Leaving the colony: its panel closed, another chosen, or a ship's destination being chosen.
   useEffect(() => {
     if (colony === null) return;
@@ -805,6 +826,21 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 Illustration
               </span>
             </span>
+          </div>
+        )}
+        {colonyHolding && picked && (
+          <div class="colony-card-place" style={{ top: desktop ? '70px' : `${topHeight + 66}px` }}>
+            <ColonyCard
+              world={world}
+              game={game}
+              holding={colonyHolding}
+              building={picked}
+              homes={stillScene(world, game, colonyHolding)?.buildings.filter((b) => b.kind === 'homes').length ?? 0}
+              onClose={() => {
+                setPicked(null);
+                colonyRef.current?.setSelected(null);
+              }}
+            />
           </div>
         )}
         {insideSystem.value && (

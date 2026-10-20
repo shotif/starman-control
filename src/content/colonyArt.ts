@@ -148,6 +148,11 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['wake-mine', 1814 / 1725, 32],
       ['wake-shipyard', 1906 / 1369, 46],
       ['wake-survey-station', 1714 / 1652, 30],
+      // Vehicles (increment 16): each power's shuttle, and the rover every power drives.
+      ['authority-shuttle', 1756 / 1256, 22],
+      ['cooperative-shuttle', 1627 / 1389, 22],
+      ['wake-shuttle', 1812 / 1049, 22],
+      ['rover', 1769 / 1259, 9],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );

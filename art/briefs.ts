@@ -433,4 +433,32 @@ export const BRIEFS: ArtBrief[] = [
     subject: `${ARCHITECTURE.wake} A survey station: salvaged sensor dishes from old warships mounted on scrap towers round a bunker made from a ship’s bridge section.`,
     purpose: 'Colony view: the Wake’s survey station.',
   },
+  // The colony view, increment 16: the vehicles that bring it to life. Each power's shuttle lands on
+  // its shipyard's pad now and then; the rover is shared, its lights in the power's colour.
+  {
+    id: 'authority-shuttle',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} Not a building but a small cargo shuttle seen from the side and a little above: a tidy, boxy lifting body with stubby wings, landing legs down, small engine nozzles at the back, green navigation lights.`,
+    purpose: 'Colony view: the Authority’s shuttle, landing on and leaving the shipyard’s pad.',
+  },
+  {
+    id: 'cooperative-shuttle',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} Not a building but a small cargo shuttle seen from the side and a little above: a rounded, sand-coloured lifting body with patched panels, landing legs down, small engine nozzles at the back, soft blue navigation lights.`,
+    purpose: 'Colony view: the Cooperative’s shuttle, landing on and leaving the shipyard’s pad.',
+  },
+  {
+    id: 'wake-shuttle',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} Not a building but a small cargo shuttle seen from the side and a little above: an angular, patched gunmetal hull welded from salvage, landing legs down, oversized engine nozzles at the back, red navigation lights.`,
+    purpose: 'Colony view: the Wake’s shuttle, landing on and leaving the shipyard’s pad.',
+  },
+  {
+    id: 'rover',
+    series: 'structure',
+    subject:
+      'Not a building but a six-wheeled surface rover seen from the side and a little above: a pressurised grey cabin ' +
+      'with a dark windscreen, a small cargo bed behind, big tyres, two headlights; plain markings, no emblem.',
+    purpose: 'Colony view: rovers driving between the buildings, for every power.',
+  },
 ];

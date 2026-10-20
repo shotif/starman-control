@@ -254,3 +254,39 @@ Each increment's pictures are shown to the owner as lettered contact sheets when
   tablet and desktop; the town in view; dragging looks along it; a queued mine's scaffold; back to
   the map; each power's capital in its architecture on its ground; no glide or veil with reduced
   motion).
+
+### Increment 16: life (20 October 2026)
+
+- **The pictures:** each power's shuttle and a shared rover, 8 candidates, about $0.40 (the
+  project's total is now **about $7.65** of the owner's $15). Chosen: the Authority's shuttle A, the
+  Cooperative's B, the Wake's B, the rover A. All four face left, so a vehicle going right is
+  mirrored.
+- **The day** (`src/render/colonyLife.ts`, pure and tested): 90 seconds, light for 60% of it,
+  then dusk, night and dawn. The sun crosses from right to left; at sunset and sunrise the
+  horizon glows warm where there is air; at night the sky darkens, the stars come out, and the
+  pictures darken towards blue while **lit windows and lights glow on**. Windows are found in the
+  shader, not painted twice: small bright, coloured spots brighter than their surroundings (a
+  coarser mipmap level stands for the surroundings), which works across all three architectures.
+  Each colony starts at its own hour. A locked world stays in its twilight, its red sun low and
+  still; with reduced motion the scene stays in late-afternoon light and nothing moves.
+- **People:** tiny two-frame figures in work suits with a stripe of their power's colour,
+  helmeted on worlds that need domes, walking rounds of two or three doors and pausing at each,
+  smaller and slower further off, drawn in front of what is behind them. One for every third of a
+  million people, at most 40 (20 on low quality).
+- **Vehicles:** rovers (one, two on high quality) driving between the projects and the homes,
+  with headlights at night; and where there is a shipyard, the power's **shuttle** comes down
+  every 45 seconds onto the pad, stays a while, and climbs away, its engines glowing.
+- **Weather** by ground, where there is air: dust low over the ground (desert, steppe, haze,
+  shore), snow (ice, tundra), rain that comes and goes (garden), ash (inferno). Not on low quality.
+- **Moments:** when a project is finished, it stands where its scaffold stood with a flash of
+  light; new homes rise from their foot.
+- **Tapping a building** (or clicking it) lights it and opens its **card**: homes say how many
+  people live in the colony's homes and why they are sealed; a project says what it does, the
+  shipyard what ship it is building and how far it has got; a scaffold how much industry is in.
+  On a desktop, the pointer over the queue's first project lights its scaffold.
+- **Speed:** while only life moves, at most 30 frames a second and fewer on a device that cannot
+  keep up, as on the map. The scene's code is 9 KB compressed, loaded on the way in.
+- **Tests:** `colonyLife.test.ts` (the day, walkers, the shuttle, the weather) and
+  `colonyCard.test.ts` (the card's words); `colony.spec.ts` (people, vehicles and weather in the
+  scene; time passes; night falls; a building tapped has its card; a finished mine stands where its
+  scaffold was; nothing moves with reduced motion).

@@ -35,7 +35,7 @@ import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
 import { ColonyStill } from './ColonyStill.tsx';
 import { give, type Play } from './play.tsx';
-import { lanePreview } from './state.ts';
+import { lanePreview, queueHover } from './state.ts';
 import './colony.css';
 import { Count } from '../count.tsx';
 
@@ -240,7 +240,16 @@ function Queue({
         </thead>
         <tbody>
           {h.queue.map((item, i) => (
-            <tr key={`${i}-${label(item)}`} class={i === 0 ? 'is-first' : ''}>
+            <tr
+              key={`${i}-${label(item)}`}
+              class={i === 0 ? 'is-first' : ''}
+              onMouseEnter={() => {
+                if (i === 0 && item.kind === 'project') queueHover.value = h.id;
+              }}
+              onMouseLeave={() => {
+                queueHover.value = null;
+              }}
+            >
               <td>{label(item)}</td>
               <td>{i === 0 ? progress : cost(item).industry}</td>
               <td class={waits(i) ? 'waits' : ''}>{waits(i) ? status(i) : when(i)}</td>
