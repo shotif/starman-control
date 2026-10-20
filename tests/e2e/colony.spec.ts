@@ -1,9 +1,17 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
-/** The colony in pictures (COLONY_VIEW.md): the still at the top of a colony's panel. */
+/** The colony in pictures (COLONY_VIEW.md): the still in a colony's panel, and the diorama it opens. */
 
 const isDesktop = (name: string) => name === 'desktop';
 const press = (target: Locator, project: string) => (isDesktop(project) ? target.click() : target.tap());
+
+interface ColonyHook {
+  __colony: {
+    look: { cx: number; cy: number; k: number };
+    info: { biome: string; architecture: string; buildings: number };
+    buildingsOnScreen(): { kind: string; slot: number; x: number; y: number; w: number; h: number }[];
+  };
+}
 
 async function openCapital(page: Page, power: string, capital: string, seed: string, project: string) {
   await page.goto('./?test#/new');
@@ -17,6 +25,17 @@ async function openCapital(page: Page, power: string, capital: string, seed: str
   await press(empire.getByRole('button', { name: new RegExp(`^${capital}`) }).first(), project);
   return isDesktop(project) ? page.locator('.map-inspector') : page.getByRole('dialog', { name: capital });
 }
+
+/** Opens the colony's diorama from its still, and waits for it to be drawn. */
+async function enterColony(page: Page, panel: Locator, name: string, project: string) {
+  await expect(panel.getByTestId('colony-still')).toHaveClass(/is-drawn/, { timeout: 20_000 });
+  await press(panel.getByRole('button', { name: `View ${name}` }), project);
+  await expect(page.getByTestId('map')).toHaveAttribute('data-colony-ready', '1', { timeout: 30_000 });
+}
+
+const colony = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.info);
+const onScreen = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.buildingsOnScreen());
+const look = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.look);
 
 test('the Cooperative’s capital is drawn as a domed city on a warm shore, and shows what it builds', async ({
   page,
@@ -52,10 +71,88 @@ test('the Cooperative’s capital is drawn as a domed city on a warm shore, and 
   expect(errors).toEqual([]);
 });
 
-test('a world with no pictures yet keeps the panel as it was', async ({ page }, info) => {
+test('the still opens the colony as a diorama, which pans, follows the queue, and goes back to the map', async ({
+  page,
+}, info) => {
+  test.slow();
   const project = info.project.name;
-  // Seed 4242 makes Tau Ceti e airless, a ground not yet painted.
-  const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '4242', project);
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
+  await enterColony(page, panel, 'Tau Ceti e', project);
+  expect(await colony(page)).toEqual({ biome: 'shore', architecture: 'cooperative', buildings: 5 });
+  // The town is in view, between the bars and above the sheet.
+  const stage = await page.getByTestId('map').boundingBox();
+  const seen = (await onScreen(page)).filter(
+    (b) => stage && b.x + b.w > 0 && b.x < stage.width && b.y + b.h > 0 && b.y < stage.height,
+  );
+  expect(seen.length).toBeGreaterThanOrEqual(3);
+  await expect(page.locator('.colony-bar').getByRole('button', { name: '← Tau Ceti' })).toBeVisible();
+  await expect(page.locator('.colony-bar')).toContainText('Illustration');
+  // The panel stays, without its still.
   await expect(panel.getByRole('heading', { name: 'Tau Ceti e' })).toBeVisible();
   await expect(panel.getByTestId('colony-still')).toHaveCount(0);
+
+  // Dragging looks along the town.
+  const before = await look(page);
+  const canvas = page.getByTestId('map').locator('canvas').first();
+  const c = await canvas.boundingBox();
+  if (!c) throw new Error('no canvas');
+  const y = c.y + c.height * 0.3;
+  if (isDesktop(project)) {
+    await page.mouse.move(c.x + c.width * 0.6, y);
+    await page.mouse.down();
+    await page.mouse.move(c.x + c.width * 0.3, y, { steps: 6 });
+    await page.mouse.up();
+  } else {
+    // A real finger, through the browser's own touch input.
+    const cdp = await page.context().newCDPSession(page);
+    const x0 = c.x + c.width * 0.6;
+    const x1 = c.x + c.width * 0.3;
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y }] });
+    for (let i = 1; i <= 6; i++)
+      await cdp.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x: x0 + ((x1 - x0) * i) / 6, y }],
+      });
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  }
+  await expect.poll(async () => (await look(page)).cx).toBeGreaterThan(before.cx);
+
+  // What is queued stands as a scaffold, in the scene too.
+  await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
+  await expect.poll(async () => (await onScreen(page)).map((b) => b.kind)).toContain('scaffold');
+
+  // Back to the map.
+  await press(page.locator('.colony-bar').getByRole('button', { name: '← Tau Ceti' }), project);
+  await expect(page.getByTestId('map')).not.toHaveAttribute('data-colony-ready', '1');
+  await expect(panel.getByTestId('colony-still')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('each power builds in its own way, on its own ground', async ({ page }, info) => {
+  test.skip(!isDesktop(info.project.name), 'one size is enough to check the three sets');
+  test.slow();
+  const project = info.project.name;
+  for (const [power, capital, seed, biome, architecture] of [
+    ['Lead the Transit Authority', 'Earth', '42', 'garden', 'authority'],
+    ['Lead the Hollow Wake', 'Wolf 1061 c', '4242', 'inferno', 'wake'],
+  ] as const) {
+    const panel = await openCapital(page, power, capital, seed, project);
+    await enterColony(page, panel, capital, project);
+    expect(await colony(page)).toEqual({ biome, architecture, buildings: 5 });
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('map')).not.toHaveAttribute('data-colony-ready', '1');
+  }
+});
+
+test.describe('with reduced motion', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } });
+
+  test('the colony opens without a glide or a veil', async ({ page }, info) => {
+    const project = info.project.name;
+    const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
+    await enterColony(page, panel, 'Tau Ceti e', project);
+    await expect(page.locator('.map-veil')).toHaveCount(0);
+  });
 });

@@ -17,6 +17,7 @@ import { ANOMALIES } from '../../content/anomalies.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
+import type { ColonyView } from '../../render/ColonyView.ts';
 import type { MapRoute, MapView, ShipMark, ViewMode } from '../../render/MapView.ts';
 import type { Rect } from '../../render/mapMath.ts';
 import { mapContent } from '../../render/mapModel.ts';
@@ -37,6 +38,7 @@ import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
 import { SystemView } from '../system/SystemPanel.tsx';
+import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
 import {
   give,
@@ -53,6 +55,7 @@ import { ResearchView } from './research.tsx';
 import {
   failed,
   hover,
+  insideColony,
   insideSystem,
   lanePreview,
   mode,
@@ -88,6 +91,7 @@ export const SHORTCUTS: readonly [string, string][] = [
   ['/', 'Find a system'],
   ['C', 'Centre the selection'],
   ['V', 'Into the selected system, in 3D, and out again'],
+  ['Arrows, + and −', 'In a colony: look along it, and closer or further'],
   ['Esc', 'Close, cancel, or clear the selection'],
   ['?', 'These keys'],
 ];
@@ -357,6 +361,70 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     if (inside && ((selected.value && selected.value !== inside) || targeting.value)) insideSystem.value = null;
   }, [inside, selected.value, targeting.value]);
 
+  // A colony as a living diorama (COLONY_VIEW.md): it borrows the map's renderer as the system does.
+  const colonyRef = useRef<ColonyView | null>(null);
+  const colony = insideColony.value;
+  useEffect(() => {
+    const v = view.current;
+    if (colony === null || !v) return;
+    const { game: g } = latest.current;
+    const h = g.holdings.find((x) => x.id === colony);
+    const scene = h ? stillScene(world, g, h) : null;
+    if (!h || !scene) {
+      insideColony.value = null;
+      return;
+    }
+    insideSystem.value = null;
+    let disposed = false;
+    let cv: ColonyView | null = null;
+    const glide = v.glideInto(h.system);
+    if (glide) setVeil((w) => ({ kind: 'in', n: (w?.n ?? 0) + 1 }));
+    void Promise.all([
+      import('../../render/ColonyView.ts'),
+      import('../../content/colonyArt.ts'),
+      new Promise((done) => setTimeout(done, glide)),
+    ]).then(([{ ColonyView }, { LANDSCAPES }]) => {
+      if (disposed) return;
+      v.suspend(true);
+      cv = new ColonyView(v.gl, v.host, scene, LANDSCAPES[scene.biome], {
+        reducedMotion: reducedMotion(),
+        quality: quality(),
+        base: import.meta.env.BASE_URL,
+      });
+      colonyRef.current = cv;
+      updateStage();
+      void cv.ready.then(() => {
+        if (glide && !disposed) setVeil((w) => ({ kind: 'out', n: (w?.n ?? 0) + 1 }));
+      });
+      if (new URLSearchParams(location.search).has('test'))
+        (window as unknown as { __colony: ColonyView }).__colony = cv;
+    });
+    return () => {
+      disposed = true;
+      cv?.dispose();
+      colonyRef.current = null;
+      v.suspend(false);
+      if (!reducedMotion()) setVeil((w) => ({ kind: 'out', n: (w?.n ?? 0) + 1 }));
+      else setVeil(null);
+    };
+  }, [colony, world, ready]);
+  // The colony's scene follows the game: a turn ends, something is queued.
+  const colonyHolding = colony === null ? undefined : game.holdings.find((x) => x.id === colony);
+  const colonyKey = colonyHolding ? JSON.stringify(stillScene(world, game, colonyHolding)) : '';
+  useEffect(() => {
+    const cv = colonyRef.current;
+    const { game: g } = latest.current;
+    const h = g.holdings.find((x) => x.id === colony);
+    const scene = h ? stillScene(world, g, h) : null;
+    if (cv && scene) cv.setScene(scene);
+  }, [colonyKey]);
+  // Leaving the colony: its panel closed, another chosen, or a ship's destination being chosen.
+  useEffect(() => {
+    if (colony === null) return;
+    if (targeting.value || selectedHolding.value === null) insideColony.value = null;
+    else if (selectedHolding.value !== colony) insideColony.value = selectedHolding.value;
+  }, [colony, selectedHolding.value, targeting.value]);
+
   // What the map draws follows the game: its lanes and holdings, its ships, and the routes.
   const lanesKey = [
     ...game.lanes.map((l) => `${l.id}:${l.owner}:${l.status}`),
@@ -444,6 +512,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const avoid = [...covers, ...rects('[data-keep-clear]')];
     v.setStage(stage, avoid);
     sceneRef.current?.setStage(stage, avoid);
+    colonyRef.current?.setStage(stage);
   }, []);
 
   useLayoutEffect(() => {
@@ -556,6 +625,22 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       const step = 60;
       const k = e.key;
       let handled = true;
+      const cv = colonyRef.current;
+      if (cv && k !== 'Escape' && k !== '?' && k !== 'Enter') {
+        if (k === 'ArrowLeft' || k === 'a') cv.panBy(step, 0);
+        else if (k === 'ArrowRight' || k === 'd') cv.panBy(-step, 0);
+        else if (k === 'ArrowUp' || k === 'w') cv.panBy(0, step);
+        else if (k === 'ArrowDown' || k === 's') cv.panBy(0, -step);
+        else if (k === '+' || k === '=') cv.zoomBy(1.25);
+        else if (k === '-' || k === '_') cv.zoomBy(0.8);
+        else if (k === '0' || k === 'c') cv.showTown();
+        else handled = false;
+        if (handled) {
+          e.preventDefault();
+          return;
+        }
+        handled = true;
+      }
       if (k === 'ArrowLeft' || k === 'a') v?.panBy(step, 0);
       else if (k === 'ArrowRight' || k === 'd') v?.panBy(-step, 0);
       else if (k === 'ArrowUp' || k === 'w') v?.panBy(0, step);
@@ -583,6 +668,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'Escape') {
         if (targeting.value) targeting.value = null;
         else if (panel.value) panel.value = null;
+        else if (insideColony.value !== null) insideColony.value = null;
         else if (insideSystem.value) insideSystem.value = null;
         else select(null);
       } else handled = false;
@@ -664,7 +750,19 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     />
   );
   const holdingView = (h: NonNullable<typeof holding>) => (
-    <HoldingPanel key={h.id} world={world} game={game} holding={h} play={play} table={desktop} onGo={go} />
+    <HoldingPanel
+      key={h.id}
+      world={world}
+      game={game}
+      holding={h}
+      play={play}
+      table={desktop}
+      onGo={go}
+      viewing={colony === h.id}
+      onView={() => {
+        insideColony.value = h.id;
+      }}
+    />
   );
   const research = play && <ResearchView game={game} faction={play.faction} play={play} table={desktop} />;
   const empire = play && (
@@ -696,6 +794,19 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     <div ref={root} class={`map-screen layout-${layout.value}${play ? ' is-playing' : ''}`}>
       <div ref={host} class="map-host" data-testid="map">
         {veil && <div key={veil.n} class={`map-veil veil-${veil.kind}`} aria-hidden="true" />}
+        {colonyHolding && (
+          <div class="system-bar colony-bar" style={{ top: desktop ? '12px' : `${topHeight + 8}px` }} data-keep-clear>
+            <button type="button" class="chip system-exit" onClick={() => (insideColony.value = null)}>
+              ← {world.system(colonyHolding.system).name}
+            </button>
+            <span class="system-scale">
+              {holdingName(world, game, colonyHolding)}{' '}
+              <span class="badge badge-fiction" title="Painted with the game’s art pipeline and laid out by the game">
+                Illustration
+              </span>
+            </span>
+          </div>
+        )}
         {insideSystem.value && (
           <div class="system-bar" style={{ top: desktop ? '12px' : `${topHeight + 8}px` }} data-keep-clear>
             <button type="button" class="chip system-exit" onClick={() => (insideSystem.value = null)}>
@@ -717,7 +828,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && hover.value && hover.value.id !== current && (
           <HoverCard world={world} game={game} at={hover.value} ship={play ? ship : undefined} />
         )}
-        {desktop && (
+        {desktop && colony === null && (
           <p class="map-credit" data-keep-clear>
             Stars: Gaia DR3 and SIMBAD, as copied from Starman Reborn · Lanes and powers: fiction · Build {buildId}
           </p>
@@ -754,7 +865,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop ? (
           <>
             <SearchBox world={world} onPick={go} />
-            {!insideSystem.value && <ViewToggle mode={modeNow} onChange={setMode} />}
+            {!insideSystem.value && colony === null && <ViewToggle mode={modeNow} onChange={setMode} />}
             {!play && (
               <>
                 <button
@@ -1023,7 +1134,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
       {!desktop && play && <TargetBar world={world} game={game} play={play} />}
 
-      {!desktop && play && !insideSystem.value && (
+      {!desktop && play && !insideSystem.value && colony === null && (
         <div class="map-view-switch" style={{ top: `${topHeight + 8}px` }} data-keep-clear>
           <ViewToggle mode={modeNow} onChange={setMode} />
         </div>
@@ -1093,7 +1204,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               holdingName(world, game, holding),
               holdingView(holding),
               () => (selectedHolding.value = null),
-              `holding-${holding.id}`,
+              `holding-${holding.id}${colony === holding.id ? '-scene' : ''}`,
             );
           if (current) return sheet(world.system(current).name, systemView(current), () => select(null), current);
           return null;

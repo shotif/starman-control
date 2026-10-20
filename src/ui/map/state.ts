@@ -20,6 +20,9 @@ export const failed = signal<string | null>(null);
 export const insideSystem = signal<SystemId | null>(null);
 export const selectedBody = signal<string | null>(null);
 
+/** A colony seen as a living diorama (COLONY_VIEW.md), by its holding's id. */
+export const insideColony = signal<number | null>(null);
+
 /** A lane being looked at in a colony's or outpost's list, drawn on the map (desktop hover). */
 export const lanePreview = signal<{ from: SystemId; to: SystemId } | null>(null);
 
@@ -47,6 +50,7 @@ export function resetMapState(): void {
   targeting.value = null;
   lanePreview.value = null;
   insideSystem.value = null;
+  insideColony.value = null;
   selectedBody.value = null;
   toast.value = null;
 }

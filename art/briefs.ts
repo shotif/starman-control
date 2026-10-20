@@ -229,4 +229,208 @@ export const BRIEFS: ArtBrief[] = [
     subject: `${ARCHITECTURE.wake} Homes for a few hundred raiders on a hostile world: a cluster of half-buried bunkers made from a salvaged freighter hull cut into sections, small thick-glass domes on top lit warmly from inside, ladders and gangways between them, a red warning light on a short mast.`,
     purpose: 'Colony view: the Wake’s middle-sized homes, sealed (setting its architecture).',
   },
+  // The colony view, increment 15: every other landscape, and the homes and projects of all three
+  // powers (COLONY_VIEW.md §3). The worlds are generic, not any real one; Earth, the Moon and Mars
+  // share the garden, airless and tundra grounds.
+  {
+    id: 'landscape-garden',
+    series: 'landscape',
+    subject:
+      'A temperate world with seas and plant life. Beyond the plain, a calm blue-grey sea inlet with a pale beach; rolling green hills and low wooded ridges on the horizon, a few distant grey cliffs. The plain in front is short green-gold grass and low shrubs on firm level ground, with a few scattered stones.',
+    purpose: 'Colony view: the garden biome (temperate, with oceans), Earth among others.',
+  },
+  {
+    id: 'landscape-steppe',
+    series: 'landscape',
+    subject:
+      'A dry, temperate world. A wide, level plain of pale ochre earth and cracked clay with sparse tufts of tough grey-green grass; long, low, eroded ridges and distant buttes of red and tan rock on the horizon; a little dust in the air.',
+    purpose: 'Colony view: the steppe biome (temperate or warm, dry).',
+  },
+  {
+    id: 'landscape-desert',
+    series: 'landscape',
+    subject:
+      'A hot desert world. A wide, level plain of hard-baked orange and rust-red sand and flat stone, shimmering with heat; tall wind-carved rock towers and long dune fields on the horizon; no plants at all.',
+    purpose: 'Colony view: the desert biome (hot).',
+  },
+  {
+    id: 'landscape-inferno',
+    series: 'landscape',
+    subject:
+      'A scorching world. A wide, level plain of dark cooled basalt and black glassy rock, with a few thin cracks glowing faint orange; on the horizon, distant volcanoes and fissures with rivers of glowing lava far off, and heat haze above them.',
+    purpose: 'Colony view: the inferno biome (scorching).',
+  },
+  {
+    id: 'landscape-tundra',
+    series: 'landscape',
+    subject:
+      'A cold, dry world. A wide, level plain of rust-brown and grey gravel and frost-shattered stones, with thin patches of snow and frost in the hollows; low, rounded, eroded hills and a distant snow-dusted escarpment on the horizon.',
+    purpose: 'Colony view: the tundra biome (cold), Mars among others.',
+  },
+  {
+    id: 'landscape-ice',
+    series: 'landscape',
+    subject:
+      'A frozen world. A wide, level plain of wind-scoured blue-white ice and packed snow with long cracks and low pressure ridges; jagged ice cliffs and distant frozen mountains on the horizon.',
+    purpose: 'Colony view: the ice biome (frozen), painted under a magenta sky so the white ice is kept.',
+  },
+  {
+    id: 'landscape-airless',
+    series: 'landscape',
+    subject:
+      'An airless world with no weather, under hard, direct light with sharp black shadows. A wide, level plain of fine grey dust and regolith with small craters and scattered rocks; old, rounded crater rims and low mountains on the horizon.',
+    purpose: 'Colony view: the airless biome (no atmosphere), the Moon among others.',
+  },
+  {
+    id: 'landscape-haze',
+    series: 'landscape',
+    subject:
+      'A world under a toxic atmosphere. A wide, level plain of dark ochre rock crusted with pale yellow sulphur ' +
+      'deposits and small steaming vents; low volcanic hills on the horizon, with a faint low mist along their feet only.',
+    purpose: 'Colony view: the haze biome (a toxic atmosphere).',
+  },
+  {
+    id: 'authority-homes-1-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A few small two-storey prefabricated family houses in a neat row, little front gardens, a shared path, solar panels on the flat roofs, green lights by the doors.`,
+    purpose: 'Colony view: the Authority’s small homes, in the open air.',
+  },
+  {
+    id: 'authority-homes-1-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A few small prefabricated family houses in a neat row under a faceted geodesic glass dome sealed against a hostile world, an airlock at its base, warm windows inside.`,
+    purpose: 'Colony view: the Authority’s small homes, sealed.',
+  },
+  {
+    id: 'authority-homes-2-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A three-storey block of modular apartments under a large faceted geodesic glass dome sealed against a hostile world, airlocks at its base, warm windows inside.`,
+    purpose: 'Colony view: the Authority’s middle-sized homes, sealed.',
+  },
+  {
+    id: 'authority-homes-3-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A tall residential tower of stacked prefabricated modules, twelve storeys, with neat rows of balconies and windows, a green beacon on the roof, low service buildings at its foot.`,
+    purpose: 'Colony view: the Authority’s largest homes, in the open air.',
+  },
+  {
+    id: 'authority-homes-3-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} Two tall residential towers of stacked prefabricated modules inside a large faceted geodesic glass dome sealed against a hostile world, joined by skybridges, airlocks at the base.`,
+    purpose: 'Colony view: the Authority’s largest homes, sealed.',
+  },
+  {
+    id: 'cooperative-homes-1-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A few small rounded earth houses with round windows, white awnings over the doors and little gardens, joined by sandy paths.`,
+    purpose: 'Colony view: the Cooperative’s small homes, in the open air.',
+  },
+  {
+    id: 'cooperative-homes-1-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A few small rounded earth houses gathered under one frosted-glass bubble dome sealed against a harsh world, a small airlock tunnel, warm light glowing through the glass.`,
+    purpose: 'Colony view: the Cooperative’s small homes, sealed.',
+  },
+  {
+    id: 'cooperative-homes-2-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A cluster of rounded two- and three-storey earth houses round a small shared garden with trees, white awnings and solar sails on the roofs.`,
+    purpose: 'Colony view: the Cooperative’s middle-sized homes, in the open air.',
+  },
+  {
+    id: 'cooperative-homes-3-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A tall rounded tower of stacked earth-printed rings with terraces of greenery on every level, white awnings, a small solar sail on top, low rounded houses at its foot.`,
+    purpose: 'Colony view: the Cooperative’s largest homes, in the open air.',
+  },
+  {
+    id: 'cooperative-homes-3-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A great frosted-glass bubble dome sealed against a harsh world, with a tall rounded tower of earth-printed rings and green terraces inside it glowing warmly through the glass, smaller domes round its base joined by tunnels.`,
+    purpose: 'Colony view: the Cooperative’s largest homes, sealed.',
+  },
+  {
+    id: 'wake-homes-1-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A few small homes made from old cargo containers and hull plates, stacked two high, patched and welded, with ladders, a scrap-metal awning and small red lights.`,
+    purpose: 'Colony view: the Wake’s small homes, in the open air.',
+  },
+  {
+    id: 'wake-homes-1-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A small half-buried bunker made from a salvaged shuttle hull, a thick-glass dome on top lit warmly from inside, an armoured airlock door.`,
+    purpose: 'Colony view: the Wake’s small homes, sealed.',
+  },
+  {
+    id: 'wake-homes-2-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A cluster of homes made from a salvaged freighter hull cut into sections and stood upright, joined by scrap gangways and ladders, a red warning light on a mast.`,
+    purpose: 'Colony view: the Wake’s middle-sized homes, in the open air.',
+  },
+  {
+    id: 'wake-homes-3-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A tall ragged tower of salvaged starship hull sections and cargo containers welded together, gangways and ladders up its sides, rows of small warm windows, red lights, a crane arm on top.`,
+    purpose: 'Colony view: the Wake’s largest homes, in the open air.',
+  },
+  {
+    id: 'wake-homes-3-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A huge salvaged starship hull stood upright and sealed as a tower of homes, rows of small warm windows cut into its plates, thick-glass domes and armoured airlocks round its base.`,
+    purpose: 'Colony view: the Wake’s largest homes, sealed.',
+  },
+  {
+    id: 'authority-shipyard',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A colony shipyard: a square landing pad with green edge lights and painted guide lines, a tall gantry crane on rails beside it, a large rectangular hangar of grey panels, neat fuel tanks; no ship on the pad.`,
+    purpose: 'Colony view: the Authority’s shipyard.',
+  },
+  {
+    id: 'authority-lane-station',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A lane station, the ground station that keeps the system’s lane beacons in tune: a tall lattice mast with a ring of antennae and a green light at the top, a large dish aerial, and a rectangular control building with rows of square windows.`,
+    purpose: 'Colony view: the Authority’s lane station.',
+  },
+  {
+    id: 'authority-mine',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A mine: a square steel headframe tower over a shaft, an enclosed conveyor to a boxy processing plant, neat heaps of dark ore.`,
+    purpose: 'Colony view: the Authority’s mine.',
+  },
+  {
+    id: 'authority-survey-station',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A survey station: three dish telescopes on square concrete pads round a low flat-roofed control building with a white radome on its roof.`,
+    purpose: 'Colony view: the Authority’s survey station.',
+  },
+  {
+    id: 'cooperative-survey-station',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A survey station: three dish telescopes on rounded earth bases round a low rounded control building with round windows and a white fabric awning.`,
+    purpose: 'Colony view: the Cooperative’s survey station.',
+  },
+  {
+    id: 'wake-shipyard',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A rough shipyard: a landing pad of welded steel plates with red edge lights, a gantry crane built from old hull girders, a hangar made from a ship’s cargo hold, mismatched fuel tanks; no ship on the pad.`,
+    purpose: 'Colony view: the Wake’s shipyard.',
+  },
+  {
+    id: 'wake-lane-station',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A lane station, the ground station that keeps the system’s lane beacons in tune: a tall mast welded from scrap girders with a ring of salvaged antennae and a red light at the top, a battered dish aerial, and a bunker made from a ship’s bridge section.`,
+    purpose: 'Colony view: the Wake’s lane station.',
+  },
+  {
+    id: 'wake-mine',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A mine: a drilling tower welded from hull girders over a shaft, an open conveyor to a crusher made from an old engine housing, heaps of dark ore.`,
+    purpose: 'Colony view: the Wake’s mine.',
+  },
+  {
+    id: 'wake-survey-station',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} A survey station: salvaged sensor dishes from old warships mounted on scrap towers round a bunker made from a ship’s bridge section.`,
+    purpose: 'Colony view: the Wake’s survey station.',
+  },
 ];

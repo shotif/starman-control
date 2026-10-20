@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import manifest from '../../art/manifest.json' with { type: 'json' };
 import { LANDSCAPES, STRUCTURES, structureArt, structureId } from '../../src/content/colonyArt.ts';
 import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
+import { PROJECT_IDS } from '../../src/content/projects.ts';
 import { SKY } from '../../src/data/sky.ts';
+import { frameTown, placeAll, placeBuilding } from '../../src/render/colonyPlace.ts';
 import { biomeOf, colonyScene, homesFor, mixHex } from '../../src/render/colonyScene.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
 import { type GameState, newGame } from '../../src/sim/state.ts';
@@ -153,16 +155,56 @@ describe('the colony view’s pictures', () => {
     }
   });
 
-  it('borrow the nearest home size until every size is painted', () => {
+  it('cover every ground, and every power’s homes and projects', () => {
+    for (const biome of ['garden', 'shore', 'steppe', 'desert', 'inferno', 'tundra', 'ice', 'airless', 'haze'] as const)
+      expect(LANDSCAPES[biome], biome).toBeDefined();
+    for (const f of FACTION_IDS) {
+      const a = FACTIONS[f].architecture;
+      for (const size of [1, 2, 3] as const)
+        for (const envelope of ['open', 'domed'] as const)
+          expect(structureArt(a, 'homes', { size, envelope }), `${a} ${size} ${envelope}`).toBeDefined();
+      for (const p of PROJECT_IDS) expect(structureArt(a, p), `${a} ${p}`).toBeDefined();
+      expect(structureArt(a, 'scaffold')?.id).toBe('scaffold');
+    }
     expect(structureId('wake', 'homes', { size: 3, envelope: 'domed' })).toBe('wake-homes-3-domed');
-    expect(structureArt('wake', 'homes', { size: 3, envelope: 'domed' })?.id).toBe('wake-homes-2-domed');
-    expect(structureArt('wake', 'homes', { size: 1, envelope: 'open' })).toBeUndefined();
-    expect(structureArt('cooperative', 'shipyard')?.id).toBe('cooperative-shipyard');
-    expect(structureArt('authority', 'scaffold')?.id).toBe('scaffold');
   });
 
   it('mixes colours', () => {
     expect(mixHex('#000000', '#ffffff', 0.5)).toBe('#808080');
     expect(mixHex('#102030', '#102030', 0.3)).toBe('#102030');
+  });
+});
+
+describe('placing the buildings', () => {
+  const g = start('frontier', 1);
+  const h = capital(g, 'frontier');
+  h.queue = [{ kind: 'project', project: 'mine' }];
+  const scene = colonyScene(world, g, h);
+  if (!scene) throw new Error('no scene');
+  const land = LANDSCAPES[scene.biome];
+
+  it('sets each building in its slot, nearer ones larger, farthest first', () => {
+    const placed = placeAll(scene, land);
+    expect(placed).toHaveLength(scene.buildings.length);
+    for (let i = 1; i < placed.length; i++) expect((placed[i]?.v ?? 0) >= (placed[i - 1]?.v ?? 0)).toBe(true);
+    const homes = placed.filter((p) => p.building.kind === 'homes');
+    const near = homes.reduce((a, b) => (b.v > a.v ? b : a));
+    const far = homes.reduce((a, b) => (b.v < a.v ? b : a));
+    expect(near.w).toBeGreaterThan(far.w);
+  });
+
+  it('sizes a scaffold to the project it is putting up', () => {
+    const scaffold = scene.buildings.find((b) => b.kind === 'scaffold');
+    if (!scaffold) throw new Error('no scaffold');
+    const p = placeBuilding(scene, land, scaffold);
+    const mine = placeBuilding(scene, land, { kind: 'mine', project: 'mine', slot: scaffold.slot });
+    expect(p && mine && p.w / mine.w).toBeCloseTo(0.7, 5);
+  });
+
+  it('frames the town inside the picture at any shape', () => {
+    for (const aspect of [0.6, 1, 2, 3]) {
+      const f = frameTown(placeAll(scene, land), land, aspect);
+      expect(f.u0 >= 0 && f.u0 + f.uw <= 1 + 1e-9 && f.v0 >= 0).toBe(true);
+    }
   });
 });

@@ -359,6 +359,8 @@ export function HoldingPanel({
   play,
   table,
   onGo,
+  viewing = false,
+  onView,
 }: {
   world: World;
   game: GameState;
@@ -368,6 +370,10 @@ export function HoldingPanel({
   /** Show the queue as a table (the desktop). */
   table: boolean;
   onGo: (id: SystemId) => void;
+  /** Its scene is open as a diorama, so the panel's still is not needed. */
+  viewing?: boolean;
+  /** Opens its scene as a diorama. */
+  onView?: () => void;
 }) {
   const mine = play?.faction === h.owner;
   const name = holdingName(world, game, h);
@@ -390,7 +396,7 @@ export function HoldingPanel({
           </p>
         )}
       </header>
-      <ColonyStill world={world} game={game} holding={h} />
+      {!viewing && <ColonyStill world={world} game={game} holding={h} onOpen={onView} />}
       {h.kind === 'colony' ? (
         <>
           <dl class="facts">

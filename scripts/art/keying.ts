@@ -14,7 +14,7 @@ export interface KeySpec {
 
 /** The settings every keyed picture is made with; recorded in the manifest with the picture. */
 export const KEY_SETTINGS = {
-  version: 2,
+  version: 3,
   /** Magenta: a pixel's likeness to the backdrop, from 0 (none) to 1; opaque below `low`, clear above `high`. */
   magenta: { low: 0.3, high: 0.85 },
   /**
@@ -161,7 +161,15 @@ export function keyCutout(img: Raster, backdrop: Backdrop): Raster {
     const like = likeness(out[i] ?? 0, out[i + 1] ?? 0, out[i + 2] ?? 0, backdrop, key);
     unmix(out, i, alphaOf(like, backdrop), key, backdrop);
   }
-  if (backdrop === 'magenta') despillRim(out, img.width, img.height, KEY_SETTINGS.rim);
+  if (backdrop === 'magenta') {
+    despillRim(out, img.width, img.height, KEY_SETTINGS.rim);
+    // Magenta seen through glass, or reflected, inside the building: red and blue both above
+    // green. A building's own colours almost never are (warm ones have little blue, cool ones
+    // little red), so only the backdrop's tint is taken out.
+    for (let i = 0; i < out.length; i += 4) {
+      if ((out[i + 3] ?? 0) > 0 && Math.min(out[i] ?? 0, out[i + 2] ?? 0) > (out[i + 1] ?? 0)) despill(out, i);
+    }
+  }
   return { data: out, width: img.width, height: img.height };
 }
 

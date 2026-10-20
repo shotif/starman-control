@@ -215,3 +215,42 @@ Each increment's pictures are shown to the owner as lettered contact sheets when
 - **Tests:** `keying.test.ts` and `colonyScene.test.ts` (unit), `colony.spec.ts` (the still drawn
   and described on the phone, tablet and desktop; a queued mine's scaffold; no still where no
   picture exists).
+
+### Increment 15: the diorama (20 October 2026)
+
+- **The owner saw the slice** and said "Go ahead, my picks", keeping the buildings crisp rather
+  than more painterly.
+- **The pictures:** 66 made, about $3.30 (the project's total is now **about $7.25** of the
+  owner's $15): every other landscape (garden B, steppe A, desert A, inferno A, tundra B, ice A,
+  airless A, haze D) and every power's homes in three sizes, open and domed, and its four projects,
+  so every colony of every power on every world has its scene. The ice is painted under a magenta
+  sky so its white ground survives keying. The first two haze landscapes painted their haze across
+  the whole sky, which the white key cannot take out, so the haze is now asked for only along the
+  horizon (the game draws the rest). Magenta seen through the Authority's glass domes keyed purple,
+  so keying now also despills any pixel whose red and blue both stand above its green, which a
+  building's own colours almost never do (keying settings version 3).
+- **Slots:** the shore's twelve hand-placed slots are a pattern that every other landscape fits
+  into its own flat ground (a box measured on each picture, with its horizon), so every world keeps
+  the same town plan.
+- **The screen** (`src/render/ColonyView.ts`): the still in a colony's panel is now the way in
+  (*View Tau Ceti e*). The map glides in and the veil lifts, as for a system; the scene borrows the
+  map's renderer while the map pauses. An orthographic camera looks at the world (the landscape
+  one unit high), framed to fill the stage's height from the town's foot to a little sky above the
+  horizon and centred on the town; drag to look along it, pinch, the wheel or + and − to come closer,
+  0 or C to frame the town again. The sky is a shader: day colours from the horizon to the zenith,
+  stars where there is no air, the sun's disc and glow at the upper left (on a locked world, low
+  on the horizon), its size from the star's radius and the orbit. The landscape and the buildings
+  are drawn premultiplied in the star's light with haze, and a scaffold rises from its foot as
+  industry goes in. **Phone:** the scene fills the screen above the colony's panel, which drops to
+  its peek height on the way in. **Desktop:** the scene takes the map's place between the outliner
+  and the inspector. *← System* or Esc goes back; closing the panel, choosing a ship or another
+  system leaves it; choosing another colony switches to it. The scene follows the game: queue a
+  project and its scaffold appears.
+- **Not yet:** people, vehicles, weather, day and night and tapping buildings (increment 16);
+  outposts, the capitals' halls, the ways in from the empire and the system view, and a size budget
+  (increment 17). An outpost's panel has no still yet.
+- **Tests:** `colonyScene.test.ts` (every ground and every power's set present; placing, the
+  scaffold's size, framing), `colony.spec.ts` (into the diorama from the still on the phone,
+  tablet and desktop; the town in view; dragging looks along it; a queued mine's scaffold; back to
+  the map; each power's capital in its architecture on its ground; no glide or veil with reduced
+  motion).

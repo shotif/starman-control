@@ -1,11 +1,14 @@
 // The colony's scene as a still at the top of its panel (COLONY_VIEW.md §4: the scene gives the panel
-// its header). Shown where there are pictures for the colony's ground and for every one of its
-// buildings; elsewhere the panel is as it was. The pictures load when first needed and are kept.
+// its header), and the way into the living diorama: pressing it opens the scene. Shown where there
+// are pictures for the colony's ground and every one of its buildings, which is every colony once
+// increment 15's pictures are in; outposts wait for theirs (increment 17). The pictures load when
+// first needed and are kept.
 
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { LANDSCAPES, structureArt } from '../../content/colonyArt.ts';
+import { artUrl, placeAll } from '../../render/colonyPlace.ts';
 import { type ColonyScene, colonyScene } from '../../render/colonyScene.ts';
-import { artUrl, drawColonyStill, placeAll } from '../../render/colonyStill.ts';
+import { drawColonyStill } from '../../render/colonyStill.ts';
 import type { GameState, Holding } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 
@@ -26,12 +29,24 @@ function load(url: string): Promise<HTMLImageElement> {
 
 /** The scene, if every part of it has a picture. */
 export function stillScene(world: World, game: GameState, h: Holding): ColonyScene | null {
+  if (h.kind !== 'colony') return null;
   const scene = colonyScene(world, game, h);
   if (!scene || !LANDSCAPES[scene.biome]) return null;
   return scene.buildings.every((b) => structureArt(scene.architecture, b.kind, b.home)) ? scene : null;
 }
 
-export function ColonyStill({ world, game, holding }: { world: World; game: GameState; holding: Holding }) {
+export function ColonyStill({
+  world,
+  game,
+  holding,
+  onOpen,
+}: {
+  world: World;
+  game: GameState;
+  holding: Holding;
+  /** Opens the scene as a diorama. */
+  onOpen?: () => void;
+}) {
   const scene = stillScene(world, game, holding);
   const key = scene ? JSON.stringify(scene) : '';
   // biome-ignore lint/correctness/useExhaustiveDependencies: the key stands for the scene.
@@ -94,6 +109,11 @@ export function ColonyStill({ world, game, holding }: { world: World; game: Game
       <span class="badge badge-fiction" title="Made with the game’s art pipeline and laid out by the game">
         Illustration
       </span>
+      {onOpen && (
+        <button type="button" class="colony-open" onClick={onOpen}>
+          <span class="colony-open-plate">View {scene.name}</span>
+        </button>
+      )}
     </figure>
   );
 }

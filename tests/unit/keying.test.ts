@@ -85,6 +85,19 @@ describe('cutting a building out', () => {
     expect(Math.min(r, b) - g).toBeLessThan(25);
   });
 
+  it('takes magenta seen through glass out of the building, and leaves its own colours', () => {
+    const glass = keyCutout(
+      raster(20, 20, MAGENTA, (x, y) =>
+        x > 4 && x < 15 && y > 4 && y < 15 ? (x < 10 ? [150, 90, 170] : [190, 110, 80]) : null,
+      ),
+      'magenta',
+    );
+    const [r, g, b, a] = px(glass, 7, 10) as [number, number, number, number];
+    expect(a).toBe(255);
+    expect(Math.min(r, b)).toBeLessThanOrEqual(g + 1);
+    expect(px(glass, 12, 10)).toEqual([190, 110, 80, 255]);
+  });
+
   it('trims to the building with a margin', () => {
     expect(trimBox(out, 2)).toEqual({ left: 7, top: 6, width: 25, height: 22 });
     const keyed = keyPicture(img, { backdrop: 'magenta', mode: 'cutout' });
