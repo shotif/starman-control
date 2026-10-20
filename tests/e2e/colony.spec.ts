@@ -231,7 +231,12 @@ test('a finished mine stands where its scaffold was, and the report shows it', a
     const date = await page.locator('.map-date').textContent();
     await page.keyboard.press('Enter');
     await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
-    if (i < 2) await page.keyboard.press('Escape');
+    // The report can open a moment after the date turns on a slow machine: close it once it has.
+    await expect(page.getByRole('dialog', { name: 'Report' })).toBeVisible();
+    if (i < 2) {
+      await page.keyboard.press('Escape');
+      await expect(page.getByRole('dialog', { name: 'Report' })).toBeHidden();
+    }
   }
   const report = page.getByRole('dialog', { name: 'Report' });
   await expect(report).toContainText('Tau Ceti e built a mine');
@@ -272,7 +277,10 @@ test('an outpost is its rig, with no one about', async ({ page }, info) => {
   const date = await page.locator('.map-date').textContent();
   await page.keyboard.press('Enter');
   await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
+  // The report can open a moment after the date turns on a slow machine: close it once it has.
+  await expect(page.getByRole('dialog', { name: 'Report' })).toBeVisible();
   await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog', { name: 'Report' })).toBeHidden();
   await page.keyboard.press('p');
   const empire = page.getByRole('dialog', { name: 'Empire' });
   await empire.getByRole('tab', { name: /Outposts/ }).click();

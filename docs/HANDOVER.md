@@ -135,6 +135,9 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 
 **Lessons from the last sessions:**
 
+- **After ending a turn, wait for the report before closing it.** On CI's slower machine the date
+  turns a moment before the report opens; an *Escape* sent in between is lost, and the report then
+  covers whatever opened next (CI failed on increment 18's first push this way).
 - **Never `pkill -f "vite preview"`:** the pattern matches the shell running the command, which
   kills it. Stop a preview by its process id (`ps aux | grep "preview --port"`).
 - **Props are placed after the buildings** (`placeProps` in `colonyPlace.ts`), beside each building's
