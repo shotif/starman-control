@@ -46,8 +46,10 @@ for (const width of series.widths) {
   const path = publishedPath(brief.series, brief.id, width);
   const out = resolve(root, 'public', path);
   mkdirSync(dirname(out), { recursive: true });
+  // A prop is published to fit a square, so a tall mast is no heavier than a wide solar field.
+  const fit = brief.series === 'prop' ? { width, height: width, fit: 'inside' as const } : { width };
   const info = await sharp(source)
-    .resize({ width, withoutEnlargement: true })
+    .resize({ ...fit, withoutEnlargement: true })
     .webp(keyed ? { quality: 84, alphaQuality: 90 } : { quality: 82 })
     .toFile(out);
   files.push({ width, path, bytes: info.size });

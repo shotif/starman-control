@@ -5,7 +5,7 @@
 // scene by the same placing rules (colonyPlace.ts).
 
 import type { LandscapeArt } from '../content/colonyArt.ts';
-import { frameTown, placeAll } from './colonyPlace.ts';
+import { frameTown, placeAll, placeProps } from './colonyPlace.ts';
 import { type ColonyScene, mixHex } from './colonyScene.ts';
 
 function rgba(hex: string, a: number): string {
@@ -123,8 +123,10 @@ export function drawColonyStill(
   };
   ctx.drawImage(graded(pictures.landscape, LW, LH, light, haze), X(0), Y(0));
 
-  // The buildings, farthest first, each on its shadow, a little hazed by distance.
-  for (const p of placed) {
+  // The buildings and the props between them, farthest first, each on its shadow, a little hazed
+  // by distance.
+  const pieces = [...placed, ...placeProps(scene, land, placed)].sort((a, b) => a.v - b.v || a.u - b.u);
+  for (const p of pieces) {
     const img = pictures.structures.get(p.art.id);
     if (!img) continue;
     const w = p.w * LW;

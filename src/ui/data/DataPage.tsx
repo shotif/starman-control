@@ -380,6 +380,21 @@ function Methods() {
         </a>
         .
       </p>
+      <h3>The pictures</h3>
+      <p data-testid="picture-credits">
+        The pictures of places, people, buildings and vehicles are made with an image model, Google’s Gemini, from the
+        game’s own written briefs. Each was chosen by hand from a few candidates, and its prompt, model and date are
+        recorded in{' '}
+        <a
+          href="https://github.com/shotif/starman-control/blob/main/art/manifest.json"
+          target="_blank"
+          rel="noreferrer"
+        >
+          the art records
+        </a>
+        . The sky, the stars, the planets, the ships on the map and the people in the colonies are drawn by the game
+        itself.
+      </p>
     </section>
   );
 }

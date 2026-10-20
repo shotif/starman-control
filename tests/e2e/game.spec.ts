@@ -10,7 +10,9 @@ interface MapHook {
 }
 
 async function starAt(page: Page, id: string) {
-  await expect.poll(() => page.evaluate(() => (window as unknown as MapHook).__map.moving)).toBe(false);
+  await expect
+    .poll(() => page.evaluate(() => (window as unknown as MapHook).__map.moving), { timeout: 20_000 })
+    .toBe(false);
   return page.evaluate((id) => {
     const p = (window as unknown as MapHook).__map.screenOf(id);
     const r = document.querySelector('.map-host')?.getBoundingClientRect();
@@ -129,10 +131,10 @@ test.describe('a game', () => {
     const survey = page.getByRole('dialog', { name: 'Report' }).locator('.report-surveyed');
     await expect(survey).toHaveClass(/tone-news/);
     await expect(survey.locator('.icon')).toHaveCount(1);
-    // The turn's picture heads the report: the survey's, badged as an illustration (DISPATCHES.md).
+    // The turn's picture heads the report: the survey's, with no label on it (DISPATCHES.md, D-29).
     const picture = page.getByRole('dialog', { name: 'Report' }).locator('.dispatch-art');
     await expect(picture).toHaveAttribute('data-picture', 'dispatch-survey');
-    await expect(picture.getByText('Illustration')).toBeVisible();
+    await expect(picture.getByText('Illustration')).toHaveCount(0);
     await expect
       .poll(() => picture.locator('img').evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0))
       .toBe(true);
@@ -295,6 +297,8 @@ test.describe('research', () => {
 
 test.describe('anomalies', () => {
   test('a survey finds an anomaly, and the survey ship investigates it', async ({ page }, info) => {
+    // Three turns end in it: on a starved machine (CI's software rendering) that can take a minute.
+    test.slow();
     const project = info.project.name;
     // With seed 1, Barnard's Star, one lane from Sol, holds a silent relay.
     await newGame(page, 'Lead the Transit Authority', project, '1');

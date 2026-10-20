@@ -24,9 +24,10 @@ export interface LandscapeArt {
   slots: readonly (readonly [number, number])[];
 }
 
-/** Published widths of each kind of picture, smallest for phones. */
+/** Published widths of each kind of picture, smallest for phones; props are drawn small. */
 export const LANDSCAPE_WIDTHS = [1280, 2560] as const;
 export const STRUCTURE_WIDTHS = [512, 1024] as const;
+export const PROP_WIDTHS = [256, 512] as const;
 
 /**
  * Where buildings stand on a landscape whose flat ground is a plain box: the shore's hand-placed
@@ -102,6 +103,16 @@ export type HomeSize = 1 | 2 | 3;
 /** Open to the air on a comfortable world; sealed under domes elsewhere. */
 export type Envelope = 'open' | 'domed';
 
+/** Every home picture comes in three versions, so neighbouring homes differ (COLONY_VIEW.md §9.2). */
+export type HomeVersion = 0 | 1 | 2;
+
+/** A home: its size, whether it is sealed, and which version of the picture it shows. */
+export interface HomeLook {
+  size: HomeSize;
+  envelope: Envelope;
+  version?: HomeVersion;
+}
+
 /** Built things; `rig` is an outpost's, `fields` an open-air colony's farmland. */
 export type StructureKind = ProjectId | 'homes' | 'hall' | 'scaffold' | 'rig' | 'fields';
 
@@ -162,26 +173,161 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['cooperative-rig', 1897 / 1543, 34],
       ['wake-rig', 1845 / 1302, 34],
       ['fields', 1881 / 1193, 40],
+      // Increment 18: the second and third versions of the homes (COLONY_VIEW.md §9.2), as wide
+      // as their first versions.
+      ['authority-homes-2-open-b', 1961 / 1370, 34],
+      ['authority-homes-2-open-c', 1866 / 1554, 34],
+      ['cooperative-homes-2-domed-b', 1827 / 1220, 40],
+      ['cooperative-homes-2-domed-c', 1819 / 1337, 40],
+      ['wake-homes-2-domed-b', 1894 / 953, 40],
+      ['wake-homes-2-domed-c', 1903 / 1452, 40],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );
 
-/** The brief id a building would have: homes by size and envelope, the rest by architecture. */
-export function structureId(
-  architecture: ArchitectureId,
-  kind: StructureKind,
-  home?: { size: HomeSize; envelope: Envelope },
-): string {
+const VERSION_SUFFIX = ['', '-b', '-c'] as const;
+
+/** The brief id a building would have: homes by size, envelope and version, the rest by architecture. */
+export function structureId(architecture: ArchitectureId, kind: StructureKind, home?: HomeLook): string {
   if (kind === 'scaffold' || kind === 'fields') return kind;
-  if (kind === 'homes') return `${architecture}-homes-${home?.size ?? 2}-${home?.envelope ?? 'open'}`;
+  if (kind === 'homes')
+    return `${architecture}-homes-${home?.size ?? 2}-${home?.envelope ?? 'open'}${VERSION_SUFFIX[home?.version ?? 0]}`;
   return `${architecture}-${kind}`;
 }
 
-/** The picture for a building, if there is one. */
+/** The picture for a building, if there is one; a home's version with no picture yet shows the first. */
 export function structureArt(
   architecture: ArchitectureId,
   kind: StructureKind,
-  home?: { size: HomeSize; envelope: Envelope },
+  home?: HomeLook,
 ): StructureArt | undefined {
-  return STRUCTURES[structureId(architecture, kind, home)];
+  const art = STRUCTURES[structureId(architecture, kind, home)];
+  if (art || kind !== 'homes' || !home?.version) return art;
+  return STRUCTURES[structureId(architecture, kind, { ...home, version: 0 })];
+}
+
+/** Small pieces between the buildings (COLONY_VIEW.md §9.3): some in each power's architecture, some shared. */
+export type PropKind =
+  | 'water-tanks'
+  | 'mast'
+  | 'cargo'
+  | 'greenhouse'
+  | 'monument'
+  | 'solar-field'
+  | 'landing-beacon'
+  | 'supply-crates'
+  | 'storage-spheres'
+  | 'wind-turbines'
+  | 'radiators'
+  | 'orchard'
+  | 'ore-heap'
+  | 'gas-well'
+  | 'regolith-plant';
+
+/** The props built in each power's own architecture; the rest are shared. */
+export const OWN_PROPS: readonly PropKind[] = ['water-tanks', 'mast', 'cargo', 'greenhouse', 'monument'];
+
+/** How wide each prop is in the world, in metres. */
+export const PROP_METRES: Record<PropKind, number> = {
+  'water-tanks': 10,
+  mast: 7,
+  cargo: 14,
+  greenhouse: 16,
+  monument: 10,
+  'solar-field': 22,
+  'landing-beacon': 6,
+  'supply-crates': 7,
+  'storage-spheres': 12,
+  'wind-turbines': 18,
+  radiators: 14,
+  orchard: 18,
+  'ore-heap': 14,
+  'gas-well': 10,
+  'regolith-plant': 14,
+};
+
+/** Every prop picture there is, by its brief id, with its cut-out's width over height. */
+export const PROPS: Record<string, StructureArt> = Object.fromEntries(
+  (
+    [
+      ['authority-cargo', 'cargo', 1678 / 1438],
+      ['authority-mast', 'mast', 650 / 1832],
+      ['authority-monument', 'monument', 789 / 1742],
+      ['cooperative-greenhouse', 'greenhouse', 1772 / 1631],
+      ['cooperative-mast', 'mast', 717 / 1856],
+      ['cooperative-monument', 'monument', 1611 / 1641],
+      ['wake-greenhouse', 'greenhouse', 1755 / 1477],
+      ['wake-mast', 'mast', 1317 / 1866],
+      ['wake-monument', 'monument', 1306 / 1843],
+      ['landing-beacon', 'landing-beacon', 844 / 1809],
+      ['solar-field', 'solar-field', 1788 / 816],
+      ['storage-spheres', 'storage-spheres', 1635 / 1618],
+      ['supply-crates', 'supply-crates', 1737 / 1272],
+    ] as const
+  ).map(([id, kind, aspect]) => [id, { id, aspect, metres: PROP_METRES[kind] }]),
+);
+
+/** The brief id of a prop: the power's own, or the shared one. */
+export function propId(architecture: ArchitectureId, kind: PropKind): string {
+  return OWN_PROPS.includes(kind) ? `${architecture}-${kind}` : kind;
+}
+
+/** The picture for a prop, if there is one. */
+export function propArt(architecture: ArchitectureId, kind: PropKind): StructureArt | undefined {
+  return PROPS[propId(architecture, kind)];
+}
+
+/** How a metre is drawn, as a share of the picture's width per unit of depth below the horizon (colonyPlace). */
+const METRE = 0.0105;
+
+/** A box on the picture, in heights (across times the aspect, and down). */
+export interface Box {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+}
+
+/** Something standing with its front middle at (u, v), `w` of the width across and `h` of the height tall. */
+export function boxOf(p: { u: number; v: number; w: number; h: number }, aspect: number): Box {
+  return { x0: (p.u - p.w / 2) * aspect, x1: (p.u + p.w / 2) * aspect, y0: p.v - p.h, y1: p.v };
+}
+
+export function overlapOf(a: Box, b: Box): number {
+  return (
+    Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) * Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0))
+  );
+}
+
+/**
+ * Whether a prop's box sits clear of a building's (COLONY_VIEW.md §9.3): in front of it, it may
+ * hide no more than a little of its foot; behind it, no more than half of the prop is hidden.
+ */
+export function clearOf(prop: Box, building: Box): boolean {
+  const o = overlapOf(prop, building);
+  if (o <= 0) return true;
+  const tall = building.y1 - building.y0;
+  if (prop.y1 > building.y1)
+    return o <= 0.12 * (building.x1 - building.x0) * tall && prop.y0 >= building.y1 - 0.4 * tall;
+  return o <= 0.5 * (prop.x1 - prop.x0) * (prop.y1 - prop.y0);
+}
+
+const spotCache = new Map<string, (readonly [number, number])[]>();
+
+/**
+ * Where props may stand on a landscape (COLONY_VIEW.md §9.3): by each slot's front corners, as wide
+ * apart as a home of 34 metres, a step in front of its foot; never in a slot itself. In the order
+ * the town fills its slots, so a colony's first props stand by its first buildings.
+ */
+export function propSpots(land: LandscapeArt): (readonly [number, number])[] {
+  const cached = spotCache.get(land.id);
+  if (cached) return cached;
+  const spots: (readonly [number, number])[] = [];
+  const round = (x: number) => Math.round(x * 1000) / 1000;
+  for (const [u, v] of land.slots) {
+    const half = (34 * METRE * (v - land.horizon)) / 2;
+    for (const side of [-1, 1]) spots.push([round(u + side * half), round(v + 0.006)]);
+  }
+  spotCache.set(land.id, spots);
+  return spots;
 }

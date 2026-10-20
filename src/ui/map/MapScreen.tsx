@@ -831,12 +831,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             <button type="button" class="chip system-exit" onClick={() => (insideColony.value = null)}>
               ← {world.system(colonyHolding.system).name}
             </button>
-            <span class="system-scale">
-              {holdingName(world, game, colonyHolding)}{' '}
-              <span class="badge badge-fiction" title="Painted with the game’s art pipeline and laid out by the game">
-                Illustration
-              </span>
-            </span>
+            <span class="system-scale">{holdingName(world, game, colonyHolding)}</span>
           </div>
         )}
         {colonyHolding && picked && (

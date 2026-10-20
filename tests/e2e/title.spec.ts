@@ -51,7 +51,7 @@ test.describe('the first impression', () => {
       const card = page.getByRole('article', { name });
       await expect(card.getByRole('heading', { name })).toBeAttached();
       await expect(card.locator('.emblem')).toBeAttached();
-      await expect(card.getByText('Illustration', { exact: true })).toBeAttached();
+      await expect(card.getByText('Illustration', { exact: true })).toHaveCount(0);
       const pictures = card.locator('img');
       await expect(pictures).toHaveCount(2);
       for (const img of await pictures.all()) {

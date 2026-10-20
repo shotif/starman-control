@@ -33,7 +33,7 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
     'banked earth, triangular braces, small red lights; improvised and tough.',
 };
 
-export const BRIEFS: ArtBrief[] = [
+const FIRST: ArtBrief[] = [
   // The style test: the same four subjects from both services, so the owner can choose a direction
   // and a provider before any picture goes into the game.
   {
@@ -509,3 +509,191 @@ export const BRIEFS: ArtBrief[] = [
     purpose: 'Colony view: the fields an open-air colony farms, for every power.',
   },
 ];
+
+// The colony view, increment 18 (COLONY_VIEW.md §9): two more versions of every home, so neighbours
+// differ, and small props between the buildings.
+export const BRIEFS: ArtBrief[] = [...FIRST, ...homeVersions(FIRST), ...props()];
+
+/** Each home's second and third versions: the same kind of home told another way. */
+function homeVersions(first: ArtBrief[]): ArtBrief[] {
+  const versions: [string, string, string][] = [
+    [
+      'authority-homes-1-open',
+      'A short terrace of small two-storey prefabricated family houses set in an L-shape, flat solar canopies over the doors, low hedges in front, green lights by the doors.',
+      'Two small square prefabricated houses side by side, one with a single-storey annexe, a shared front porch under a flat canopy, solar panels on the roofs, green lights by the doors.',
+    ],
+    [
+      'authority-homes-1-domed',
+      'A pair of small prefabricated family houses under a low, wide, hexagonal geodesic glass dome sealed against a hostile world, a tunnel airlock at one side, warm windows inside.',
+      'A small prefabricated house with a greenhouse module beside it under a tall, narrow, faceted geodesic glass dome on a ring of metal footings sealed against a hostile world, an airlock porch, warm windows inside.',
+    ],
+    [
+      'authority-homes-2-open',
+      'A long four-storey block of modular apartments, solar panels on its flat roof, a covered walkway along the ground floor, a row of young trees in planters along its front, green lights at the doors.',
+      'Two three-storey blocks of modular apartments in an L shape, joined at the corner by a glazed stair tower, balconies with planters, green lights at the doors.',
+    ],
+    [
+      'authority-homes-2-domed',
+      'Two low blocks of modular apartments under twin faceted geodesic glass domes sealed against a hostile world, joined by a short glazed corridor, airlocks at their bases, warm windows inside.',
+      'A stepped block of modular apartments, five storeys at the back down to two at the front, under a tall faceted geodesic glass dome sealed against a hostile world, an airlock at its base, warm windows inside.',
+    ],
+    [
+      'authority-homes-3-open',
+      'A slender residential tower of stacked prefabricated modules, sixteen storeys, set back in tiers near the top, a crown of solar panels and a green beacon on the roof, a low entrance hall at its foot.',
+      'Two residential towers of stacked prefabricated modules, ten and fourteen storeys, side by side and joined by a skybridge halfway up, rows of square windows, green beacons on their roofs.',
+    ],
+    [
+      'authority-homes-3-domed',
+      'A slim residential tower of stacked prefabricated modules inside a tall, pointed, faceted geodesic glass dome like a spire, sealed against a hostile world, lower service buildings round it under the glass, an airlock at the base.',
+      'Three medium residential towers of stacked prefabricated modules inside a broad, low, faceted geodesic glass dome sealed against a hostile world, lit walkways between them, airlocks at the base.',
+    ],
+    [
+      'cooperative-homes-1-open',
+      'Two small domed earth houses joined by a curved garden wall, a round window in each, a white awning over a shared doorway, a little vegetable bed and a water barrel.',
+      'A small cluster of rounded earth houses of different heights, one with a tiny lookout tower, white fabric awnings, potted plants and a solar sail on a pole.',
+    ],
+    [
+      'cooperative-homes-1-domed',
+      'Two small frosted-glass bubble domes side by side sealed against a harsh world, each sheltering a rounded earth house, joined by a short tunnel, warm light glowing through the glass, an airlock at the front.',
+      'A small rounded earth house half sunk into the ground under a low frosted-glass dome sealed against a harsh world, a greenhouse bubble beside it full of green plants, warm light inside, an airlock tunnel.',
+    ],
+    [
+      'cooperative-homes-2-open',
+      'A long, gently curved terrace of rounded three-storey earth-printed houses, round windows, balconies with planters, white awnings, solar sails along the roof.',
+      'A stepped mound of rounded earth homes built up in terraces, gardens on the roofs, white awnings, round windows, a spiral stair round the outside.',
+    ],
+    [
+      'cooperative-homes-2-domed',
+      'One wide, low frosted-glass bubble dome sealed against a harsh world, a ring of rounded three-storey earth houses inside glowing warmly through the glass, a greenhouse bubble on one side, small airlocks at ground level.',
+      'A row of four frosted-glass bubble domes of different sizes sealed against a harsh world, joined by rounded tunnels, rounded houses and green plants glowing through the glass, airlocks at ground level.',
+    ],
+    [
+      'cooperative-homes-3-open',
+      'Two rounded towers of earth-printed rings of different heights, joined by curved bridges, terraces of greenery on every level, white awnings, solar sails on top.',
+      'A broad, tall, conical tower of earth-printed terraces like a stepped hill, gardens and young trees on every level, round windows, white awnings, a solar sail on top.',
+    ],
+    [
+      'cooperative-homes-3-domed',
+      'A tall egg-shaped frosted-glass dome sealed against a harsh world, a stack of rounded earth-printed floors inside glowing warmly through the glass, green terraces, smaller bubble domes round its foot.',
+      'Three large frosted-glass bubble domes clustered together sealed against a harsh world, each with a rounded earth tower inside glowing through the glass, joined by tunnels, airlocks at ground level.',
+    ],
+    [
+      'wake-homes-1-open',
+      'A small row of homes cut from an old shuttle hull laid on its side, doors and windows cut into its plates, a scrap-metal porch roof, a ladder to the top, small red lights.',
+      'Two small huts built from engine cowlings and hull plates, patched and riveted, a welded water tank on a frame between them, a scrap awning, small red lights.',
+    ],
+    [
+      'wake-homes-1-domed',
+      'Two small armoured bunkers made from cargo containers, half sunk into banked earth and joined by a covered gangway, a small thick-glass dome on each lit warmly from inside.',
+      'A small bunker made from an escape pod and container sections welded together and half buried, a thick-glass observation dome lit from inside, an armoured hatch and a red light.',
+    ],
+    [
+      'wake-homes-2-open',
+      'Homes stacked from rusty cargo containers four high in an uneven block, doors and windows cut into them, scrap balconies, ladders, a crane arm on top, small red lights.',
+      'The hull of a wrecked freighter lying on its side and turned into homes, rows of small windows cut into its plates, scrap porches and gangways along its flank, red lights.',
+    ],
+    [
+      'wake-homes-2-domed',
+      "A long half-buried bunker made from a freighter's cargo spine, a row of small thick-glass domes along its top lit warmly from inside, armoured airlocks at each end, a red light.",
+      'Three squat armoured bunkers made from engine housings and hull plates set into banked earth round a central thick-glass dome, gangways between them, red lights.',
+    ],
+    [
+      'wake-homes-3-open',
+      "A tall tower built round an old starship's upright engine section, its decks turned into homes with rows of small warm windows, scrap balconies, ladders up the outside, red lights at the top.",
+      'Two leaning towers of welded cargo containers and hull plates braced against each other with triangular girders, gangways between them, small warm windows, red lights.',
+    ],
+    [
+      'wake-homes-3-domed',
+      'A tall armoured tower made from fuel-tank sections welded end to end and sealed against a hostile world, rows of small warm windows, thick-glass domes at its base, armoured airlocks, a red light on top.',
+      'The great nose cone of a wrecked ship set down over a half-buried bunker town and sealed as a dome against a hostile world, small warm windows cut through its plates, armoured airlocks round its base.',
+    ],
+  ];
+  return versions.flatMap(([id, b, c]) => {
+    const base = first.find((x) => x.id === id);
+    if (!base) throw new Error(`no brief ${id}`);
+    const architecture = ARCHITECTURE[id.split('-')[0] as ArchitectureId];
+    const purpose = base.purpose.replace('Colony view: the', 'Colony view: another version of the');
+    return [
+      { id: `${id}-b`, series: 'structure' as const, subject: `${architecture} ${b}`, purpose },
+      { id: `${id}-c`, series: 'structure' as const, subject: `${architecture} ${c}`, purpose },
+    ];
+  });
+}
+
+/** The props (COLONY_VIEW.md §9.3): five in each power's architecture, ten shared. */
+function props(): ArtBrief[] {
+  const own: Record<string, Record<ArchitectureId, string>> = {
+    'water-tanks': {
+      authority:
+        'Water tanks for a colony: three tall white ceramic cylinders on a neat steel frame, with pipes and a ladder, a slim green light on top.',
+      cooperative:
+        'Water tanks for a colony: two squat rounded cisterns printed from the local soil in warm terracotta, a white fabric shade over them, pipes running down to the ground.',
+      wake: 'Water tanks for a colony: two old rusty fuel tanks from a starship, patched and welded, stood upright on a frame of girders, with a ladder and a small red light.',
+    },
+    mast: {
+      authority:
+        'A communications mast: a slim lattice tower of brushed metal about twelve metres tall with small dish aerials and antennas, a green light at the top, on a small square footing.',
+      cooperative:
+        'A communications mast: a slim curved mast about twelve metres tall with small aerials, a little solar sail and a soft blue light on top, rising from a small rounded earth footing.',
+      wake: 'A communications mast: a ragged mast about twelve metres tall welded from scrap girders, hung with mismatched aerials and an old dish, a red light at the top, held by guy wires.',
+    },
+    cargo: {
+      authority:
+        'A tidy stack of standard grey cargo containers, two high, in neat rows, with a small gantry crane over them and green guide lights.',
+      cooperative:
+        'A stack of rounded cargo pods and crates under a white fabric awning, with a small hand crane beside them.',
+      wake: 'A jumbled stack of rusty, mismatched cargo containers, one standing open, with a crane arm welded from girders over them and a small red light.',
+    },
+    greenhouse: {
+      authority:
+        'A long greenhouse module: a row of pale ceramic frames with glass panels, green plants growing inside under warm white grow lights, an airlock at one end.',
+      cooperative:
+        'A frosted-glass bubble greenhouse on a rounded earth base, full of green plants and vines, warm white light inside.',
+      wake: 'A greenhouse built from an old hull section with glass panels welded into its plates, green plants inside under warm white grow lights, patched seams.',
+    },
+    monument: {
+      authority:
+        'A monument to the first settlers: a tall, slim column of pale ceramic with a ring of green light near its top, on a low stepped base.',
+      cooperative:
+        'A monument to the first settlers: a ring of tall standing stones printed from the local soil, leaning together at their tops, a soft blue light glowing at the centre.',
+      wake: "A monument to the raiders' first ship: the sharp bow of an old starship stood upright in the ground like a blade, plain welded plates on its side, a red light at its tip.",
+    },
+  };
+  const shared: Record<string, string> = {
+    'solar-field':
+      'A small solar field: three rows of dark blue solar panels on angled metal frames, with a little grey inverter cabinet at one end.',
+    'landing-beacon':
+      'A landing beacon: a short, sturdy metal tower about six metres tall with a bright white lamp in a cage at its top, a ring of small lights and orange striped panels near its base.',
+    'supply-crates':
+      'A few supply crates and drums stacked together: grey and orange crates of different sizes, two metal drums and a small hand cart.',
+    'storage-spheres':
+      'Two pressurised storage spheres on sturdy legs, pale grey and weathered, with pipes and a ladder up to a walkway between them.',
+    'wind-turbines':
+      'Three slim wind turbines of different heights standing close together, each with three white blades on a thin grey tower.',
+    radiators:
+      'A heat radiator array: a row of tall, thin, dark grey radiator fins standing on edge on a metal frame, with pipes along their base.',
+    orchard:
+      'A small orchard of a space colony: three rows of young fruit trees in raised beds with thin irrigation pipes, and a small tool shed.',
+    'ore-heap':
+      'A heap of dark metallic ore beside a short open conveyor and a small loading hopper, a few rocks spilled at its foot.',
+    'gas-well':
+      'A gas well capping a deposit of ice and volatiles under the ground: a wellhead of valves and pipes rimed with frost, a short vent stack trailing a thin white plume, a small control box.',
+    'regolith-plant':
+      'A small regolith plant that bakes fusion fuel out of the soil: a squat boxy machine with a hopper on top, a short conveyor feeding it and a chute of grey dust.',
+  };
+  const ownBriefs = Object.entries(own).flatMap(([kind, by]) =>
+    (Object.keys(by) as ArchitectureId[]).map((a) => ({
+      id: `${a}-${kind}`,
+      series: 'prop' as const,
+      subject: `${ARCHITECTURE[a]} ${by[a]}`,
+      purpose: `Colony view: a prop between the buildings (${kind}), in the ${a === 'authority' ? 'Authority' : a === 'cooperative' ? 'Cooperative' : 'Wake'}'s architecture.`,
+    })),
+  );
+  const sharedBriefs = Object.entries(shared).map(([id, subject]) => ({
+    id,
+    series: 'prop' as const,
+    subject: `Not a building but a small piece of a space colony's equipment. ${subject}`,
+    purpose: `Colony view: a prop between the buildings (${id}), shared by every power.`,
+  }));
+  return [...ownBriefs, ...sharedBriefs];
+}

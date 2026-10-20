@@ -62,23 +62,63 @@ for (const b of BUDGETS) {
   console.log(`${ok ? 'ok  ' : 'OVER'} Opening a colony (its code): ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`);
 }
 
-// A colony's first visit on a phone, at its heaviest: the largest landscape and the eleven largest
-// buildings and vehicles, at the phone's widths. WebP is already compressed.
+// A colony's first visit on a phone, at its heaviest (COLONY_VIEW.md §9.3): for each power and
+// envelope, the largest landscape; the heaviest six of its homes (any size and version) and its
+// hall; the heaviest four of its projects and the scaffold; the fields where open; its shuttle and
+// the rover; and the heaviest eight props it can show; at the phone's widths. WebP is compressed.
 {
-  const sizes = async (dir: string, suffix: string) =>
-    Promise.all(
-      (await readdir(`dist/art/${dir}`))
-        .filter((f) => f.endsWith(suffix))
-        .map(async (f) => (await stat(`dist/art/${dir}/${f}`)).size),
-    );
-  const lands = (await sizes('landscape', '-1280.webp')).sort((a, b) => b - a);
-  const pieces = (await sizes('structure', '-512.webp')).sort((a, b) => b - a);
-  const bytes = (lands[0] ?? 0) + pieces.slice(0, 11).reduce((a, b) => a + b, 0);
+  const size = async (dir: string, file: string) => {
+    try {
+      return (await stat(`dist/art/${dir}/${file}`)).size;
+    } catch {
+      return 0;
+    }
+  };
+  const files = async (dir: string, suffix: string) => {
+    try {
+      return (await readdir(`dist/art/${dir}`)).filter((f) => f.endsWith(suffix));
+    } catch {
+      return [];
+    }
+  };
+  const heaviest = async (dir: string, names: string[], n: number) =>
+    (await Promise.all(names.map((f) => size(dir, f))))
+      .sort((a, b) => b - a)
+      .slice(0, n)
+      .reduce((a, b) => a + b, 0);
+  const lands = await files('landscape', '-1280.webp');
+  const land = Math.max(0, ...(await Promise.all(lands.map((f) => size('landscape', f)))));
+  const pieces = await files('structure', '-512.webp');
+  const props = await files('prop', '-256.webp');
+  const own = ['water-tanks', 'mast', 'cargo', 'greenhouse', 'monument'];
+  let worst = 0;
+  let worstName = '';
+  for (const a of ['authority', 'cooperative', 'wake'])
+    for (const e of ['open', 'domed']) {
+      const homes = pieces.filter((f) => f.startsWith(`${a}-homes-`) && f.includes(`-${e}`));
+      const projects = ['lane-station', 'mine', 'shipyard', 'survey-station'].map((p) => `${a}-${p}-512.webp`);
+      const usable = props.filter(
+        (f) => own.every((k) => !f.startsWith(k)) && !/^(authority|cooperative|wake)-/.test(f),
+      );
+      const mine = props.filter((f) => f.startsWith(`${a}-`));
+      const bytes =
+        land +
+        (await heaviest('structure', [...homes, `${a}-hall-512.webp`], 6)) +
+        (await heaviest('structure', [...projects, 'scaffold-512.webp'], 4)) +
+        (e === 'open' ? await size('structure', 'fields-512.webp') : 0) +
+        (await size('structure', `${a}-shuttle-512.webp`)) +
+        (await size('structure', 'rover-512.webp')) +
+        (await heaviest('prop', [...usable, ...mine], 8));
+      if (bytes > worst) {
+        worst = bytes;
+        worstName = `${a}, ${e}`;
+      }
+    }
   const limit = 1024 * KB;
-  const ok = bytes <= limit;
+  const ok = worst <= limit;
   failed ||= !ok;
   console.log(
-    `${ok ? 'ok  ' : 'OVER'} A colony's first pictures on a phone, at most: ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`,
+    `${ok ? 'ok  ' : 'OVER'} A colony's first pictures on a phone, at most (${worstName}): ${(worst / KB).toFixed(1)} KB of ${limit / KB} KB`,
   );
 }
 

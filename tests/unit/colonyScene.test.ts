@@ -1,11 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import manifest from '../../art/manifest.json' with { type: 'json' };
-import { LANDSCAPES, STRUCTURES, structureArt, structureId } from '../../src/content/colonyArt.ts';
+import {
+  boxOf,
+  clearOf,
+  LANDSCAPES,
+  OWN_PROPS,
+  PROP_METRES,
+  PROPS,
+  type PropKind,
+  propArt,
+  propId,
+  propSpots,
+  STRUCTURES,
+  structureArt,
+  structureId,
+} from '../../src/content/colonyArt.ts';
 import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
 import { PROJECT_IDS } from '../../src/content/projects.ts';
 import { SKY } from '../../src/data/sky.ts';
-import { frameTown, placeAll, placeBuilding } from '../../src/render/colonyPlace.ts';
-import { biomeOf, colonyScene, homesFor, mixHex } from '../../src/render/colonyScene.ts';
+import { frameTown, placeAll, placeBuilding, placeProps } from '../../src/render/colonyPlace.ts';
+import { biomeOf, colonyScene, homesFor, homeVersions, mixHex, propsFor } from '../../src/render/colonyScene.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
 import { type GameState, newGame } from '../../src/sim/state.ts';
 import { buildWorld } from '../../src/sim/world.ts';
@@ -159,6 +173,13 @@ describe('the colony view’s pictures', () => {
       expect(crop, art.id).toBeDefined();
       if (crop) expect(art.aspect).toBeCloseTo(crop.width / crop.height, 3);
     }
+    for (const art of Object.values(PROPS)) {
+      const e = approved.get(art.id);
+      expect(e?.series, art.id).toBe('prop');
+      const crop = (e as { crop?: { width: number; height: number } }).crop;
+      expect(crop, art.id).toBeDefined();
+      if (crop) expect(art.aspect).toBeCloseTo(crop.width / crop.height, 3);
+    }
     for (const art of Object.values(LANDSCAPES)) {
       expect(approved.get(art.id)?.series, art.id).toBe('landscape');
       expect(art.slots).toHaveLength(12);
@@ -183,6 +204,22 @@ describe('the colony view’s pictures', () => {
       expect(structureArt(a, 'rig')?.id).toBe(`${a}-rig`);
     }
     expect(structureId('wake', 'homes', { size: 3, envelope: 'domed' })).toBe('wake-homes-3-domed');
+    expect(structureId('wake', 'homes', { size: 3, envelope: 'domed', version: 2 })).toBe('wake-homes-3-domed-c');
+    expect(propId('cooperative', 'mast')).toBe('cooperative-mast');
+    expect(propId('cooperative', 'solar-field')).toBe('solar-field');
+  });
+
+  it('show a home’s first version while another version has no picture yet', () => {
+    const missing = 'authority-homes-1-open-c';
+    const kept = STRUCTURES[missing];
+    delete STRUCTURES[missing];
+    try {
+      expect(structureArt('authority', 'homes', { size: 1, envelope: 'open', version: 2 })?.id).toBe(
+        'authority-homes-1-open',
+      );
+    } finally {
+      if (kept) STRUCTURES[missing] = kept;
+    }
   });
 
   it('mixes colours', () => {
@@ -221,6 +258,137 @@ describe('placing the buildings', () => {
     for (const aspect of [0.6, 1, 2, 3]) {
       const f = frameTown(placeAll(scene, land), land, aspect);
       expect(f.u0 >= 0 && f.u0 + f.uw <= 1 + 1e-9 && f.v0 >= 0).toBe(true);
+    }
+  });
+});
+
+describe('three versions of every home (COLONY_VIEW.md §9.2)', () => {
+  const land = LANDSCAPES.garden;
+  const homeSlots = [0, 2, 4, 6, 8, 10].map((i) => land.slots[i] as readonly [number, number]);
+
+  it('never gives a home the version of either of its two nearest neighbours', () => {
+    for (let id = 0; id < 30; id++) {
+      const v = homeVersions(id, homeSlots, land.aspect);
+      homeSlots.forEach(([u, y], k) => {
+        const near = homeSlots
+          .slice(0, k)
+          .map(([u2, y2], j) => ({ j, d: Math.hypot((u - u2) * land.aspect, y - y2) }))
+          .sort((a, b) => a.d - b.d)
+          .slice(0, 2);
+        for (const { j } of near) expect(v[k], `colony ${id}, home ${k}`).not.toBe(v[j]);
+      });
+    }
+  });
+
+  it('keeps every home’s version as the town grows', () => {
+    for (let n = 1; n < homeSlots.length; n++)
+      expect(homeVersions(7, homeSlots.slice(0, n), land.aspect)).toEqual(
+        homeVersions(7, homeSlots, land.aspect).slice(0, n),
+      );
+  });
+
+  it('differs from colony to colony', () => {
+    const firsts = new Set([0, 1, 2].map((id) => homeVersions(id, homeSlots, land.aspect)[0]));
+    expect(firsts.size).toBe(3);
+  });
+
+  it('is part of every home in a scene', () => {
+    const g = start('sta', 42);
+    const s = colonyScene(world, g, { ...capital(g, 'sta'), people: 160 });
+    const homes = s?.buildings.filter((b) => b.kind === 'homes') ?? [];
+    expect(homes.length).toBeGreaterThan(2);
+    expect(new Set(homes.map((b) => b.home?.version)).size).toBeGreaterThan(1);
+  });
+});
+
+describe('props between the buildings (COLONY_VIEW.md §9.3)', () => {
+  const earth = body('sol', 'earth');
+  const moon = body('sol', 'moon');
+  const holding = { id: 4, kind: 'colony' as const, capital: false, people: 60 };
+
+  it('suit the colony: a monument only at a capital, first', () => {
+    expect(propsFor({ ...holding, capital: true }, earth, 'garden', 'open')[0]).toBe('monument');
+    expect(propsFor(holding, earth, 'garden', 'open')).not.toContain('monument');
+  });
+
+  it('suit the ground and the envelope', () => {
+    const all = (b: typeof earth, biome: Parameters<typeof propsFor>[2], e: 'open' | 'domed') =>
+      propsFor({ ...holding, people: 400 }, b, biome, e);
+    expect(all(earth, 'garden', 'open')).toEqual(expect.arrayContaining(['orchard', 'wind-turbines']));
+    expect(all(earth, 'garden', 'open')).not.toContain('greenhouse');
+    expect(all(moon, 'airless', 'domed')).toEqual(expect.arrayContaining(['greenhouse', 'radiators']));
+    expect(all(moon, 'airless', 'domed')).not.toContain('wind-turbines');
+    expect(all(moon, 'airless', 'domed')).not.toContain('orchard');
+    expect(all({ ...moon, atmosphere: 'toxic' }, 'haze', 'domed')).not.toContain('solar-field');
+    expect(all({ ...moon, riches: { metals: 2, volatiles: 2, fuel: 2 } }, 'airless', 'domed')).toEqual(
+      expect.arrayContaining(['ore-heap', 'gas-well', 'regolith-plant']),
+    );
+  });
+
+  it('grow in number with the people; an outpost has three, and no homely ones', () => {
+    expect(propsFor({ ...holding, people: 10 }, earth, 'garden', 'open')).toHaveLength(2);
+    expect(propsFor({ ...holding, people: 60 }, earth, 'garden', 'open')).toHaveLength(5);
+    const outpost = propsFor({ ...holding, kind: 'outpost', people: 0 }, moon, 'airless', 'domed');
+    expect(outpost).toHaveLength(3);
+    for (const k of outpost) expect(['landing-beacon', 'supply-crates', 'solar-field', 'radiators']).toContain(k);
+  });
+
+  it('keep the props a colony has as it grows, adding new ones after them', () => {
+    const small = propsFor({ ...holding, people: 30 }, earth, 'garden', 'open');
+    const big = propsFor({ ...holding, people: 90 }, earth, 'garden', 'open');
+    expect(big.slice(0, small.length)).toEqual(small);
+  });
+
+  it('have spots on every ground, never in a slot', () => {
+    for (const land of Object.values(LANDSCAPES)) {
+      const spots = propSpots(land);
+      expect(spots.length, land.id).toBeGreaterThanOrEqual(12);
+      for (const [u, v] of spots) {
+        expect(v > land.horizon && v < 1).toBe(true);
+        for (const [su, sv] of land.slots) expect(Math.hypot((u - su) * land.aspect, v - sv)).toBeGreaterThan(0.02);
+      }
+    }
+  });
+
+  it('never cover a building or each other, in every power’s capital', () => {
+    // Every prop with a stand-in picture, so the test does not wait on the art.
+    const added: string[] = [];
+    for (const a of ['authority', 'cooperative', 'wake'] as const)
+      for (const k of Object.keys(PROP_METRES) as PropKind[]) {
+        const id = OWN_PROPS.includes(k) ? `${a}-${k}` : k;
+        if (!PROPS[id]) {
+          PROPS[id] = { id, aspect: k === 'mast' ? 0.45 : 1.3, metres: PROP_METRES[k] };
+          added.push(id);
+        }
+      }
+    try {
+      for (const f of FACTION_IDS)
+        for (const people of [30, 100, 200]) {
+          const g = start(f, 1);
+          const s = colonyScene(world, g, { ...capital(g, f), people });
+          if (!s) throw new Error('no scene');
+          const land = LANDSCAPES[s.biome];
+          const placed = placeAll(s, land);
+          const props = placeProps(s, land, placed);
+          expect(props.length, `${f} ${people}`).toBeGreaterThanOrEqual(2);
+          for (const p of props) {
+            const me = boxOf(p, land.aspect);
+            for (const b of placed)
+              expect(clearOf(me, boxOf(b, land.aspect)), `${p.prop.kind} by ${b.building.kind}`).toBe(true);
+            for (const q of props)
+              if (q !== p)
+                expect(
+                  boxOf(q, land.aspect).x1 <= me.x0 ||
+                    boxOf(q, land.aspect).x0 >= me.x1 ||
+                    boxOf(q, land.aspect).y1 <= me.y0 ||
+                    boxOf(q, land.aspect).y0 >= me.y1,
+                ).toBe(true);
+          }
+          expect(placeProps(s, land, placed)).toEqual(props);
+          expect(props.every((p) => propArt(s.architecture, p.prop.kind) === p.art)).toBe(true);
+        }
+    } finally {
+      for (const id of added) delete PROPS[id];
     }
   });
 });

@@ -5,7 +5,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { LANDSCAPES, structureArt } from '../../content/colonyArt.ts';
-import { artUrl, placeAll } from '../../render/colonyPlace.ts';
+import { artUrl, placeAll, placeProps } from '../../render/colonyPlace.ts';
 import { type ColonyScene, colonyScene } from '../../render/colonyScene.ts';
 import { drawColonyStill } from '../../render/colonyStill.ts';
 import type { GameState, Holding } from '../../sim/state.ts';
@@ -65,9 +65,13 @@ export function ColonyStill({
       const base = import.meta.env.BASE_URL;
       // The landscape's width on screen is the frame's over the share of it shown (about half).
       const landUrl = artUrl(base, 'landscape', land.id, width * 2);
-      const urls = new Map(
-        placed.map((p) => [p.art.id, artUrl(base, 'structure', p.art.id, p.w * width * 2.2)] as const),
-      );
+      const urls = new Map([
+        ...placed.map((p) => [p.art.id, artUrl(base, 'structure', p.art.id, p.w * width * 2.2)] as const),
+        ...placeProps(stable, land, placed).map(
+          // A prop's picture fits a square: its size is its longer side.
+          (p) => [p.art.id, artUrl(base, 'prop', p.art.id, Math.max(p.w, p.h / land.aspect) * width * 2.2)] as const,
+        ),
+      ]);
       void Promise.all([load(landUrl), ...[...urls].map(([id, url]) => load(url).then((img) => [id, img] as const))])
         .then(([landscape, ...structures]) => {
           if (gone) return;
@@ -103,9 +107,6 @@ export function ColonyStill({
   return (
     <figure class={`colony-still${drawn ? ' is-drawn' : ''}`} data-testid="colony-still" data-biome={scene.biome}>
       <canvas ref={canvas} role="img" aria-label={scene.description} />
-      <span class="badge badge-fiction" title="Made with the game’s art pipeline and laid out by the game">
-        Illustration
-      </span>
       {onOpen && (
         <button type="button" class="colony-open" onClick={onOpen}>
           <span class="colony-open-plate">View {scene.name}</span>

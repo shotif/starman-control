@@ -391,9 +391,6 @@ function DispatchArt({ picture }: { picture: DispatchPicture }) {
         alt={PICTURE_TEXT[picture]}
         decoding="async"
       />
-      <span class="badge badge-fiction" title="Made with the game’s art pipeline; not a photograph">
-        Illustration
-      </span>
     </figure>
   );
 }

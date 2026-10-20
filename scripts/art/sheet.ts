@@ -5,6 +5,8 @@
 //
 //   npm run art:sheet                       # a sheet for every brief with candidates
 //   npm run art:sheet -- --brief style-test-relic
+//   npm run art:sheet -- --brief a,b,c --batch first-props   # one sheet for several briefs,
+//                                           # each candidate captioned with its brief and letter
 
 import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -12,14 +14,14 @@ import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import type { CandidateRecord } from './catalogue.ts';
 
-const { values } = parseArgs({ options: { brief: { type: 'string' } } });
+const { values } = parseArgs({ options: { brief: { type: 'string', multiple: true }, batch: { type: 'string' } } });
 const outDir = resolve(import.meta.dirname, '../../art/out');
 const sheetsDir = resolve(outDir, 'sheets');
 const CAPTION = 56;
 const GAP = 12;
 
 const briefs = values.brief
-  ? [values.brief]
+  ? values.brief.flatMap((b) => b.split(','))
   : existsSync(outDir)
     ? readdirSync(outDir).filter((d) => d !== 'sheets')
     : [];
@@ -31,6 +33,86 @@ mkdirSync(sheetsDir, { recursive: true });
 
 function escapeXml(text: string): string {
   return text.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
+const checkerFor = (w: number, h: number) =>
+  sharp(
+    Buffer.from(
+      `<svg width="${w}" height="${h}"><defs><pattern id="c" width="32" height="32" patternUnits="userSpaceOnUse">` +
+        `<rect width="32" height="32" fill="#5d6470"/><rect width="16" height="16" fill="#8a919c"/>` +
+        `<rect x="16" y="16" width="16" height="16" fill="#8a919c"/></pattern></defs>` +
+        `<rect width="100%" height="100%" fill="url(#c)"/></svg>`,
+    ),
+  )
+    .png()
+    .toBuffer();
+
+function candidatesOf(brief: string): string[] {
+  const dir = resolve(outDir, brief);
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => /\.(png|jpg|webp)$/.test(f))
+    .sort();
+}
+
+/** One candidate as a tile: keyed over a checkerboard where art:key has keyed it. */
+async function tileImage(brief: string, file: string, w: number, h: number): Promise<Buffer> {
+  const dir = resolve(outDir, brief);
+  const keyed = resolve(dir, 'keyed', file.replace(/\.\w+$/, '.png'));
+  if (!existsSync(keyed))
+    return sharp(resolve(dir, file)).resize(w, h, { fit: 'contain', background: '#04060b' }).toBuffer();
+  return sharp(await checkerFor(w, h))
+    .composite([
+      {
+        input: await sharp(keyed)
+          .resize(w, h, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+          .png()
+          .toBuffer(),
+      },
+    ])
+    .png()
+    .toBuffer();
+}
+
+function captionImage(w: number, letter: string, text: string): Buffer {
+  return Buffer.from(
+    `<svg width="${w}" height="${CAPTION}"><rect width="100%" height="100%" fill="#0a1120"/>` +
+      `<text x="12" y="36" font-family="sans-serif" font-size="${text.length > 26 ? 20 : 26}" fill="#e8eef8">` +
+      `<tspan font-weight="bold" fill="#ffb45c">${letter}</tspan>  ${escapeXml(text)}</text></svg>`,
+  );
+}
+
+// Several briefs on one sheet: each candidate captioned with its brief, lettered within it.
+if (values.batch) {
+  const TILE = 400;
+  const cols = 4;
+  const tiles: { image: Buffer; caption: Buffer }[] = [];
+  for (const brief of briefs) {
+    const files = candidatesOf(brief);
+    for (const [i, file] of files.entries()) {
+      const letter = String.fromCharCode(65 + i);
+      tiles.push({ image: await tileImage(brief, file, TILE, TILE), caption: captionImage(TILE, letter, brief) });
+      console.log(`${brief} ${letter}: art/out/${brief}/${file}`);
+    }
+  }
+  const rows = Math.ceil(tiles.length / cols);
+  const width = cols * TILE + (cols + 1) * GAP;
+  const height = rows * (TILE + CAPTION) + (rows + 1) * GAP;
+  const composites = tiles.flatMap((t, i) => {
+    const left = GAP + (i % cols) * (TILE + GAP);
+    const top = GAP + Math.floor(i / cols) * (TILE + CAPTION + GAP);
+    return [
+      { input: t.image, left, top },
+      { input: t.caption, left, top: top + TILE },
+    ];
+  });
+  const path = resolve(sheetsDir, `${values.batch}.jpg`);
+  await sharp({ create: { width, height, channels: 3, background: '#04060b' } })
+    .composite(composites)
+    .jpeg({ quality: 84 })
+    .toFile(path);
+  console.log(`sheet: art/out/sheets/${values.batch}.jpg`);
+  process.exit(0);
 }
 
 for (const brief of briefs) {

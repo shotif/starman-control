@@ -5,7 +5,7 @@
 import type { KeySpec } from '../scripts/art/keying.ts';
 import type { Aspect } from '../scripts/art/providers.ts';
 
-export type SeriesId = 'portrait' | 'illustration' | 'landscape' | 'structure';
+export type SeriesId = 'portrait' | 'illustration' | 'landscape' | 'structure' | 'prop';
 
 export interface SeriesStyle {
   /** Shape of every picture in the series. */
@@ -88,6 +88,25 @@ export const SERIES: Record<SeriesId, SeriesStyle> = {
       'Muted palette, painterly brushwork, crisp clean edges against the background.',
     ].join(' '),
     avoid: `${AVOID_ALWAYS}, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic`,
+    key: { backdrop: 'magenta', mode: 'cutout' },
+  },
+  // Small pieces between the buildings (COLONY_VIEW.md §9.3), cut out like them and drawn small.
+  prop: {
+    aspect: '1:1',
+    widths: [256, 512],
+    style: [
+      "A single small piece of colony equipment for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon.",
+      'Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left,',
+      'looking down at a shallow angle of about fifteen degrees, so its sides are seen more than its top.',
+      'Lit from the upper left, with any lamps or lit panels glowing warmly.',
+      'The whole object is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base:',
+      'no block of earth, plinth, platform edge or floating island under it.',
+      'All round it is a {backdrop} background: no surrounding ground, no cast shadow and nothing else in the picture.',
+      'Grounded, believable science-fiction equipment with real materials and wear, like concept art for a film,',
+      'with ladders, doors and railings sized for people so that it reads at its true size.',
+      'Muted palette, painterly brushwork, crisp clean edges against the background.',
+    ].join(' '),
+    avoid: `${AVOID_ALWAYS}, ground, terrain, grass, shadows on the ground, people, vehicles, buildings, a block of soil or rock under it, a floating island, an isometric game-tile look, magenta or pink on the object itself, cartoon style, glossy toy-like plastic`,
     key: { backdrop: 'magenta', mode: 'cutout' },
   },
 };

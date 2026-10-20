@@ -2,7 +2,8 @@
 // star's colour, the painted landscape of its world's ground, and its painted buildings in their
 // slots, each on a soft contact shadow, all in the star's light with haze over the far land; and
 // life (colonyLife.ts): a slow day with lights coming on at dusk, people walking between doors,
-// rovers, the shuttle on the shipyard's pad, the weather. Seen from a ridge with an orthographic
+// rovers, the shuttle on the shipyard's pad, the weather; and small props between the buildings.
+// Seen from a ridge with an orthographic
 // camera, wider than the screen: drag to pan, pinch or the wheel to zoom, tap a building for its
 // card. It borrows the map's renderer while the map pauses, as the system view does, so a phone
 // keeps one WebGL context. With reduced motion nothing moves: a still scene in late-afternoon light.
@@ -19,7 +20,7 @@ import {
   weatherAmount,
   weatherOf,
 } from './colonyLife.ts';
-import { artUrl, METRE, type Placed, placeAll, townBounds } from './colonyPlace.ts';
+import { artUrl, METRE, type Placed, type PlacedProp, placeAll, placeProps, townBounds } from './colonyPlace.ts';
 import type { ColonyScene, SceneBuilding } from './colonyScene.ts';
 import { GestureTracker } from './gestures.ts';
 import type { Rect } from './mapMath.ts';
@@ -213,6 +214,13 @@ interface BuildingMesh {
   alpha: { w: number; h: number; data: Uint8ClampedArray } | null;
 }
 
+/** A prop between the buildings: drawn like one, but never chosen by a tap. */
+interface PropMesh {
+  placed: PlacedProp;
+  mesh: Mesh;
+  shadow: Mesh;
+}
+
 interface Figure {
   walker: Walker;
   mesh: Mesh;
@@ -275,6 +283,7 @@ export class ColonyView {
   private readonly lightU = { value: new THREE.Vector3(1, 1, 1) };
   private landMesh: Mesh | null = null;
   private buildings: BuildingMesh[] = [];
+  private props: PropMesh[] = [];
   private figures: Figure[] = [];
   private vehicles: Vehicle[] = [];
   private shuttle: { mesh: Mesh; glow: Mesh; pad: Placed } | null = null;
@@ -468,8 +477,15 @@ export class ColonyView {
 
   private async buildBuildings(): Promise<void> {
     const placed = placeAll(this.scene, this.land);
+    const propsPlaced = placeProps(this.scene, this.land, placed);
     const maps = await Promise.all(
       placed.map((p) => this.texture(artUrl(this.opts.base, 'structure', p.art.id, this.wantedWidth(p.w * this.A)))),
+    );
+    const propMaps = await Promise.all(
+      // A prop's picture fits a square: its size is its longer side.
+      propsPlaced.map((p) =>
+        this.texture(artUrl(this.opts.base, 'prop', p.art.id, this.wantedWidth(Math.max(p.w * this.A, p.h)))),
+      ),
     );
     const shuttleArt = STRUCTURES[`${this.scene.architecture}-shuttle`];
     const yard = placed.find((p) => p.building.kind === 'shipyard');
@@ -498,6 +514,26 @@ export class ColonyView {
       shadow.renderOrder = 3 + i * 2;
       this.three.add(shadow, mesh);
       return { placed: p, mesh, shadow, alpha: alphaOf(map) };
+    });
+    for (const p of this.props) this.drop(p.mesh, p.shadow);
+    this.props = propsPlaced.map((p, i) => {
+      const w = p.w * this.A;
+      const far = Math.max(0, Math.min(1, 1 - (p.v - this.land.horizon) / 0.45));
+      const mesh: Mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, p.h),
+        this.artMaterial(propMaps[i] as THREE.Texture, { amount: this.scene.sky.haze * far * 0.35, band: 0 }, 1),
+      );
+      const baseY = 1 - p.v;
+      mesh.position.set(p.u * this.A, baseY + p.h / 2, 0);
+      // In depth among the buildings, just behind anyone walking at the same depth.
+      const behind = placed.filter((b) => b.v <= p.v).length;
+      mesh.renderOrder = 3 + behind * 2 - 0.6;
+      const shadow = this.softMesh('#0a0806', 0.36, false);
+      shadow.scale.set(w * 1.2, w * 0.32, 1);
+      shadow.position.set(p.u * this.A + w * 0.08, baseY + p.h * 0.04, 0);
+      shadow.renderOrder = mesh.renderOrder - 0.1;
+      this.three.add(shadow, mesh);
+      return { placed: p, mesh, shadow };
     });
     this.applyScaffolds();
     this.buildEmblem();
@@ -802,7 +838,7 @@ export class ColonyView {
   }
 
   /** Where a building's picture is on the canvas (CSS pixels). */
-  private rectOf(p: Placed): { x: number; y: number; w: number; h: number } {
+  private rectOf(p: { u: number; v: number; w: number; h: number }): { x: number; y: number; w: number; h: number } {
     const foot = this.toScreen(p.u * this.A, 1 - p.v);
     const w = p.w * this.A * this.view.k;
     const h = p.h * this.view.k;
@@ -1080,9 +1116,20 @@ export class ColonyView {
     return { ...this.view };
   }
 
+  /** Every prop drawn, where it is on the canvas (CSS pixels), for tests. */
+  propsOnScreen(): { kind: string; x: number; y: number; w: number; h: number }[] {
+    return this.props.map((p) => ({ kind: p.placed.prop.kind, ...this.rectOf(p.placed) }));
+  }
+
   /** What is drawn and how dark it is, for tests. */
-  get info(): { biome: string; architecture: string; buildings: number } {
-    return { biome: this.scene.biome, architecture: this.scene.architecture, buildings: this.buildings.length };
+  get info(): { biome: string; architecture: string; buildings: number; props: number; pictures: string[] } {
+    return {
+      biome: this.scene.biome,
+      architecture: this.scene.architecture,
+      buildings: this.buildings.length,
+      props: this.props.length,
+      pictures: [...this.buildings.map((b) => b.placed.art.id), ...this.props.map((p) => p.placed.art.id)],
+    };
   }
 
   /** Life in the scene, for tests. */
@@ -1116,6 +1163,7 @@ export class ColonyView {
     this.detach();
     this.gestures.releaseAll();
     for (const b of this.buildings) this.drop(b.mesh, b.shadow);
+    for (const p of this.props) this.drop(p.mesh, p.shadow);
     for (const v of this.vehicles) this.drop(v.mesh, v.lights);
     if (this.shuttle) this.drop(this.shuttle.mesh, this.shuttle.glow);
     for (const f of this.figures) this.three.remove(f.mesh);
@@ -1127,6 +1175,7 @@ export class ColonyView {
       this.weather.points.material.dispose();
     }
     this.buildings = [];
+    this.props = [];
     if (this.landMesh) this.drop(this.landMesh);
     if (this.emblem) {
       this.emblem.mesh.geometry.dispose();

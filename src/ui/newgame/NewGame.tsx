@@ -1,7 +1,7 @@
 // A new game (§10; FIRST_IMPRESSION.md §3): the three powers as tall cards, each with its home in a
 // picture, its leader's face and its emblem, then where it starts, how it plays, its trait and its
 // shipmakers; and a seed for those who want the same game twice. Side by side on a desktop; one at
-// a time on a phone, swiped sideways. The pictures are illustrations (D-23), and say so.
+// a time on a phone, swiped sideways. How the pictures are made is said in the codex's credits (D-29).
 
 import { useRef, useState } from 'preact/hooks';
 import { startGame, world } from '../../app/game.ts';
@@ -56,9 +56,6 @@ function PowerCard({ id, starting, onStart }: { id: FactionId; starting: Faction
             alt={art.scene}
             decoding="async"
           />
-          <span class="badge badge-fiction power-badge" title="Made with the game’s art pipeline; not a photograph">
-            Illustration
-          </span>
         </div>
         <div class="power-body">
           <div class="power-id">
@@ -191,7 +188,7 @@ export function NewGame() {
         </details>
         <p class="dim">
           Every star is real. Every world nobody has observed, and every lane, power and person, is the game’s fiction,
-          and says so. The pictures are illustrations made with the game’s art pipeline.
+          and says so.
         </p>
       </footer>
     </main>

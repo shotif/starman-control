@@ -4,7 +4,16 @@
 // renderer's numbers, not the simulation's, so fractions are fine. Nothing here knows which power
 // the player is: a holding's owner names its architecture (D-08, D-28).
 
-import type { Biome, Envelope, HomeSize, StructureKind } from '../content/colonyArt.ts';
+import {
+  type Biome,
+  type Envelope,
+  type HomeLook,
+  type HomeSize,
+  type HomeVersion,
+  LANDSCAPES,
+  type PropKind,
+  type StructureKind,
+} from '../content/colonyArt.ts';
 import { type ArchitectureId, FACTIONS, type FactionMark } from '../content/factions.ts';
 import { PROJECTS, type ProjectId } from '../content/projects.ts';
 import type { Atmosphere, Body } from '../sim/bodies.ts';
@@ -21,11 +30,16 @@ export interface SceneBuilding {
   kind: StructureKind;
   /** For a project or its scaffold. */
   project?: ProjectId;
-  home?: { size: HomeSize; envelope: Envelope };
+  home?: HomeLook;
   /** Which of the landscape's slots it stands in. */
   slot: number;
   /** A scaffold: the share of its industry already put in, 0 to 1. */
   progress?: number;
+}
+
+/** A small piece between the buildings (COLONY_VIEW.md §9.3); where it stands is worked out when it is placed. */
+export interface SceneProp {
+  kind: PropKind;
 }
 
 export interface SceneSky {
@@ -68,6 +82,8 @@ export interface ColonyScene {
   /** How many slots the scene lays out (the world's size, or more if its buildings need them). */
   slots: number;
   buildings: SceneBuilding[];
+  /** Small pieces between the buildings; left out where they would cover one. */
+  props: SceneProp[];
   /** People to draw walking about. */
   people: number;
   /** The scene in words, for screen readers. */
@@ -126,6 +142,77 @@ export function homesFor(peopleTenths: number, room: number): HomeSize[] {
   return Array.from({ length: count }, (_, i) =>
     i > 0 && i === count - 1 ? (Math.max(1, size - 1) as HomeSize) : size,
   );
+}
+
+/**
+ * Which version of its picture each home shows (COLONY_VIEW.md §9.2): from the colony's id and the
+ * home's place, avoiding the versions of the two nearest homes already standing. Homes are added
+ * in order as the colony grows, so a home's version never changes.
+ */
+export function homeVersions(id: number, slots: readonly (readonly [number, number])[], aspect: number): HomeVersion[] {
+  const out: HomeVersion[] = [];
+  slots.forEach(([u, v], k) => {
+    const near = slots
+      .slice(0, k)
+      .map(([u2, v2], j) => ({ j, d: Math.hypot((u - u2) * aspect, v - v2) }))
+      .sort((a, b) => a.d - b.d || a.j - b.j)
+      .slice(0, 2)
+      .map((x) => out[x.j]);
+    const first = (id + k) % 3;
+    const pick = [0, 1, 2].map((n) => ((first + n) % 3) as HomeVersion).find((n) => !near.includes(n));
+    out.push(pick ?? (first as HomeVersion));
+  });
+  return out;
+}
+
+/** The props in the order a colony gains them: the monument, the power's own pieces, then the shared ones. */
+const PROP_ORDER: readonly PropKind[] = [
+  'water-tanks',
+  'mast',
+  'greenhouse',
+  'cargo',
+  'solar-field',
+  'landing-beacon',
+  'storage-spheres',
+  'supply-crates',
+  'wind-turbines',
+  'radiators',
+  'orchard',
+  'ore-heap',
+  'gas-well',
+  'regolith-plant',
+];
+
+/** Which props suit a holding (COLONY_VIEW.md §9.3), and how many it shows. */
+export function propsFor(
+  h: Pick<Holding, 'id' | 'kind' | 'capital' | 'people'>,
+  body: Pick<Body, 'atmosphere' | 'riches'>,
+  biome: Biome,
+  envelope: Envelope,
+): PropKind[] {
+  const outpost = h.kind === 'outpost';
+  const fits: Record<PropKind, boolean> = {
+    monument: h.capital,
+    'water-tanks': !outpost,
+    mast: !outpost,
+    cargo: !outpost,
+    'storage-spheres': !outpost,
+    greenhouse: !outpost && (envelope === 'domed' || biome === 'tundra'),
+    'solar-field': biome !== 'haze',
+    'landing-beacon': true,
+    'supply-crates': true,
+    'wind-turbines': !outpost && envelope === 'open' && (body.atmosphere === 'thin' || body.atmosphere === 'dense'),
+    radiators: biome === 'airless' || biome === 'desert' || biome === 'inferno',
+    orchard: !outpost && envelope === 'open' && (biome === 'garden' || biome === 'shore' || biome === 'steppe'),
+    'ore-heap': body.riches.metals === 2,
+    'gas-well': body.riches.volatiles === 2,
+    'regolith-plant': body.riches.fuel === 2,
+  };
+  const list = PROP_ORDER.filter((k) => fits[k]);
+  const turn = list.length > 0 ? h.id % list.length : 0;
+  const turned = [...(fits.monument ? (['monument'] as const) : []), ...list.slice(turn), ...list.slice(0, turn)];
+  const count = outpost ? 3 : 2 + Math.floor(h.people / 20);
+  return turned.slice(0, count);
 }
 
 /** "a shipyard, a lane station and a mine". */
@@ -195,8 +282,16 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
   if (!outpost) {
     const from = h.capital ? 1 : 0;
     const room = Math.max(1, Math.ceil(slots / 2) - from);
-    homesFor(h.people, room).forEach((size, i) => {
-      buildings.push({ kind: 'homes', home: { size, envelope }, slot: 2 * (i + from) });
+    const sizes = homesFor(h.people, room);
+    const land = LANDSCAPES[biomeOf(body)];
+    const homeSlots = sizes.map((_, i) => land.slots[2 * (i + from)] ?? ([0.5, 0.5] as const));
+    const versions = homeVersions(h.id, homeSlots, land.aspect);
+    sizes.forEach((size, i) => {
+      buildings.push({
+        kind: 'homes',
+        home: { size, envelope, version: versions[i] ?? 0 },
+        slot: 2 * (i + from),
+      });
     });
     if (envelope === 'open') {
       const used = new Set(buildings.map((b) => b.slot));
@@ -233,6 +328,7 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
     outpost,
     slots,
     buildings,
+    props: propsFor(h, body, biomeOf(body), envelope).map((kind) => ({ kind })),
     people: outpost ? 0 : Math.min(40, Math.max(2, Math.round((h.people / 10) * 3))),
     description,
   };

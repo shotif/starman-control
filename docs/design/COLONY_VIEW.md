@@ -1,6 +1,7 @@
 # The colony in pictures (proposal)
 
-**Status:** built, 20 October 2026, in increments 14 to 17 (§6, and *As built* in §8). The owner
+**Status:** built, 20 October 2026, in increments 14 to 17 (§6, and *As built* in §8); increment
+18 (§9) under way. The owner
 answered [D-28](../DECISIONS.md#d-28--the-colony-view--decided) the same day: a living diorama,
 seen from a ridge, on a screen of its own, and **a separate set of buildings for each power**; and
 approved the style slice before the rest was made.
@@ -153,8 +154,9 @@ all; about $2.70 was spent before this.
 - Low quality: 512 px sprites, no weather, at most 20 people; the adaptive frame rate of the map
   (LIVING_MAP.md §8).
 - A written description of the scene for screen readers ("Tau Ceti e: a domed town of ten million
-  under a pale yellow sun, with a shipyard and a lane station; a mine is being built"), the
-  *Illustration* badge, and 44 px targets for every building on a phone.
+  under a pale yellow sun, with a shipyard and a lane station; a mine is being built"), and 44 px
+  targets for every building on a phone. (The *Illustration* badge first planned here was removed
+  everywhere in increment 18, D-29: the codex's credits say how the pictures are made.)
 
 ## 6. Building it
 
@@ -164,6 +166,7 @@ all; about $2.70 was spent before this.
 | 15 | **The diorama** | `colonyScene()` (pure, tested, like `systemLayout`), the sky shader, landscape and slots, buildings by state, the scaffold and its progress, the screen on phone and desktop, the way in and out; the pictures it needs: every landscape, and every power's homes and projects |
 | 16 | **Life** | people, rovers, the shuttle, weather, day and night with lit windows, the moments, tapping buildings, reduced motion, the adaptive frame rate; the shuttles and the rover |
 | 17 | **The full set** | the capitals' halls, outposts, the fields; the ways in from the empire and the system view; contact sheets to the owner; the budget |
+| 18 | **More homes, and things between them** (D-29, D-30) | no *Illustration* labels; two more versions of every home; about 25 small props in the gaps between the buildings (§9) |
 
 Each increment's pictures are shown to the owner as lettered contact sheets when they are chosen.
 
@@ -315,3 +318,123 @@ Each increment's pictures are shown to the owner as lettered contact sheets when
 - **Tests:** `colonyScene.test.ts` (the hall, an outpost's rig, Earth's fields, every power's hall
   and rig); `colony.spec.ts` (each capital's buildings with its hall; a finished mine seen from the
   report; the empire's *View*; an outpost founded and seen as its rig).
+
+### Increment 18: more homes, and things between them (20 October 2026, first part)
+
+- **No *Illustration* labels** on the colony's still, the scene's bar, the report's pictures or the
+  new-game cards (D-29). The codex's *Sources and licences* says how the pictures are made, with a
+  link to the art records; the *Fiction* labels stay.
+- **Home versions** (§9.2): every home names its version, worked out from the colony's id and its
+  place; a version without a picture yet shows the first. The first batch made each capital's
+  size-2 homes in versions b and c, so every power's capital already shows three different homes.
+- **Props** (§9.3): a new series `prop`; the scene chooses its props from the world and the colony,
+  and they are placed beside the buildings once the buildings stand. The first batch is 13 props:
+  every power's monument and mast, the Authority's cargo stack, the Cooperative's and the Wake's
+  greenhouses, and the shared solar field, landing beacon, storage spheres and supply crates. The
+  still in the panel draws them too.
+- **The pictures:** 38 candidates, about $1.90 (the project's total is now **about $10.25** of the
+  owner's $25). Chosen: homes Authority open b **A**, c **B**; Cooperative domed b **A**, c **B**;
+  Wake domed b **A**, c **A**; props all **A** but the Wake's mast and both greenhouses (**B**).
+  The lettered contact sheets and screenshots of four colonies went to the owner before the rest
+  (30 homes and 12 props) is made.
+- **Speed:** the budget for a colony's first pictures on a phone is now measured per power (§9.3):
+  890.8 KB of 1 MB at most, for the Wake's sealed towns.
+- **Tests:** `colonyScene.test.ts` (versions differ from the two nearest neighbours and never change
+  as the town grows; props suit the ground and the envelope, grow with the people, never cover a
+  building or each other; the art records of the new series); `colony.spec.ts` (the Cooperative's
+  capital shows homes b and c and its monument; every capital has props; no *Illustration* label);
+  `data.spec.ts` (the codex's credits).
+
+## 9. More homes, and things between them (increment 18, design)
+
+The owner's feedback on the colony view (D-29, D-30 1a, 2a and 2c, 20 October 2026): no
+*Illustration* labels; homes that differ from their neighbours; and small things between the
+buildings, so a town looks lived in. Written before any picture is made, as the owner asked.
+
+**Out of scope:** new rules (props and versions are scenery, worked out from the game and saved
+nowhere); second versions of the projects, halls and rigs (2b) and cold and hot homes (2d), which
+the owner did not choose; props that can be tapped.
+
+### 9.1 No *Illustration* labels (D-29)
+
+The labels go from the colony's still, the scene's bar, the report's pictures and the new-game
+cards. The codex's *Sources and licences* says once that the pictures are made with an image model
+from the game's own briefs, chosen by hand, with every prompt in the art records; every record keeps
+`aiGenerated: true`. The *Fiction* labels stay.
+
+### 9.2 Three versions of every home
+
+Every home picture (3 sizes × open and domed × 3 architectures) gets two more versions, **b** and
+**c**, 36 pictures to keep: the same subject told differently (another arrangement, another roof
+line, other details), the same series, keying and metres as the first, so they stand together.
+Their briefs are `<architecture>-homes-<size>-<envelope>-b` and `-c`.
+
+**Which version a home shows** is worked out from its colony and its slot, never saved:
+
+1. Homes stand in the even slots from the middle out, as now, and are added in that order as the
+   colony grows.
+2. The first home takes version *(colony id) mod 3*; each next one starts from *(colony id + its
+   place in the order) mod 3* and takes the first version that neither of the two nearest homes
+   already standing shows (nearest as drawn on the landscape).
+3. So **neighbouring homes differ**, and since a home's version depends only on the homes before it,
+   **a home keeps its version as the town grows**. When the colony passes a size (small houses,
+   blocks, towers) a home shows the new size in the same version.
+4. A version with no picture yet falls back to the first, so the game never waits on art.
+
+### 9.3 Props between the buildings
+
+About 25 small pieces, cut out like the buildings: some in each power's architecture, some shared.
+
+| Prop | Whose | Where it stands (suited to the ground and the envelope) | Metres |
+| --- | --- | --- | --- |
+| Water tanks | each power | every colony | 10 |
+| Mast (aerials and a light) | each power | every colony | 7 |
+| Cargo stack | each power | every colony | 14 |
+| Greenhouse | each power | domed colonies, and open-air ones on tundra | 16 |
+| Monument | each power | the capital only, the first prop | 10 |
+| Solar field | shared | everywhere but under a choking haze | 22 |
+| Landing beacon | shared | every colony and outpost | 6 |
+| Supply crates | shared | every colony and outpost | 7 |
+| Storage spheres | shared | every colony | 12 |
+| Wind turbines | shared | open-air colonies (a breathable sky) | 18 |
+| Radiator fins | shared | airless, desert and inferno grounds | 14 |
+| Orchard | shared | open-air colonies on garden, shore and steppe | 18 |
+| Ore heap | shared | a world rich in metals | 14 |
+| Gas well | shared | a world rich in volatiles | 10 |
+| Regolith plant | shared | a world rich in fusion fuel | 14 |
+
+**Where they stand:**
+
+1. **Buildings first.** The buildings are placed in their slots as before; props fill what is left,
+   so no prop ever takes a building's place, and nothing a colony builds waits on a prop.
+2. **Which props:** the table's props that suit the colony, in a fixed order (the monument first,
+   then the power's own pieces, then the shared ones), turned by the colony's id so towns differ.
+   The colony shows the first 2, plus one for every 2 million people (an outpost: three of the
+   beacon, crates and its energy, solar or radiators). As the colony grows it keeps the props it
+   has and adds the next ones.
+3. **Beside the buildings.** Each prop, in that order, takes the first place free: beside a
+   building's foot, left then right, building by building in the order the town fills its slots;
+   then by the corners of the slots still empty. So a small town's props stand close by its first
+   buildings, and a big town's in the gaps between them.
+4. **Never covering a building, never taking its tap.** A prop may stand in front of a building
+   only where it hides a little of its foot (no more than an eighth of the picture, and no higher
+   than two fifths of the way up); behind one, no more than half of the prop may be hidden; it
+   never overlaps another prop. Where a home grows into a prop's place, the prop makes way to the
+   next place free. Props cannot be tapped or hovered: a tap goes to the building, as now. People
+   and rovers walk past them in depth.
+5. **At night** their lights glow like the buildings' windows (the beacon's lamp, the mast's light).
+
+**Pictures:** a new series `prop`, like `structure` but for a small piece of colony equipment,
+published to fit a square of 256 and 512 px since props are drawn small (so a tall mast is no
+heavier than a wide solar field); cut out of magenta like the buildings.
+
+**Speed:** the budget for a colony's first pictures on a phone (1 MB) is measured per architecture
+from now on: the largest landscape, that power's heaviest set of homes, projects, hall and shuttle,
+the shared pieces, and the heaviest props one colony can show at once, at the phone's widths.
+
+**Order of work:** the code first (versions and props from whatever pictures exist), then a first
+batch (the size-2 homes of each capital, b and c, and twelve props), shown to the owner as lettered
+contact sheets with screenshots of a few colonies; then the rest once the owner has seen them.
+
+**Cost:** about $1.80 for the first batch (36 candidates) and about $4.30 for the rest (86), two
+candidates each: about $6.10, within D-27.

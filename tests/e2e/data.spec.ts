@@ -89,6 +89,12 @@ test.describe('the codex', () => {
     await expect(page.locator('.system-card .card-name').first()).toHaveText(/^\d|^A/);
   });
 
+  test('says once, in its credits, how the pictures are made (D-29)', async ({ page }) => {
+    await page.goto('./#/codex');
+    await expect(page.getByTestId('picture-credits')).toContainText('made with an image model');
+    await expect(page.getByRole('link', { name: 'the art records' })).toHaveAttribute('href', /art\/manifest\.json$/);
+  });
+
   test('never scrolls sideways', async ({ page }) => {
     await page.goto('./#/codex');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

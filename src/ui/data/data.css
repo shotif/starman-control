@@ -417,6 +417,14 @@
   text-transform: uppercase;
 }
 
+.codex-methods h3 {
+  margin: 1rem 0 0.4rem;
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
 .codex-methods li {
   margin: 0.5rem 0;
 }

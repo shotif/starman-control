@@ -8,11 +8,12 @@ const press = (target: Locator, project: string) => (isDesktop(project) ? target
 interface ColonyHook {
   __colony: {
     look: { cx: number; cy: number; k: number };
-    info: { biome: string; architecture: string; buildings: number };
+    info: { biome: string; architecture: string; buildings: number; props: number; pictures: string[] };
     life: { people: number; vehicles: number; shuttle: boolean; weather: string | null; night: number; clock: number };
     setClock(seconds: number): void;
     pointOn(slot: number): { x: number; y: number } | null;
     buildingsOnScreen(): { kind: string; slot: number; x: number; y: number; w: number; h: number }[];
+    propsOnScreen(): { kind: string; x: number; y: number; w: number; h: number }[];
   };
 }
 
@@ -71,7 +72,8 @@ test('the Cooperative’s capital is drawn as a domed city on a warm shore, and 
   await expect(still.getByRole('img')).toHaveAccessibleName(
     'Tau Ceti e: a domed city of about 10 million under a yellow sun, with a shipyard and a lane station.',
   );
-  await expect(still).toContainText('Illustration');
+  // No label says how the picture was made (D-29); the codex's credits do.
+  await expect(still).not.toContainText('Illustration');
   const box = await still.boundingBox();
   expect(box && box.width / box.height).toBeCloseTo(2, 1);
   // Something is drawn: the canvas is not one flat colour.
@@ -100,7 +102,18 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
   page.on('pageerror', (e) => errors.push(e.message));
   const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
   await enterColony(page, panel, 'Tau Ceti e', project);
-  expect(await colony(page)).toEqual({ biome: 'shore', architecture: 'cooperative', buildings: 6 });
+  const scene = await colony(page);
+  expect(scene).toMatchObject({ biome: 'shore', architecture: 'cooperative', buildings: 6 });
+  // Neighbouring homes show different versions of their picture, and props stand between the
+  // buildings (COLONY_VIEW.md §9).
+  const homes = scene.pictures.filter((p) => p.startsWith('cooperative-homes-'));
+  expect(new Set(homes).size).toBe(homes.length);
+  expect(homes).toEqual(expect.arrayContaining(['cooperative-homes-2-domed-b', 'cooperative-homes-2-domed-c']));
+  expect(scene.props).toBeGreaterThanOrEqual(3);
+  expect(scene.pictures).toContain('cooperative-monument');
+  // Every prop the scene chose is drawn.
+  const props = await page.evaluate(() => (window as unknown as ColonyHook).__colony.propsOnScreen());
+  expect(props.length).toBe(scene.props);
   // The town is in view, between the bars and above the sheet.
   const stage = await page.getByTestId('map').boundingBox();
   const seen = (await onScreen(page)).filter(
@@ -108,7 +121,7 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
   );
   expect(seen.length).toBeGreaterThanOrEqual(3);
   await expect(page.locator('.colony-bar').getByRole('button', { name: '← Tau Ceti' })).toBeVisible();
-  await expect(page.locator('.colony-bar')).toContainText('Illustration');
+  await expect(page.locator('.colony-bar')).not.toContainText('Illustration');
   // The panel stays, without its still.
   await expect(panel.getByRole('heading', { name: 'Tau Ceti e' })).toBeVisible();
   await expect(panel.getByTestId('colony-still')).toHaveCount(0);
@@ -163,7 +176,8 @@ test('each power builds in its own way, on its own ground', async ({ page }, inf
   ] as const) {
     const panel = await openCapital(page, power, capital, seed, project);
     await enterColony(page, panel, capital, project);
-    expect(await colony(page)).toEqual({ biome, architecture, buildings });
+    expect(await colony(page)).toMatchObject({ biome, architecture, buildings });
+    expect((await colony(page)).props).toBeGreaterThanOrEqual(2);
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('map')).not.toHaveAttribute('data-colony-ready', '1');
   }

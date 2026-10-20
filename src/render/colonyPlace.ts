@@ -3,13 +3,19 @@
 // across its width, `v` down its height.
 
 import {
+  boxOf,
+  clearOf,
   LANDSCAPE_WIDTHS,
   type LandscapeArt,
+  overlapOf,
+  PROP_WIDTHS,
+  propArt,
+  propSpots,
   STRUCTURE_WIDTHS,
   type StructureArt,
   structureArt,
 } from '../content/colonyArt.ts';
-import type { ColonyScene, SceneBuilding } from './colonyScene.ts';
+import type { ColonyScene, SceneBuilding, SceneProp } from './colonyScene.ts';
 
 /** How wide a metre is, as a share of the picture's width, per unit of depth below the horizon. */
 export const METRE = 0.0105;
@@ -48,6 +54,60 @@ export function placeAll(scene: ColonyScene, land: LandscapeArt): Placed[] {
     .sort((a, b) => a.v - b.v || a.u - b.u);
 }
 
+export interface PlacedProp {
+  prop: SceneProp;
+  art: StructureArt;
+  u: number;
+  v: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * Where the props stand (COLONY_VIEW.md §9.3), farthest first: in the colony's order, each takes
+ * the first place where it would neither cover a building, hide behind one, nor overlap another
+ * prop: beside each building's foot, left then right, in the order the town fills its slots; then
+ * by the corners of the slots still empty (`propSpots`). A prop with no place left is not shown.
+ * Props never take a building's place or its tap: buildings are placed first.
+ */
+export function placeProps(scene: ColonyScene, land: LandscapeArt, buildings: Placed[]): PlacedProp[] {
+  const others = buildings.map((b) => boxOf(b, land.aspect));
+  const town = [...buildings].sort((a, b) => a.building.slot - b.building.slot);
+  const kept: PlacedProp[] = [];
+  const at = (prop: SceneProp, art: StructureArt, u: number, v: number): PlacedProp => {
+    const w = art.metres * METRE * (v - land.horizon);
+    return { prop, art, u, v, w, h: (w / art.aspect) * land.aspect };
+  };
+  const fits = (p: PlacedProp) => {
+    const me = boxOf(p, land.aspect);
+    return (
+      p.u - p.w / 2 > 0 &&
+      p.u + p.w / 2 < 1 &&
+      others.every((b) => clearOf(me, b)) &&
+      kept.every((k) => overlapOf(me, boxOf(k, land.aspect)) <= 0)
+    );
+  };
+  for (const prop of scene.props) {
+    const art = propArt(scene.architecture, prop.kind);
+    if (!art) continue;
+    const places: (readonly [number, number])[] = [];
+    for (const b of town) {
+      const v = b.v + 0.004;
+      const half = (art.metres * METRE * (v - land.horizon)) / 2;
+      places.push([b.u - b.w / 2 - half, v], [b.u + b.w / 2 + half, v]);
+    }
+    places.push(...propSpots(land));
+    for (const [u, v] of places) {
+      const p = at(prop, art, u, v);
+      if (fits(p)) {
+        kept.push(p);
+        break;
+      }
+    }
+  }
+  return kept.sort((a, b) => a.v - b.v || a.u - b.u);
+}
+
 /** The town's extent: from the left of its leftmost building to the right of its rightmost, and down. */
 export function townBounds(placed: Placed[]): { left: number; right: number; top: number; bottom: number } {
   let left = 0.4;
@@ -80,8 +140,9 @@ export function frameTown(
 }
 
 /** The file for a picture at the smallest published width that is sharp enough. */
-export function artUrl(base: string, kind: 'landscape' | 'structure', id: string, pixelsWide: number): string {
-  const widths: readonly number[] = kind === 'landscape' ? LANDSCAPE_WIDTHS : STRUCTURE_WIDTHS;
+export function artUrl(base: string, kind: 'landscape' | 'structure' | 'prop', id: string, pixelsWide: number): string {
+  const widths: readonly number[] =
+    kind === 'landscape' ? LANDSCAPE_WIDTHS : kind === 'prop' ? PROP_WIDTHS : STRUCTURE_WIDTHS;
   const width = widths.find((x) => x >= pixelsWide * 0.9) ?? widths.at(-1);
   return `${base}art/${kind}/${id}-${width}.webp`;
 }

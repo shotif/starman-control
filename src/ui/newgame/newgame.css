@@ -198,14 +198,6 @@
     linear-gradient(to top, color-mix(in srgb, var(--faction) 16%, transparent), transparent 50%);
 }
 
-.power-badge {
-  position: absolute;
-  top: 0.65rem;
-  left: 0.65rem;
-  z-index: 1;
-  background: rgba(4, 6, 11, 0.62);
-}
-
 .power-body {
   position: relative;
   z-index: 1;

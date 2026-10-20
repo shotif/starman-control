@@ -1,4 +1,4 @@
-# Handover: Starman Control, 20 October 2026 (updated after the colony view and the owner's choices)
+# Handover: Starman Control, 20 October 2026 (updated during increment 18 and the M2 design)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -31,50 +31,41 @@ way in.
   star's colour; each power's own architecture (the owner chose a set of buildings per power); a
   slow day with lit windows at night; people, rovers, the power's shuttle, weather; a building
   tapped has its card. 51 pictures, keyed from flat backdrops (`npm run art:key`).
-- **Numbers:** 252 unit tests and about 150 browser journeys pass; the title loads 18.9 KB of its
-  40 KB budget, a game's map about 285 KB of 900 KB, opening a colony 9 KB of code more (40 KB) and
-  its heaviest first pictures on a phone under 1 MB; state version 6 (the colony view changed no
-  rules and no saves).
+- **Increment 18 is half built** (D-29, D-30 2a and 2c; [COLONY_VIEW.md §9](design/COLONY_VIEW.md#9-more-homes-and-things-between-them-increment-18-design)
+  and its *As built*): no *Illustration* labels anywhere (the codex's credits say the pictures are
+  made with an image model); every home has three versions in code, chosen from its colony and slot;
+  props between the buildings (a `prop` series, placed beside the buildings once they stand). The
+  **first batch** is in: each capital's size-2 homes in versions b and c, and 13 props. The owner was
+  sent the lettered sheets and screenshots of four colonies; **the rest (30 homes, 12 props, about
+  $4.30) waits for the owner's go-ahead.**
+- **Numbers:** 263 unit tests and about 150 browser journeys pass; the title loads 18.9 KB of its
+  40 KB budget, a game's map about 287 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB)
+  and its heaviest first pictures on a phone 891 KB of 1 MB (measured per power now); state
+  version 6.
 
 ## 2. The next job
 
-The owner chose what comes next on 20 October 2026: **D-29 and D-30** in
-[DECISIONS.md](DECISIONS.md). Read both first. In order:
+The owner's latest choices are **D-27, D-29 and D-30** in [DECISIONS.md](DECISIONS.md). Three
+things wait on the owner (asked on 20 October 2026):
 
-1. **Increment 18, the owner's feedback on the colony view.**
-   - **No *Illustration* labels anywhere (D-29).** They are in the colony's still
-     (`src/ui/map/ColonyStill.tsx`), the scene's bar (`src/ui/map/MapScreen.tsx`), the report's
-     pictures (`src/ui/map/play.tsx`) and the new-game cards (`src/ui/newgame/NewGame.tsx`); the
-     journeys that look for them are in `tests/e2e/colony.spec.ts`, `game.spec.ts` and
-     `title.spec.ts`. Say once, in the codex's *Sources and licences* (`src/ui/data/DataPage.tsx`),
-     that the pictures are made with an image model from the game's own briefs; every record keeps
-     `aiGenerated: true`. The *Fiction* labels stay.
-   - **Two more versions of every home (D-30, 2a):** 3 sizes × open and domed × 3 architectures,
-     36 pictures to keep. Each home picks its version from its colony and slot, so neighbours
-     differ and a home keeps its picture as the town grows. Same series, keying and metres as the
-     first versions.
-   - **Small props between the buildings (D-30, 2c):** about 25 (some for each architecture, some
-     shared). Write where they stand into COLONY_VIEW.md before generating: in the gaps between
-     slots, never covering a building or taking its tap, suited to the ground and the envelope.
-   - Send the owner **lettered contact sheets** of the candidates as you choose; keep the
-     colony's first pictures on a phone under their 1 MB budget.
-2. **Put music (D-30, G) to the owner early,** as a new decision with options (a composer, a
-   licensed library, or music generated at build time), costs and a recommendation. Build nothing
-   for it until they answer.
-3. **M2 "Worlds" (D-30, A) as the main track, with B, C, D and E.** Write its design first
-   (`docs/design/`, goals, out of scope, the decisions it needs), from [SCOPE.md](SCOPE.md) §7:
-   districts and zoning on the colony scene's slots (each world's `size`), food, credits, approval
-   and unrest, about 15 projects that show as buildings, governors and edicts (D-15, still open),
-   the research fields, the turn report and every number explained. Fold in the guided opening (E)
-   and leaders and advisors (D, a face for each department, speaking in the report); then events
-   and stories (C) and rivals that play by M2's rules (B, the other human powers; no war until
-   M4). Put every rule that shapes the game to the owner before building it, and split the work
-   into increments that each ship.
+1. **The rest of increment 18's pictures.** The owner has the lettered sheets of the first batch
+   (my picks are in COLONY_VIEW.md §8 and DECISIONS.md) and screenshots. When they answer, regenerate
+   anything they overrule, then make the rest: every other home's b and c (30), and the remaining
+   12 props (each power's water tanks, the Authority's greenhouse, the Cooperative's and the Wake's
+   cargo; the shared wind turbines, radiators, orchard, ore heap, gas well and regolith plant). The
+   briefs are all written (`art/briefs.ts`); add each approved picture's cut-out shape to
+   `src/content/colonyArt.ts` (STRUCTURES or PROPS; the manifest's `crop`), keep the 1 MB budget,
+   send lettered sheets (`npm run art:sheet -- --brief … --batch <name>`), and finish §8's notes.
+2. **Music, D-31:** options, costs and a recommendation (A, Reborn's engine, and then B, a few
+   pieces from Lyria, which the Gemini key already reaches, after a listening trial). Build
+   nothing for it until the owner answers.
+3. **M2 "Worlds", Round 4 (D-15, D-32 to D-41):** the design is
+   [design/M2_WORLDS.md](design/M2_WORLDS.md), with goals, out of scope, increments 19 to 27 and its
+   decisions in §21. **Build nothing of M2 until the owner has answered**; then build it increment
+   by increment, and put any new rule that shapes the game to the owner as it comes.
 
-The art for all of this is planned at about $12 of the $16.65 left (D-27). If the owner overrules
-any picture (every pick is lettered on the contact sheets they were sent, and listed in
-COLONY_VIEW.md §8 and DECISIONS.md), regenerate or re-approve it with the art scripts; a
-candidate's file is gone with the old session, so a new pick means new candidates.
+The art budget: about $10.25 of $25 is spent; increment 18's rest (about $4.30) and M2's 73
+pictures (about $8) would bring it to about $22.50.
 
 ## 3. Standing instructions from the owner
 
@@ -85,12 +76,12 @@ candidate's file is gone with the old session, so a new pick means new candidate
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$8.35** is spent (after the colony view), so about **$16.65** is left. Nano
+  2026); about **$10.25** is spent (after increment 18's first batch), so about **$14.75** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
   Send the owner a **lettered contact sheet** of the candidates (as a file) when you choose, so
-  they can overrule. Approve with `npm run art:approve`; every published picture needs its record,
+  they can overrule (`--batch` puts several briefs on one sheet). Approve with `npm run art:approve`; every published picture needs its record,
   and `npm run check` fails without one. Pictures carry **no *Illustration* label** (D-29): that
   they are made with an image model is said in the codex's credits and in the records.
 - **Phone and desktop, both first-class (D-04); several powers, never assume the player is human or
@@ -144,13 +135,20 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 
 **Lessons from the last sessions:**
 
+- **Never `pkill -f "vite preview"`:** the pattern matches the shell running the command, which
+  kills it. Stop a preview by its process id (`ps aux | grep "preview --port"`).
+- **Props are placed after the buildings** (`placeProps` in `colonyPlace.ts`), beside each building's
+  foot first; a prop with no free place is simply not drawn. Layouts are quickest checked by drawing
+  the boxes over a landscape with sharp before any browser run.
+
 - The journeys' web server (`vite preview` on port 4173) is **reused if one is already running**,
   and it serves `dist/` from disk. Rebuild (`npm run build`) before running journeys, and never
   rebuild while a run is going.
 - **Pass `?test` in the address for test hooks:** `window.__map` (`screenOf`, `moving`, `animating`,
   `fieldCount`, `sparkCount`, `flying`, `orbit`, `visibleLabels`), `window.__system`, and
-  `window.__colony` (`info`, `life`, `look`, `buildingsOnScreen`, `pointOn`, `setClock`). Use seed
-  `4242` (the *More* section on the new-game screen) when a journey needs fixed numbers.
+  `window.__colony` (`info` with its `props` and `pictures`, `life`, `look`, `buildingsOnScreen`,
+  `propsOnScreen`, `pointOn`, `setClock`). Use seed `4242` (the *More* section on the new-game
+  screen) when a journey needs fixed numbers.
 - **Nothing that can be pressed may slide or move as it appears.** Use opacity, or a scale about its
   middle. Reduced motion zeroes the animations' delays as well as their lengths. A tap during a
   sliding entrance misses, and that broke journeys twice.
@@ -180,7 +178,7 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
-- Music (D-30, G): a decision to put to the owner (§2).
+- Music (D-31) and the M2 design (Round 4): asked, waiting on the owner (§2).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
   and any of the colony view's (COLONY_VIEW.md §8).
 - CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a
