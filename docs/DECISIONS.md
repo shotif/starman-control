@@ -32,6 +32,8 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $15 in all** (raised from about $5); about $2.70 spent by 20 October 2026 |
+| D-28 | The colony view: its look, camera, how powers differ, where it lives | **Open** | a living diorama from the art pipeline, seen from a ridge; see [D-28](#d-28--the-colony-view--open) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -314,6 +316,31 @@ console**, a holographic command table (D-11), luminous and animated, with the r
 the sky, faces and emblems for the powers from the art pipeline (D-23), sound, and an installable
 full-screen app; built as increments 9 to 11 after the proof (8). Inspiration is taken as
 technique only, never names or art from other games.
+
+## Since round 1
+
+### D-27 · The art budget — **Decided**
+
+The owner first allowed about $5 of generation without asking (19 October 2026). On 20 October
+2026 they raised it: "I'm also raising your limit for the Gemini API up to $15, so you have a little
+bit more room to build assets." **About $15 in all** may now be spent without asking. Spent so far:
+about $1.50 on the style test, $0.60 on the powers' pictures and $0.60 on the report's pictures,
+**about $2.70**, leaving about $12.30. Each batch is recorded below under *Made without waiting*
+with its cost and the running total; the owner is asked before the total would pass $15.
+
+### D-28 · The colony view — **Open**
+
+On 20 October 2026 the owner asked for the colony screen "to have nice illustrations, so I can
+visually see the colony, see the buildings, and see maybe some people moving around. I want it to
+be really nice." The proposal is [COLONY_VIEW.md](design/COLONY_VIEW.md). Its choices:
+
+| Question | Options | Recommendation |
+| --- | --- | --- |
+| **The look** | (a) a living diorama: painted landscapes and buildings from the art pipeline, put together by the game from the colony's data, with people, vehicles, weather and day and night animated in code; (b) a whole colony built in 3D in code, with no generated art; (c) one finished illustration for each kind of world, with nothing that changes as the colony grows | **(a)**: painted like the rest of the game's art, it changes with every building and every million people, and about 75 pictures cover all ~700 worlds |
+| **The camera** | (a) a low panorama, as if from a ridge above the settlement, panned sideways; (b) isometric, like a city builder | **(a)**: generated pictures keep a ridge view far more reliably than an exact isometric angle, and it matches the report's pictures |
+| **How the powers differ** | (a) one human architecture, each power told apart by its colour in lights, banners and markings, and its emblem; (b) a separate set of buildings for each power | **(a)** now, at a third of the cost; (b) can follow if the scenes feel too alike |
+| **Where it lives** | (a) a screen of its own, entered from the colony's panel, the empire and the system view, with the panel beside or below it; (b) only a picture at the top of the colony's panel | **(a)**, the scene also giving the panel its header |
+| **The spend** | about $4 to $6 for about 75 pictures over four increments, after a style slice of about $0.60 that the owner sees first | within D-27 |
 
 ## Round 2: needed later
 
