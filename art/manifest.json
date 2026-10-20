@@ -1,6 +1,57 @@
 {
   "images": [
     {
+      "briefId": "authority-hall",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. The capital's main hall, the seat of the colony's administration: a broad, symmetrical civic building of pale ceramic panels with a row of slim pillars along its front, a tall square tower with a green beacon, wide steps, rows of square windows; dignified and orderly.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:01:59.213Z",
+      "note": "Here is the image of the capital's main hall for your colony view, designed in a realistic, weathered matte-painting style according to your exact specifications:",
+      "id": "authority-hall",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:33.401Z",
+      "candidate": "art/out/authority-hall/20261020-090130-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/authority-hall-512.webp",
+          "bytes": 47784
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-hall-1024.webp",
+          "bytes": 147938
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 114,
+        "top": 98,
+        "width": 1834,
+        "height": 1713
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-homes-1-domed",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -402,6 +453,56 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-rig",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. An automated outpost with no people: a compact square extraction rig with a drill tower, storage tanks, a small landing pad for drones and a slim beacon mast with a green light; no windows, built for machines.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:04:09.641Z",
+      "id": "authority-rig",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:43.936Z",
+      "candidate": "art/out/authority-rig/20261020-090130-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/authority-rig-512.webp",
+          "bytes": 50970
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-rig-1024.webp",
+          "bytes": 150238
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 135,
+        "top": 211,
+        "width": 1772,
+        "height": 1523
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-shipyard",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -548,6 +649,56 @@
         "top": 300,
         "width": 1949,
         "height": 1400
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-hall",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. The capital's meeting hall, where the settlers vote: a large rounded earth building with a wide low dome, a ring of round windows, white fabric awnings over a broad entrance, a small tower with a blue light, planters along its front; welcoming.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:02:36.057Z",
+      "id": "cooperative-hall",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:36.089Z",
+      "candidate": "art/out/cooperative-hall/20261020-090130-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-hall-512.webp",
+          "bytes": 42536
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-hall-1024.webp",
+          "bytes": 112248
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 99,
+        "top": 290,
+        "width": 1853,
+        "height": 1392
       },
       "aiGenerated": true
     },
@@ -954,6 +1105,56 @@
       "aiGenerated": true
     },
     {
+      "briefId": "cooperative-rig",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. An automated outpost with no people: a rounded extraction rig printed from earth with a drill tower, squat tanks, small solar sails, a little landing pad for drones and a beacon with a blue light; built for machines.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:05:06.132Z",
+      "id": "cooperative-rig",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:46.822Z",
+      "candidate": "art/out/cooperative-rig/20261020-090130-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-rig-512.webp",
+          "bytes": 48900
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-rig-1024.webp",
+          "bytes": 134302
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 75,
+        "top": 146,
+        "width": 1897,
+        "height": 1543
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-shipyard",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -1254,6 +1455,56 @@
           "bytes": 33668
         }
       ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "fields",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: Not a building but a small patch of farmland of a space colony: neat rectangular plots of green and golden crops in rows, thin irrigation pipes between them, and a small pump shed at one corner; the plots lie flat, seen from a little above.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:06:27.233Z",
+      "id": "fields",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:41.113Z",
+      "candidate": "art/out/fields/20261020-090130-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/fields-512.webp",
+          "bytes": 42154
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/fields-1024.webp",
+          "bytes": 147076
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 82,
+        "top": 472,
+        "width": 1881,
+        "height": 1193
+      },
       "aiGenerated": true
     },
     {
@@ -1905,6 +2156,56 @@
       "aiGenerated": true
     },
     {
+      "briefId": "wake-hall",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. The raiders' great hall: the forward section of an old warship set into banked earth as a fortress, its bridge windows lit, armour plates and triangular braces, a tall mast with a red light, a heavy gate; imposing and battered.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:03:42.739Z",
+      "id": "wake-hall",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:38.823Z",
+      "candidate": "art/out/wake-hall/20261020-090130-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/wake-hall-512.webp",
+          "bytes": 52214
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-hall-1024.webp",
+          "bytes": 140674
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 121,
+        "top": 93,
+        "width": 1832,
+        "height": 1704
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "wake-homes-1-domed",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -2303,6 +2604,57 @@
         "top": 97,
         "width": 1814,
         "height": 1725
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-rig",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. An automated outpost with no people: a drilling rig welded from old hull girders, tanks made from fuel drums, a landing pad of scrap plates for drones and a beacon mast with a red light; built for machines.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-20T09:05:47.344Z",
+      "note": "Here is a high-resolution, realistic concept painting of the automated Hollow Wake raider outpost:",
+      "id": "wake-rig",
+      "series": "structure",
+      "approvedAt": "2026-10-20T09:07:49.579Z",
+      "candidate": "art/out/wake-rig/20261020-090130-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 512,
+          "path": "art/structure/wake-rig-512.webp",
+          "bytes": 49404
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-rig-1024.webp",
+          "bytes": 136038
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 113,
+        "top": 315,
+        "width": 1845,
+        "height": 1302
       },
       "aiGenerated": true
     },

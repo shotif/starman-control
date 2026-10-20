@@ -565,6 +565,7 @@ export function EmpireView({
   table,
   shipsList,
   onHolding,
+  onView,
 }: {
   world: World;
   game: GameState;
@@ -573,7 +574,20 @@ export function EmpireView({
   /** The ships, as the screen lists them. */
   shipsList: ComponentChildren;
   onHolding: (id: number) => void;
+  /** Opens a colony's or an outpost's scene. */
+  onView?: (id: number) => void;
 }) {
+  const view = (h: Holding, name: string) =>
+    onView && (
+      <button
+        type="button"
+        class="button button-quiet button-small empire-view"
+        aria-label={`View ${name}`}
+        onClick={() => onView(h.id)}
+      >
+        View
+      </button>
+    );
   const [tab, setTab] = useState<Tab>('colonies');
   const [sort, setSort] = useState<{ key: ColonyKey; down: boolean }>({ key: 'people', down: true });
   const mine = game.holdings.filter((h) => h.owner === faction);
@@ -653,7 +667,7 @@ export function EmpireView({
                     <button type="button" class="link" onClick={() => onHolding(h.id)}>
                       {holdingName(world, game, h)}
                     </button>
-                    {h.capital && <span class="dim"> · capital</span>}
+                    {h.capital && <span class="dim"> · capital</span>} {view(h, holdingName(world, game, h))}
                   </td>
                   <td>{world.system(h.system).name}</td>
                   <td>
@@ -680,6 +694,7 @@ export function EmpireView({
                     {building(h) === 'Nothing' ? 'Building nothing' : building(h)}
                   </span>
                 </button>
+                {view(h, holdingName(world, game, h))}
               </li>
             ))}
           </ul>
@@ -702,7 +717,8 @@ export function EmpireView({
                   <td>
                     <button type="button" class="link" onClick={() => onHolding(h.id)}>
                       {holdingName(world, game, h)}
-                    </button>
+                    </button>{' '}
+                    {view(h, holdingName(world, game, h))}
                   </td>
                   <td>{world.system(h.system).name}</td>
                   <td>{yieldsText(world, game, h)}</td>
@@ -719,6 +735,7 @@ export function EmpireView({
                   <span class="ship-type">{world.system(h.system).name}</span>
                   <span class="ship-line">{yieldsText(world, game, h)}</span>
                 </button>
+                {view(h, holdingName(world, game, h))}
               </li>
             ))}
           </ul>

@@ -5,7 +5,7 @@
 // the player is: a holding's owner names its architecture (D-08, D-28).
 
 import type { Biome, Envelope, HomeSize, StructureKind } from '../content/colonyArt.ts';
-import { type ArchitectureId, FACTIONS } from '../content/factions.ts';
+import { type ArchitectureId, FACTIONS, type FactionMark } from '../content/factions.ts';
 import { PROJECTS, type ProjectId } from '../content/projects.ts';
 import type { Atmosphere, Body } from '../sim/bodies.ts';
 import { bodiesOf } from '../sim/bodies.ts';
@@ -61,8 +61,9 @@ export interface ColonyScene {
   parent?: { id: string; name: string; kind: Body['kind'] };
   envelope: Envelope;
   architecture: ArchitectureId;
-  /** The owner's colour, for lights and markings. */
+  /** The owner's colour, for lights and markings, and its mark, shown with it above the capital's hall. */
   colour: string;
+  mark: FactionMark;
   outpost: boolean;
   /** How many slots the scene lays out (the world's size, or more if its buildings need them). */
   slots: number;
@@ -169,10 +170,13 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
   };
   const parentBody = body.parent ? bodiesOf(world, game.seed, h.system).find((b) => b.id === body.parent) : undefined;
 
-  // Buildings: homes in the even slots from the centre outwards, projects in the odd ones in the
-  // order they were finished, so nothing moves as the colony grows; the scaffold stands where the
-  // project it is building will stand.
+  // Buildings: homes in the even slots from the centre outwards (after the capital's hall, which
+  // stands in the middle), projects in the odd ones in the order they were finished, so nothing
+  // moves as the colony grows; the scaffold stands where the project it is building will stand. An
+  // outpost is its rig. An open-air colony farms up to two of the slots left free.
   const buildings: SceneBuilding[] = [];
+  if (outpost) buildings.push({ kind: 'rig', slot: 0 });
+  if (h.capital) buildings.push({ kind: 'hall', slot: 0 });
   h.projects.forEach((p, i) => {
     buildings.push({ kind: p, project: p, slot: 2 * i + 1 });
   });
@@ -189,10 +193,16 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
   const needed = buildings.reduce((n, b) => Math.max(n, b.slot + 1), 1);
   const slots = Math.min(12, Math.max(body.size, needed, 2));
   if (!outpost) {
-    const room = Math.max(1, Math.ceil(slots / 2));
+    const from = h.capital ? 1 : 0;
+    const room = Math.max(1, Math.ceil(slots / 2) - from);
     homesFor(h.people, room).forEach((size, i) => {
-      buildings.push({ kind: 'homes', home: { size, envelope }, slot: 2 * i });
+      buildings.push({ kind: 'homes', home: { size, envelope }, slot: 2 * (i + from) });
     });
+    if (envelope === 'open') {
+      const used = new Set(buildings.map((b) => b.slot));
+      const free = Array.from({ length: slots }, (_, i) => slots - 1 - i).filter((i) => !used.has(i));
+      for (const slot of free.slice(0, 2)) buildings.push({ kind: 'fields', slot });
+    }
   }
   buildings.sort((a, b) => a.slot - b.slot);
 
@@ -219,6 +229,7 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
     envelope,
     architecture: faction.architecture,
     colour: faction.colour,
+    mark: faction.mark,
     outpost,
     slots,
     buildings,

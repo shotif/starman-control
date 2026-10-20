@@ -53,9 +53,11 @@ interface Props {
   /** A colony or outpost on it, and how to open the player's own. */
   held?: HoldingRow;
   onHolding?: (id: number) => void;
+  /** Opens the player's own colony or outpost here as its scene (COLONY_VIEW.md §4). */
+  onView?: (id: number) => void;
 }
 
-export function PlanetPanel({ body: b, siblings, species, systemName, onBack, held, onHolding }: Props) {
+export function PlanetPanel({ body: b, siblings, species, systemName, onBack, held, onHolding, onView }: Props) {
   const h = habitability(b, species);
   const f = (a: Attribute) => b.facts[a];
   const p = b.planet;
@@ -76,9 +78,16 @@ export function PlanetPanel({ body: b, siblings, species, systemName, onBack, he
       {held && (
         <p class="held">
           {held.mine && onHolding ? (
-            <button type="button" class="button button-small" onClick={() => onHolding(held.id)}>
-              Open your {held.kind.toLowerCase()} here
-            </button>
+            <>
+              <button type="button" class="button button-small" onClick={() => onHolding(held.id)}>
+                Open your {held.kind.toLowerCase()} here
+              </button>{' '}
+              {onView && (
+                <button type="button" class="button button-quiet button-small" onClick={() => onView(held.id)}>
+                  View it
+                </button>
+              )}
+            </>
           ) : (
             <>
               <FactionTag faction={held.owner} /> · {held.kind.toLowerCase()} here <Badge kind="fiction" />

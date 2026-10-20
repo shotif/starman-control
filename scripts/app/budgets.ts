@@ -1,8 +1,10 @@
 // The size budgets (M1_PROOF.md §4), measured on the build after `vite build`: what the title
-// loads, and what a phone loads to reach the map in a game, compressed. Fails when over budget.
-// Run by `npm run check` and in CI.
+// loads, and what a phone loads to reach the map in a game, compressed; and what a phone loads to
+// open a colony's scene (COLONY_VIEW.md §5): the scene's own code, past what the map already
+// loaded, and the pictures of the heaviest first visit. Fails when over budget. Run by
+// `npm run check` and in CI.
 
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 
 interface Chunk {
@@ -48,6 +50,38 @@ for (const b of BUDGETS) {
   failed ||= !ok;
   console.log(`${ok ? 'ok  ' : 'OVER'} ${b.name}: ${(bytes / KB).toFixed(1)} KB of ${(b.limit / KB).toFixed(0)} KB`);
 }
+// Opening a colony: the code the map has not already loaded.
+{
+  const map = files(['index.html', 'src/ui/game/route.tsx', 'src/render/MapView.ts']);
+  let bytes = 0;
+  for (const f of files(['src/render/ColonyView.ts']))
+    if (!map.has(f)) bytes += gzipSync(await readFile(`dist/${f}`)).length;
+  const limit = 40 * KB;
+  const ok = bytes <= limit;
+  failed ||= !ok;
+  console.log(`${ok ? 'ok  ' : 'OVER'} Opening a colony (its code): ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`);
+}
+
+// A colony's first visit on a phone, at its heaviest: the largest landscape and the eleven largest
+// buildings and vehicles, at the phone's widths. WebP is already compressed.
+{
+  const sizes = async (dir: string, suffix: string) =>
+    Promise.all(
+      (await readdir(`dist/art/${dir}`))
+        .filter((f) => f.endsWith(suffix))
+        .map(async (f) => (await stat(`dist/art/${dir}/${f}`)).size),
+    );
+  const lands = (await sizes('landscape', '-1280.webp')).sort((a, b) => b - a);
+  const pieces = (await sizes('structure', '-512.webp')).sort((a, b) => b - a);
+  const bytes = (lands[0] ?? 0) + pieces.slice(0, 11).reduce((a, b) => a + b, 0);
+  const limit = 1024 * KB;
+  const ok = bytes <= limit;
+  failed ||= !ok;
+  console.log(
+    `${ok ? 'ok  ' : 'OVER'} A colony's first pictures on a phone, at most: ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`,
+  );
+}
+
 if (failed) {
   console.error('budgets: over budget (docs/design/M1_PROOF.md §4)');
   process.exit(1);

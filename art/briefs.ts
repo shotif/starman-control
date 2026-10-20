@@ -461,4 +461,51 @@ export const BRIEFS: ArtBrief[] = [
       'with a dark windscreen, a small cargo bed behind, big tyres, two headlights; plain markings, no emblem.',
     purpose: 'Colony view: rovers driving between the buildings, for every power.',
   },
+  // The colony view, increment 17: each power's capital hall and its outposts' rig, and the fields
+  // an open-air colony farms.
+  {
+    id: 'authority-hall',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} The capital's main hall, the seat of the colony's administration: a broad, symmetrical civic building of pale ceramic panels with a row of slim pillars along its front, a tall square tower with a green beacon, wide steps, rows of square windows; dignified and orderly.`,
+    purpose: 'Colony view: the Authority’s capital hall, the town’s landmark.',
+  },
+  {
+    id: 'cooperative-hall',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} The capital's meeting hall, where the settlers vote: a large rounded earth building with a wide low dome, a ring of round windows, white fabric awnings over a broad entrance, a small tower with a blue light, planters along its front; welcoming.`,
+    purpose: 'Colony view: the Cooperative’s capital hall, the town’s landmark.',
+  },
+  {
+    id: 'wake-hall',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} The raiders' great hall: the forward section of an old warship set into banked earth as a fortress, its bridge windows lit, armour plates and triangular braces, a tall mast with a red light, a heavy gate; imposing and battered.`,
+    purpose: 'Colony view: the Wake’s capital hall, the town’s landmark.',
+  },
+  {
+    id: 'authority-rig',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} An automated outpost with no people: a compact square extraction rig with a drill tower, storage tanks, a small landing pad for drones and a slim beacon mast with a green light; no windows, built for machines.`,
+    purpose: 'Colony view: the Authority’s outposts.',
+  },
+  {
+    id: 'cooperative-rig',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} An automated outpost with no people: a rounded extraction rig printed from earth with a drill tower, squat tanks, small solar sails, a little landing pad for drones and a beacon with a blue light; built for machines.`,
+    purpose: 'Colony view: the Cooperative’s outposts.',
+  },
+  {
+    id: 'wake-rig',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} An automated outpost with no people: a drilling rig welded from old hull girders, tanks made from fuel drums, a landing pad of scrap plates for drones and a beacon mast with a red light; built for machines.`,
+    purpose: 'Colony view: the Wake’s outposts.',
+  },
+  {
+    id: 'fields',
+    series: 'structure',
+    subject:
+      'Not a building but a small patch of farmland of a space colony: neat rectangular plots of green and golden crops ' +
+      'in rows, thin irrigation pipes between them, and a small pump shed at one corner; the plots lie flat, seen from a ' +
+      'little above.',
+    purpose: 'Colony view: the fields an open-air colony farms, for every power.',
+  },
 ];

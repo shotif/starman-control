@@ -406,6 +406,7 @@ export function ReportView({
   onGo,
   onHolding,
   onResearch,
+  onViewColony,
 }: {
   world: World;
   game: GameState;
@@ -414,6 +415,8 @@ export function ReportView({
   onGo: (id: SystemId) => void;
   onHolding: (id: number) => void;
   onResearch: () => void;
+  /** Opens a colony's scene, to see what it finished. */
+  onViewColony?: (id: number) => void;
 }) {
   const r = game.reports.find((x) => x.faction === faction);
   const picture = r ? dispatchPicture(r.events) : null;
@@ -444,6 +447,11 @@ export function ReportView({
               >
                 {eventText(world, game, e)}
               </button>
+              {onViewColony && e.kind === 'built' && e.item.kind === 'project' && (
+                <button type="button" class="link report-see" onClick={() => onViewColony(e.holding)}>
+                  See it
+                </button>
+              )}
             </li>
           ))}
         </ul>

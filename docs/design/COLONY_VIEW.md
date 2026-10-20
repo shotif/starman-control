@@ -1,9 +1,9 @@
 # The colony in pictures (proposal)
 
-**Status:** written 20 October 2026 at the owner's request. The owner answered
-[D-28](../DECISIONS.md#d-28--the-colony-view--decided) the same day: a living diorama, seen from a
-ridge, on a screen of its own, and **a separate set of buildings for each power**. Being built in
-increments 14 to 17 (§6); nothing beyond the style slice is generated until the owner has seen it.
+**Status:** built, 20 October 2026, in increments 14 to 17 (§6, and *As built* in §8). The owner
+answered [D-28](../DECISIONS.md#d-28--the-colony-view--decided) the same day: a living diorama,
+seen from a ridge, on a screen of its own, and **a separate set of buildings for each power**; and
+approved the style slice before the rest was made.
 
 The owner's request:
 
@@ -290,3 +290,28 @@ Each increment's pictures are shown to the owner as lettered contact sheets when
   `colonyCard.test.ts` (the card's words); `colony.spec.ts` (people, vehicles and weather in the
   scene; time passes; night falls; a building tapped has its card; a finished mine stands where its
   scaffold was; nothing moves with reduced motion).
+
+### Increment 17: the full set (20 October 2026)
+
+- **The pictures:** each power's capital hall and outpost rig, and the fields every power farms,
+  14 candidates, about $0.70 (the project's total is now **about $8.35** of the owner's $15).
+  Chosen: the Authority's hall A, the Cooperative's A, the Wake's B (A's earth bank was cut off
+  sharply), the fields A, and each rig A. The colony view now has 51 pictures: 9 landscapes; 39
+  pieces in three architectures (for each power, homes in three sizes open and domed, four
+  projects, a hall, a rig and a shuttle); and the scaffold, the fields and the rover, shared.
+- **The capital's hall** stands in the town's middle slot, the power's mark glowing above it in
+  its colour, like the console's holograms; the homes start from the next slot.
+- **Outposts** have their scene: the power's rig on the world's ground, with no people (a rover
+  may still come by). Their panel has the still too.
+- **Fields:** an open-air colony farms up to two of the slots left free, from the edge of the
+  town; a project queued there takes the slot, and the fields make way.
+- **The ways in:** the still in a colony's panel; *View* beside every colony and outpost in the
+  empire's lists; *View it* beside a held world in the system view; and *See it* beside a finished
+  project in the report.
+- **The budgets** (`npm run budgets`, in `npm run check`): opening a colony's scene loads 9 KB of
+  code past the map's (40 KB allowed), and the pictures of the heaviest first visit on a phone
+  (the largest landscape and the eleven largest buildings and vehicles, at the phone's widths)
+  are checked against 1 MB; the service worker keeps them offline afterwards.
+- **Tests:** `colonyScene.test.ts` (the hall, an outpost's rig, Earth's fields, every power's hall
+  and rig); `colony.spec.ts` (each capital's buildings with its hall; a finished mine seen from the
+  report; the empire's *View*; an outpost founded and seen as its rig).

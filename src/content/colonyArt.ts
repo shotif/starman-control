@@ -102,7 +102,8 @@ export type HomeSize = 1 | 2 | 3;
 /** Open to the air on a comfortable world; sealed under domes elsewhere. */
 export type Envelope = 'open' | 'domed';
 
-export type StructureKind = ProjectId | 'homes' | 'hall' | 'scaffold';
+/** Built things; `rig` is an outpost's, `fields` an open-air colony's farmland. */
+export type StructureKind = ProjectId | 'homes' | 'hall' | 'scaffold' | 'rig' | 'fields';
 
 export interface StructureArt {
   /** Its brief, and so its file: art/structure/<id>-<width>.webp. */
@@ -153,6 +154,14 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['cooperative-shuttle', 1627 / 1389, 22],
       ['wake-shuttle', 1812 / 1049, 22],
       ['rover', 1769 / 1259, 9],
+      // Increment 17: each power's capital hall and outpost rig, and the fields every power farms.
+      ['authority-hall', 1834 / 1713, 46],
+      ['cooperative-hall', 1853 / 1392, 46],
+      ['wake-hall', 1832 / 1704, 46],
+      ['authority-rig', 1772 / 1523, 34],
+      ['cooperative-rig', 1897 / 1543, 34],
+      ['wake-rig', 1845 / 1302, 34],
+      ['fields', 1881 / 1193, 40],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );
@@ -163,7 +172,7 @@ export function structureId(
   kind: StructureKind,
   home?: { size: HomeSize; envelope: Envelope },
 ): string {
-  if (kind === 'scaffold') return 'scaffold';
+  if (kind === 'scaffold' || kind === 'fields') return kind;
   if (kind === 'homes') return `${architecture}-homes-${home?.size ?? 2}-${home?.envelope ?? 'open'}`;
   return `${architecture}-${kind}`;
 }

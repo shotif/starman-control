@@ -899,3 +899,10 @@
     opacity: 0;
   }
 }
+
+/* A finished project in the report: see it in its colony's scene. */
+.report-items .report-see {
+  margin-left: 0.4rem;
+  color: var(--accent);
+  white-space: nowrap;
+}

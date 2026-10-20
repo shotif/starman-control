@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $15 in all** (raised from about $5); about $7.65 spent by 20 October 2026 |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $15 in all** (raised from about $5); about $8.35 spent by 20 October 2026 |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
@@ -326,7 +326,7 @@ The owner first allowed about $5 of generation without asking (19 October 2026).
 bit more room to build assets." **About $15 in all** may now be spent without asking. Spent so far:
 about $1.50 on the style test, $0.60 on the powers' pictures and $0.60 on the report's pictures,
 **about $2.70**, leaving about $12.30; then about $1.25 on the colony view's style slice (20 October 2026),
-**about $3.95** in all; then about $3.30 on the diorama's pictures, **about $7.25** in all; then about $0.40 on its vehicles, **about $7.65** in all. Each batch is recorded below under *Made without waiting*
+**about $3.95** in all; then about $3.30 on the diorama's pictures, **about $7.25** in all; then about $0.40 on its vehicles, **about $7.65** in all; then about $0.70 on its halls, rigs and fields, **about $8.35** in all. Each batch is recorded below under *Made without waiting*
 with its cost and the running total; the owner is asked before the total would pass $15.
 
 ### D-28 · The colony view — **Decided**
@@ -415,3 +415,4 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-20 | The owner saw the style slice and approved it with Claude's picks ("Go ahead, my picks"), keeping the buildings crisp rather than more painterly, so they read clearly when small; the rest of the colony view's pictures are made in this style | the owner's answer, asked with the contact sheets and screenshots before anything more was generated |
 | 2026-10-20 | The colony view's diorama (increment 15): 66 candidates, about $3.30, so about **$7.25** of the owner's $15 spent in all, for every landscape and every power's homes and projects (picks in [COLONY_VIEW.md §8](design/COLONY_VIEW.md#increment-15-the-diorama-20-october-2026)); the ice painted under a magenta sky; keying despills magenta seen through glass | within D-27 and the owner's go-ahead; the lettered contact sheets go to the owner to overrule |
 | 2026-10-20 | The colony view's life (increment 16): the three shuttles and the rover, 8 candidates, about $0.40, so about **$7.65** of the owner's $15 spent in all; chosen the Authority's shuttle A, the Cooperative's B, the Wake's B, the rover A. A day of 90 seconds; weather and the most people only on medium and high quality | within D-27; a machine of four cores starts on low quality, so it has no weather |
+| 2026-10-20 | The colony view's full set (increment 17): the capitals' halls, the outposts' rigs and the fields, 14 candidates, about $0.70, so about **$8.35** of the owner's $15 spent in all; chosen the Authority's hall A, the Cooperative's A, the Wake's B, the fields A, every rig A. The hall takes the town's middle slot (the homes move one slot out, once); open-air colonies farm up to two free slots; budgets of 40 KB for the colony's code and 1 MB for its heaviest first pictures on a phone | within D-27; about $6.65 of the allowance is left |

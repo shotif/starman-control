@@ -1,6 +1,7 @@
 // A building's card in the colony's scene (COLONY_VIEW.md §4): tap or click a building to light it
 // and read what it is, what it does and its numbers. The scene shows; the card and the panel tell.
 
+import { FACTIONS } from '../../content/factions.ts';
 import { PROJECTS } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SceneBuilding } from '../../render/colonyScene.ts';
@@ -46,8 +47,12 @@ export function buildingCard(
       lines: [`${progress()}.`, PROJECTS[b.project].does],
     };
   }
-  const project = b.project ?? (b.kind === 'hall' ? null : b.kind);
-  if (!project || !(project in PROJECTS)) return { title: 'The hall', lines: [] };
+  if (b.kind === 'hall') return { title: 'The capital’s hall', lines: [`The seat of the ${FACTIONS[h.owner].name}.`] };
+  if (b.kind === 'rig')
+    return { title: 'Outpost rig', lines: ['Machines gather the world’s riches here. No one lives at an outpost.'] };
+  if (b.kind === 'fields') return { title: 'Fields', lines: ['The colony grows its food in the open air.'] };
+  const project = b.project ?? b.kind;
+  if (!(project in PROJECTS)) return { title: '', lines: [] };
   const def = PROJECTS[project as keyof typeof PROJECTS];
   const lines = [def.does];
   if (project === 'shipyard')

@@ -1,8 +1,7 @@
 // The colony's scene as a still at the top of its panel (COLONY_VIEW.md §4: the scene gives the panel
 // its header), and the way into the living diorama: pressing it opens the scene. Shown where there
-// are pictures for the colony's ground and every one of its buildings, which is every colony once
-// increment 15's pictures are in; outposts wait for theirs (increment 17). The pictures load when
-// first needed and are kept.
+// are pictures for the colony's ground and every one of its buildings, which since increment 17 is
+// every colony and outpost. The pictures load when first needed and are kept.
 
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { LANDSCAPES, structureArt } from '../../content/colonyArt.ts';
@@ -29,7 +28,6 @@ function load(url: string): Promise<HTMLImageElement> {
 
 /** The scene, if every part of it has a picture. */
 export function stillScene(world: World, game: GameState, h: Holding): ColonyScene | null {
-  if (h.kind !== 'colony') return null;
   const scene = colonyScene(world, game, h);
   if (!scene || !LANDSCAPES[scene.biome]) return null;
   return scene.buildings.every((b) => structureArt(scene.architecture, b.kind, b.home)) ? scene : null;

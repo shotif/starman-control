@@ -457,3 +457,20 @@
   color: var(--text-muted);
   font-size: 0.92rem;
 }
+
+/* "View": a colony's or outpost's scene, from the empire's lists (COLONY_VIEW.md §4). */
+.empire-cards > li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.empire-cards > li .empire-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.empire-view {
+  flex: none;
+  min-height: 44px;
+}

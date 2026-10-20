@@ -1,4 +1,4 @@
-# Handover: Starman Control, 20 October 2026
+# Handover: Starman Control, 20 October 2026 (updated after the colony view)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -11,7 +11,7 @@ way in.
   documents, builds and tests ([CLAUDE.md](../CLAUDE.md)).
 - **Live:** <https://shotif.github.io/starman-control/>, deployed from `main` by
   `.github/workflows/pages.yml`; `.github/workflows/ci.yml` runs the checks and the browser
-  journeys on every push. CI was green on `main` at `90afb84`.
+  journeys on every push. Check CI's latest run on `main` before starting (see §5).
 - **M1, First light, is built** (increments 1 to 8, [M1_FIRST_LIGHT.md](design/M1_FIRST_LIGHT.md)):
   the 207 real systems on a flat or 3D map; three playable powers; survey and blind jumps; generated
   worlds labelled fiction; colonies and outposts, people, metals, volatiles and fusion fuel; build
@@ -24,44 +24,33 @@ way in.
   territory fields, the glide into a system), [Control's console](design/CONSOLE.md) (glass, lit
   plates, icons, the turn's sweep, sound), [in flight](design/IN_FLIGHT.md) (ships seen flying,
   the system view's sky), [illustrated dispatches](design/DISPATCHES.md) (the report's pictures).
-- **Numbers at handover:** 211 unit tests and 133 browser journeys pass; the title loads 18.9 KB of
-  its 40 KB budget, a game's map 276.7 KB of 900 KB; state version 6.
+- **The colony in pictures is built** (D-28, [COLONY_VIEW.md](design/COLONY_VIEW.md), increments
+  14 to 17, with *As built* notes in its §8): every colony and outpost of every power on every
+  world is a living diorama, opened from the still in its panel, the empire's *View*, the system
+  view's *View it* or the report's *See it*. Nine painted grounds under a sky drawn in code in the
+  star's colour; each power's own architecture (the owner chose a set of buildings per power); a
+  slow day with lit windows at night; people, rovers, the power's shuttle, weather; a building
+  tapped has its card. 51 pictures, keyed from flat backdrops (`npm run art:key`).
+- **Numbers:** 252 unit tests and about 150 browser journeys pass; the title loads 18.9 KB of its
+  40 KB budget, a game's map about 285 KB of 900 KB, opening a colony 9 KB of code more (40 KB) and
+  its heaviest first pictures on a phone under 1 MB; state version 6 (the colony view changed no
+  rules and no saves).
 
-## 2. The next job: the colony in pictures
+## 2. The next job
 
-The owner, on 20 October 2026:
+**None is set: ask the owner.** The colony in pictures, which the owner asked for on 20 October
+2026, is done (increments 14 to 17). Things the owner might choose next, none decided:
 
-> I want to flesh out the colony management screen to have nice illustrations, so I can visually
-> see the colony, see the buildings, and see maybe some people moving around. I want it to be
-> really nice.
+- M2 (see [SCOPE.md](SCOPE.md)), whose districts can use the colony view's slots (each world's
+  `size`), and whose Round 2 decisions (D-12 to D-18) start with D-15 (governors) for M2.
+- More of the colony view: home variants so towns repeat less, a parent planet in a moon's sky,
+  a ship's hull on the shipyard's pad while one is being built, each alien species' architecture
+  when D-12 settles them.
+- The owner's try of the game on a real phone (still open since M1).
 
-The proposal is [COLONY_VIEW.md](design/COLONY_VIEW.md), and its choices are open as
-[D-28](DECISIONS.md#d-28--the-colony-view--decided). In short: **a living diorama**, put together by
-the game from the colony's data. A painted landscape for the world's biome (about nine biomes),
-under a sky drawn in code in the star's true colour. Painted buildings in slots on the plain: homes
-that grow with the people, open-air or domed by habitability, each project, a scaffold for what is
-being built. Then life animated in code: people, rovers, a shuttle, weather, day and night with lit
-windows. It is seen from a ridge and panned sideways; it is a screen of its own on the phone and
-the desktop, with the colony's panel beside or below it. About 75 pictures, about $4 to $6, over
-four increments (14 to 17), starting with a style slice of about $0.60 that the owner sees first.
-
-**First steps:**
-
-1. Read COLONY_VIEW.md and D-28, then the colony's current panel (`HoldingPanel` in
-   `src/ui/map/colony.tsx`) and how the system view is entered and left (the effect round
-   `SystemScene` in `src/ui/map/MapScreen.tsx`), which the colony view should copy: borrow the map's
-   renderer, suspend the map, glide and veil.
-2. **Ask the owner D-28**, with its options and recommendations, and record the answers, the date
-   and the reason in DECISIONS.md before building. (The owner may answer simply "go with your
-   recommendations", as they did for D-24 and D-25.)
-3. Build increment 14, the style slice. Add the `landscape` and `structure` series to
-   `art/styles.ts`. Write `npm run art:key`: Gemini returns JPEG only, so keying a flat magenta
-   background and a white sky to transparent WebP is new; record the keying in
-   `art/manifest.json`. Generate the six slice pictures, two or three candidates each, and compose
-   a still scene in the game. **Send the owner a lettered contact sheet and screenshots** before
-   generating the rest.
-4. Then increments 15 to 17 as COLONY_VIEW.md §6 sets out, each designed for the phone and the
-   desktop, tested, deployed, and reported to the owner.
+If the owner overrules any picture (every pick is lettered on the contact sheets they were sent,
+and listed in COLONY_VIEW.md §8 and DECISIONS.md), regenerate or re-approve it with the art
+scripts; a candidate's file is gone with the old session, so a new pick means new candidates.
 
 ## 3. Standing instructions from the owner
 
@@ -71,8 +60,8 @@ four increments (14 to 17), starting with a style slice of about $0.60 that the 
 - **The Gemini key** is in the environment as `GEMINI_API_KEY`. **Never print, log, commit or echo
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
-- **Art spend (D-27):** about **$15 in all** may be spent without asking; about **$2.70** is spent,
-  so about **$12.30** is left. Nano Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for
+- **Art spend (D-27):** about **$15 in all** may be spent without asking; about **$8.35** is spent
+  (after the colony view), so about **$6.65** is left. Nano Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for
   everything (D-23). Record every batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
   Send the owner a **lettered contact sheet** of the candidates (as a file) when you choose, so
@@ -98,8 +87,9 @@ npm run format         # Biome's formatting and safe fixes (run before check)
 npm run test:e2e       # browser journeys: phone 390×844, tablet 820×1180, desktop 1440×900
 npm run screenshots    # ten sizes into test-results/screens/<screen>-<size>.png
 npm run art:generate -- --brief <id>[,<id>…] --provider gemini --count 2
-npm run art:sheet -- --brief <id>                   # one brief at a time
-npm run art:approve -- art/out/<brief>/<file>.jpg
+npm run art:key -- --brief <id>[,<id>…]             # key a landscape's or building's candidates
+npm run art:sheet -- --brief <id>                   # one brief at a time (keyed ones on a checkerboard)
+npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its series is keyed
 ```
 
 **Where things are:**
@@ -111,15 +101,20 @@ npm run art:approve -- art/out/<brief>/<file>.jpg
 - `src/render/`: three.js. `MapView.ts` is the map, with its sky, fields, sparks and flights.
   `SystemScene.ts` is the system in 3D, using Reborn's procedural art copied into `art/`.
   `TitleScene.ts` is the title. `milkyWay.ts` bakes the sky and provides the backdrop and the faint
-  stars. `systemLayout.ts` is the pure layout of a system, the model for a `colonyScene()`.
+  stars. `systemLayout.ts` is the pure layout of a system. The colony view: `colonyScene.ts` (what
+  a colony's scene shows, pure), `colonyPlace.ts` (where its buildings stand), `colonyLife.ts`
+  (the day, walkers, the shuttle, the weather, pure), `colonyStill.ts` (the panel's still, Canvas
+  2D) and `ColonyView.ts` (the diorama, three.js on the map's renderer).
 - `src/ui/`: Preact and Signals (never React). The map screen and its panels are in `map/`: the
-  colony's panel, the empire and the stockpile in `colony.tsx`; the report, its pictures and
-  dispatches in `play.tsx`. The console's skin is `console.css`, with `icons.tsx`, `count.tsx`, and
+  colony's panel, the empire and the stockpile in `colony.tsx`, its still in `ColonyStill.tsx` and a
+  building's card in `ColonyCard.tsx`; the report, its pictures and dispatches in `play.tsx`. The console's skin is `console.css`, with `icons.tsx`, `count.tsx`, and
   the emblems in `parts.tsx`.
 - `src/app/`: the game's state on the page, saves, settings (text size, motion, quality, sound),
   and `sound.ts`.
-- `art/`: `briefs.ts`, `styles.ts` and `manifest.json` (the provenance records); the scripts are in
-  `scripts/art/`, and approved pictures are served from `public/art/`.
+- `art/`: `briefs.ts` (with each power's architecture, written once), `styles.ts` and
+  `manifest.json` (the provenance records); the scripts are in `scripts/art/`, and approved
+  pictures are served from `public/art/`. `src/content/colonyArt.ts` lists the colony view's
+  pictures, each landscape's horizon and slots, and each piece's width in metres.
 
 **Lessons from the last sessions:**
 
@@ -127,7 +122,8 @@ npm run art:approve -- art/out/<brief>/<file>.jpg
   and it serves `dist/` from disk. Rebuild (`npm run build`) before running journeys, and never
   rebuild while a run is going.
 - **Pass `?test` in the address for test hooks:** `window.__map` (`screenOf`, `moving`, `animating`,
-  `fieldCount`, `sparkCount`, `flying`, `orbit`, `visibleLabels`) and `window.__system`. Use seed
+  `fieldCount`, `sparkCount`, `flying`, `orbit`, `visibleLabels`), `window.__system`, and
+  `window.__colony` (`info`, `life`, `look`, `buildingsOnScreen`, `pointOn`, `setClock`). Use seed
   `4242` (the *More* section on the new-game screen) when a journey needs fixed numbers.
 - **Nothing that can be pressed may slide or move as it appears.** Use opacity, or a scale about its
   middle. Reduced motion zeroes the animations' delays as well as their lengths. A tap during a
@@ -141,10 +137,27 @@ npm run art:approve -- art/out/<brief>/<file>.jpg
 - **Confirm a deploy** by fetching the live page's `assets/index-*.js` and finding the commit's short
   hash in it (the build id is in that chunk).
 - With reduced motion, tests use `test.use({ contextOptions: { reducedMotion: 'reduce' } })`.
+- **A background command stops at its time limit (30 minutes by default)**, and that includes a
+  `vite preview` started in the background: start it with a long limit before a full run, or the
+  last journeys fail in a quarter of a second against a dead server. A full run at two workers
+  takes about 25 minutes here.
+- **A machine of four cores starts on the low quality setting** (this container and CI): no
+  weather in the colony view, 20 people at most. A journey that needs more sets the quality in
+  `localStorage` (`starman-control:settings`) with `page.addInitScript`.
+- **Generating pictures:** each power's buildings come out at a steeper angle than asked; asking for
+  "walls seen more than roof" and a landscape seen from a raised viewpoint made them match. A
+  subject that says "courtyard" or "earth bank" invites a top-down view or a cut-off bank of
+  soil. A flat backdrop is seen through glass: keying despills any pixel whose red and blue both
+  stand above its green. The haze and ice grounds need their own backdrops (horizon-only mist;
+  a magenta sky).
 
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
-- The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October).
+- The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
+  and any of the colony view's (COLONY_VIEW.md §8).
+- CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a
+  starved machine took longer to load); increment 17 gave scene updates 30 s and made taps aim
+  where a building really shows. Look at the latest run before starting.
 - Round 2 decisions (D-12 to D-18) are for later milestones; M2's districts will use the same
   `size` slots the colony view lays out.

@@ -198,6 +198,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     view.current?.setSelected(h.system);
     view.current?.focus(h.system);
   }, []);
+  /** Opens a colony's or an outpost's scene, from anywhere (COLONY_VIEW.md §4). */
+  const viewColony = useCallback(
+    (id: number) => {
+      pickHolding(id);
+      insideColony.value = id;
+    },
+    [pickHolding],
+  );
   const openResearch = useCallback(() => {
     targeting.value = null;
     panel.value = 'research';
@@ -768,6 +776,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           mine: play?.faction === h.owner,
         }))}
       onHolding={pickHolding}
+      onViewHolding={viewColony}
     />
   );
   const holdingView = (h: NonNullable<typeof holding>) => (
@@ -793,6 +802,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       faction={play.faction}
       table={desktop}
       onHolding={pickHolding}
+      onView={viewColony}
       shipsList={<ShipsList world={world} game={game} faction={play.faction} onPick={pickShip} />}
     />
   );
@@ -806,6 +816,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       onGo={go}
       onHolding={pickHolding}
       onResearch={openResearch}
+      onViewColony={viewColony}
     />
   );
   const keys = play ? [...PLAY_SHORTCUTS, ...SHORTCUTS] : SHORTCUTS;

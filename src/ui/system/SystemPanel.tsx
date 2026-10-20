@@ -44,6 +44,8 @@ interface Props {
   /** Colonies and outposts here, anyone's; the viewer's own open with `onHolding`. */
   holdings?: readonly HoldingRow[];
   onHolding?: (id: number) => void;
+  /** Opens the viewer's own colony or outpost as its scene. */
+  onViewHolding?: (id: number) => void;
 }
 
 export interface HoldingRow {
@@ -423,6 +425,7 @@ export function SystemView(
         onBack={() => setBody(null)}
         held={held}
         onHolding={props.onHolding}
+        onView={props.onViewHolding}
       />
     );
   }

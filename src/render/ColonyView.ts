@@ -278,6 +278,8 @@ export class ColonyView {
   private figures: Figure[] = [];
   private vehicles: Vehicle[] = [];
   private shuttle: { mesh: Mesh; glow: Mesh; pad: Placed } | null = null;
+  /** The power's mark, glowing above the capital's hall. */
+  private emblem: { mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>; y: number } | null = null;
   private weather: {
     points: THREE.Points<THREE.BufferGeometry, THREE.ShaderMaterial>;
     kind: NonNullable<Weather>;
@@ -498,6 +500,7 @@ export class ColonyView {
       return { placed: p, mesh, shadow, alpha: alphaOf(map) };
     });
     this.applyScaffolds();
+    this.buildEmblem();
     this.buildLife(
       placed,
       shuttleMap && yard && shuttleArt ? { map: shuttleMap, pad: yard, metres: shuttleArt.metres } : null,
@@ -505,6 +508,32 @@ export class ColonyView {
     );
     this.setSelected(this.selected);
     this.invalidate();
+  }
+
+  /** The owner's mark in its colour, like a hologram above the capital's hall (COLONY_VIEW.md §1). */
+  private buildEmblem(): void {
+    if (this.emblem) {
+      this.three.remove(this.emblem.mesh);
+      this.emblem.mesh.geometry.dispose();
+      this.emblem.mesh.material.map?.dispose();
+      this.emblem.mesh.material.dispose();
+      this.emblem = null;
+    }
+    const hall = this.buildings.find((b) => b.placed.building.kind === 'hall');
+    if (!hall) return;
+    const p = hall.placed;
+    const size = 14 * this.metreAt(p.v);
+    const map = new THREE.CanvasTexture(markSheet(this.scene.mark, this.scene.colour));
+    map.colorSpace = THREE.NoColorSpace;
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(size, size),
+      new THREE.MeshBasicMaterial({ map, transparent: true, depthTest: false, depthWrite: false }),
+    );
+    const y = 1 - p.v + p.h + size * 0.45;
+    mesh.position.set(p.u * this.A, y, 0);
+    mesh.renderOrder = hall.mesh.renderOrder + 0.05;
+    this.three.add(mesh);
+    this.emblem = { mesh, y };
   }
 
   /** People, rovers and the shuttle, set out again whenever the buildings are. */
@@ -937,6 +966,7 @@ export class ColonyView {
       const g = this.shuttle.glow.material.uniforms.uAlpha;
       if (g) g.value = 0.85 * s.thrust;
     }
+    if (this.emblem) this.emblem.mesh.position.y = this.emblem.y + Math.sin(t * 1.3) * this.emblem.mesh.scale.y * 0.004;
     if (this.weather) {
       const u = this.weather.points.material.uniforms;
       if (u.uTime) u.uTime.value = t;
@@ -1026,6 +1056,25 @@ export class ColonyView {
     }));
   }
 
+  /**
+   * A point (CSS pixels) where a building, by its slot, is what a click finds: on its picture and
+   * not behind another; null if it is hidden or out of view. For tests.
+   */
+  pointOn(slot: number): { x: number; y: number } | null {
+    const b = this.buildings.find((x) => x.placed.building.slot === slot);
+    if (!b) return null;
+    const r = this.rectOf(b.placed);
+    for (const fy of [0.75, 0.6, 0.85, 0.45, 0.3])
+      for (const fx of [0.5, 0.35, 0.65, 0.2, 0.8]) {
+        const x = r.x + r.w * fx;
+        const y = r.y + r.h * fy;
+        if (x < this.stage.x || x > this.stage.x + this.stage.w || y < this.stage.y || y > this.stage.y + this.stage.h)
+          continue;
+        if (this.buildingAt(x, y, 'mouse') === b) return { x, y };
+      }
+    return null;
+  }
+
   /** The view's middle and scale, for tests. */
   get look(): View {
     return { ...this.view };
@@ -1079,6 +1128,11 @@ export class ColonyView {
     }
     this.buildings = [];
     if (this.landMesh) this.drop(this.landMesh);
+    if (this.emblem) {
+      this.emblem.mesh.geometry.dispose();
+      this.emblem.mesh.material.map?.dispose();
+      this.emblem.mesh.material.dispose();
+    }
     this.sky.geometry.dispose();
     this.sky.material.dispose();
     for (const t of this.textures.values()) void t.then((tex) => tex.dispose()).catch(() => {});
@@ -1109,6 +1163,35 @@ function alphaOf(tex: THREE.Texture): { w: number; h: number; data: Uint8Clamped
   const data = new Uint8ClampedArray(w * h);
   for (let i = 0; i < data.length; i++) data[i] = rgba[i * 4 + 3] ?? 0;
   return { w, h, data };
+}
+
+/** A power's mark, glowing: its shape in its colour on a soft halo, with a pale edge. */
+function markSheet(mark: 'square' | 'circle' | 'triangle', hex: string): HTMLCanvasElement {
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 64;
+  const g = c.getContext('2d');
+  if (!g) return c;
+  const halo = g.createRadialGradient(32, 32, 4, 32, 32, 31);
+  halo.addColorStop(0, `${hex}aa`);
+  halo.addColorStop(1, `${hex}00`);
+  g.fillStyle = halo;
+  g.fillRect(0, 0, 64, 64);
+  g.beginPath();
+  if (mark === 'square') g.rect(20, 20, 24, 24);
+  else if (mark === 'circle') g.arc(32, 32, 13, 0, Math.PI * 2);
+  else {
+    g.moveTo(32, 17);
+    g.lineTo(46, 43);
+    g.lineTo(18, 43);
+    g.closePath();
+  }
+  g.fillStyle = hex;
+  g.fill();
+  g.lineWidth = 2;
+  g.strokeStyle = 'rgba(240, 248, 255, 0.85)';
+  g.stroke();
+  return c;
 }
 
 /**

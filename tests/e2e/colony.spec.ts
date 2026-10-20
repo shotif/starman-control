@@ -11,6 +11,7 @@ interface ColonyHook {
     info: { biome: string; architecture: string; buildings: number };
     life: { people: number; vehicles: number; shuttle: boolean; weather: string | null; night: number; clock: number };
     setClock(seconds: number): void;
+    pointOn(slot: number): { x: number; y: number } | null;
     buildingsOnScreen(): { kind: string; slot: number; x: number; y: number; w: number; h: number }[];
   };
 }
@@ -40,16 +41,18 @@ const onScreen = (page: Page) => page.evaluate(() => (window as unknown as Colon
 const look = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.look);
 const life = (page: Page) => page.evaluate(() => (window as unknown as ColonyHook).__colony.life);
 
-/** Taps (or clicks) the middle of the lower part of a building in the scene, by its kind. */
+/** Taps (or clicks) a building of a kind in the scene, where it shows and nothing stands in front. */
 async function pressBuilding(page: Page, kind: string, project: string) {
   const map = await page.getByTestId('map').boundingBox();
-  const all = await onScreen(page);
-  const b = all
-    .filter((x) => x.kind === kind && map && x.x > 0 && x.x + x.w < map.width && x.y > 0)
-    .sort((a, c) => c.w - a.w)[0];
-  if (!b || !map) throw new Error(`no ${kind} in view`);
-  const x = map.x + b.x + b.w * 0.5;
-  const y = map.y + b.y + b.h * 0.72;
+  const slots = (await onScreen(page)).filter((x) => x.kind === kind).map((x) => x.slot);
+  let at: { x: number; y: number } | null = null;
+  for (const slot of slots) {
+    at = await page.evaluate((s) => (window as unknown as ColonyHook).__colony.pointOn(s), slot);
+    if (at) break;
+  }
+  if (!at || !map) throw new Error(`no ${kind} in view`);
+  const x = map.x + at.x;
+  const y = map.y + at.y;
   if (isDesktop(project)) await page.mouse.click(x, y);
   else await page.touchscreen.tap(x, y);
 }
@@ -97,7 +100,7 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
   page.on('pageerror', (e) => errors.push(e.message));
   const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
   await enterColony(page, panel, 'Tau Ceti e', project);
-  expect(await colony(page)).toEqual({ biome: 'shore', architecture: 'cooperative', buildings: 5 });
+  expect(await colony(page)).toEqual({ biome: 'shore', architecture: 'cooperative', buildings: 6 });
   // The town is in view, between the bars and above the sheet.
   const stage = await page.getByTestId('map').boundingBox();
   const seen = (await onScreen(page)).filter(
@@ -138,7 +141,9 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
 
   // What is queued stands as a scaffold, in the scene too.
   await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
-  await expect.poll(async () => (await onScreen(page)).map((b) => b.kind)).toContain('scaffold');
+  await expect(panel).toContainText('A mine is already queued.');
+  // The scaffold's picture loads first; a slow machine takes a while.
+  await expect.poll(async () => (await onScreen(page)).map((b) => b.kind), { timeout: 30_000 }).toContain('scaffold');
 
   // Back to the map.
   await press(page.locator('.colony-bar').getByRole('button', { name: '← Tau Ceti' }), project);
@@ -151,13 +156,14 @@ test('each power builds in its own way, on its own ground', async ({ page }, inf
   test.skip(!isDesktop(info.project.name), 'one size is enough to check the three sets');
   test.slow();
   const project = info.project.name;
-  for (const [power, capital, seed, biome, architecture] of [
-    ['Lead the Transit Authority', 'Earth', '42', 'garden', 'authority'],
-    ['Lead the Hollow Wake', 'Wolf 1061 c', '4242', 'inferno', 'wake'],
+  // Earth's open air leaves a slot for fields; Wolf 1061 c's town is sealed.
+  for (const [power, capital, seed, biome, architecture, buildings] of [
+    ['Lead the Transit Authority', 'Earth', '42', 'garden', 'authority', 7],
+    ['Lead the Hollow Wake', 'Wolf 1061 c', '4242', 'inferno', 'wake', 6],
   ] as const) {
     const panel = await openCapital(page, power, capital, seed, project);
     await enterColony(page, panel, capital, project);
-    expect(await colony(page)).toEqual({ biome, architecture, buildings: 5 });
+    expect(await colony(page)).toEqual({ biome, architecture, buildings });
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('map')).not.toHaveAttribute('data-colony-ready', '1');
   }
@@ -170,8 +176,10 @@ test('the colony lives: people walk, a rover drives, the shuttle visits, the day
   const project = info.project.name;
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  // The high quality setting: weather, and the most people. (A machine of four cores starts low.)
-  await page.addInitScript(() => localStorage.setItem('starman-control:settings', JSON.stringify({ quality: 'high' })));
+  // The medium quality setting has weather. (A machine of four cores starts on low.)
+  await page.addInitScript(() =>
+    localStorage.setItem('starman-control:settings', JSON.stringify({ quality: 'medium' })),
+  );
   const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
   await enterColony(page, panel, 'Tau Ceti e', project);
   const now = await life(page);
@@ -198,26 +206,70 @@ test('the colony lives: people walk, a rover drives, the shuttle visits, the day
   expect(errors).toEqual([]);
 });
 
-test('a finished mine stands where its scaffold was', async ({ page }, info) => {
+test('a finished mine stands where its scaffold was, and the report shows it', async ({ page }, info) => {
   test.skip(!isDesktop(info.project.name), 'ending turns is tested on every size elsewhere');
   test.slow();
   const project = info.project.name;
   const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
   await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
-  await enterColony(page, panel, 'Tau Ceti e', project);
-  await expect.poll(async () => (await onScreen(page)).map((b) => b.kind)).toContain('scaffold');
-  const slot = (await onScreen(page)).find((b) => b.kind === 'scaffold')?.slot;
   // 30 industry at 12 a turn: finished in the third turn.
   for (let i = 0; i < 3; i++) {
     const date = await page.locator('.map-date').textContent();
     await page.keyboard.press('Enter');
     await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
-    await page.keyboard.press('Escape');
+    if (i < 2) await page.keyboard.press('Escape');
   }
-  await expect
-    .poll(async () => (await onScreen(page)).find((b) => b.slot === slot)?.kind, { timeout: 20_000 })
-    .toBe('mine');
-  expect((await onScreen(page)).some((b) => b.kind === 'scaffold')).toBe(false);
+  const report = page.getByRole('dialog', { name: 'Report' });
+  await expect(report).toContainText('Tau Ceti e built a mine');
+  await report.getByRole('button', { name: 'See it' }).click();
+  await expect(page.getByTestId('map')).toHaveAttribute('data-colony-ready', '1', { timeout: 30_000 });
+  const kinds = (await onScreen(page)).map((b) => b.kind);
+  expect(kinds).toContain('mine');
+  expect(kinds).not.toContain('scaffold');
+});
+
+test('every colony and outpost can be seen from the empire’s list', async ({ page }, info) => {
+  test.slow();
+  const project = info.project.name;
+  await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
+  if (isDesktop(project)) await page.keyboard.press('p');
+  else await page.getByRole('button', { name: 'Empire', exact: true }).tap();
+  const empire = page.getByRole('dialog', { name: 'Empire' });
+  await press(empire.getByRole('button', { name: 'View Tau Ceti e' }), project);
+  await expect(page.getByTestId('map')).toHaveAttribute('data-colony-ready', '1', { timeout: 30_000 });
+  await expect(empire).toHaveCount(0);
+  expect((await colony(page)).architecture).toBe('cooperative');
+});
+
+test('an outpost is its rig, with no one about', async ({ page }, info) => {
+  test.skip(!isDesktop(info.project.name), 'founding is tested on every size elsewhere');
+  test.slow();
+  const project = info.project.name;
+  await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
+  await page.keyboard.press('Escape');
+  // The outpost ship founds an outpost at home when the turn ends.
+  await page
+    .getByRole('complementary', { name: 'Your power' })
+    .locator('.ships-list')
+    .getByRole('button', { name: /Hawthorn/ })
+    .click();
+  const inspector = page.locator('.map-inspector');
+  await inspector.locator('.found-row').first().click();
+  const date = await page.locator('.map-date').textContent();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('p');
+  const empire = page.getByRole('dialog', { name: 'Empire' });
+  await empire.getByRole('tab', { name: /Outposts/ }).click();
+  await empire
+    .getByRole('button', { name: /^View / })
+    .first()
+    .click();
+  await expect(page.getByTestId('map')).toHaveAttribute('data-colony-ready', '1', { timeout: 30_000 });
+  expect((await colony(page)).buildings).toBe(1);
+  expect((await onScreen(page)).map((b) => b.kind)).toEqual(['rig']);
+  expect((await life(page)).people).toBe(0);
 });
 
 test.describe('with reduced motion', () => {

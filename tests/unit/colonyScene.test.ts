@@ -75,11 +75,12 @@ describe('a colony’s scene', () => {
     expect(s?.sun.size).toBeGreaterThan(1);
     expect(s?.slots).toBe(body('tau-ceti', 'tau-ceti-e', 1).size);
     expect(s?.buildings.map((b) => [b.kind, b.slot])).toEqual([
-      ['homes', 0],
+      ['hall', 0],
       ['shipyard', 1],
       ['homes', 2],
       ['lane-station', 3],
       ['homes', 4],
+      ['homes', 6],
     ]);
     expect(s?.description).toBe(
       'Tau Ceti e: a domed city of about 10 million under a yellow sun, with a shipyard and a lane station.',
@@ -102,6 +103,8 @@ describe('a colony’s scene', () => {
     const s = colonyScene(world, g, h);
     const scaffold = s?.buildings.find((b) => b.kind === 'scaffold');
     expect(scaffold).toEqual({ kind: 'scaffold', project: 'mine', slot: 5, progress: 0.5 });
+    // The fields that were in slot 5 make way.
+    expect(s?.buildings.filter((b) => b.slot === 5)).toHaveLength(1);
     expect(s?.description).toMatch(/; a mine is being built\.$/);
     // When it is finished, the mine stands in the scaffold's slot.
     h.queue = [];
@@ -109,11 +112,21 @@ describe('a colony’s scene', () => {
     expect(colonyScene(world, g, h)?.buildings.find((b) => b.kind === 'mine')?.slot).toBe(5);
   });
 
-  it('lays Earth out in the open air, under a dense sky', () => {
+  it('lays Earth out in the open air, under a dense sky, farming its free slot', () => {
     const g = start('sta', 42);
     const s = colonyScene(world, g, capital(g, 'sta'));
     expect(s?.biome).toBe('garden');
     expect(s?.envelope).toBe('open');
+    // Earth's size is 7: the hall, two projects and three homes leave slot 5 for fields.
+    expect(s?.buildings.map((b) => [b.kind, b.slot])).toEqual([
+      ['hall', 0],
+      ['shipyard', 1],
+      ['homes', 2],
+      ['lane-station', 3],
+      ['homes', 4],
+      ['fields', 5],
+      ['homes', 6],
+    ]);
     expect(s?.sky.starsByDay).toBe(false);
     expect(s?.sun.size).toBeCloseTo(1, 1);
   });
@@ -129,7 +142,7 @@ describe('a colony’s scene', () => {
     const g = start('hollow-wake', 42);
     const h = { ...capital(g, 'hollow-wake'), kind: 'outpost' as const, capital: false, people: 0, projects: [] };
     const s = colonyScene(world, g, h);
-    expect(s?.buildings.filter((b) => b.kind === 'homes')).toEqual([]);
+    expect(s?.buildings).toEqual([{ kind: 'rig', slot: 0 }]);
     expect(s?.people).toBe(0);
     expect(s?.description).toContain('an automated outpost');
   });
@@ -165,6 +178,9 @@ describe('the colony view’s pictures', () => {
           expect(structureArt(a, 'homes', { size, envelope }), `${a} ${size} ${envelope}`).toBeDefined();
       for (const p of PROJECT_IDS) expect(structureArt(a, p), `${a} ${p}`).toBeDefined();
       expect(structureArt(a, 'scaffold')?.id).toBe('scaffold');
+      expect(structureArt(a, 'fields')?.id).toBe('fields');
+      expect(structureArt(a, 'hall')?.id).toBe(`${a}-hall`);
+      expect(structureArt(a, 'rig')?.id).toBe(`${a}-rig`);
     }
     expect(structureId('wake', 'homes', { size: 3, envelope: 'domed' })).toBe('wake-homes-3-domed');
   });
