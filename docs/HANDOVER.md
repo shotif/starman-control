@@ -36,7 +36,7 @@ The owner, on 20 October 2026:
 > really nice.
 
 The proposal is [COLONY_VIEW.md](design/COLONY_VIEW.md), and its choices are open as
-[D-28](DECISIONS.md#d-28--the-colony-view--open). In short: **a living diorama**, put together by
+[D-28](DECISIONS.md#d-28--the-colony-view--decided). In short: **a living diorama**, put together by
 the game from the colony's data. A painted landscape for the world's biome (about nine biomes),
 under a sky drawn in code in the star's true colour. Painted buildings in slots on the plain: homes
 that grow with the people, open-air or domed by habitability, each project, a scaffold for what is

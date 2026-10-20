@@ -32,8 +32,8 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $15 in all** (raised from about $5); about $2.70 spent by 20 October 2026 |
-| D-28 | The colony view: its look, camera, how powers differ, where it lives | **Open** | a living diorama from the art pipeline, seen from a ridge; see [D-28](#d-28--the-colony-view--open) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $15 in all** (raised from about $5); about $3.95 spent by 20 October 2026 |
+| D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-12 – D-15, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -325,10 +325,11 @@ The owner first allowed about $5 of generation without asking (19 October 2026).
 2026 they raised it: "I'm also raising your limit for the Gemini API up to $15, so you have a little
 bit more room to build assets." **About $15 in all** may now be spent without asking. Spent so far:
 about $1.50 on the style test, $0.60 on the powers' pictures and $0.60 on the report's pictures,
-**about $2.70**, leaving about $12.30. Each batch is recorded below under *Made without waiting*
+**about $2.70**, leaving about $12.30; then about $1.25 on the colony view's style slice (20 October 2026),
+**about $3.95** in all. Each batch is recorded below under *Made without waiting*
 with its cost and the running total; the owner is asked before the total would pass $15.
 
-### D-28 · The colony view — **Open**
+### D-28 · The colony view — **Decided**
 
 On 20 October 2026 the owner asked for the colony screen "to have nice illustrations, so I can
 visually see the colony, see the buildings, and see maybe some people moving around. I want it to
@@ -341,6 +342,16 @@ be really nice." The proposal is [COLONY_VIEW.md](design/COLONY_VIEW.md). Its ch
 | **How the powers differ** | (a) one human architecture, each power told apart by its colour in lights, banners and markings, and its emblem; (b) a separate set of buildings for each power | **(a)** now, at a third of the cost; (b) can follow if the scenes feel too alike |
 | **Where it lives** | (a) a screen of its own, entered from the colony's panel, the empire and the system view, with the panel beside or below it; (b) only a picture at the top of the colony's panel | **(a)**, the scene also giving the panel its header |
 | **The spend** | about $4 to $6 for about 75 pictures over four increments, after a style slice of about $0.60 that the owner sees first | within D-27 |
+
+**Decided on 20 October 2026:** the look (a), the camera (a) and where it lives (a), as
+recommended; and for how the powers differ, **(b), a separate set of buildings for each power**,
+over the recommendation. So the Sol Transit Authority, the Frontier Cooperative and the Hollow Wake
+each build in an architecture of their own (COLONY_VIEW.md §3), still told apart by colour and
+emblem as well; landscapes, the scaffold and other neutral pieces are shared. The structures for
+the human powers become about three times as many, so the plan is now about 60 pictures to keep
+(fewer home pictures, placed in numbers, offset most of the rise), at about $6 to $8 with
+candidates and re-rolls, still within D-27. The style slice (increment 14) now shows all three
+architectures before the rest is made.
 
 ## Round 2: needed later
 
@@ -400,3 +411,4 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-19 | Control's console (increment 11) follows [CONSOLE.md](design/CONSOLE.md): interface sounds made in the browser (no files, nothing to licence), **on by default** with a setting to turn them off; no music, which needs the owner (a composer or a licensed source); report illustrations left for later, as they need new pictures | games have sound; quiet tones that wait for the first press are easy to turn off, and music and pictures cost money the owner decides on |
 | 2026-10-19 | After increments 9 to 11, a fourth of the visual direction: **In flight** (increment 12, [IN_FLIGHT.md](design/IN_FLIGHT.md)), ships seen flying the lanes they took when a turn ends, and the system view under the map's sky | the owner asked for at least three increments of my own choosing; ending a turn now shows what happened out there |
 | 2026-10-19 | Illustrated dispatches (increment 13, [DISPATCHES.md](design/DISPATCHES.md)): six report pictures from twelve candidates, about $0.60, so about $2.70 of the owner's $5 spent in all; chosen survey B, colony A, ship B, research A, anomaly A, lane B | within the spend the owner allowed without asking; the lettered contact sheet was sent to the owner to overrule |
+| 2026-10-20 | The colony view's style slice (increment 14): 25 candidates, about $1.25, so about **$3.95** of the owner's $15 spent in all; chosen shore E, the Cooperative's homes B, shipyard B, lane station B, mine B, the scaffold A, the Authority's homes D, the Wake's homes B. Landscapes are painted from a raised viewpoint, and buildings on magenta cut off at their base | within D-27; the lettered contact sheets were sent to the owner to overrule, and nothing more is generated until they have seen the slice |

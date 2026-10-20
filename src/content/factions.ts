@@ -8,6 +8,12 @@ import type { SpeciesId } from './species.ts';
 
 export type FactionId = 'sta' | 'frontier' | 'hollow-wake';
 
+/**
+ * How a power builds: each has its own buildings in the colony view (D-28, COLONY_VIEW.md §3). An
+ * alien species brings its own when it arrives (D-12).
+ */
+export type ArchitectureId = 'authority' | 'cooperative' | 'wake';
+
 /** A shape drawn beside the colour wherever a faction is shown, so colour is never the only cue. */
 export type FactionMark = 'square' | 'circle' | 'triangle';
 
@@ -34,6 +40,8 @@ export interface FactionDef {
   colour: string;
   mark: FactionMark;
   species: SpeciesId;
+  /** Its buildings in the colony view. */
+  architecture: ArchitectureId;
   /**
    * Its capital's system and world: Earth for the Authority (D-20), Tau Ceti e for the Cooperative
    * and Wolf 1061 c for the Wake (D-24). The capital's rules do not depend on which world it is.
@@ -54,6 +62,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     colour: '#62e39a',
     mark: 'square',
     species: 'human',
+    architecture: 'authority',
     capital: { systemId: 'sol', bodyId: 'earth' },
     traits: [
       {
@@ -74,6 +83,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     colour: '#5cc8ff',
     mark: 'circle',
     species: 'human',
+    architecture: 'cooperative',
     capital: { systemId: 'tau-ceti', bodyId: 'tau-ceti-e' },
     traits: [
       {
@@ -94,6 +104,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     colour: '#ff5f5f',
     mark: 'triangle',
     species: 'human',
+    architecture: 'wake',
     capital: { systemId: 'wolf-1061', bodyId: 'wolf-1061-c' },
     traits: [
       {

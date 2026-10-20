@@ -20,7 +20,7 @@ export function chooseProviders(choice: string, hasKey: (p: ProviderId) => boole
   return [one];
 }
 
-export type Aspect = '1:1' | '2:3' | '3:2';
+export type Aspect = '1:1' | '2:3' | '3:2' | '21:9';
 
 /**
  * Default models, each provider's flagship in its own documentation on 19 October 2026; `--model`
@@ -52,7 +52,13 @@ export interface HttpCall {
   init: { method: 'POST' | 'GET'; headers: Record<string, string>; body?: string };
 }
 
-const OPENAI_SIZES: Record<Aspect, string> = { '1:1': '1024x1024', '2:3': '1024x1536', '3:2': '1536x1024' };
+// OpenAI has no panorama size: a 21:9 picture is asked for at its widest and cropped by whoever uses it.
+const OPENAI_SIZES: Record<Aspect, string> = {
+  '1:1': '1024x1024',
+  '2:3': '1024x1536',
+  '3:2': '1536x1024',
+  '21:9': '1536x1024',
+};
 
 export function openaiRequest(req: ImageRequest, key: string): HttpCall {
   return {

@@ -89,10 +89,34 @@ enough to send to the owner's phone so they can answer "B" rather than a file na
 Approval writes `public/art/<series>/<brief>-<width>.webp` at the series' widths and records the
 picture in `art/manifest.json`. Approving a brief again replaces its picture.
 
+## Keying: pictures the game draws over
+
+Gemini returns JPEG only, so a picture the game lays over its own drawing is painted on a flat
+backdrop and keyed to transparency at build time (`scripts/art/keying.ts`, increment 14):
+
+- **Buildings** (`structure`) are painted on flat magenta. The magenta is keyed out everywhere:
+  edges are unmixed from the backdrop and despilled, and so is a two-pixel rim inside them (the
+  JPEG bleeds colour a pixel or two), then the picture is trimmed to the building.
+- **Landscapes** (`landscape`) are painted under a flat white sky. The sky is keyed down each column
+  from the top until a run of solid pixels, so haze at the horizon stays partly clear and white
+  snow or domes on the ground are kept. `--backdrop magenta` paints a landscape under a magenta
+  sky instead, should a white ground (an ice sheet) need it.
+
+```bash
+npm run art:key -- --brief cooperative-shipyard     # art/out/<brief>/keyed/*.png, to judge the edges
+npm run art:sheet -- --brief cooperative-shipyard   # the keyed candidates over a checkerboard
+```
+
+`art:approve` keys the chosen candidate the same way by itself and publishes a WebP with
+transparency; the manifest records the backdrop, the keying's settings and the trim box.
+
 ## Briefs and styles
 
-- `art/styles.ts` holds the **series**: the shape (2:3 for portraits, 3:2 for illustrations), the
-  published widths, the written style and what to avoid.
+- `art/styles.ts` holds the **series**: the shape (2:3 for portraits, 3:2 for illustrations, 21:9
+  for landscapes, 1:1 for buildings), the published widths, the written style, what to avoid, and
+  for the colony view's series the backdrop they are keyed from.
+- `art/briefs.ts` also holds each power's **architecture** (D-28), written once and put into every
+  brief for that power's buildings.
 - `art/briefs.ts` holds the **briefs**: an id, a series, the subject, and why the game needs it.
 - The prompt sent is the series style, then the subject, then what to avoid. `--dry-run` shows it.
 
@@ -158,5 +182,6 @@ in the game. Alien portraits wait for the species to be designed (D-12).
 | `public/art/` | approved pictures, served with the game |
 | `scripts/art/providers.ts` | the two services' requests and responses |
 | `scripts/art/catalogue.ts` | prompts, the manifest and its checks |
-| `scripts/art/{ping,generate,sheet,approve,check}.ts` | the commands above |
+| `scripts/art/{ping,generate,key,sheet,approve,check}.ts` | the commands above |
+| `scripts/art/keying.ts` | keying a backdrop to transparency (pure, unit-tested) |
 | `.env.example` | the key names, for a local `.env` |

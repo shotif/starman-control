@@ -3,6 +3,7 @@
 
 import { type ArtBrief, BRIEFS } from '../../art/briefs.ts';
 import { SERIES, type SeriesId } from '../../art/styles.ts';
+import type { Backdrop, KeySpec } from './keying.ts';
 import type { Aspect, ProviderId } from './providers.ts';
 
 export function findBrief(id: string, briefs: ArtBrief[] = BRIEFS): ArtBrief {
@@ -11,9 +12,23 @@ export function findBrief(id: string, briefs: ArtBrief[] = BRIEFS): ArtBrief {
   return brief;
 }
 
-export function buildPrompt(brief: ArtBrief): string {
+const BACKDROP_WORDS: Record<Backdrop, string> = {
+  white: 'plain, flat, uniform pure white (#FFFFFF)',
+  magenta: 'plain, flat, uniform pure magenta (#FF00FF)',
+};
+
+/** How a brief's pictures are keyed to transparency, if its series is: the series' own, or `backdrop` instead. */
+export function keySpecFor(brief: ArtBrief, backdrop?: Backdrop): KeySpec | undefined {
+  const key = SERIES[brief.series].key;
+  return key ? { ...key, backdrop: backdrop ?? key.backdrop } : undefined;
+}
+
+/** The series style (its backdrop named), then the subject, then what to avoid. */
+export function buildPrompt(brief: ArtBrief, backdrop?: Backdrop): string {
   const series = SERIES[brief.series];
-  return `${series.style}\n\nSubject: ${brief.subject}\n\nDo not include: ${series.avoid}.`;
+  const key = keySpecFor(brief, backdrop);
+  const style = key ? series.style.replace('{backdrop}', BACKDROP_WORDS[key.backdrop]) : series.style;
+  return `${style}\n\nSubject: ${brief.subject}\n\nDo not include: ${series.avoid}.`;
 }
 
 /** Everything about a generated candidate, saved beside it so approval can record it. */
@@ -26,6 +41,8 @@ export interface CandidateRecord {
   quality?: string;
   createdAt: string;
   note?: string;
+  /** For a series keyed to transparency: the backdrop it was painted on, and how it is keyed. */
+  key?: KeySpec;
 }
 
 export interface ManifestFile {
@@ -35,13 +52,17 @@ export interface ManifestFile {
   bytes: number;
 }
 
-export interface ManifestEntry extends CandidateRecord {
+export interface ManifestEntry extends Omit<CandidateRecord, 'key'> {
   id: string;
   series: SeriesId;
   approvedAt: string;
   /** The candidate file it was made from, for finding it again. */
   candidate: string;
   files: ManifestFile[];
+  /** How it was keyed to transparency, with the exact settings (scripts/art/keying.ts). */
+  key?: KeySpec & { settings: Record<string, unknown> };
+  /** A cut-out's box in the candidate, before it was scaled to the published widths. */
+  crop?: { left: number; top: number; width: number; height: number };
   /** Always true: every picture here was made by an image model, which stores may require us to disclose. */
   aiGenerated: true;
 }

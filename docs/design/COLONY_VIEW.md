@@ -1,8 +1,9 @@
 # The colony in pictures (proposal)
 
-**Status:** a proposal, written 20 October 2026 at the owner's request; not built. It needs the
-owner's answers to [D-28](../DECISIONS.md#d-28--the-colony-view--open) before anything is
-generated beyond the style slice (§6, increment 14).
+**Status:** written 20 October 2026 at the owner's request. The owner answered
+[D-28](../DECISIONS.md#d-28--the-colony-view--decided) the same day: a living diorama, seen from a
+ridge, on a screen of its own, and **a separate set of buildings for each power**. Being built in
+increments 14 to 17 (§6); nothing beyond the style slice is generated until the owner has seen it.
 
 The owner's request:
 
@@ -33,12 +34,12 @@ a picture each.
 | The sun: its colour, its size in the sky, its height | the star's `colorHex`; size from the star's radius and the orbit; a tidally `locked` world's sun stands still on the horizon (the twilight band) |
 | A flare | a flare star (`flare`): now and then the light flickers brighter |
 | A planet in the sky | for a moon, its parent planet, drawn with the system view's planet art |
-| Homes, growing | the colony's `people`: tiers at about 1, 3, 8, 15 and 25 million |
+| Homes, growing | the colony's `people`: more homes as it grows, and bigger ones (small houses, then blocks, then towers) |
 | Open air or domes | how habitable the world is for the colony's species (`speciesFor`): comfortable → open air and fields; tolerable → domes and greenhouses; harsh → sealed domes, partly underground |
 | Each project | `projects`: the shipyard (a pad and a gantry), the lane station (a beacon mast), the mine (a rig and conveyors), the survey station (a dish array) |
 | What is being built | the queue's first item: a scaffold where it will stand, filling as industry goes in; a ship's hull on the shipyard's pad |
 | Riches | rich metals: ore heaps; volatiles: vents and ice; fusion fuel: regolith processors |
-| Whose it is | the power's colour in lights, banners and the pad's markings; its emblem on the main hall |
+| Whose it is | the power's own architecture (§3), and its colour in lights, banners and the pad's markings; its emblem on the main hall |
 | The capital | a landmark: the power's hall |
 | Life | people in proportion to the population (dozens of figures at most), rovers, cargo lifters, a shuttle now and then, lights at night, weather (dust, snow, rain, ash) by biome |
 
@@ -92,21 +93,41 @@ Gemini returns JPEG only (ART_PIPELINE.md), so transparency needs a new build-ti
 luminance key for the white sky; the keying settings are recorded in `art/manifest.json` with the
 rest of the picture's provenance.
 
-**Biomes** (one landscape each, about nine): garden (temperate, oceans), steppe (temperate or warm,
-dry), desert (hot), inferno (scorching), tundra (cold), ice sheet (frozen), airless rock (no
-atmosphere), haze (toxic or dense), ocean shore (oceans, for water worlds). Moons use these with
-their parent planet in the sky.
+**Biomes** (one landscape each, nine), chosen from the world's data in this order, the first that
+fits: **inferno** (scorching), **haze** (a toxic atmosphere), **ice** (frozen; or airless with ice
+and frozen), **airless** (no atmosphere: grey regolith and craters), **desert** (hot), **tundra**
+(cold: rust and grey rock, frost in the hollows), **garden** (temperate with oceans), **shore**
+(warm with oceans), **steppe** (temperate or warm and dry). Earth is a garden, the Moon airless,
+Mars tundra; Tau Ceti e, whose air and water are fiction made for each game, is most often a
+shore. Moons use these with their parent planet in the sky.
 
-**Structures** (about 22): homes in five tiers, each open-air and domed (10); the four projects
-(4); the capital's hall (1); a scaffold (1); the outpost rig and drone pad (2); a shuttle and a
-rover (2); greenhouses and fields as filler (2).
+**Three architectures (D-28).** Each power builds in its own way, written once in `art/briefs.ts`
+and put into every brief for that power, so its buildings belong together:
 
-**Species and powers (D-08):** sets are keyed by species. The human set serves all three powers,
-told apart by colour, lights, markings and emblems drawn in code; each alien species gets its own
-set when it arrives (D-12).
+- **Sol Transit Authority**: civic and orderly. Standardised prefabricated modules on a strict grid,
+  pale ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide
+  lights. Under a dome: faceted geodesic glass.
+- **Frontier Cooperative**: rounded and hand-built. Low curved buildings printed from the local
+  soil in warm earth tones, round windows, white fabric awnings and solar sails, planters; soft blue
+  lights. Under a dome: clusters of frosted bubble domes and greenhouses.
+- **Hollow Wake**: salvaged and tough. Sections of old starship hulls and cargo containers, angular,
+  patched with mismatched plates and welded seams, gunmetal and rust, half dug into banked earth,
+  triangular braces, small red lights. Under a dome: armoured bunkers with small thick-glass domes.
 
-**Cost:** about 75 pictures with two or three candidates each, about $4 to $6 with re-rolls, after
-a style slice of about $0.60 (§6). D-27 allows about $15 in all; about $2.70 is spent.
+**Structures** (about 42): for each power, homes in three sizes (small houses, blocks, towers),
+each open-air and domed (6), the four projects (4), the capital's hall (1), the outpost's rig (1)
+and its shuttle (1), so 13 for each power and 39 in all; shared by every power, the scaffold, the
+fields and a rover (3). Homes are placed in numbers as the colony grows, so three sizes stand in
+for the five tiers first proposed.
+
+**Species and powers (D-08).** A set belongs to an architecture, and a power names its
+architecture in its data (`src/content/factions.ts`), so no code assumes which power the player is.
+Each alien species gets its own architectures when it arrives (D-12). A power with no set of its
+own would borrow the neutral pieces and a human set until it has one.
+
+**Cost:** about 51 pictures to keep (9 landscapes and 42 structures), two or three candidates
+each, about $6 to $8 with re-rolls, after a style slice of about $1 (§6). D-27 allows about $15 in
+all; about $2.70 was spent before this.
 
 ## 4. On the screen
 
@@ -139,10 +160,12 @@ a style slice of about $0.60 (§6). D-27 allows about $15 in all; about $2.70 is
 
 | # | Increment | What |
 | --- | --- | --- |
-| 14 | **Style slice** | the two series, `art:key`, six pictures (Tau Ceti e's landscape, homes tier 2 domed, shipyard, lane station, mine, scaffold), a still composition in the game; the owner sees the contact sheet and screenshots before the rest is made |
-| 15 | **The diorama** | `colonyScene()` (pure, tested, like `systemLayout`), the sky shader, landscape and slots, buildings by state, the scaffold and its progress, the screen on phone and desktop, the way in and out |
-| 16 | **Life** | people, rovers, the shuttle, weather, day and night with lit windows, the moments, tapping buildings, reduced motion, the adaptive frame rate |
-| 17 | **The full set** | every landscape and structure, domed and open, outposts, the capital's hall; contact sheets to the owner; the budget |
+| 14 | **Style slice** | the two series, `art:key`, eight pictures (the shore landscape; the Cooperative's domed homes, shipyard, lane station and mine; the scaffold; the Authority's open-air homes and the Wake's domed homes, to set all three architectures), a still composition in the game; the owner sees the contact sheets and screenshots before the rest is made |
+| 15 | **The diorama** | `colonyScene()` (pure, tested, like `systemLayout`), the sky shader, landscape and slots, buildings by state, the scaffold and its progress, the screen on phone and desktop, the way in and out; the pictures it needs: every landscape, and every power's homes and projects |
+| 16 | **Life** | people, rovers, the shuttle, weather, day and night with lit windows, the moments, tapping buildings, reduced motion, the adaptive frame rate; the shuttles and the rover |
+| 17 | **The full set** | the capitals' halls, outposts, the fields; the ways in from the empire and the system view; contact sheets to the owner; the budget |
+
+Each increment's pictures are shown to the owner as lettered contact sheets when they are chosen.
 
 ## 7. Tests
 
@@ -152,3 +175,43 @@ a style slice of about $0.60 (§6). D-27 allows about $15 in all; about $2.70 is
 - **Browser:** open the scene from the panel on the phone, tablet and desktop (a `window.__colony`
   hook when `?test`); tap a building for its card; finish a mine and see it appear; nothing moves
   with reduced motion; the art records are complete; screenshots at the ten sizes.
+
+## 8. As built
+
+### Increment 14: the style slice (20 October 2026)
+
+- **The pipeline:** two new series in `art/styles.ts`. `landscape` (21:9, published 1280 and 2560
+  wide) is painted under a flat white sky from a raised viewpoint some thirty metres up; the first
+  try, from a low viewpoint, put large shrubs in the foreground and made every building look like a
+  model. `structure` (1:1, published 512 and 1024) is a building on flat magenta, seen from a
+  little above, cut off at its base; the first try painted each building on a "floating island" of
+  soil, and asking for walls seen more than roof brought the angle down. A style names its
+  backdrop as `{backdrop}`, and `--backdrop` tries the other one.
+- **Keying** (`scripts/art/keying.ts`, `npm run art:key`): a building's magenta is keyed out
+  everywhere, edges unmixed from the backdrop and despilled (the JPEG's colour bleeds a pixel or
+  two, so a two-pixel rim is despilled too), then trimmed to the building; a landscape's sky is
+  keyed down each column from the top until a run of solid pixels, so haze at the horizon stays
+  partly clear and white things on the ground are kept. Approval keys the chosen candidate itself
+  and records the keying's settings and the trim box in `art/manifest.json`; the contact sheets
+  show keyed candidates over a checkerboard.
+- **The pictures:** 25 made, about $1.25 (the project's total is now **about $3.95** of the
+  owner's $15). Chosen: the shore landscape **E** (the raised view), the Cooperative's domed homes
+  **B**, shipyard **B**, lane station **B** and mine **B**, the scaffold **A**, the Authority's
+  open-air homes **D** and the Wake's domed homes **B**. The lettered contact sheets went to the
+  owner.
+- **The scene in code:** `src/render/colonyScene.ts` works out the scene from the game (biome, sky,
+  sun, envelope, homes, projects, the scaffold and its progress, a description), pure and tested.
+  Homes stand in the even slots from the middle outwards, projects in the odd ones in the order they
+  were finished, and a scaffold where its project will stand, so nothing moves as the colony grows.
+  One home for every 4 million people. `src/content/colonyArt.ts` lists the pictures, each
+  landscape's horizon and twelve slots, and each building's width in metres; a building's size
+  in the scene is its width times its depth below the horizon.
+- **On screen:** the colony's panel opens with a still of its scene (`src/render/colonyStill.ts`,
+  Canvas 2D, so no second WebGL context): the sky drawn in the star's colour, the sun at the upper
+  left where the buildings are lit from, the landscape tinted by the star's light with haze laid
+  over the far land, and the buildings back to front on soft contact shadows. It appears only where
+  every part has a picture: in the slice, a Cooperative colony on a shore world, such as Tau Ceti e
+  in games where it has air and seas (seed 1, for example). Elsewhere the panel is as it was.
+- **Tests:** `keying.test.ts` and `colonyScene.test.ts` (unit), `colony.spec.ts` (the still drawn
+  and described on the phone, tablet and desktop; a queued mine's scaffold; no still where no
+  picture exists).

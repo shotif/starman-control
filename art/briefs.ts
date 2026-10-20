@@ -1,6 +1,7 @@
 // What to paint. A brief names a series (its style is in art/styles.ts) and a subject. Everything a
 // brief depicts is fiction; real astronomy in a picture must match the real sky (CLAUDE.md).
 
+import type { ArchitectureId } from '../src/content/factions.ts';
 import type { SeriesId } from './styles.ts';
 
 export interface ArtBrief {
@@ -12,6 +13,25 @@ export interface ArtBrief {
   /** Why the game needs it, for the reviewer; not sent to the model. */
   purpose: string;
 }
+
+/**
+ * Each power's architecture (D-28, COLONY_VIEW.md §3), written once and put into every brief for
+ * its buildings, so they look like one people built them. Every building is fiction.
+ */
+export const ARCHITECTURE: Record<ArchitectureId, string> = {
+  authority:
+    'In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules ' +
+    'on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, ' +
+    'slim green guide lights along the edges; tidy and well kept.',
+  cooperative:
+    'In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed ' +
+    'from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar ' +
+    'sails, planters with greenery; communal and lived-in, with soft blue lights.',
+  wake:
+    'In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo ' +
+    'containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into ' +
+    'banked earth, triangular braces, small red lights; improvised and tough.',
+};
 
 export const BRIEFS: ArtBrief[] = [
   // The style test: the same four subjects from both services, so the owner can choose a direction
@@ -151,5 +171,62 @@ export const BRIEFS: ArtBrief[] = [
       'A slender lane beacon tower in space igniting, sending a bright straight thread of light out towards a ' +
       'distant star, two crew in suits watching from a work platform at its base.',
     purpose: 'Report: a lane opened.',
+  },
+  // The colony view's style slice (COLONY_VIEW.md §6, increment 14): one landscape, the
+  // Cooperative's buildings for its capital, the shared scaffold, and homes in the other two
+  // architectures, so the owner sees all three before the rest is made.
+  {
+    id: 'landscape-shore',
+    series: 'landscape',
+    subject:
+      'A warm world with shallow seas. Beyond the plain, a calm, shallow, grey-green sea with a long pale shore ' +
+      'and low dunes; low, flat-topped hills of ochre and pale rock on the far horizon, softened by heat haze. ' +
+      'The plain in front is firm, level pale sand and gravel with low, tough grey-green scrub in patches.',
+    purpose: 'Colony view: the shore biome (warm, with oceans), as Tau Ceti e is in most games.',
+  },
+  {
+    id: 'cooperative-homes-2-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} Homes for a few hundred settlers on a harsh world: a cluster of three large frosted-glass bubble domes joined by short rounded tunnels, sealed against the outside; inside, rounded two- and three-storey houses glow warmly through the frosted glass; small airlocks at ground level.`,
+    purpose: 'Colony view: the Cooperative’s middle-sized homes, under domes.',
+  },
+  {
+    id: 'cooperative-shipyard',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A small colony shipyard: a round landing pad of rammed earth with a ring of blue edge lights, a tall open gantry crane of pale metal beside it, a low rounded hangar with a wide door, and squat fuel tanks; no ship on the pad.`,
+    purpose: 'Colony view: the Cooperative’s shipyard.',
+  },
+  {
+    id: 'cooperative-lane-station',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A lane station, the ground station that keeps the system's lane beacons in tune: a slender mast several storeys tall with a ring of antennae and a soft blue light at the top, beside a large dish aerial pointing at the sky, rising from a low rounded control building with round windows.`,
+    purpose: 'Colony view: the Cooperative’s lane station.',
+  },
+  {
+    id: 'cooperative-mine',
+    series: 'structure',
+    subject: `${ARCHITECTURE.cooperative} A small mine: a drilling tower over a shaft, a short covered conveyor carrying ore to a rounded processing shed, heaps of dark ore beside it, a little dust in the air.`,
+    purpose: 'Colony view: the Cooperative’s mine.',
+  },
+  {
+    id: 'scaffold',
+    series: 'structure',
+    subject:
+      'A building under construction at a space colony: a tall box of light metal scaffolding with orange work ' +
+      'lights, a small crane arm on top, stacked wall panels and crates at its foot, the first panels going up on ' +
+      'one side; plain grey and yellow construction equipment with no markings.',
+    purpose: 'Colony view: what is being built, for every power.',
+  },
+  {
+    id: 'authority-homes-2-open',
+    series: 'structure',
+    subject: `${ARCHITECTURE.authority} A block of homes for a few hundred people in the open air: three-storey modular apartment units arranged round a small square courtyard with a few trees, balconies, rooftop solar panels, green lights at the doors.`,
+    purpose: 'Colony view: the Authority’s middle-sized homes, in the open air (setting its architecture).',
+  },
+  {
+    id: 'wake-homes-2-domed',
+    series: 'structure',
+    subject: `${ARCHITECTURE.wake} Homes for a few hundred raiders on a hostile world: a cluster of half-buried bunkers made from a salvaged freighter hull cut into sections, small thick-glass domes on top lit warmly from inside, ladders and gangways between them, a red warning light on a short mast.`,
+    purpose: 'Colony view: the Wake’s middle-sized homes, sealed (setting its architecture).',
   },
 ];

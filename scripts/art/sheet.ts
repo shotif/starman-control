@@ -1,5 +1,7 @@
 // Lays out a brief's candidates side by side, each captioned with its letter and model, in one JPEG
-// that is easy to look at on a phone: art/out/sheets/<brief>.jpg. The owner picks by letter.
+// that is easy to look at on a phone: art/out/sheets/<brief>.jpg. The owner picks by letter. Where
+// art:key has keyed the candidates, the keyed versions are shown over a checkerboard instead, so the
+// cut-out's edges can be judged; a panorama gets wider tiles.
 //
 //   npm run art:sheet                       # a sheet for every brief with candidates
 //   npm run art:sheet -- --brief style-test-relic
@@ -13,7 +15,6 @@ import type { CandidateRecord } from './catalogue.ts';
 const { values } = parseArgs({ options: { brief: { type: 'string' } } });
 const outDir = resolve(import.meta.dirname, '../../art/out');
 const sheetsDir = resolve(outDir, 'sheets');
-const TILE = 480;
 const CAPTION = 56;
 const GAP = 12;
 
@@ -38,15 +39,40 @@ for (const brief of briefs) {
     .filter((f) => /\.(png|jpg|webp)$/.test(f))
     .sort();
   if (pictures.length === 0) continue;
-  const cols = Math.min(4, pictures.length);
+  const first = await sharp(resolve(dir, pictures[0] ?? '')).metadata();
+  const wide = (first.width ?? 1) / (first.height ?? 1) > 1.8;
+  const TILE = wide ? 960 : 480;
+  const TILE_H = wide ? Math.round((TILE * (first.height ?? 1)) / (first.width ?? 1)) : 480;
+  const cols = Math.min(wide ? 2 : 4, pictures.length);
   const rows = Math.ceil(pictures.length / cols);
+  const checker = await sharp(
+    Buffer.from(
+      `<svg width="${TILE}" height="${TILE_H}"><defs><pattern id="c" width="32" height="32" patternUnits="userSpaceOnUse">` +
+        `<rect width="32" height="32" fill="#5d6470"/><rect width="16" height="16" fill="#8a919c"/>` +
+        `<rect x="16" y="16" width="16" height="16" fill="#8a919c"/></pattern></defs>` +
+        `<rect width="100%" height="100%" fill="url(#c)"/></svg>`,
+    ),
+  )
+    .png()
+    .toBuffer();
   const tiles = await Promise.all(
     pictures.map(async (file, i) => {
       const record = JSON.parse(readFileSync(resolve(dir, file.replace(/\.\w+$/, '.json')), 'utf8')) as CandidateRecord;
       const letter = String.fromCharCode(65 + i);
-      const image = await sharp(resolve(dir, file))
-        .resize(TILE, TILE, { fit: 'contain', background: '#04060b' })
-        .toBuffer();
+      const keyed = resolve(dir, 'keyed', file.replace(/\.\w+$/, '.png'));
+      const image = existsSync(keyed)
+        ? await sharp(checker)
+            .composite([
+              {
+                input: await sharp(keyed)
+                  .resize(TILE, TILE_H, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+                  .png()
+                  .toBuffer(),
+              },
+            ])
+            .png()
+            .toBuffer()
+        : await sharp(resolve(dir, file)).resize(TILE, TILE_H, { fit: 'contain', background: '#04060b' }).toBuffer();
       const caption = Buffer.from(
         `<svg width="${TILE}" height="${CAPTION}"><rect width="100%" height="100%" fill="#0a1120"/>` +
           `<text x="12" y="36" font-family="sans-serif" font-size="26" fill="#e8eef8">` +
@@ -57,13 +83,13 @@ for (const brief of briefs) {
     }),
   );
   const width = cols * TILE + (cols + 1) * GAP;
-  const height = rows * (TILE + CAPTION) + (rows + 1) * GAP;
+  const height = rows * (TILE_H + CAPTION) + (rows + 1) * GAP;
   const composites = tiles.flatMap((t) => {
     const left = GAP + t.col * (TILE + GAP);
-    const top = GAP + t.row * (TILE + CAPTION + GAP);
+    const top = GAP + t.row * (TILE_H + CAPTION + GAP);
     return [
       { input: t.image, left, top },
-      { input: t.caption, left, top: top + TILE },
+      { input: t.caption, left, top: top + TILE_H },
     ];
   });
   const path = resolve(sheetsDir, `${brief}.jpg`);

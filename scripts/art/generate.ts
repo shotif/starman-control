@@ -1,19 +1,21 @@
 // Makes candidate pictures for briefs, for review. Nothing goes into the game until it is approved.
 //
 //   npm run art:generate -- --brief style-test-relic [--provider auto|gemini|openai|both] [--count 2]
-//                           [--model <id>] [--quality low|medium|high] [--dry-run]
+//                           [--model <id>] [--quality low|medium|high] [--backdrop white|magenta] [--dry-run]
 //   npm run art:generate -- --all --dry-run        # every brief; --dry-run prints prompts, calls nothing
 //
 // `auto` (the default) uses every service that has a key. Candidates land in art/out/<brief>/
-// (ignored by git) with a .json record beside each picture.
+// (ignored by git) with a .json record beside each picture. A series keyed to transparency (a
+// landscape or a building) is painted on its flat backdrop; --backdrop tries the other one.
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { BRIEFS } from '../../art/briefs.ts';
 import { SERIES } from '../../art/styles.ts';
-import { buildPrompt, type CandidateRecord, findBrief } from './catalogue.ts';
+import { buildPrompt, type CandidateRecord, findBrief, keySpecFor } from './catalogue.ts';
 import { apiKey, missingKeyHelp } from './env.ts';
+import type { Backdrop } from './keying.ts';
 import { chooseProviders, DEFAULT_MODELS, generate, type ProviderId } from './providers.ts';
 
 const { values } = parseArgs({
@@ -24,6 +26,7 @@ const { values } = parseArgs({
     count: { type: 'string', default: '1' },
     model: { type: 'string' },
     quality: { type: 'string', default: 'medium' },
+    backdrop: { type: 'string' },
     'dry-run': { type: 'boolean', default: false },
   },
 });
@@ -48,6 +51,11 @@ if (values.model && providers.length > 1) {
 }
 const count = Math.max(1, Math.min(8, Number(values.count) || 1));
 const quality = values.quality as 'low' | 'medium' | 'high';
+if (values.backdrop && values.backdrop !== 'white' && values.backdrop !== 'magenta') {
+  console.error('--backdrop must be white or magenta.');
+  process.exit(1);
+}
+const backdrop = values.backdrop as Backdrop | undefined;
 
 const keys = new Map<ProviderId, string>();
 if (!dryRun) {
@@ -67,7 +75,8 @@ let failed = 0;
 
 for (const id of briefIds) {
   const brief = findBrief(id);
-  const prompt = buildPrompt(brief);
+  const prompt = buildPrompt(brief, backdrop);
+  const keying = keySpecFor(brief, backdrop);
   const aspect = SERIES[brief.series].aspect;
   for (const provider of providers) {
     const model = values.model ?? DEFAULT_MODELS[provider];
@@ -93,6 +102,7 @@ for (const id of briefIds) {
           quality: provider === 'openai' ? quality : undefined,
           createdAt: new Date().toISOString(),
           note: image.note,
+          key: keying,
         };
         writeFileSync(resolve(dir, `${name}.${ext}`), image.bytes);
         writeFileSync(resolve(dir, `${name}.json`), `${JSON.stringify(record, null, 2)}\n`);

@@ -33,6 +33,7 @@ import { type GameState, type Holding, powerOf, type ShipState, type Stockpile }
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
+import { ColonyStill } from './ColonyStill.tsx';
 import { give, type Play } from './play.tsx';
 import { lanePreview } from './state.ts';
 import './colony.css';
@@ -389,6 +390,7 @@ export function HoldingPanel({
           </p>
         )}
       </header>
+      <ColonyStill world={world} game={game} holding={h} />
       {h.kind === 'colony' ? (
         <>
           <dl class="facts">

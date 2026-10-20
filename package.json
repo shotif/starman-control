@@ -22,6 +22,7 @@
     "art:ping": "node scripts/art/ping.ts",
     "art:generate": "node scripts/art/generate.ts",
     "art:approve": "node scripts/art/approve.ts",
+    "art:key": "node scripts/art/key.ts",
     "art:sheet": "node scripts/art/sheet.ts",
     "art:check": "node scripts/art/check.ts",
     "data:import": "node scripts/data/import-reborn.ts",
