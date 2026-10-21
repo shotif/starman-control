@@ -77,7 +77,7 @@ async function tileImage(brief: string, file: string, w: number, h: number): Pro
 function captionImage(w: number, letter: string, text: string): Buffer {
   return Buffer.from(
     `<svg width="${w}" height="${CAPTION}"><rect width="100%" height="100%" fill="#0a1120"/>` +
-      `<text x="12" y="36" font-family="sans-serif" font-size="${text.length > 26 ? 20 : 26}" fill="#e8eef8">` +
+      `<text x="12" y="36" font-family="sans-serif" font-size="${text.length > 22 ? 20 : 26}" fill="#e8eef8">` +
       `<tspan font-weight="bold" fill="#ffb45c">${letter}</tspan>  ${escapeXml(text)}</text></svg>`,
   );
 }

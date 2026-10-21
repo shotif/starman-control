@@ -32,12 +32,12 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $10.25 spent by 20 October 2026 |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $14.45 spent by 21 October 2026 |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
-| D-31 | Music | **Open** (asked 2026-10-20) | recommended: Reborn's generative engine as the base, with a short listening trial of generated pieces first; see [D-31](#d-31--music--open) |
-| D-15, D-32 – D-41 | The M2 design: governors and edicts, districts, food, credits, approval, projects, rivals, events, advisors, the opening, the art | **Open** (asked 2026-10-20) | see [Round 4](#round-4-the-m2-design-asked-20-october-2026) and [M2_WORLDS.md §21](design/M2_WORLDS.md#21-decisions-for-the-owner) |
+| D-31 | Music | Decided 2026-10-21 (owner's choice) | **B: pieces generated at build time with Google's Lyria**, chosen by the owner like the pictures; see [D-31](#d-31--music--decided) |
+| D-15, D-32 – D-41 | The M2 design: governors and edicts, districts, food, credits, approval, projects, rivals, events, advisors, the opening, the art | Decided 2026-10-21 | **as recommended**; see [Round 4](#round-4-the-m2-design-decided-21-october-2026) and [M2_WORLDS.md §21](design/M2_WORLDS.md#21-decisions-for-the-owner) |
 | D-12 – D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -336,7 +336,8 @@ with its cost and the running total; the owner is asked before the total would p
 **Raised again on 20 October 2026:** "I'm also increasing your budget to $25 for the Gemini API, so
 you can use it to continue working on the game." **About $25 in all** may now be spent without
 asking; about $8.35 was spent, so about $16.65 was left. Then about $1.90 on the first homes and
-props of increment 18, **about $10.25** in all, leaving about **$14.75**.
+props of increment 18, **about $10.25** in all; then about $4.20 on the rest of its homes and
+props, **about $14.45** in all, leaving about **$10.55**.
 
 ### D-28 · The colony view — **Decided**
 
@@ -400,7 +401,7 @@ and B after the economy exists so the rivals play by M2's rules; the order, and 
 shapes the game, comes first as a written design with its decisions put to the owner. The art for
 all of it is planned at about $12 of the $16.65 left (D-27).
 
-### D-31 · Music — **Open**
+### D-31 · Music — **Decided**
 
 The owner chose music (D-30, G) on 20 October 2026, to be put as a decision before anything is
 built. The game has interface sounds made in the browser (CONSOLE.md) and no music. D-09 and
@@ -421,6 +422,13 @@ I can let you hear both: a minute of Reborn's engine rendered to a file (free), 
 pieces from Lyria (about $0.25, from the D-27 allowance if you agree). D can come later for 1.0
 (M6) if the game earns it. **Nothing is built until you answer.**
 
+**Decided on 21 October 2026: B**, over the recommendation ("As recommended, except for music use
+option B"). The game's music is a set of instrumental pieces generated at build time with Lyria
+through the owner's Gemini key, chosen from candidates by the owner like the pictures, recorded
+with their prompts, and declared as generated in the codex's credits. Reborn's engine is not used
+for music. Designed and built as increment 19 ([MUSIC.md](design/MUSIC.md)); its cost comes from
+the D-27 allowance.
+
 Sources (checked 20 October 2026): [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing)
 (Lyria 3.5, $0.08 a song); composers' rates from
 [Ninichi Music](https://ninichimusic.com/blog/understanding-how-much-an-indie-game-music-composer-costs),
@@ -428,12 +436,12 @@ Sources (checked 20 October 2026): [Gemini API pricing](https://ai.google.dev/ge
 and [Twine](https://twine.net/blog/music-composer-prices-and-commissions); Reborn's engine in
 [Reborn's DESIGN.md, *Audio*](https://github.com/shotif/starman-reborn/blob/main/docs/DESIGN.md).
 
-## Round 4: the M2 design, asked 20 October 2026
+## Round 4: the M2 design, decided 21 October 2026
 
 M2 "Worlds", with rivals that play, events, advisors and a guided opening (D-30), is designed in
-[design/M2_WORLDS.md](design/M2_WORLDS.md). **Nothing of it is built until these are answered.**
-Each question has its options and reasons in the section named; answer *as recommended* to take
-them all.
+[design/M2_WORLDS.md](design/M2_WORLDS.md). Each question has its options and reasons in the
+section named. **Decided on 21 October 2026: every one as recommended** (the owner: "As
+recommended, except for music use option B"). M2 is built from increment 20, after the music.
 
 | ID | Question | Recommendation |
 | --- | --- | --- |
@@ -456,7 +464,7 @@ them all.
 | D-12 | The alien roster: how many species in 1.0, and which concepts (drafts in [SCOPE.md §4.11](SCOPE.md#411-alien-species)) | M3 | five or six, each with a different way to play against — and, since they will become playable (D-08), each with enough to play as |
 | D-13 | The artefacts and the vanished species behind them ([SCOPE.md §4.12](SCOPE.md#412-unknown-artefacts-and-the-precursors)) | M5 | tie them to Reborn's old derelicts and Pyre |
 | D-14 | Victory conditions | M4 | conquest, a council vote, the artefact hunt, and a score at a turn limit |
-| D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **asked with the M2 design** ([Round 4](#round-4-the-m2-design-asked-20-october-2026)) |
+| D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **decided with the M2 design** ([Round 4](#round-4-the-m2-design-decided-21-october-2026)): optional governors, edicts as policies paid from attention |
 | D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art |
 | D-18 | Free or paid, open source or not, Steam or web only | M5 | develop in the open on GitHub Pages; decide at M5 |
 
@@ -512,4 +520,6 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-20 | The colony view's diorama (increment 15): 66 candidates, about $3.30, so about **$7.25** of the owner's $15 spent in all, for every landscape and every power's homes and projects (picks in [COLONY_VIEW.md §8](design/COLONY_VIEW.md#increment-15-the-diorama-20-october-2026)); the ice painted under a magenta sky; keying despills magenta seen through glass | within D-27 and the owner's go-ahead; the lettered contact sheets go to the owner to overrule |
 | 2026-10-20 | The colony view's life (increment 16): the three shuttles and the rover, 8 candidates, about $0.40, so about **$7.65** of the owner's $15 spent in all; chosen the Authority's shuttle A, the Cooperative's B, the Wake's B, the rover A. A day of 90 seconds; weather and the most people only on medium and high quality | within D-27; a machine of four cores starts on low quality, so it has no weather |
 | 2026-10-20 | Increment 18, the first batch (D-30 2a, 2c): 38 candidates, about **$1.90**, so about **$10.25** of the owner's $25 spent in all; chosen the size-2 homes of each capital, b and c (Authority open b A, c B; Cooperative domed b A, c B; Wake domed b A, c A), and 13 props (every power's monument and mast, the Authority's cargo, the Cooperative's and the Wake's greenhouses, the solar field, landing beacon, storage spheres and supply crates; all A but the Wake's mast and both greenhouses, B). Props are published to fit a square of 256 and 512 px; the 1 MB budget for a colony's first pictures is now measured per power | within D-27; the lettered contact sheets and screenshots went to the owner, and the rest is made only after they have seen them |
+| 2026-10-21 | The owner kept increment 18's first picks ("as recommended"); the rest of the homes and props are made the same way | the owner's answer to the contact sheets |
+| 2026-10-21 | Increment 18, the rest: 84 candidates, about **$4.20**, so about **$14.45** of the owner's $25 spent in all; 30 more homes and 12 more props (picks in [COLONY_VIEW.md §8](design/COLONY_VIEW.md#increment-18-the-second-part-21-october-2026)); the 1 MB budget for a colony's first pictures is measured over the game's own scenes (921 KB at most) | within D-27; the lettered sheets went to the owner to overrule |
 | 2026-10-20 | The colony view's full set (increment 17): the capitals' halls, the outposts' rigs and the fields, 14 candidates, about $0.70, so about **$8.35** of the owner's $15 spent in all; chosen the Authority's hall A, the Cooperative's A, the Wake's B, the fields A, every rig A. The hall takes the town's middle slot (the homes move one slot out, once); open-air colonies farm up to two free slots; budgets of 40 KB for the colony's code and 1 MB for its heaviest first pictures on a phone | within D-27; about $6.65 of the allowance is left |

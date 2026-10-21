@@ -31,3 +31,6 @@ certs/
 
 # Generated art candidates awaiting review (docs/ART_PIPELINE.md); approved pictures go to public/art/
 art/out/
+
+# Generated music candidates awaiting review (docs/design/MUSIC.md); approved pieces go to public/music/
+music/out/

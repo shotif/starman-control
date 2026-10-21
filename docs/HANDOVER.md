@@ -31,17 +31,15 @@ way in.
   star's colour; each power's own architecture (the owner chose a set of buildings per power); a
   slow day with lit windows at night; people, rovers, the power's shuttle, weather; a building
   tapped has its card. 51 pictures, keyed from flat backdrops (`npm run art:key`).
-- **Increment 18 is half built** (D-29, D-30 2a and 2c; [COLONY_VIEW.md §9](design/COLONY_VIEW.md#9-more-homes-and-things-between-them-increment-18-design)
+- **Increment 18 is built** (D-29, D-30 2a and 2c; [COLONY_VIEW.md §9](design/COLONY_VIEW.md#9-more-homes-and-things-between-them-increment-18-design)
   and its *As built*): no *Illustration* labels anywhere (the codex's credits say the pictures are
-  made with an image model); every home has three versions in code, chosen from its colony and slot;
+  made with an image model); every home in three versions, chosen from its colony and slot; 25
   props between the buildings (a `prop` series, placed beside the buildings once they stand). The
-  **first batch** is in: each capital's size-2 homes in versions b and c, and 13 props. The owner was
-  sent the lettered sheets and screenshots of four colonies; **the rest (30 homes, 12 props, about
-  $4.30) waits for the owner's go-ahead.**
+  colony view has 124 pictures.
 - **Numbers:** 263 unit tests and about 150 browser journeys pass; the title loads 18.9 KB of its
   40 KB budget, a game's map about 287 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB)
-  and its heaviest first pictures on a phone 891 KB of 1 MB (measured per power now); state
-  version 6.
+  and its heaviest first pictures on a phone 921 KB of 1 MB (measured over the game's own scenes);
+  state version 6.
 
 ## 2. The next job
 

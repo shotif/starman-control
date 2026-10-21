@@ -1,9 +1,10 @@
-# M2 · Worlds (proposal)
+# M2 · Worlds
 
-**Status:** proposal, written 20 October 2026. **Nothing here is built until the owner has answered
-§21.** The owner chose M2 as the main track with rivals that play, events and stories, leaders and
+**Status:** written 20 October 2026; **decided 21 October 2026**: the owner took every
+recommendation of §21. Built from increment 20 (§18), each increment with an *As built* note.
+The owner chose M2 as the main track with rivals that play, events and stories, leaders and
 advisors and a guided opening ([D-30](../DECISIONS.md#d-30--what-comes-next--decided): A with B, C,
-D and E). Music is a decision of its own ([D-31](../DECISIONS.md#d-31--music--open)).
+D and E). Music is a decision of its own ([D-31](../DECISIONS.md#d-31--music--decided), generated pieces, increment 19).
 
 **Goals.** M2's exit criterion ([SCOPE.md §7](../SCOPE.md#7-milestones)): *a 100-turn solo game has
 real economic choices, and every number explains itself.* So every world is worth something
@@ -409,20 +410,20 @@ as buildings.*
 ## 18. Increments
 
 Each keeps the game playable, passes `npm run check` and the browser journeys, and deploys, as
-before. The order follows D-30: the economy first with the opening's pieces inside it, the rivals
+before. (Increment 19 is the music, D-31, so M2 begins at 20.) The order follows D-30: the economy first with the opening's pieces inside it, the rivals
 once there is an economy to play by.
 
 | # | Increment | What |
 | --- | --- | --- |
-| 19 | **Districts and food** | districts, zoning in the queue, workers, room, food and supply networks; the capitals' start; the panel's districts on phone and desktop; districts as buildings in the scene (10 pictures); state version 7 |
-| 20 | **Credits and approval** | the treasury, taxes, upkeep, overdrive and its curve, debt; approval, its parts and levels; credits and food in the top bar; every number with what changed |
-| 21 | **Projects and research** | the eleven new projects and their buildings (33 pictures); the tree to about 34 technologies |
-| 22 | **Advisors and the report** | six faces for each power (18 portraits), their lines in the report, the new needs |
-| 23 | **Governors and edicts** | governors and their contract; edicts if chosen; the hands-on and imperial starts |
-| 24 | **Rivals that play** | the other two powers as AI in new games; what you see of them, the Watch, the standings; the headless 100-turn game in CI |
-| 25 | **Events and stories** | the twelve events, their pictures and choices |
-| 26 | **The guided opening** | the steps, on phone and desktop |
-| 27 | **The proof** | balance from headless games; a 100-turn game on a phone and a desktop; the budgets; the owner's try |
+| 20 | **Districts and food** | districts, zoning in the queue, workers, room, food and supply networks; the capitals' start; the panel's districts on phone and desktop; districts as buildings in the scene (10 pictures); state version 7 |
+| 21 | **Credits and approval** | the treasury, taxes, upkeep, overdrive and its curve, debt; approval, its parts and levels; credits and food in the top bar; every number with what changed |
+| 22 | **Projects and research** | the eleven new projects and their buildings (33 pictures); the tree to about 34 technologies |
+| 23 | **Advisors and the report** | six faces for each power (18 portraits), their lines in the report, the new needs |
+| 24 | **Governors and edicts** | governors and their contract; edicts (E2) with a setting to turn them off; the hands-on and imperial starts |
+| 25 | **Rivals that play** | the other two powers as AI in new games; what you see of them, the Watch, the standings; the headless 100-turn game in CI |
+| 26 | **Events and stories** | the twelve events, their pictures and choices |
+| 27 | **The guided opening** | the steps, on phone and desktop |
+| 28 | **The proof** | balance from headless games; a 100-turn game on a phone and a desktop; the budgets; the owner's try |
 
 Every rule that shapes the game and is not settled in §21 is put to the owner when its increment
 reaches it.

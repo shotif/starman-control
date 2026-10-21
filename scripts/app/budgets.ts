@@ -4,8 +4,9 @@
 // loaded, and the pictures of the heaviest first visit. Fails when over budget. Run by
 // `npm run check` and in CI.
 
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
+import { colonyPictureSets } from './colonyPictures.ts';
 
 interface Chunk {
   file: string;
@@ -62,58 +63,32 @@ for (const b of BUDGETS) {
   console.log(`${ok ? 'ok  ' : 'OVER'} Opening a colony (its code): ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`);
 }
 
-// A colony's first visit on a phone, at its heaviest (COLONY_VIEW.md §9.3): for each power and
-// envelope, the largest landscape; the heaviest six of its homes (any size and version) and its
-// hall; the heaviest four of its projects and the scaffold; the fields where open; its shuttle and
-// the rover; and the heaviest eight props it can show; at the phone's widths. WebP is compressed.
+// A colony's first visit on a phone, at its heaviest (COLONY_VIEW.md §5, §9.3): every scene the
+// game can draw for a colony, worked out by its own code (scripts/app/colonyPictures.ts), and the
+// pictures each loads at the phone's widths. WebP is already compressed.
 {
-  const size = async (dir: string, file: string) => {
-    try {
-      return (await stat(`dist/art/${dir}/${file}`)).size;
-    } catch {
-      return 0;
-    }
+  const sizes = new Map<string, number>();
+  const size = async (file: string) => {
+    if (!sizes.has(file))
+      sizes.set(
+        file,
+        await stat(`dist/art/${file}`).then(
+          (s) => s.size,
+          () => 0,
+        ),
+      );
+    return sizes.get(file) ?? 0;
   };
-  const files = async (dir: string, suffix: string) => {
-    try {
-      return (await readdir(`dist/art/${dir}`)).filter((f) => f.endsWith(suffix));
-    } catch {
-      return [];
-    }
-  };
-  const heaviest = async (dir: string, names: string[], n: number) =>
-    (await Promise.all(names.map((f) => size(dir, f))))
-      .sort((a, b) => b - a)
-      .slice(0, n)
-      .reduce((a, b) => a + b, 0);
-  const lands = await files('landscape', '-1280.webp');
-  const land = Math.max(0, ...(await Promise.all(lands.map((f) => size('landscape', f)))));
-  const pieces = await files('structure', '-512.webp');
-  const props = await files('prop', '-256.webp');
-  const own = ['water-tanks', 'mast', 'cargo', 'greenhouse', 'monument'];
   let worst = 0;
   let worstName = '';
-  for (const a of ['authority', 'cooperative', 'wake'])
-    for (const e of ['open', 'domed']) {
-      const homes = pieces.filter((f) => f.startsWith(`${a}-homes-`) && f.includes(`-${e}`));
-      const projects = ['lane-station', 'mine', 'shipyard', 'survey-station'].map((p) => `${a}-${p}-512.webp`);
-      const usable = props.filter(
-        (f) => own.every((k) => !f.startsWith(k)) && !/^(authority|cooperative|wake)-/.test(f),
-      );
-      const mine = props.filter((f) => f.startsWith(`${a}-`));
-      const bytes =
-        land +
-        (await heaviest('structure', [...homes, `${a}-hall-512.webp`], 6)) +
-        (await heaviest('structure', [...projects, 'scaffold-512.webp'], 4)) +
-        (e === 'open' ? await size('structure', 'fields-512.webp') : 0) +
-        (await size('structure', `${a}-shuttle-512.webp`)) +
-        (await size('structure', 'rover-512.webp')) +
-        (await heaviest('prop', [...usable, ...mine], 8));
-      if (bytes > worst) {
-        worst = bytes;
-        worstName = `${a}, ${e}`;
-      }
+  for (const set of colonyPictureSets()) {
+    let bytes = 0;
+    for (const f of set.files) bytes += await size(f);
+    if (bytes > worst) {
+      worst = bytes;
+      worstName = set.name;
     }
+  }
   const limit = 1024 * KB;
   const ok = worst <= limit;
   failed ||= !ok;

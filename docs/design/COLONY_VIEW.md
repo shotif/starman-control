@@ -1,7 +1,6 @@
 # The colony in pictures (proposal)
 
-**Status:** built, 20 October 2026, in increments 14 to 17 (§6, and *As built* in §8); increment
-18 (§9) under way. The owner
+**Status:** built, 20 and 21 October 2026, in increments 14 to 18 (§6, and *As built* in §8). The owner
 answered [D-28](../DECISIONS.md#d-28--the-colony-view--decided) the same day: a living diorama,
 seen from a ridge, on a screen of its own, and **a separate set of buildings for each power**; and
 approved the style slice before the rest was made.
@@ -338,12 +337,31 @@ Each increment's pictures are shown to the owner as lettered contact sheets when
   The lettered contact sheets and screenshots of four colonies went to the owner before the rest
   (30 homes and 12 props) is made.
 - **Speed:** the budget for a colony's first pictures on a phone is now measured per power (§9.3):
-  890.8 KB of 1 MB at most, for the Wake's sealed towns.
+  890.8 KB of 1 MB at most, for the Wake's sealed towns. (Replaced in the second part.)
 - **Tests:** `colonyScene.test.ts` (versions differ from the two nearest neighbours and never change
   as the town grows; props suit the ground and the envelope, grow with the people, never cover a
   building or each other; the art records of the new series); `colony.spec.ts` (the Cooperative's
   capital shows homes b and c and its monument; every capital has props; no *Illustration* label);
   `data.spec.ts` (the codex's credits).
+
+### Increment 18: the second part (21 October 2026)
+
+- **The owner kept the first picks** ("as recommended"), so the rest was made the same way: every
+  other home's versions b and c (30) and the other twelve props (each power's water tanks, the
+  Authority's greenhouse, the Cooperative's and the Wake's cargo, and the shared wind turbines,
+  radiators, orchard, ore heap, gas well and regolith plant). 84 candidates, about $4.20 (the
+  project's total is now **about $14.45** of the owner's $25).
+- **Chosen:** every home **A** but the Authority's 1-open-b (its A had a smudge above it) and
+  2-domed-c, the Cooperative's 1-domed-b, 3-open-c and 3-domed-b, and the Wake's 3-open-b and
+  3-domed-b (**B**); every prop **A** but the Wake's cargo, the ore heap, the gas well and the
+  regolith plant (**B**). The lettered sheets went to the owner.
+- **The colony view now has 124 pictures:** 9 landscapes; for each power, homes in three sizes,
+  open and domed, in three versions (54 in all), four projects, a hall, a rig, a shuttle and five
+  props of its own; and the scaffold, the fields, the rover and ten props, shared.
+- **The budget, measured over real scenes** (§9.3, `scripts/app/colonyPictures.ts`): counting any
+  six homes of a power broke the 1 MB with the new towers, though no colony shows more than four
+  home pictures at once. The heaviest scene the game can draw now loads 921 KB on a phone.
+- **Sheets:** long captions on a batch sheet are set smaller so they fit.
 
 ## 9. More homes, and things between them (increment 18, design)
 
@@ -428,9 +446,11 @@ About 25 small pieces, cut out like the buildings: some in each power's architec
 published to fit a square of 256 and 512 px since props are drawn small (so a tall mast is no
 heavier than a wide solar field); cut out of magenta like the buildings.
 
-**Speed:** the budget for a colony's first pictures on a phone (1 MB) is measured per architecture
-from now on: the largest landscape, that power's heaviest set of homes, projects, hall and shuttle,
-the shared pieces, and the heaviest props one colony can show at once, at the phone's widths.
+**Speed:** the budget for a colony's first pictures on a phone (1 MB) is measured over the
+game's own scenes (`scripts/app/colonyPictures.ts`): for every world each power could live on, in
+two seeds, a colony at three sizes with all four projects (or three and a scaffold), laid out by
+the scene's own code; the heaviest set of pictures any of them loads at the phone's widths must stay
+under 1 MB. (First measured per power, over-counting homes and props no one colony shows together.)
 
 **Order of work:** the code first (versions and props from whatever pictures exist), then a first
 batch (the size-2 homes of each capital, b and c, and twelve props), shown to the owner as lettered

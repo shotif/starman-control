@@ -25,11 +25,14 @@
     "art:key": "node scripts/art/key.ts",
     "art:sheet": "node scripts/art/sheet.ts",
     "art:check": "node scripts/art/check.ts",
+    "music:generate": "node scripts/music/generate.ts",
+    "music:approve": "node scripts/music/approve.ts",
+    "music:check": "node scripts/music/check.ts",
     "data:import": "node scripts/data/import-reborn.ts",
     "data:import-dwarfs": "node scripts/data/import-dwarfs.ts",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "check": "npm run typecheck && npm run lint && npm run art:check && npm test && npm run build && npm run budgets"
+    "check": "npm run typecheck && npm run lint && npm run art:check && npm run music:check && npm test && npm run build && npm run budgets"
   },
   "dependencies": {
     "@fontsource/saira-condensed": "5.3.0",
