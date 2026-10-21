@@ -6,7 +6,7 @@ import { expect, type Locator, type Page, test } from '@playwright/test';
  * and the save under 200 KB.
  */
 
-const isDesktop = (name: string) => name === 'desktop';
+const isDesktop = (name: string) => name === 'long-desktop';
 const press = (target: Locator, project: string) => (isDesktop(project) ? target.click() : target.tap());
 
 interface GameHook {
@@ -54,7 +54,6 @@ async function answer(page: Page, project: string): Promise<boolean> {
 
 test('a hundred turns with rivals and events, answered, within the budgets', async ({ page }, info) => {
   const project = info.project.name;
-  test.skip(project === 'tablet', 'The phone and the desktop are enough for the long game.');
   test.setTimeout(900_000);
   await page.goto('./?test#/new');
   await press(page.getByText('More'), project);

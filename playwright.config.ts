@@ -27,17 +27,31 @@ export default defineConfig({
   projects: [
     {
       name: 'phone',
-      testIgnore: /screenshots\.spec\.ts/,
+      testIgnore: /(screenshots|long)\.spec\.ts/,
       use: { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
     },
     {
       name: 'tablet',
-      testIgnore: /screenshots\.spec\.ts/,
+      testIgnore: /(screenshots|long)\.spec\.ts/,
       use: { viewport: { width: 820, height: 1180 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
     },
     {
       name: 'desktop',
-      testIgnore: /screenshots\.spec\.ts/,
+      testIgnore: /(screenshots|long)\.spec\.ts/,
+      use: { viewport: { width: 1440, height: 900 } },
+    },
+    // The 100-turn games (M2_WORLDS.md §29.3) run after every other journey, alone, so their long
+    // load never slows another's first frame.
+    {
+      name: 'long-phone',
+      testMatch: /long\.spec\.ts/,
+      dependencies: ['phone', 'tablet', 'desktop', 'screenshots'],
+      use: { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
+    },
+    {
+      name: 'long-desktop',
+      testMatch: /long\.spec\.ts/,
+      dependencies: ['phone', 'tablet', 'desktop', 'screenshots'],
       use: { viewport: { width: 1440, height: 900 } },
     },
     {
