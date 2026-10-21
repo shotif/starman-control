@@ -722,3 +722,165 @@ phone, tablet and desktop; the setting.
   what a turn gives and in what order, quiet and off), `settings.test.ts`, and `advisors.spec.ts`
   (the report's lines and faces; quiet and off; the Treasury and Science beside their numbers) on
   the phone, tablet and desktop.
+
+## 25. Increment 23 in detail: governors and edicts (written before building it)
+
+**Goals.** §8 as decided (D-15): optional governors with a priority, every action in the report
+with its reason, your own orders locked; edicts as policies paid from attention, with a setting
+to turn them off. The governor's code is the one the rivals will play with (increment 24).
+
+**Out of scope.** Rivals using edicts (they govern their colonies, and may use edicts once the
+headless games show edicts are worth having, increment 27); sector governors; governors that
+build ships or lanes, change taxes or spend credits (§8: those stay yours).
+
+### 25.1 Governors
+
+- **Who:** any colony; none by default. *More* on the new-game screen chooses a **hands-on** start
+  (no governors) or an **imperial** one (every colony gets a governor, the capital included, and so
+  does every new colony). The colony's panel gives or removes a governor and sets its priority.
+- **When:** as each turn ends, after growth, so what it did is in the report you read and can
+  undo before the next turn.
+- **What, in order, each turn, for each governed colony** (at most one zoning in its queue at a
+  time, and never a district or queue item you locked):
+  1. **Mend shortages.** Its supply network short of food: zone a farm (an open district, else
+     rezone its least needed district). Full, with land open: zone housing.
+  2. **Zone open land** for its priority, but only a district its people can work within a few
+     turns (idle people now, or room to grow into it): *grow* farms then housing and works;
+     *produce* works and mines; *research* labs; *trade* markets; *balance* farms to feed itself,
+     then mines, works, labs and markets in turn.
+  3. **Order the work:** farms first, so the colony eats, then its priority's zones.
+  4. **Queue a project** when its queue is empty, the first it may build of its priority's list,
+     with civic centre and recreation dome first while approval is below *content*:
+     *grow* hydroponics, medical centre, arcology; *produce* deep mine (with mines), fusion plant,
+     refinery; *research* research institute; *trade* trade exchange; *balance* hydroponics,
+     deep mine, research institute, trade exchange.
+- **What it says:** each action is a report line with its reason: "Tau Ceti f's governor zoned
+  district 3 for farms: its network is 2 food short."
+- **Locks:** a district you zone, rezone or clear, and an item you queue, is **locked** (a padlock
+  on its tile and its queue line) until you unlock it. A governor's own work is never locked; it
+  may undo it next turn.
+
+### 25.2 Edicts (E2)
+
+- **Attention:** each power has 2 a turn, kept up to 6, starting at 2. Ordinary orders never cost
+  it.
+- **The six edicts** as §8's table: *festival*, *labour drive* and *martial order* name a colony;
+  *rationing* a colony, for its supply network; *crash programme* and *survey drive* the whole
+  power. One of each at a time; an edict lasts its turns and then ends, said in the report.
+- **The setting:** *Edicts* on (the default) or off, in *Settings*: off hides attention and edicts.
+- **On the screen:** the empire's head shows attention and the edicts in force; each edict is a
+  button with its cost, its turns and what it does, opening a choice of colony where it needs one.
+
+### 25.3 The state
+
+State version 8: each colony's governor (none or its priority) and its locked district slots;
+queue items queued by a governor are marked as the governor's; each power's attention, edicts in
+force and whether new colonies are governed. Older saves: no governors, nothing locked, attention
+2, no edicts.
+
+### 25.4 Tests
+
+Unit: each priority's zoning, ordering and projects; shortages mended first; locks respected; the
+report's reasons; a governed colony over 50 turns stays fed and content enough; attention and each
+edict's effect and end; the migration. Browser: a governor set and its line in the report; a lock
+shown and undone; an edict on the phone, tablet and desktop.
+
+### Increment 23: governors and edicts (21 October 2026)
+
+- **Governors** (`src/sim/governor.ts`), as §25.1, after growth, yields and upkeep as each turn
+  ends: a food shortage mended first (an open district zoned for farms, else the least needed one
+  rezoned), housing when full, open land zoned for the priority as far as the people can work it
+  (farms first where the colony only just feeds itself), farms worked first and then the priority's
+  zones, and a project queued when the queue is empty (a civic centre or recreation dome first while
+  the colony is less than content). Each action is a report line with its reason. A capital has no
+  open land, so its governor builds what its priority lists.
+- **Locks:** a district the player zones, rezones or clears is locked, marked on its tile, until
+  *Let the governor have it*; items the player queues are theirs and no governor touches them (a
+  governor's own items say *(governor)*). There is no lock to undo on a queued item: taking it out
+  of the queue is the player's own choice.
+- **Starts:** *More* on the new-game screen offers *Hands-on* (the default) or *Imperial*, where
+  the capital and every new colony have a *balance* governor.
+- **Edicts** (`src/content/edicts.ts`): attention 2 a turn, kept up to 6, starting at 2; the six
+  edicts as §8's table, one of each at a time, each ending with a line in the report. They live
+  in the empire under the treasury; a colony's edict asks which colony. *Settings* turns them off.
+- **The state:** version 8 (governors, locks, attention, edicts, the imperial start), with the
+  migration from 7.
+- **Tests:** `governors.test.ts` (no governors by default and the imperial start; food mended first
+  with its shortfall; zoning for each priority, and only as far as people can work; locks; projects
+  and calming first; a governed empire fed and growing for 50 turns; attention; every edict's
+  effect and its end; the migration), and `governors.spec.ts` (an imperial start's governor in the
+  report; a governor set by hand and a lock undone; a festival) on the phone, tablet and desktop.
+
+## 26. Increment 24 in detail: rivals that play (written before building it)
+
+**Goals.** §10 as decided (D-37): the other two powers play every new game by the same rules and
+orders, each in its own character; you see of them only what you could; the Watch tells you what
+it saw; the empire compares the powers you know. The deep-space scanner (§6) comes with them.
+
+**Out of scope.** War, borders, claims, treaties and trade (M3, M4); rivals using edicts or
+overdrive (increment 27 decides, from the headless games); more than one difficulty; rivals
+answering events (they come with the events, increment 25).
+
+### 26.1 Who plays
+
+- A new game has your power and the other two as **rivals**, each at its capital with its home
+  web, fleet and stockpile, as the player starts. *More* offers **play alone** (the start of M1).
+  The new-game screen says that the rivals play by your rules, with no bonuses, at one difficulty.
+- A save from before rivals goes on as it began, alone.
+
+### 26.2 How a rival plays (`src/sim/ai.ts`)
+
+Its orders are worked out at the start of each turn from the state alone (D-06), and given through
+the same orders as yours, refused for the same reasons:
+
+- **Its colonies are governed** (`govern`, §25.1), each with its power's priority: the Authority's
+  *research* at the capital and *balance* elsewhere; the Cooperative's *grow*; the Wake's *produce*.
+- **Survey ships** investigate an anomaly where they are, else go to the nearest system not yet
+  surveyed by lane, else jump blind within reach.
+- **Colony and outpost ships** go to the best world they can found on, and found there: the
+  Authority the roomiest, the Cooperative the nearest, the Wake (outposts) the richest.
+- **Shipyards** build a colony ship while there are worlds to settle and an outpost ship while
+  there are riches to take, one ship at a time, a survey ship while there is sky to survey; never
+  while the treasury is below 20.
+- **Outposts** queue the nearest lane they can; the Authority's colonies too.
+- **Research:** the cheapest technology it can, in its power's fields first: the Authority's
+  survey and propulsion, the Cooperative's life sciences and society, the Wake's construction
+  and propulsion.
+- **Taxes:** the Authority's standard, the Cooperative's low, the Wake's high; any rival raises
+  them while in debt and lowers them while a colony is in unrest and the treasury holds 100.
+
+### 26.3 What you see of them
+
+- **Their colonies and outposts** in systems you have surveyed; **their lanes** with an end in a
+  system you have surveyed; **their ships** in systems where you hold a colony or outpost, and
+  within 8 light-years of a deep-space scanner of yours. Nothing else: the map, the system view,
+  the panels and the standings show only this, in each power's colour.
+- **The deep-space scanner** (opens with *Long-baseline arrays*): 40 industry and 5 metals, upkeep 1,
+  a building in each power's architecture (3 pictures, about $0.30).
+- **The Watch** speaks (§24): a rival founded a colony or outpost, or opened a lane, where you can
+  see it; a rival ship came into your sight ("Control, a Cooperative survey ship is at Barnard's
+  Star"). The report has these as events too.
+
+### 26.4 Meeting without war
+
+As §10: a held world cannot be settled by another; two powers may hold different worlds in one
+system; a power's lanes are closed to the others' ships; a dark lane is relit by whoever pays
+first; a star's beacon slots are shared by every power's lanes there. The rules already work so;
+increment 24 tests them with three powers.
+
+### 26.5 Standings
+
+The empire shows each power you know: its colonies, outposts, people and lanes as far as you can
+see them, and your own in full. Technologies are counted only for your own power.
+
+### 26.6 The headless games and the budgets
+
+A unit test plays three rivals for 100 turns on several seeds: no crash or stall; every power
+settles and grows, stays out of lasting hunger and debt; the same seed gives the same game; a turn
+at turn 100 within 200 ms; the save within 200 KB.
+
+### 26.7 Tests
+
+Unit: each of 26.2's choices; visibility (26.3); the scanner; meeting without war (26.4); the
+Watch's lines; the headless games. Browser: a new game with rivals, a rival seen on the map and in
+the standings, *play alone*, on the phone, tablet and desktop.

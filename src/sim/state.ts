@@ -4,6 +4,7 @@
 // orders, and the rules treat both the same.
 
 import type { District } from '../content/districts.ts';
+import type { EdictId, Priority } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -15,7 +16,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 7;
+export const STATE_VERSION = 8;
 
 export interface Stockpile {
   metals: number;
@@ -47,6 +48,19 @@ export interface PowerState {
   treasury: number;
   /** One tax rate for the whole power. */
   taxes: TaxRate;
+  /** What pays for edicts: a little each turn, kept up to a limit (M2_WORLDS.md §25.2). */
+  attention: number;
+  /** Edicts in force, one of each at most. */
+  edicts: ActiveEdict[];
+  /** New colonies get a governor (the imperial start, M2_WORLDS.md §25.1). */
+  governNew: boolean;
+}
+
+/** An edict in force: on a colony (or its supply network) or the whole power, for `left` more turns. */
+export interface ActiveEdict {
+  edict: EdictId;
+  holding: number | null;
+  left: number;
 }
 
 /** How hard a power taxes its people (M2_WORLDS.md §4). */
@@ -111,6 +125,10 @@ export interface Holding {
   hungry: number;
   /** Steps of industry bought with credits each turn, 0 to 3 (overdrive, M2_WORLDS.md §4). */
   overdrive: number;
+  /** Its governor's priority, or none (M2_WORLDS.md §25.1). */
+  governor: Priority | null;
+  /** District slots the player zoned or cleared, which no governor touches. */
+  locked: number[];
 }
 
 export interface GameState {
@@ -134,8 +152,8 @@ export interface GameState {
 
 export interface NewGameSetup {
   seed: number;
-  /** The powers in play, in the order they are listed. */
-  powers: { faction: FactionId; controller: 'player' | 'ai' }[];
+  /** The powers in play, in the order they are listed; `governed` for the imperial start. */
+  powers: { faction: FactionId; controller: 'player' | 'ai'; governed?: boolean }[];
 }
 
 /** A new ship for a power, at a system, named after its makers' traditions. */
@@ -164,8 +182,11 @@ export function makeShip(state: GameState, faction: FactionId, type: ShipType, a
 /** A new colony or outpost, added to the state. */
 export function makeHolding(
   state: GameState,
-  h: Omit<Holding, 'id' | 'projects' | 'queue' | 'industry' | 'districts' | 'hungry' | 'overdrive'> &
-    Partial<Pick<Holding, 'projects' | 'districts'>>,
+  h: Omit<
+    Holding,
+    'id' | 'projects' | 'queue' | 'industry' | 'districts' | 'hungry' | 'overdrive' | 'governor' | 'locked'
+  > &
+    Partial<Pick<Holding, 'projects' | 'districts' | 'governor'>>,
 ): Holding {
   const holding: Holding = {
     id: state.nextHoldingId,
@@ -175,6 +196,8 @@ export function makeHolding(
     districts: [],
     hungry: 0,
     overdrive: 0,
+    governor: null,
+    locked: [],
     ...h,
   };
   state.nextHoldingId++;
@@ -197,6 +220,8 @@ export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
     districts: RULES.districts.capitalStart.map((zone, i) => ({ zone, slot: i + 1 })),
     hungry: 0,
     overdrive: 0,
+    governor: null,
+    locked: [],
   };
 }
 
@@ -235,6 +260,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       food: RULES.food.start,
       treasury: RULES.credits.start,
       taxes: 'standard' as const,
+      attention: RULES.attention.start,
+      edicts: [],
+      governNew: p.governed === true,
     })),
     lanes,
     ships: [],
@@ -243,7 +271,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     nextHoldingId: 1,
     reports: [],
   };
-  for (const p of state.powers) makeHolding(state, capitalHolding(p.faction));
+  for (const p of state.powers)
+    makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });
   for (const p of state.powers) for (const type of STARTING_FLEET) makeShip(state, p.faction, type, p.capital);
   return state;
 }

@@ -7,8 +7,9 @@ import { settings } from '../../app/settings.ts';
 import { DEPARTMENT_NAMES } from '../../content/advisors.ts';
 import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { ZONE_DEFS } from '../../content/districts.ts';
+import { EDICTS, PRIORITY_DEFS } from '../../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
-import { itemName, withArticle } from '../../content/projects.ts';
+import { itemName, PROJECTS, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -318,6 +319,26 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `${holding(e.holding)}’s overdrive stopped: the treasury could not pay for it.`;
     case 'debt':
       return 'The treasury is in debt: every colony is unhappier until it is paid off.';
+    case 'governed': {
+      const did =
+        e.did === 'zone'
+          ? `zoned district ${e.slot} for ${e.zone ? ZONE_DEFS[e.zone].name.toLowerCase() : 'a use'}`
+          : e.did === 'work'
+            ? `put its ${e.zone ? ZONE_DEFS[e.zone].name.toLowerCase() : 'districts'} to work first`
+            : `queued ${e.project ? withArticle(PROJECTS[e.project].name.toLowerCase()) : 'a project'}`;
+      const h = game.holdings.find((x) => x.id === e.holding);
+      const why =
+        e.reason === 'food'
+          ? `its network is ${e.short ?? 1} food short`
+          : e.reason === 'full'
+            ? 'it is full'
+            : e.reason === 'calm'
+              ? 'its people are unhappy'
+              : `its priority is ${h?.governor ? PRIORITY_DEFS[h.governor].name.toLowerCase() : 'balance'}`;
+      return `${holding(e.holding)}’s governor ${did}: ${why}.`;
+    }
+    case 'edict-ended':
+      return `The ${EDICTS[e.edict].name.toLowerCase()}${e.holding !== null ? ` at ${holding(e.holding)}` : ''} is over.`;
   }
 }
 
@@ -329,7 +350,11 @@ function eventPlace(game: GameState, e: ReportEvent): { holding: number } | { sy
     case 'zoned':
     case 'hungry':
     case 'overdrive-stopped':
+    case 'governed':
       return { holding: e.holding };
+    case 'edict-ended':
+      if (e.holding !== null) return { holding: e.holding };
+      return { system: playerPower(game)?.capital ?? 'sol' };
     case 'debt': {
       const capital = game.holdings.find((h) => h.capital && h.owner === playerPower(game)?.faction);
       return capital ? { holding: capital.id } : { research: true };
@@ -370,6 +395,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   hungry: { icon: 'refused', tone: 'needs' },
   'overdrive-stopped': { icon: 'refused', tone: 'wrong' },
   debt: { icon: 'refused', tone: 'needs' },
+  governed: { icon: 'colony', tone: 'news' },
+  'edict-ended': { icon: 'report', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

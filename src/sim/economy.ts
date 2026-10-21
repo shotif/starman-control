@@ -5,6 +5,7 @@
 // yield. Pure and in whole numbers.
 
 import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
+import type { EdictId } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem, withArticle } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -247,6 +248,12 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
     });
   if (h.projects.includes('recreation-dome'))
     parts.push({ label: 'the recreation dome', value: RULES.projects.recreation });
+  const ed = RULES.edicts;
+  if (edictAt(state, h, 'festival')) parts.push({ label: 'a festival', value: ed.festivalApproval });
+  if (edictAt(state, h, 'labour-drive')) parts.push({ label: 'a labour drive', value: ed.labourApproval });
+  if (rationed(world, state, h)) parts.push({ label: 'rationing', value: ed.rationingApproval });
+  if (power.edicts.some((e) => e.edict === 'martial-order' && e.holding !== h.id))
+    parts.push({ label: 'martial order elsewhere', value: ed.martialOthersApproval });
   if (h.hungry > 0) parts.push({ label: 'hungry', value: a.hungry });
   // Idle people make nothing, and cost no approval (D-43).
   if (h.people >= capacityOf(world, state, h)) parts.push({ label: 'full', value: a.full });
@@ -289,9 +296,34 @@ export function civicOf(world: World, state: GameState, h: Holding): number {
   return 0;
 }
 
-/** What share of its districts' yields a colony keeps at its approval, in percent. */
+/** What share of its districts' yields a colony keeps at its approval, in percent; under martial order, as if content. */
 export function keepsOf(world: World, state: GameState, h: Holding): number {
-  return h.kind === 'colony' ? RULES.approval.keeps[approvalOf(world, state, h).level] : 100;
+  if (h.kind !== 'colony') return 100;
+  if (edictAt(state, h, 'martial-order')) return RULES.approval.keeps.content;
+  return RULES.approval.keeps[approvalOf(world, state, h).level];
+}
+
+/** A colony in revolt makes and builds nothing, unless martial order holds it (§25.2). */
+export function stopped(world: World, state: GameState, h: Holding): boolean {
+  return h.kind === 'colony' && approvalOf(world, state, h).level === 'revolt' && !edictAt(state, h, 'martial-order');
+}
+
+/** Whether an edict is in force for the whole of a power. */
+export function edictOn(state: GameState, faction: FactionId, edict: EdictId): boolean {
+  return powerOf(state, faction).edicts.some((e) => e.edict === edict);
+}
+
+/** Whether an edict naming this colony is in force. */
+export function edictAt(state: GameState, h: Holding, edict: EdictId): boolean {
+  return powerOf(state, h.owner).edicts.some((e) => e.edict === edict && e.holding === h.id);
+}
+
+/** Whether rationing is in force over a colony's supply network. */
+export function rationed(world: World, state: GameState, h: Holding): boolean {
+  const e = powerOf(state, h.owner).edicts.find((x) => x.edict === 'rationing');
+  if (!e || e.holding === null) return false;
+  if (e.holding === h.id) return true;
+  return networkOf(world, state, h).colonies.some((c) => c.id === e.holding);
 }
 
 /** Each zone's districts in words, one and many: "from 1 farm", "from 3 works". */
@@ -343,7 +375,7 @@ export function fusionRuns(state: GameState, h: Holding): boolean {
 export function industryOf(world: World, state: GameState, h: Holding, fusion = fusionRuns(state, h)): Figure {
   if (h.kind !== 'colony')
     return { total: RULES.outposts.industry, parts: [{ label: 'an outpost’s own', value: RULES.outposts.industry }] };
-  if (approvalOf(world, state, h).level === 'revolt') return { total: 0, parts: [{ label: 'in revolt', value: 0 }] };
+  if (stopped(world, state, h)) return { total: 0, parts: [{ label: 'in revolt', value: 0 }] };
   const works = districtParts(world, state, h, 'works');
   const parts: Part[] = [...works.parts];
   if (h.capital) parts.push({ label: 'from the capital', value: RULES.capital.industry });
@@ -359,6 +391,17 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
     if (t.effect.kind !== 'industry-percent') continue;
     const value = Math.floor((base * t.effect.percent) / 100);
     if (value > 0) parts.push({ label: `from ${t.name} (+${t.effect.percent}%)`, value });
+  }
+  // Edicts (§25.2) change what the colony makes before any is bought.
+  const made = sum(parts);
+  const ed = RULES.edicts;
+  if (edictAt(state, h, 'labour-drive')) {
+    const value = Math.floor((made * ed.labourIndustryPercent) / 100);
+    if (value > 0) parts.push({ label: `a labour drive (+${ed.labourIndustryPercent}%)`, value });
+  }
+  if (edictOn(state, h.owner, 'crash-programme')) {
+    const value = -Math.floor((made * -ed.crashIndustryPercent) / 100);
+    if (value < 0) parts.push({ label: `a crash programme (${ed.crashIndustryPercent}%)`, value });
   }
   if (h.overdrive > 0) {
     const o = overdriveOf(sum(parts), h.overdrive);
@@ -379,7 +422,7 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
     labs += sum(r.parts.slice(0, 1));
     lost += r.value - sum(r.parts.slice(0, 1));
     if (h.capital) capital += RULES.capital.research;
-    if (h.projects.includes('research-institute') && approvalOf(world, state, h).level !== 'revolt')
+    if (h.projects.includes('research-institute') && !stopped(world, state, h))
       institutes += RULES.projects.instituteResearch;
   }
   const parts: Part[] = [];
@@ -387,6 +430,10 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
   if (lost < 0) parts.push({ label: 'lost to unhappiness', value: lost });
   if (institutes > 0) parts.push({ label: 'from research institutes', value: institutes });
   if (capital > 0) parts.push({ label: 'from the capital', value: capital });
+  if (edictOn(state, faction, 'crash-programme')) {
+    const value = Math.floor((sum(parts) * RULES.edicts.crashResearchPercent) / 100);
+    if (value > 0) parts.push({ label: `a crash programme (+${RULES.edicts.crashResearchPercent}%)`, value });
+  }
   return { total: sum(parts), parts };
 }
 
@@ -397,9 +444,13 @@ export function foodOf(world: World, state: GameState, h: Holding): { made: Figu
   if (h.kind !== 'colony') return { made: { total: 0, parts: [] }, eaten: 0 };
   const farms = districtParts(world, state, h, 'farms');
   const parts = [...farms.parts];
-  if (h.projects.includes('hydroponics') && approvalOf(world, state, h).level !== 'revolt')
+  if (h.projects.includes('hydroponics') && !stopped(world, state, h))
     parts.push({ label: 'from hydroponics', value: RULES.projects.hydroponicsFood });
-  return { made: { total: sum(parts), parts }, eaten: ceilDiv(h.people, RULES.food.eatenPer) };
+  const eaten = ceilDiv(h.people, RULES.food.eatenPer);
+  return {
+    made: { total: sum(parts), parts },
+    eaten: rationed(world, state, h) ? ceilDiv(eaten * RULES.edicts.rationingEatsPercent, 100) : eaten,
+  };
 }
 
 /** A power's supply networks: colonies joined by its open lanes, the capital's first. */
@@ -485,7 +536,7 @@ export function creditsOf(world: World, state: GameState, h: Holding): Figure {
   const parts: Part[] = [];
   if (taxes > 0) parts.push({ label: `${power.taxes} taxes`, value: taxes });
   parts.push(...districtParts(world, state, h, 'market').parts);
-  if (h.projects.includes('trade-exchange') && approvalOf(world, state, h).level !== 'revolt')
+  if (h.projects.includes('trade-exchange') && !stopped(world, state, h))
     parts.push({ label: 'the trade exchange', value: RULES.projects.exchangeCredits + worked(h, 'market') });
   return { total: sum(parts), parts };
 }
@@ -555,7 +606,7 @@ export function yieldsOf(
     const mines = districtParts(world, state, h, 'mines');
     if (mines.value > 0) parts.push({ label: `its mines on ${body?.name}`, value: mines.value, resource: mainOf });
   }
-  if (converters && h.kind === 'colony' && approvalOf(world, state, h).level !== 'revolt') {
+  if (converters && h.kind === 'colony' && !stopped(world, state, h)) {
     const p = RULES.projects;
     const s = powerOf(state, h.owner).stockpile;
     if (h.projects.includes('refinery') && s.volatiles >= p.refineryVolatiles) {

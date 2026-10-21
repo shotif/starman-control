@@ -3,7 +3,8 @@
 
 import type { AnomalyId } from '../content/anomalies.ts';
 import type { Zone } from '../content/districts.ts';
-import type { BuildItem } from '../content/projects.ts';
+import type { EdictId } from '../content/edicts.ts';
+import type { BuildItem, ProjectId } from '../content/projects.ts';
 import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import type { LaneId } from './world.ts';
@@ -56,4 +57,20 @@ export type ReportEvent =
   /** The treasury could not pay a colony's overdrive, which stopped (M2_WORLDS.md §4). */
   | { kind: 'overdrive-stopped'; holding: number }
   /** The treasury fell into debt (M2_WORLDS.md §4). */
-  | { kind: 'debt' };
+  | { kind: 'debt' }
+  /**
+   * What a governor did, and why (M2_WORLDS.md §25.1): zoned or rezoned a district, put one first to
+   * be worked, or queued a project; for food it says how short the network is.
+   */
+  | {
+      kind: 'governed';
+      holding: number;
+      did: 'zone' | 'work' | 'queue';
+      zone?: Zone;
+      slot?: number;
+      project?: ProjectId;
+      reason: 'food' | 'full' | 'priority' | 'calm';
+      short?: number;
+    }
+  /** An edict ran its course (M2_WORLDS.md §25.2). */
+  | { kind: 'edict-ended'; edict: EdictId; holding: number | null };

@@ -15,7 +15,11 @@ export function jumpPoints(state: GameState, faction: FactionId, type?: ShipStat
   let points = RULES.movement.jumpPoints;
   for (const t of FACTIONS[faction].traits) if (t.effect.kind === 'extra-jump-points') points += t.effect.points;
   for (const e of effects(state, faction, 'jump-points')) points += e.points;
-  if (type === 'survey') for (const e of effects(state, faction, 'survey-jump-points')) points += e.points;
+  if (type === 'survey') {
+    for (const e of effects(state, faction, 'survey-jump-points')) points += e.points;
+    if (state.powers.find((p) => p.faction === faction)?.edicts.some((e) => e.edict === 'survey-drive'))
+      points += RULES.edicts.surveyJumpPoints;
+  }
   return points;
 }
 

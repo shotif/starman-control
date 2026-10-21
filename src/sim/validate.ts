@@ -2,8 +2,10 @@
 // forbid. Used when a save is loaded or imported, and by the tests after every turn.
 
 import { isZone } from '../content/districts.ts';
+import { isEdictId, isPriority } from '../content/edicts.ts';
 import { isFactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
+import { RULES } from '../content/rules.ts';
 import { SHIPS } from '../content/ships.ts';
 import { isTechId, TECHS } from '../content/techs.ts';
 import { anomalyAt } from './anomalies.ts';
@@ -51,6 +53,17 @@ export function shapeProblems(raw: unknown): string[] {
       if (typeof p.treasury !== 'number' || !Number.isInteger(p.treasury))
         out.push(`power ${i} treasury is not a whole number`);
       if (p.taxes !== 'low' && p.taxes !== 'standard' && p.taxes !== 'high') out.push(`power ${i} has no tax rate`);
+      if (!isWhole(p.attention) || (p.attention as number) > RULES.attention.most)
+        out.push(`power ${i} attention is not a whole number within its limit`);
+      if (
+        !Array.isArray(p.edicts) ||
+        !p.edicts.every(
+          (e) =>
+            isRecord(e) && isEdictId(e.edict) && isWhole(e.left, 1) && (e.holding === null || isWhole(e.holding, 1)),
+        )
+      )
+        out.push(`power ${i} has edicts it cannot have`);
+      if (typeof p.governNew !== 'boolean') out.push(`power ${i} does not say whether new colonies are governed`);
     }
   if (!Array.isArray(raw.lanes)) out.push('lanes is not a list');
   else
@@ -111,7 +124,8 @@ export function shapeProblems(raw: unknown): string[] {
             ((q.kind === 'ship' && typeof q.ship === 'string' && q.ship in SHIPS) ||
               (q.kind === 'project' && typeof q.project === 'string' && q.project in PROJECTS) ||
               (q.kind === 'zone' && isZone(q.zone) && isWhole(q.slot, 1)) ||
-              (q.kind === 'lane' && typeof q.to === 'string')),
+              (q.kind === 'lane' && typeof q.to === 'string')) &&
+            (q.governor === undefined || q.governor === true),
         )
       )
         out.push(`holding ${i} has a queue it cannot build`);
@@ -119,6 +133,9 @@ export function shapeProblems(raw: unknown): string[] {
         out.push(`holding ${i} has districts it cannot have`);
       if (!isWhole(h.hungry) || !isWhole(h.overdrive) || (h.overdrive as number) > 3)
         out.push(`holding ${i} hunger or overdrive is not a whole number`);
+      if (h.governor !== null && !isPriority(h.governor)) out.push(`holding ${i} has a governor with no priority`);
+      if (!Array.isArray(h.locked) || !h.locked.every((s) => isWhole(s, 1)))
+        out.push(`holding ${i} has locks it cannot have`);
     }
   if (!Array.isArray(raw.reports)) out.push('reports is not a list');
   return out;
@@ -200,6 +217,7 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (h.kind === 'outpost' && h.people !== 0) out.push(`outpost ${h.id} has people`);
     if (new Set(h.projects).size !== h.projects.length) out.push(`holding ${h.id} has a project twice`);
     if (h.kind === 'outpost' && h.districts.length > 0) out.push(`outpost ${h.id} has districts`);
+    if (h.kind === 'outpost' && h.governor !== null) out.push(`outpost ${h.id} has a governor`);
     if (new Set(h.districts.map((d) => d.slot)).size !== h.districts.length)
       out.push(`holding ${h.id} has two districts in one slot`);
     const most = h.capital ? 10 : 12;

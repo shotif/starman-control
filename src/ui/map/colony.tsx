@@ -5,7 +5,9 @@
 
 import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
+import { settings } from '../../app/settings.ts';
 import { ZONE_DEFS, ZONES, type Zone } from '../../content/districts.ts';
+import { EDICT_IDS, EDICTS, type EdictId, PRIORITIES, PRIORITY_DEFS, type Priority } from '../../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { type Cost, itemName, PROJECTS, type QueueItem, withArticle } from '../../content/projects.ts';
 import { RULES } from '../../content/rules.ts';
@@ -49,6 +51,7 @@ import { formatLy } from '../../sim/geometry.ts';
 import { habitability } from '../../sim/habitability.ts';
 import { laneQuote, laneTargets } from '../../sim/lanes.ts';
 import type { Need } from '../../sim/needs.ts';
+import { refuse } from '../../sim/orders.ts';
 import { speciesFor } from '../../sim/research.ts';
 import {
   type GameState,
@@ -280,7 +283,7 @@ function Queue({
   const short = shortfall(world, game, h);
   const turns = queueTurns(world, game, h);
   const cost = (item: QueueItem) => costOf(world, game, h, item);
-  const label = (item: QueueItem) => queueLabel(world, h, item);
+  const label = (item: QueueItem) => `${queueLabel(world, h, item)}${item.governor ? ' (governor)' : ''}`;
   const up = (i: number) => give(play, { type: 'reorder', holding: h.id, from: i, to: i - 1 });
   const remove = (i: number) => give(play, { type: 'unqueue', holding: h.id, index: i });
   const waits = (i: number) =>
@@ -490,6 +493,34 @@ export function zoneYieldText(world: World, game: GameState, h: Holding, zone: Z
   return `${n} ${word}`;
 }
 
+/** A colony's governor and its priority (M2_WORLDS.md §25.1). */
+function GovernorChoice({ h, play }: { h: Holding; play: Play }) {
+  const set = (priority: Priority | null) => give(play, { type: 'governor', holding: h.id, priority });
+  return (
+    <section class="governor" aria-label="Governor">
+      <h3>
+        Governor <span class="dim">· {h.governor ? PRIORITY_DEFS[h.governor].name : 'none: you run it'}</span>
+      </h3>
+      <fieldset class="step-choices governor-choices">
+        <legend class="visually-hidden">Governor</legend>
+        <button type="button" class="step-choice" aria-pressed={h.governor === null} onClick={() => set(null)}>
+          None
+        </button>
+        {PRIORITIES.map((p) => (
+          <button key={p} type="button" class="step-choice" aria-pressed={h.governor === p} onClick={() => set(p)}>
+            {PRIORITY_DEFS[p].name}
+          </button>
+        ))}
+      </fieldset>
+      <p class="dim">
+        {h.governor
+          ? `${PRIORITY_DEFS[h.governor].does} It never builds ships or lanes, changes taxes or buys industry, and says why it does what it does in the report. What you zone or queue yourself stays yours.`
+          : 'A governor zones the land, chooses the work and builds projects for a priority, as each turn ends.'}
+      </p>
+    </section>
+  );
+}
+
 /** The colony's districts (M2_WORLDS.md §2, §14): a tile for each, zoned or open; press one to zone it. */
 function Districts({ world, game, h, play }: { world: World; game: GameState; h: Holding; play?: Play }) {
   const [chosen, setChosen] = useState<number | null>(null);
@@ -528,20 +559,24 @@ function Districts({ world, game, h, play }: { world: World; game: GameState; h:
                 : worked.has(slot)
                   ? 'worked'
                   : 'no one to work it';
+          const locked = h.locked.includes(slot);
           const label = d ? ZONE_DEFS[d.zone].name : 'Open';
           return (
             <li key={slot}>
               <button
                 type="button"
-                class={`district zone-${d?.zone ?? 'open'}${d && ZONE_DEFS[d.zone].worked && !worked.has(slot) ? ' is-unworked' : ''}${chosen === slot ? ' is-chosen' : ''}`}
+                class={`district zone-${d?.zone ?? 'open'}${d && ZONE_DEFS[d.zone].worked && !worked.has(slot) ? ' is-unworked' : ''}${chosen === slot ? ' is-chosen' : ''}${locked ? ' is-locked' : ''}`}
                 aria-pressed={chosen === slot}
-                aria-label={`District ${slot}: ${label}, ${d ? zoneYieldText(world, game, h, d.zone) : 'nothing'}, ${state}`}
+                aria-label={`District ${slot}: ${label}, ${d ? zoneYieldText(world, game, h, d.zone) : 'nothing'}, ${state}${locked ? ', locked' : ''}`}
                 disabled={!mine}
                 onClick={() => setChosen(chosen === slot ? null : slot)}
               >
                 <span class="district-name">{label}</span>
                 <span class="district-yield">{d ? zoneYieldText(world, game, h, d.zone) : '—'}</span>
-                <span class="district-state">{state}</span>
+                <span class="district-state">
+                  {state}
+                  {locked && h.governor && <span class="district-lock"> · locked</span>}
+                </span>
               </button>
             </li>
           );
@@ -603,6 +638,18 @@ function Districts({ world, game, h, play }: { world: World; game: GameState; h:
                 }}
               >
                 Make it open
+              </button>
+            </p>
+          )}
+          {h.governor && h.locked.includes(chosen) && (
+            <p class="district-actions">
+              <span class="dim">You chose this district’s use: the governor leaves it alone.</span>{' '}
+              <button
+                type="button"
+                class="button button-quiet button-small"
+                onClick={() => give(play, { type: 'unlock', holding: h.id, slot: chosen })}
+              >
+                Let the governor have it
               </button>
             </p>
           )}
@@ -718,6 +765,7 @@ export function HoldingPanel({
       )}
       <YieldsLine world={world} game={game} h={h} />
       {h.kind === 'outpost' && <FigureLine label="Industry" {...industryOf(world, game, h)} />}
+      {h.kind === 'colony' && mine && play && <GovernorChoice h={h} play={play} />}
       {h.kind === 'colony' && <Districts world={world} game={game} h={h} play={play} />}
       {h.kind === 'colony' && (
         <>
@@ -1013,6 +1061,7 @@ export function EmpireView({
     <section class="empire" aria-label="Empire">
       <h2 class="sheet-heading">The {FACTIONS[faction].name}</h2>
       <Treasury world={world} game={game} faction={faction} play={play} />
+      {play && <Edicts world={world} game={game} faction={faction} play={play} />}
       <div class="view-toggle empire-tabs" role="tablist">
         {(
           [
@@ -1140,4 +1189,97 @@ function yieldsText(world: World, game: GameState, h: Holding): string {
   const t = yieldsOf(world, game, h).total;
   const parts = (Object.keys(t) as Resource[]).filter((r) => t[r] > 0).map((r) => `+${t[r]} ${resourceWord(r)}`);
   return parts.length > 0 ? parts.join(', ') : 'nothing';
+}
+
+/** Edicts (M2_WORLDS.md §25.2): attention, what is in force, and each edict with its cost and its turns. */
+function Edicts({ world, game, faction, play }: { world: World; game: GameState; faction: FactionId; play: Play }) {
+  const [choosing, setChoosing] = useState<EdictId | null>(null);
+  if (settings.value.edicts === 'off') return null;
+  const power = powerOf(game, faction);
+  const colonies = game.holdings.filter((h) => h.owner === faction && h.kind === 'colony');
+  const name = (id: number | null) => {
+    const h = game.holdings.find((x) => x.id === id);
+    return h ? holdingName(world, game, h) : '';
+  };
+  return (
+    <section class="edicts" aria-label="Edicts">
+      <p class="figure">
+        <b>Attention {power.attention}</b>{' '}
+        <span class="dim">
+          of {RULES.attention.most}, +{RULES.attention.perTurn} a turn: edicts spend it; nothing else does.
+        </span>
+      </p>
+      {power.edicts.length > 0 && (
+        <ul class="edicts-in-force">
+          {power.edicts.map((e) => (
+            <li key={e.edict}>
+              <b>{EDICTS[e.edict].name}</b>
+              {e.holding !== null ? ` at ${name(e.holding)}` : ''}{' '}
+              <span class="dim">
+                · {e.left} turn{e.left === 1 ? '' : 's'} left
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <ul class="build-options edict-options">
+        {EDICT_IDS.map((id) => {
+          const def = EDICTS[id];
+          const inForce = power.edicts.some((e) => e.edict === id);
+          const refusal =
+            def.target === 'power'
+              ? refuse(world, game, faction, { type: 'edict', edict: id })
+              : inForce
+                ? `A ${def.name.toLowerCase()} is already in force.`
+                : power.attention < def.cost
+                  ? `Not enough attention: it needs ${def.cost}.`
+                  : null;
+          return (
+            <li key={id}>
+              <button
+                type="button"
+                class="build-option"
+                disabled={refusal !== null}
+                aria-expanded={def.target === 'colony' ? choosing === id : undefined}
+                aria-label={`${def.target === 'colony' ? 'Choose a colony for' : 'Issue'} ${def.name.toLowerCase()}`}
+                onClick={() => {
+                  if (def.target === 'power') give(play, { type: 'edict', edict: id });
+                  else setChoosing(choosing === id ? null : id);
+                }}
+              >
+                <b>{def.name}</b>
+                <span class="build-cost">
+                  {def.cost} attention · {def.turns} turns
+                </span>
+                <span class="build-does">{refusal ?? def.does}</span>
+              </button>
+              {choosing === id && refusal === null && (
+                <ul class="edict-targets" aria-label={`Colonies for ${def.name.toLowerCase()}`}>
+                  {colonies.map((h) => {
+                    const why = refuse(world, game, faction, { type: 'edict', edict: id, holding: h.id });
+                    return (
+                      <li key={h.id}>
+                        <button
+                          type="button"
+                          class="button button-small"
+                          disabled={why !== null}
+                          title={why ?? undefined}
+                          onClick={() => {
+                            give(play, { type: 'edict', edict: id, holding: h.id });
+                            setChoosing(null);
+                          }}
+                        >
+                          {holdingName(world, game, h)}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
 }

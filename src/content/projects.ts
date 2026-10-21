@@ -151,7 +151,8 @@ export type LaneItem = { kind: 'lane'; to: SystemId };
 /** Zoning a district (M2_WORLDS.md §2): the open district in `slot`, or rezoning the one there. */
 export type ZoneItem = { kind: 'zone'; zone: Zone; slot: number };
 
-export type QueueItem = BuildItem | LaneItem | ZoneItem;
+/** What a colony or outpost has queued; a governor's own items say so (M2_WORLDS.md §25.1). */
+export type QueueItem = (BuildItem | LaneItem | ZoneItem) & { governor?: true };
 
 /** The base cost of a ship or project; src/sim/economy.ts's costOf gives any item's actual cost. */
 export function itemCost(item: BuildItem): Cost {

@@ -47,8 +47,12 @@ function saveSoon(): void {
   }, 400);
 }
 
-export async function startGame(faction: FactionId, seed?: number): Promise<void> {
-  const state = newGame(world, { seed: seed ?? randomSeed(), powers: [{ faction, controller: 'player' }] });
+/** A new game for a power; `governed` is the imperial start, with a governor for every colony (M2_WORLDS.md §25.1). */
+export async function startGame(faction: FactionId, seed?: number, governed = false): Promise<void> {
+  const state = newGame(world, {
+    seed: seed ?? randomSeed(),
+    powers: [{ faction, controller: 'player', governed }],
+  });
   game.value = state;
   freshReport.value = false;
   await (await saves()).autosave(state);

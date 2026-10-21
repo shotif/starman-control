@@ -701,3 +701,45 @@
 .treasury p {
   margin: 0.2rem 0;
 }
+
+/* Governors and edicts (M2_WORLDS.md §25). */
+.governor > p {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 0.86rem;
+}
+
+.governor-choices {
+  flex-wrap: wrap;
+}
+
+.governor-choices .step-choice {
+  flex: 1 1 28%;
+}
+
+.district.is-locked {
+  box-shadow: inset 0 0 0 1px rgba(255, 210, 122, 0.35);
+}
+
+.district-lock {
+  color: #ffd27a;
+}
+
+.edicts {
+  margin: 0 0 0.9rem;
+}
+
+.edicts-in-force {
+  margin: 0.2rem 0 0.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.edict-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0.2rem;
+  padding: 0;
+  list-style: none;
+}

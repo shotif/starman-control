@@ -125,6 +125,21 @@ export const RULES = {
     levels: { content: 60, uneasy: 40, unrest: 20 },
     keeps: { content: 100, uneasy: 90, unrest: 70, revolt: 0 },
   },
+  /** Attention, which pays for edicts (M2_WORLDS.md §8, §25.2). */
+  attention: { start: 2, perTurn: 2, most: 6 },
+  /** What the edicts do (src/content/edicts.ts names them). */
+  edicts: {
+    festivalApproval: 15,
+    labourIndustryPercent: 25,
+    labourApproval: -10,
+    /** Rationing: a network eats this share of what it would, in percent, rounded up. */
+    rationingEatsPercent: 75,
+    rationingApproval: -10,
+    crashResearchPercent: 50,
+    crashIndustryPercent: -20,
+    surveyJumpPoints: 1,
+    martialOthersApproval: -5,
+  },
   /** M2's projects (M2_WORLDS.md §6, §23.1). */
   projects: {
     hydroponicsFood: 3,

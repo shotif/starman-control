@@ -136,6 +136,21 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     }));
     return { ...g, version: 7, powers, holdings };
   },
+  /**
+   * 7 → 8 (M2 increment 23): governors and edicts. No colony is governed and nothing is locked;
+   * every power has its starting attention, no edicts, and its new colonies go ungoverned.
+   */
+  7: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.holdings)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({
+      ...p,
+      attention: RULES.attention.start,
+      edicts: [],
+      governNew: false,
+    }));
+    const holdings = (g.holdings as Raw[]).map((h) => ({ ...h, governor: null, locked: [] }));
+    return { ...g, version: 8, powers, holdings };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

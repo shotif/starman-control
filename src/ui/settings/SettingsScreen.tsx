@@ -134,6 +134,22 @@ export default function SettingsScreen() {
           onPick={(advisors) => updateSettings({ advisors })}
         />
       </section>
+      <section class="page-section" aria-labelledby="set-edicts">
+        <h2 id="set-edicts">Edicts</h2>
+        <p>
+          Short, strong policies paid from attention, which grows by 2 a turn. Off hides them and attention; the rest of
+          the game is the same.
+        </p>
+        <Choice
+          label="Edicts"
+          value={s.edicts}
+          options={[
+            { value: 'on', text: 'On' },
+            { value: 'off', text: 'Off' },
+          ]}
+          onPick={(edicts) => updateSettings({ edicts })}
+        />
+      </section>
     </main>
   );
 }

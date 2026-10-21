@@ -3,12 +3,13 @@
 // at once, and the movement it sets going happens when the turn ends.
 
 import type { AnomalyId } from '../content/anomalies.ts';
+import { EDICTS, type EdictId, isEdictId, isPriority, type Priority } from '../content/edicts.ts';
 import type { FactionId } from '../content/factions.ts';
 import type { QueueItem } from '../content/projects.ts';
 import { isTechId, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
-import { queueRefusal, settleRefusal } from './economy.ts';
+import { approvalOf, queueRefusal, settleRefusal } from './economy.ts';
 import { formatLy } from './geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
@@ -40,6 +41,12 @@ export type Order =
   | { type: 'overdrive'; holding: number; steps: number }
   /** The power's tax rate (M2_WORLDS.md §4). */
   | { type: 'taxes'; rate: TaxRate }
+  /** A colony's governor and its priority, or none (M2_WORLDS.md §25.1). */
+  | { type: 'governor'; holding: number; priority: Priority | null }
+  /** Lets a governor have a district the player zoned or cleared again. */
+  | { type: 'unlock'; holding: number; slot: number }
+  /** An edict, paid from attention, on a colony or the whole power (§25.2). */
+  | { type: 'edict'; edict: EdictId; holding?: number }
   /** Research a technology (and what it needs): after the rest of the queue, or `now`, first. */
   | { type: 'research'; tech: TechId; now?: boolean }
   /** Take a technology out of the research queue, with anything later that needs it. */
@@ -66,6 +73,11 @@ function holdingRefusal(world: World, state: GameState, faction: FactionId, orde
     return order.index >= 0 && order.index < h.queue.length ? null : 'Nothing is queued there.';
   if (order.type === 'clear-district' || order.type === 'work-first')
     return h.districts.some((d) => d.slot === order.slot) ? null : 'That district is open.';
+  if (order.type === 'governor') {
+    if (h.kind !== 'colony') return 'Outposts have no governors.';
+    return order.priority === null || isPriority(order.priority) ? null : 'There is no such priority.';
+  }
+  if (order.type === 'unlock') return h.locked.includes(order.slot) ? null : 'That district is not locked.';
   if (order.type === 'overdrive') {
     if (h.kind !== 'colony') return 'Only colonies can be overdriven.';
     if (!Number.isInteger(order.steps) || order.steps < 0 || order.steps > 3) return 'Overdrive is 0 to 3 steps.';
@@ -83,9 +95,33 @@ function researchOrderRefusal(state: GameState, faction: FactionId, order: Resea
   return powerOf(state, faction).researchQueue.includes(order.tech) ? null : 'That is not being researched.';
 }
 
+/** Why an edict cannot be issued (M2_WORLDS.md §25.2), or null if it can. */
+function edictRefusal(
+  world: World,
+  state: GameState,
+  faction: FactionId,
+  edict: EdictId,
+  holding?: number,
+): string | null {
+  if (!isEdictId(edict)) return 'There is no such edict.';
+  const def = EDICTS[edict];
+  const power = powerOf(state, faction);
+  if (power.edicts.some((e) => e.edict === edict)) return `A ${def.name.toLowerCase()} is already in force.`;
+  if (power.attention < def.cost) return `Not enough attention: it needs ${def.cost}, and there is ${power.attention}.`;
+  if (def.target === 'power') return null;
+  const h = state.holdings.find((x) => x.id === holding);
+  if (!h || h.owner !== faction || h.kind !== 'colony') return 'Choose one of your colonies.';
+  if (edict === 'martial-order') {
+    const level = approvalOf(world, state, h).level;
+    if (level !== 'unrest' && level !== 'revolt') return 'Only a colony in unrest or revolt needs martial order.';
+  }
+  return null;
+}
+
 /** Why an order cannot be given, or null if it can. */
 export function refuse(world: World, state: GameState, faction: FactionId, order: Order): string | null {
   if ('tech' in order) return researchOrderRefusal(state, faction, order);
+  if (order.type === 'edict') return edictRefusal(world, state, faction, order.edict, order.holding);
   if (order.type === 'taxes')
     return order.rate === 'low' || order.rate === 'standard' || order.rate === 'high'
       ? null
@@ -134,12 +170,34 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
     powerOf(next, faction).taxes = order.rate;
     return { ok: true, state: next };
   }
+  if (order.type === 'edict') {
+    const def = EDICTS[order.edict];
+    const power = powerOf(next, faction);
+    power.attention -= def.cost;
+    power.edicts.push({
+      edict: order.edict,
+      holding: def.target === 'colony' ? (order.holding ?? null) : null,
+      left: def.turns,
+    });
+    return { ok: true, state: next };
+  }
   if (!('ship' in order)) {
     const h = next.holdings.find((x) => x.id === order.holding);
     if (!h) return { ok: false, reason: 'There is no such colony.' };
-    if (order.type === 'queue') h.queue.push(order.item);
-    else if (order.type === 'unqueue') h.queue.splice(order.index, 1);
-    else if (order.type === 'clear-district') h.districts = h.districts.filter((d) => d.slot !== order.slot);
+    // What the player zones, rezones or clears, and queues, is theirs: no governor touches it.
+    const lock = (slot: number) => {
+      if (!h.locked.includes(slot)) h.locked = [...h.locked, slot].sort((a, b) => a - b);
+    };
+    if (order.type === 'queue') {
+      const { governor: _, ...item } = order.item;
+      h.queue.push(item);
+      if (item.kind === 'zone') lock(item.slot);
+    } else if (order.type === 'unqueue') h.queue.splice(order.index, 1);
+    else if (order.type === 'clear-district') {
+      h.districts = h.districts.filter((d) => d.slot !== order.slot);
+      lock(order.slot);
+    } else if (order.type === 'governor') h.governor = order.priority;
+    else if (order.type === 'unlock') h.locked = h.locked.filter((s) => s !== order.slot);
     else if (order.type === 'work-first') {
       const d = h.districts.find((x) => x.slot === order.slot);
       if (d) h.districts = [d, ...h.districts.filter((x) => x !== d)];

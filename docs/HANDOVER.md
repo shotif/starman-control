@@ -52,12 +52,15 @@ way in.
   to 32 technologies; every building is published at 256 px too, and the phone's picture budgets
   measure what a phone loads. **Increment 22 is built:** six advisors for each power, named, with
   faces and voices, speak up to three lines in each turn's report (a setting quietens them); the
-  Treasury and Science stand beside their numbers; the codex lists them.
-- **Numbers:** 316 unit tests and about 180 browser journeys pass; the title loads 20.8 KB of its
-  40 KB budget, a game's map about 303 KB of 900 KB, opening a colony 9.6 KB of code more (40 KB);
+  Treasury and Science stand beside their numbers; the codex lists them. **Increment 23 is
+  built:** optional governors with a priority (`src/sim/governor.ts`, the code the rivals will use),
+  every action in the report with its reason, the player's own zoning locked; a hands-on or
+  imperial start; attention and six edicts, with a setting to hide them; state version 8.
+- **Numbers:** 326 unit tests and about 190 browser journeys pass; the title loads 20.9 KB of its
+  40 KB budget, a game's map about 307 KB of 900 KB, opening a colony 9.6 KB of code more (40 KB);
   a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
   1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;
-  state version 7.
+  state version 8.
 
 ## 2. The next job
 
@@ -68,10 +71,10 @@ increment 20's district buildings; apply any overrule they send (`npm run music:
 
 **The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
 its §18. Increments 20 (districts, food, credits and approval, built as one), 21 (projects and
-research) and 22 (advisors and the report) are done; next are governors and edicts (23), rivals
-that play (24, with the deep-space scanner and the Watch's lines), events (25, with the flare
-shield), the guided opening (26), the proof (27). Each has a detailed design section in
-M2_WORLDS.md written before it is built (§23, §24 so far). Build each as designed; put any
+research), 22 (advisors and the report) and 23 (governors and edicts) are done; next are rivals
+that play (24, with the deep-space scanner and the Watch's lines; the rivals govern their colonies
+with `govern`), events (25, with the flare shield), the guided opening (26), the proof (27). Each
+has a detailed design section in M2_WORLDS.md written before it is built (§23 to §25 so far). Build each as designed; put any
 new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
 and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
 DECISIONS.md with their cost.

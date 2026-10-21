@@ -20,6 +20,8 @@ export interface Settings {
   sound: SoundSetting;
   music: SoundSetting;
   advisors: AdvisorSetting;
+  /** Edicts and the attention that pays for them shown, or hidden (M2_WORLDS.md §25.2). */
+  edicts: SoundSetting;
 }
 
 const KEY = 'starman-control:settings';
@@ -30,6 +32,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: 'on',
   music: 'on',
   advisors: 'speak',
+  edicts: 'on',
 };
 
 /** Reads stored settings, keeping only values the game knows. */
@@ -44,6 +47,7 @@ export function parseSettings(raw: unknown): Settings {
   if (r.sound === 'on' || r.sound === 'off') s.sound = r.sound;
   if (r.music === 'on' || r.music === 'off') s.music = r.music;
   if (r.advisors === 'speak' || r.advisors === 'quiet' || r.advisors === 'off') s.advisors = r.advisors;
+  if (r.edicts === 'on' || r.edicts === 'off') s.edicts = r.edicts;
   return s;
 }
 

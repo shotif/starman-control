@@ -10,7 +10,6 @@ import type { SystemId } from '../data/types.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import {
-  approvalOf,
   capacityOf,
   costOf,
   creditsOf,
@@ -22,9 +21,11 @@ import {
   overdriveCost,
   researchOf,
   settleRefusal,
+  stopped,
   upkeepOf,
   yieldsOf,
 } from './economy.ts';
+import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
@@ -184,9 +185,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       capital: false,
       people: f.kind === 'colony' ? RULES.colonies.founding : 0,
     });
-    // A new colony arrives with its first districts zoned (D-42).
+    // A new colony arrives with its first districts zoned (D-42), and a governor in an imperial game.
     const n = districtCount(world, state, h);
     h.districts = RULES.districts.founding.slice(0, n).map((zone, i) => ({ zone, slot: i + 1 }));
+    if (h.kind === 'colony' && powerOf(state, h.owner).governNew) h.governor = 'balance';
     usedUp.add(ship.id);
     log(ship).push({ kind: 'founded', holding: h.id, shipName: ship.name, system: ship.at, body: f.body });
   }
@@ -211,11 +213,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       f: networkFood(world, state, p.faction, net),
     })),
   );
-  const revolt = new Set(
-    state.holdings
-      .filter((h) => h.kind === 'colony' && approvalOf(world, state, h).level === 'revolt')
-      .map((h) => h.id),
-  );
+  const revolt = new Set(state.holdings.filter((h) => stopped(world, state, h)).map((h) => h.id));
   // Refineries turn volatiles into fuel, then fusion plants burn it, colony by colony, from the
   // stockpile as it stands; a plant with no fuel left makes nothing this turn (M2_WORLDS.md §23.1).
   const fusion = new Map<number, boolean>();
@@ -346,7 +344,20 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     if (p.treasury < 0 && before >= 0) (events.get(p.faction) as ReportEvent[]).push({ kind: 'debt' });
   }
 
-  // 8. Reports.
+  // 8. Governors (M2_WORLDS.md §25.1): what each governed colony does as the turn ends, so the
+  // report shows it and the player can undo it before the next.
+  for (const [faction, said] of governAll(world, state)) (events.get(faction) as ReportEvent[]).push(...said);
+
+  // 9. Attention grows, and edicts run their course (§25.2).
+  for (const p of state.powers) {
+    p.attention = Math.min(RULES.attention.most, p.attention + RULES.attention.perTurn);
+    for (const e of p.edicts) e.left--;
+    for (const e of p.edicts.filter((x) => x.left <= 0))
+      (events.get(p.faction) as ReportEvent[]).push({ kind: 'edict-ended', edict: e.edict, holding: e.holding });
+    p.edicts = p.edicts.filter((e) => e.left > 0);
+  }
+
+  // 10. Reports.
   const reports = state.powers.map((p) => ({
     faction: p.faction,
     turn: state.turn,

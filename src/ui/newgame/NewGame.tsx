@@ -105,6 +105,7 @@ function PowerCard({ id, starting, onStart }: { id: FactionId; starting: Faction
 
 export function NewGame() {
   const [seed, setSeed] = useState('');
+  const [imperial, setImperial] = useState(false);
   const [starting, setStarting] = useState<FactionId | null>(null);
   const [shown, setShown] = useState(0);
   const track = useRef<HTMLDivElement>(null);
@@ -112,7 +113,7 @@ export function NewGame() {
 
   const start = async (f: FactionId) => {
     setStarting(f);
-    await startGame(f, seedNumber);
+    await startGame(f, seedNumber, imperial);
     location.hash = '#/game';
   };
   // On a phone the cards are swiped; the dots follow the card in view, and take you to one.
@@ -185,6 +186,17 @@ export function NewGame() {
               onInput={(e) => setSeed((e.target as HTMLInputElement).value)}
             />
           </label>
+          <fieldset class="ng-start">
+            <legend>Governors</legend>
+            <label>
+              <input type="radio" name="start" checked={!imperial} onChange={() => setImperial(false)} /> Hands-on{' '}
+              <span class="dim">: you run every colony</span>
+            </label>
+            <label>
+              <input type="radio" name="start" checked={imperial} onChange={() => setImperial(true)} /> Imperial{' '}
+              <span class="dim">: a governor runs every colony, until you take it over</span>
+            </label>
+          </fieldset>
         </details>
         <p class="dim">
           Every star is real. Every world nobody has observed, and every lane, power and person, is the game’s fiction,

@@ -456,6 +456,37 @@
   outline-offset: 0;
 }
 
+/* The hands-on or imperial start (M2_WORLDS.md §25.1). */
+.ng-start {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 32rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.ng-start legend {
+  margin-bottom: 0.25rem;
+  padding: 0;
+}
+
+.ng-start label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  max-width: none;
+}
+
+.ng-start input {
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
 /* ------------------------------------------------------------------ side by side on a desktop */
 
 @media (min-width: 960px) {
