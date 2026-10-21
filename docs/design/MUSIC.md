@@ -1,6 +1,6 @@
 # Music (increment 19)
 
-**Status:** written 21 October 2026, before building. The owner chose generated music on
+**Status:** written 21 October 2026 before building, and built the same day (*As built*, §8). The owner chose generated music on
 21 October 2026 ([D-31](../DECISIONS.md#d-31--music--decided), option B): instrumental pieces made
 at build time with Google's Lyria through the owner's Gemini key, chosen from candidates like the
 pictures. The interface's own sounds (CONSOLE.md §5) stay as they are.
@@ -36,7 +36,7 @@ alien power later brings its own.
 
 - **After the first press,** as the interface's sounds do (browsers allow no sound before it).
 - **Moods follow the screen:** title, map, system, colony. A change fades the old piece out and the
-  new one in over three seconds; going back to the same mood carries on the same piece.
+  new one in over three seconds; going back to a place starts its next piece (the map's take turns).
 - **Silences:** after a piece ends, about 20 seconds of quiet (40 on the map, where Map I and Map II
   then take turns), so the music never wears thin over a long session.
 - **Level:** quieter than the interface's tones would suggest, under everything; the page hidden
@@ -95,3 +95,31 @@ allowance and recorded in DECISIONS.md.
   (a test hook, `window.__music`, says which piece and whether it plays); the map changes the mood;
   turning music off stops it and requests nothing more; on the phone, tablet and desktop.
 - **Budgets:** each piece at most 3 MB; no piece in the first load or the offline list.
+
+## 8. As built (21 October 2026)
+
+- **The pieces:** 15 candidates from `lyria-3.5`, about $1.20, and four short trials while finding
+  how Lyria answers (about $0.20): **about $1.40**, so the project's total is about **$15.85** of the
+  owner's $25. Lyria's filter refused the title's prompt once and took the same prompt the next time,
+  so the script tries a refused request twice more. Each candidate is two and a half minutes of
+  44.1 kHz stereo, mastered loud (about −12 LUFS); approval levels it to −18 LUFS and encodes MP3 at
+  112 kbps: about 2 MB a piece, 14 MB for all seven.
+- **Chosen** (by what can be measured, a soft start and a clean fade, since the choice by ear is the
+  owner's): title **A**, Map I **B**, Map II **B**, system **B**, the Authority's, the Cooperative's
+  and the Wake's colonies **A**. Every candidate was sent to the owner, lettered, to listen to and
+  overrule.
+- **The player** (`src/app/music.ts`): two decks made at the first press, each unlocked by playing a
+  moment of silence (as iOS needs), run through Web Audio gains for the three-second fades; a piece
+  is fetched whole when it is first wanted, so the service worker keeps it for offline play. The
+  router sets the title's mood, the map screen the map's, a system's or a colony's
+  (`moodFor`, by the colony owner's architecture). The page hidden suspends it.
+- **The setting:** *Music*, on or off, under *Sound*. In test runs it plays only when the address
+  asks for it (`?test&music`) or it is turned on during the visit, so the other journeys stay quick.
+- **Credits:** the codex's *Sources and licences* says the music is made with Lyria, with a link to
+  `music/manifest.json`.
+- **Budgets:** the largest piece is 2.0 MB of its 3 MB, and no piece is in the first load or the
+  offline list; the title grew by 1.3 KB (the player), to 20.2 KB of its 40 KB.
+- **Tests:** `music.test.ts` (moods, turns, briefs, records, the request and its answer, the audit),
+  `settings.test.ts` (the music setting), `music.spec.ts` (nothing before the first press; the
+  title's piece, then the map's, then a colony's; off downloads nothing; on and off again), and
+  `data.spec.ts` (the credits).

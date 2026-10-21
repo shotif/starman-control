@@ -1,5 +1,5 @@
 // The settings screen (M1_PROOF.md §1, CONSOLE.md §5): text size, reduced motion, quality and
-// sound, the same on a phone and a desktop. Every change applies at once and is kept on the device.
+// sound and music, the same on a phone and a desktop. Every change applies at once and is kept on the device.
 
 import { quality, reducedMotion, type Settings, settings, TEXT_SCALES, updateSettings } from '../../app/settings.ts';
 import '../page.css';
@@ -93,7 +93,7 @@ export default function SettingsScreen() {
       </section>
       <section class="page-section" aria-labelledby="set-sound">
         <h2 id="set-sound">Sound</h2>
-        <p>Quiet sounds for presses, the end of a turn and the report. There is no music yet.</p>
+        <p>Quiet sounds for presses, the end of a turn and the report.</p>
         <Choice
           label="Sound"
           value={s.sound}
@@ -102,6 +102,19 @@ export default function SettingsScreen() {
             { value: 'off', text: 'Off' },
           ]}
           onPick={(sound) => updateSettings({ sound })}
+        />
+        <p>
+          Music made for the game, a piece for each place: the title, the map, a system and each power’s colonies. It
+          starts with your first press and is downloaded only when it plays.
+        </p>
+        <Choice
+          label="Music"
+          value={s.music}
+          options={[
+            { value: 'on', text: 'On' },
+            { value: 'off', text: 'Off' },
+          ]}
+          onPick={(music) => updateSettings({ music })}
         />
       </section>
     </main>

@@ -89,10 +89,15 @@ test.describe('the codex', () => {
     await expect(page.locator('.system-card .card-name').first()).toHaveText(/^\d|^A/);
   });
 
-  test('says once, in its credits, how the pictures are made (D-29)', async ({ page }) => {
+  test('says once, in its credits, how the pictures and the music are made (D-29, D-31)', async ({ page }) => {
     await page.goto('./#/codex');
     await expect(page.getByTestId('picture-credits')).toContainText('made with an image model');
     await expect(page.getByRole('link', { name: 'the art records' })).toHaveAttribute('href', /art\/manifest\.json$/);
+    await expect(page.getByTestId('music-credits')).toContainText('Lyria');
+    await expect(page.getByRole('link', { name: 'the music records' })).toHaveAttribute(
+      'href',
+      /music\/manifest\.json$/,
+    );
   });
 
   test('never scrolls sideways', async ({ page }) => {

@@ -54,7 +54,26 @@ export const FADE_SECONDS = 3;
 export const MUSIC_LEVEL = 0.45;
 
 /** The pieces that have been approved and published (music/manifest.json; a test checks it). */
-export const PUBLISHED_PIECES: readonly MusicPiece[] = [];
+export const PUBLISHED_PIECES: readonly MusicPiece[] = [
+  'title',
+  'map-1',
+  'map-2',
+  'system',
+  'colony-authority',
+  'colony-cooperative',
+  'colony-wake',
+];
+
+/** The mood for where the player is: a screen of the map (the map, a system, a colony) or any other screen. */
+export function moodFor(place: {
+  screen: 'map' | 'other';
+  system?: boolean;
+  colony?: ArchitectureId | null;
+}): MusicMood {
+  if (place.screen !== 'map') return 'title';
+  if (place.colony) return `colony-${place.colony}`;
+  return place.system ? 'system' : 'map';
+}
 
 /** The piece to play after `last` in a mood: the next in turn, or the first. */
 export function nextPiece(mood: MusicMood, last: MusicPiece | null): MusicPiece | null {

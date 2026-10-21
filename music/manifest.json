@@ -1,0 +1,144 @@
+{
+  "pieces": [
+    {
+      "id": "colony-authority",
+      "path": "music/colony-authority.mp3",
+      "bytes": 1977095,
+      "seconds": 141.2,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nOrderly, civic and dignified music for a well-run settlement. Moderate, about 80 BPM, in B-flat major. A measured string ensemble playing in steady even rhythm, warm low brass chords, a crisp snare played softly with brushes, a noble, confident melody on trumpet in the middle.",
+      "createdAt": "2026-10-21T04:40:50.583Z",
+      "approvedAt": "2026-10-21T04:47:15.372Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-1.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -6.4
+      }
+    },
+    {
+      "id": "colony-cooperative",
+      "path": "music/colony-cooperative.mp3",
+      "bytes": 2076204,
+      "seconds": 148.3,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nWarm, communal, hopeful music for a hand-built frontier settlement. Easy, about 90 BPM, in G major. Fingerpicked acoustic guitar, hand percussion and a soft frame drum, a wooden flute melody, a mandolin, open fifths on fiddle, the feeling of people working together.",
+      "createdAt": "2026-10-21T04:41:01.295Z",
+      "approvedAt": "2026-10-21T04:47:20.358Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-1.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -6.4
+      }
+    },
+    {
+      "id": "colony-wake",
+      "path": "music/colony-wake.mp3",
+      "bytes": 2056821,
+      "seconds": 146.9,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nLow, tough and weathered music for a raiders’ settlement built from salvage. Slow and heavy, about 72 BPM, in D minor. A slow deep pulse, metallic percussion like struck pipes and chains played softly, a lonely, reverberant electric guitar line, a dusty low synthesiser drone.",
+      "createdAt": "2026-10-21T04:40:57.263Z",
+      "approvedAt": "2026-10-21T04:47:25.544Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-1.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -5.1
+      }
+    },
+    {
+      "id": "map-1",
+      "path": "music/map-1.mp3",
+      "bytes": 2095587,
+      "seconds": 149.7,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nCalm, spacious ambient music for thinking. Very slow, about 60 BPM, in A minor drifting to C major. Long evolving synthesiser pads, a soft felt piano playing a sparse, patient figure, distant glassy bells now and then, a low warm drone. No drums, no percussion.",
+      "createdAt": "2026-10-21T04:41:32.058Z",
+      "approvedAt": "2026-10-21T04:47:00.252Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-2.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -5.5
+      }
+    },
+    {
+      "id": "map-2",
+      "path": "music/map-2.mp3",
+      "bytes": 2052433,
+      "seconds": 146.6,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nCalm, spacious ambient music for thinking. Very slow, about 60 BPM, in E Dorian. A harp playing slow broken chords over soft string pads, a gentle solo cello line in the middle, airy textures like starlight, a low warm drone. No drums, no percussion.",
+      "createdAt": "2026-10-21T04:41:49.627Z",
+      "approvedAt": "2026-10-21T04:47:05.407Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-2.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -6.5
+      }
+    },
+    {
+      "id": "system",
+      "path": "music/system.mp3",
+      "bytes": 2095221,
+      "seconds": 149.6,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nMusic of wonder and vast scale, looking at a star and its worlds up close. Slow and floating, about 55 BPM, in F Lydian. Deep slow drones, shimmering glassy textures, a slow rising line on strings and synthesiser that opens out like a sunrise, then sinks back.",
+      "createdAt": "2026-10-21T04:41:12.118Z",
+      "approvedAt": "2026-10-21T04:47:10.568Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-2.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -6.1
+      }
+    },
+    {
+      "id": "title",
+      "path": "music/title.mp3",
+      "bytes": 2036707,
+      "seconds": 145.4,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nThe main theme. Slow, about 70 BPM, in D major. [0:00 - 0:30] a soft bed of synthesiser pads and a distant low string drone; [0:30 - 1:30] a clear, memorable melody on solo French horn, answered by strings, growing to a hopeful, wide statement with the full string section and gentle timpani; [1:30 - 2:30] the melody returns softly on piano over the pads, and the piece settles and fades.",
+      "createdAt": "2026-10-21T04:40:48.539Z",
+      "approvedAt": "2026-10-21T04:46:54.846Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261021-044029-lyria-3.5-1.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -6.3
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 // loaded, and the pictures of the heaviest first visit. Fails when over budget. Run by
 // `npm run check` and in CI.
 
-import { readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import { colonyPictureSets } from './colonyPictures.ts';
 
@@ -94,6 +94,29 @@ for (const b of BUDGETS) {
   failed ||= !ok;
   console.log(
     `${ok ? 'ok  ' : 'OVER'} A colony's first pictures on a phone, at most (${worstName}): ${(worst / KB).toFixed(1)} KB of ${limit / KB} KB`,
+  );
+}
+
+// The music (MUSIC.md §3): every piece at most 3 MB, and none in the first load or in the list the
+// service worker keeps at the first visit (a piece is downloaded only when it plays).
+{
+  const limit = 3 * 1024 * KB;
+  let heaviest = 0;
+  let name = '';
+  const pieces = await readdir('dist/music').catch(() => [] as string[]);
+  for (const f of pieces.filter((x) => x.endsWith('.mp3'))) {
+    const bytes = (await stat(`dist/music/${f}`)).size;
+    if (bytes > heaviest) {
+      heaviest = bytes;
+      name = f;
+    }
+  }
+  const html = await readFile('dist/index.html', 'utf8');
+  const listed = /music\/[\w-]+\.mp3/.test(html);
+  const ok = heaviest <= limit && !listed;
+  failed ||= !ok;
+  console.log(
+    `${ok ? 'ok  ' : 'OVER'} Music: the largest piece${name ? ` (${name})` : ''} ${(heaviest / KB / 1024).toFixed(2)} MB of 3 MB; ${listed ? 'listed in the first load' : 'none in the first load'}`,
   );
 }
 

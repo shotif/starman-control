@@ -1,6 +1,7 @@
 import { signal } from '@preact/signals';
 import { type ComponentType, render } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { listenForMusic, setMusicMood } from './app/music.ts';
 import { applySettings } from './app/settings.ts';
 import { listenForPresses } from './app/sound.ts';
 import { watchLayout } from './ui/layout.ts';
@@ -13,7 +14,14 @@ window.addEventListener('hashchange', () => {
   route.value = location.hash;
   window.scrollTo(0, 0);
   document.documentElement.dataset.screen = screenName(location.hash);
+  followScreen();
 });
+
+/** Every screen but the map plays the title's music; the map says its own (MUSIC.md §2). */
+function followScreen(): void {
+  const screen = screenName(location.hash);
+  if (screen !== 'map' && screen !== 'game') setMusicMood('title');
+}
 
 function screenName(hash: string): string {
   for (const [prefix, name] of [
@@ -102,6 +110,8 @@ function keepForOffline(): void {
 applySettings();
 watchLayout();
 listenForPresses();
+listenForMusic();
+followScreen();
 const app = document.querySelector<HTMLDivElement>('#app');
 if (app) render(<App />, app);
 // The boot screen fades once the first screen is drawn.

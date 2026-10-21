@@ -11,10 +11,12 @@
 
 import { type ComponentChildren, Fragment } from 'preact';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { setMusicMood } from '../../app/music.ts';
 import { quality, reducedMotion, settings } from '../../app/settings.ts';
 import { play as sound } from '../../app/sound.ts';
 import { ANOMALIES } from '../../content/anomalies.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
+import { moodFor } from '../../content/music.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { ColonyView } from '../../render/ColonyView.ts';
@@ -428,6 +430,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   // The colony's scene follows the game: a turn ends, something is queued.
   const colonyHolding = colony === null ? undefined : game.holdings.find((x) => x.id === colony);
   const colonyKey = colonyHolding ? JSON.stringify(stillScene(world, game, colonyHolding)) : '';
+  // The music follows the place: the map, a system, or a colony in its owner's character (MUSIC.md).
+  const colonyArchitecture = colonyHolding ? FACTIONS[colonyHolding.owner].architecture : null;
+  const inSystem = inside !== null;
+  useEffect(() => {
+    setMusicMood(moodFor({ screen: 'map', system: inSystem, colony: colonyArchitecture }));
+  }, [inSystem, colonyArchitecture]);
   useEffect(() => {
     const cv = colonyRef.current;
     const { game: g } = latest.current;

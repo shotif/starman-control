@@ -36,6 +36,10 @@ way in.
   made with an image model); every home in three versions, chosen from its colony and slot; 25
   props between the buildings (a `prop` series, placed beside the buildings once they stand). The
   colony view has 124 pictures.
+- **Music is built** (increment 19, D-31 B, [MUSIC.md](design/MUSIC.md)): seven pieces generated
+  with Google's Lyria (title, two for the map, system, a colony piece for each power), played after
+  the first press, fading between places, downloaded only when played; a *Music* setting.
+  `npm run music:generate`, `music:approve`, `music:check` (in `npm run check`).
 - **Numbers:** 263 unit tests and about 150 browser journeys pass; the title loads 18.9 KB of its
   40 KB budget, a game's map about 287 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB)
   and its heaviest first pictures on a phone 921 KB of 1 MB (measured over the game's own scenes);
@@ -43,27 +47,20 @@ way in.
 
 ## 2. The next job
 
-The owner's latest choices are **D-27, D-29 and D-30** in [DECISIONS.md](DECISIONS.md). Three
-things wait on the owner (asked on 20 October 2026):
+The owner answered on 21 October 2026: **Round 4 as recommended** (D-15, D-32 to D-41) and **music
+by option B** (D-31, built as increment 19). The owner was sent every music candidate, lettered,
+to choose by ear, and the colony view's last sheets; apply any overrule they send
+(`npm run music:approve` / `npm run art:approve` with the candidate they name; candidates live in
+the git-ignored `music/out/` and `art/out/`, so a pick from a lost session means new candidates).
 
-1. **The rest of increment 18's pictures.** The owner has the lettered sheets of the first batch
-   (my picks are in COLONY_VIEW.md §8 and DECISIONS.md) and screenshots. When they answer, regenerate
-   anything they overrule, then make the rest: every other home's b and c (30), and the remaining
-   12 props (each power's water tanks, the Authority's greenhouse, the Cooperative's and the Wake's
-   cargo; the shared wind turbines, radiators, orchard, ore heap, gas well and regolith plant). The
-   briefs are all written (`art/briefs.ts`); add each approved picture's cut-out shape to
-   `src/content/colonyArt.ts` (STRUCTURES or PROPS; the manifest's `crop`), keep the 1 MB budget,
-   send lettered sheets (`npm run art:sheet -- --brief … --batch <name>`), and finish §8's notes.
-2. **Music, D-31:** options, costs and a recommendation (A, Reborn's engine, and then B, a few
-   pieces from Lyria, which the Gemini key already reaches, after a listening trial). Build
-   nothing for it until the owner answers.
-3. **M2 "Worlds", Round 4 (D-15, D-32 to D-41):** the design is
-   [design/M2_WORLDS.md](design/M2_WORLDS.md), with goals, out of scope, increments 19 to 27 and its
-   decisions in §21. **Build nothing of M2 until the owner has answered**; then build it increment
-   by increment, and put any new rule that shapes the game to the owner as it comes.
+**The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), built from
+increment 20 in the order of its §18: districts and food (20), credits and approval (21),
+projects and research (22), advisors and the report (23), governors and edicts (24), rivals that
+play (25), events (26), the guided opening (27), the proof (28). Build each as designed; put any new
+rule that shapes the game and is not settled in §21 to the owner before building it. Each
+increment's pictures are lettered sheets to the owner, recorded in DECISIONS.md with their cost.
 
-The art budget: about $10.25 of $25 is spent; increment 18's rest (about $4.30) and M2's 73
-pictures (about $8) would bring it to about $22.50.
+The art and music spend: about $15.85 of $25; M2's 73 pictures are planned at about $8.
 
 ## 3. Standing instructions from the owner
 
@@ -74,7 +71,7 @@ pictures (about $8) would bring it to about $22.50.
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$10.25** is spent (after increment 18's first batch), so about **$14.75** is left. Nano
+  2026); about **$15.85** is spent (after increments 18 and 19), so about **$9.15** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
@@ -179,7 +176,7 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
-- Music (D-31) and the M2 design (Round 4): asked, waiting on the owner (§2).
+- The owner's choice of music by ear (every candidate was sent, lettered).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
   and any of the colony view's (COLONY_VIEW.md §8).
 - CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a
