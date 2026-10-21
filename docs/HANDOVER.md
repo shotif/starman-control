@@ -90,7 +90,9 @@ way in.
   and the Wake 22, on every seed within §2's targets; no power learns all it can before turn 180.
   **M2b is complete** and waits for the owner's try.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
-  the tree has 61 technologies (58 for any one power), 22 projects; before M2b: the title loads 21.2 KB of its
+  the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
+  loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
+  the great works); before M2b: the title loads 21.2 KB of its
   40 KB budget, a game's map about 319 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 658 KB of pictures at most (1 MB) and the diorama it opens
   1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;

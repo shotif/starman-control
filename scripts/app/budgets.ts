@@ -84,7 +84,8 @@ for (const b of BUDGETS) {
   const sets = colonyPictureSets();
   for (const [which, label, limit] of [
     ['still', "A colony's first pictures on a phone (its still)", 1024 * KB],
-    ['diorama', "A colony's diorama on a phone", 2048 * KB],
+    // 2.25 MB since M2b's great works: a colony may hold all four as well as every other project.
+    ['diorama', "A colony's diorama on a phone", 2304 * KB],
   ] as const) {
     let worst = 0;
     let worstName = '';

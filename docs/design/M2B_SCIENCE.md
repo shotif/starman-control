@@ -852,7 +852,10 @@ theirs; the score, in full and as seen. Headless: as §20.4. Browser: as §20.4.
 - **The score** (`src/sim/score.ts`), as §20.3: in the standings (a *Score* column, a rival's as far
   as it is seen) and in `npm run balance`.
 - **Pictures:** the four great works, one each in no power's architecture (about $0.40; $24.45 of
-  $35 spent in all).
+  $35 spent in all). They are the widest buildings (58 to 64 m), so a phone's diorama loads them at
+  1024 px: a colony holding all four and every other project would load **2.04 MB** of pictures,
+  over the 2 MB budget, and the budget is now **2.25 MB**. The still a phone loads first stays at
+  **761 KB** of its 1 MB.
 - **Tuned for the proof:** each technology now costs **8%** more for every one known (7% in
   increment 30). `npm run balance` at turn 100 on its eight seeds: the Authority **37.4**
   technologies (35 to 39 by seed), the Cooperative **21.5** (19 to 24) and the Wake **22.0** (20 to
