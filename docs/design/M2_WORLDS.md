@@ -50,6 +50,7 @@ that asks you to choose; and a first game teaches itself. All of it on a phone a
 25. [Increment 23 in detail](#25-increment-23-in-detail-governors-and-edicts-written-before-building-it)
 26. [Increment 24 in detail](#26-increment-24-in-detail-rivals-that-play-written-before-building-it)
 27. [Increment 25 in detail](#27-increment-25-in-detail-events-and-stories-written-before-building-it)
+28. [Increment 26 in detail](#28-increment-26-in-detail-the-guided-opening-written-before-building-it)
 
 ## 1. What playing M2 feels like
 
@@ -1022,3 +1023,93 @@ end; the first choice taken after three turns; a subject gone; rivals answering,
 told to the power that lost the ship; the flare shield; the migration; the headless games with
 events. Browser: an event answered from *what needs you* on the phone, the tablet and the desktop,
 and its effect in the empire.
+
+### Increment 25: events and stories (21 October 2026)
+
+- **The twelve** (`src/content/events.ts`, `src/sim/events.ts`), as §27.2, each with its picture,
+  a few lines naming its subject and two choices with their costs; the numbers live in
+  `RULES.events`. They come as §27.1: Founders' Day by the calendar, the rest a 1 in 8 draw from the
+  seed for each power and turn, none before turn 5 and at most one in six turns.
+- **Answering:** an order (`answer`), taken as the turn ends and changeable until then; unanswered
+  for three turns, the first choice is taken and the report says so; an event whose subject has
+  gone is put away. A retuning the stockpile can no longer pay for lets the lane drift instead.
+- **Lasting effects** are kept with each power and shown among a colony's parts by the event's
+  name ("quarantine −10"); they run down as each turn ends.
+- **Rivals** answer theirs with their orders as §27.4; a power that loses a survey ship to
+  defectors is told so. A rival's yard now builds only while its treasury gains credits each turn:
+  with events, one seed's Authority had run 8 turns in debt keeping 20 outposts.
+- **The flare shield** and **Magnetics** (33 technologies): the shield can be queued only on a
+  world exposed to flares, and a colony with one has no flares.
+- **On the screen:** the event card is a sheet on a phone and a dialog in the middle of a desktop,
+  opened from *what needs you* (its button says *Answer*), from the report's line and from the
+  advisor who speaks of it (its department's, at priority 2). It does not open by itself after the
+  turn that brought it: the report and *what needs you* already put it first. The flare's card
+  names its star as a catalogued flare star (observed) and its flare as fiction.
+- **Pictures:** 12 events and 3 flare shields (30 candidates, about $1.50).
+- **The headless games** (eight seeds, 100 turns, three rivals): 22 to 32 events in each; no
+  hunger; no debt longer than one turn.
+- **The state:** version 9 (each power's event waiting, the turn of its last, its lasting
+  effects), with the migration from 8.
+- **Tests:** `events.test.ts` (the draw, each event's conditions and choices, lasting effects and
+  their end, the first choice after three turns, a subject gone, rivals' answers and a defection,
+  the flare shield, the migration) and `events.spec.ts` (an epidemic answered with a quarantine,
+  seen in the report and the colony's approval) on the phone, tablet and desktop.
+
+## 28. Increment 26 in detail: the guided opening (written before building it)
+
+**Goals.** §12 as decided (D-40): a first game teaches each part of play one step at a time, each
+step done by doing it, led by the advisors, on the phone and the desktop alike, never in the way.
+
+**Out of scope.** A written manual (the codex already explains the rules); voice-over; steps for
+M3's diplomacy and M4's war; any step that blocks the player or takes an order for them.
+
+### 28.1 When it guides
+
+- **A first game:** guiding is on until it has been finished or stopped once; the setting
+  *Guide me* (*Settings*, and *Menu → Guide me*) turns it on again for the game being played, from
+  its first step not yet done. *Stop guiding* turns it off.
+- Where guiding is, and which step it is on, is kept on the device (as the settings are), with the
+  game it belongs to; a different game starts its own guide only if guiding is on.
+- **Tests:** in the browser tests (`?test`), guiding stays off unless the address says `guide`, as
+  music does.
+
+### 28.2 The steps
+
+Each is a card with its advisor's face, name and one sentence in their voice, and the control to
+press lit by a ring. A step is done by doing it (or is passed over if already done), and the next
+appears.
+
+| # | Advisor | Says (formal voice) | Lit | Done when |
+| --- | --- | --- | --- | --- |
+| 1 | Colonies | "Control, this is our capital. Open it to see its districts." | the capital in the empire (phone) or on the map | the capital's panel is open |
+| 2 | Works | "Zone a district, or queue a project: the works are waiting." | the panel's *Districts* or *Add to queue* | any item is queued at a colony |
+| 3 | Survey | "Send a survey ship to a star nearby: we know nothing of it yet." | a survey ship (empire's *Ships*, or the outliner) | a survey ship has a destination or a blind jump |
+| 4 | Science | "Choose what the laboratories work on." | *Research* | something is being researched |
+| 5 | Treasury | "Our taxes and our credits are in the empire. A look, Control?" | *Empire* | the empire has been opened |
+| 6 | Colonies | "End the turn; I'll report what happened." | *End turn* | a turn has ended and its report been shown |
+| 7 | Colonies | "Send the colony ship to a world our survey found." | the colony ship | the colony ship has a destination, or is founding |
+| 8 | Works | "Queue a ship at the shipyard: there is more sky than ships." | the capital's *Add to queue* | a ship is queued |
+| 9 | Survey | "Relight one of the old lanes, or build a new one." | *Lanes from here* in a holding's panel | a lane is queued |
+| 10 | Colonies | "A governor can run a colony for you. Choose one, or keep it yourself." | the panel's *Governor* | a governor is chosen at any colony, or the step is skipped |
+| 11 | The Watch | "We'll tell you when we see the other powers. Until then, the sky is yours." | — (shown once the Watch first sees a rival; it ends the guide) | the card is closed |
+
+Steps 1 to 9 come in order; 10 waits until a colony other than the capital is founded; 11 comes
+when the Watch first speaks, or after step 10 when playing alone (its sentence then says the sky is
+yours to explore). Each sentence is written in all three voices (as §24.2's lines are).
+
+### 28.3 On the screen
+
+- **On a phone** the card sits above the bottom bar, its face at the left, its sentence, *Skip*
+  and *Stop guiding*; it never covers the bottom bar or a sheet's own buttons (it rides above an
+  open sheet). **On a desktop** it sits beside the lit control, or at the foot of the map when the
+  control is in the inspector.
+- **The ring** is drawn round the control (a CSS outline on an element marked
+  `data-guide="…"`), pulsing gently, still with reduced motion. Where the control is not on the
+  screen (a closed sheet), the card says where to find it ("in the empire").
+- **Nothing is blocked**: the map, every panel and every order work as always.
+
+### 28.4 Tests
+
+Unit: each step's *done* from the state and what was opened; passing over steps already done; the
+order, and steps 10 and 11's conditions. Browser: the first steps done by doing them on the phone,
+the tablet and the desktop; *Skip* and *Stop guiding*; off in a second game; on again from *Menu*.

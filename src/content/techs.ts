@@ -49,7 +49,9 @@ export type TechId =
   | 'regional-administration'
   | 'computing'
   | 'computing-2'
-  | 'long-range-sensors';
+  | 'long-range-sensors'
+  // Increment 25 (M2_WORLDS.md §27.5).
+  | 'magnetics';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -309,6 +311,16 @@ export const TECHS: Record<TechId, TechDef> = {
     needs: ['deep-boring'],
     effect: { kind: 'zone-yield', zone: 'mines', amount: 1 },
     text: 'Each mine district yields 1 more again.',
+  },
+  magnetics: {
+    id: 'magnetics',
+    name: 'Magnetics',
+    field: 'construction',
+    tier: 2,
+    cost: 60,
+    needs: ['habitat-domes'],
+    effect: { kind: 'opens' },
+    text: 'Opens the flare shield: a colony on a world exposed to its star’s flares is spared them.',
   },
   arcologies: {
     id: 'arcologies',

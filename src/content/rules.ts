@@ -162,6 +162,55 @@ export const RULES = {
     /** How far a deep-space scanner sees other powers' ships, in tenths of a light-year (§26.3). */
     scannerDeci: 80,
   },
+  /** Events (M2_WORLDS.md §27): when they come, and what each choice costs and gives. */
+  events: {
+    /** A 1 in `chance` draw each turn, for each power. */
+    chance: 8,
+    /** At most one in this many turns. */
+    gap: 6,
+    /** None before this turn. */
+    first: 5,
+    /** Founders' Day: every so many turns from the start. */
+    foundersEvery: 40,
+    /** Unanswered for this many turns, an event takes its first choice. */
+    waits: 3,
+    flarePeople: 2,
+    cometCredits: 10,
+    cometVolatiles: 15,
+    cometResearch: 20,
+    harvestCredits: 20,
+    blightCredits: 20,
+    blightShort: 2,
+    blightLong: 5,
+    strikeCredits: 25,
+    strikeTurns: 2,
+    strikeApproval: -10,
+    /** An epidemic comes to a colony of this many tenths or more. */
+    epidemicPeople: 30,
+    epidemicCredits: 30,
+    quarantineTurns: 4,
+    quarantineApproval: -10,
+    derelictMetals: 20,
+    derelictResearch: 30,
+    driftFuel: 10,
+    driftMetals: 10,
+    driftTurns: 3,
+    petitionCredits: 40,
+    /** People who leave with the petitioners' ship, in tenths. */
+    petitionPeople: 10,
+    petitionTurns: 5,
+    petitionApproval: -5,
+    defectorsCredits: 10,
+    smugglersCredits: 15,
+    smugglersFuel: 20,
+    smugglersApproval: 5,
+    smugglersTurns: 4,
+    foundersCredits: 15,
+    foundersApproval: 10,
+    foundersTurns: 3,
+    /** A rival takes the first choice only if its treasury keeps this much after paying. */
+    rivalKeeps: 20,
+  },
   outposts: {
     /** Industry an outpost makes for its queue, which holds lanes only. */
     industry: 2,

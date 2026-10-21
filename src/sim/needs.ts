@@ -1,7 +1,9 @@
 // What needs you (M1_TURNS.md §5, M1_COLONIES.md §4): worked out from the state whenever it is
 // asked, never stored.
 
+import type { EventId } from '../content/events.ts';
 import type { FactionId } from '../content/factions.ts';
+import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
 import {
@@ -20,6 +22,8 @@ import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 export type Need =
+  /** An event waits for its answer (M2_WORLDS.md §27); `left` turns before its first choice is taken. */
+  | { kind: 'event'; event: EventId; holding: number | null; system: SystemId | null; left: number }
   /**
    * A ship with nothing to do; `canFound` counts the worlds here a colony or outpost ship could
    * settle, and `canInvestigate` says a survey ship could investigate an anomaly here.
@@ -45,6 +49,15 @@ export type Need =
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
+  const ev = powerOf(state, faction).event;
+  if (ev && ev.answer === null)
+    out.push({
+      kind: 'event',
+      event: ev.id,
+      holding: ev.holding,
+      system: ev.system,
+      left: Math.max(1, RULES.events.waits - (state.turn - ev.turn)),
+    });
   for (const s of state.ships) {
     if (
       s.owner !== faction ||

@@ -15,6 +15,7 @@ import { setMusicMood } from '../../app/music.ts';
 import { quality, reducedMotion, settings } from '../../app/settings.ts';
 import { play as sound } from '../../app/sound.ts';
 import { ANOMALIES } from '../../content/anomalies.ts';
+import { EVENTS } from '../../content/events.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { moodFor } from '../../content/music.ts';
 import { SHIPS } from '../../content/ships.ts';
@@ -44,6 +45,7 @@ import { SystemView } from '../system/SystemPanel.tsx';
 import { ColonyCard } from './ColonyCard.tsx';
 import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
+import { EventCard } from './event.tsx';
 import {
   give,
   NeedsStack,
@@ -217,7 +219,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     (n: Need) => {
       if (n.kind === 'idle-ship') pickShip(n.ship);
       else if (n.kind === 'no-research') openResearch();
-      else if (n.kind === 'debt') {
+      else if (n.kind === 'event') {
+        targeting.value = null;
+        panel.value = 'event';
+      } else if (n.kind === 'debt') {
         targeting.value = null;
         panel.value = 'empire';
       } else pickHolding(n.holding);
@@ -652,7 +657,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           ? panel.value === 'research'
           : n.kind === 'debt'
             ? panel.value === 'empire'
-            : n.holding === selectedHolding.value,
+            : n.kind === 'event'
+              ? panel.value === 'event'
+              : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -848,8 +855,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       onHolding={pickHolding}
       onResearch={openResearch}
       onViewColony={viewColony}
+      onEvent={() => {
+        targeting.value = null;
+        panel.value = 'event';
+      }}
     />
   );
+  const waiting = play ? powerOf(game, play.faction).event : null;
+  const eventView = play && <EventCard world={world} game={game} faction={play.faction} play={play} />;
   const keys = play ? [...PLAY_SHORTCUTS, ...SHORTCUTS] : SHORTCUTS;
   const endLabel = play?.resolving ? 'Ending…' : 'End turn';
 
@@ -909,6 +922,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && play && panel.value === 'report' && (
           <div class="popover report-popover" role="dialog" aria-label="Report" data-keep-clear>
             {report}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
+        {desktop && play && panel.value === 'event' && waiting && (
+          <div class="popover event-popover" role="dialog" aria-label={EVENTS[waiting.id].name} data-keep-clear>
+            {eventView}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
             </button>
@@ -1242,6 +1263,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               />
             );
           if (play && panel.value === 'report') return sheet('Report', report, close, 'report');
+          if (play && panel.value === 'event' && waiting)
+            return sheet(EVENTS[waiting.id].name, eventView, close, 'event');
           if (play && panel.value === 'empire') return sheet('Empire', empire, close, 'empire');
           if (play && panel.value === 'research') return sheet('Research', research, close, 'research');
           if (play && panel.value === 'menu')
@@ -1472,7 +1495,7 @@ function PlayOutliner({
               key={
                 n.kind === 'idle-ship'
                   ? `s${n.ship}`
-                  : n.kind === 'no-research' || n.kind === 'debt'
+                  : n.kind === 'no-research' || n.kind === 'debt' || n.kind === 'event'
                     ? n.kind
                     : `${n.kind}-${n.holding}`
               }

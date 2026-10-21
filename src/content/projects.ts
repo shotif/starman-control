@@ -20,7 +20,8 @@ export type ProjectId =
   | 'refinery'
   | 'arcology'
   | 'medical-centre'
-  | 'deep-space-scanner';
+  | 'deep-space-scanner'
+  | 'flare-shield';
 
 export interface Cost {
   industry: number;
@@ -147,6 +148,15 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
     cost: { industry: 40, metals: 5, volatiles: 0, fuel: 0 },
     upkeep: 1,
     opens: 'long-baseline-arrays',
+  },
+  // Increment 25 (M2_WORLDS.md §27.5).
+  'flare-shield': {
+    id: 'flare-shield',
+    name: 'Flare shield',
+    does: 'Its star’s flares do no harm here. Only on a world exposed to them.',
+    cost: { industry: 40, metals: 10, volatiles: 0, fuel: 0 },
+    upkeep: 1,
+    opens: 'magnetics',
   },
 };
 

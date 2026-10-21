@@ -8,6 +8,7 @@ import { useState } from 'preact/hooks';
 import { settings } from '../../app/settings.ts';
 import { ZONE_DEFS, ZONES, type Zone } from '../../content/districts.ts';
 import { EDICT_IDS, EDICTS, type EdictId, PRIORITIES, PRIORITY_DEFS, type Priority } from '../../content/edicts.ts';
+import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { type Cost, itemName, PROJECTS, type QueueItem, withArticle } from '../../content/projects.ts';
 import { RULES } from '../../content/rules.ts';
@@ -56,6 +57,7 @@ import { speciesFor } from '../../sim/research.ts';
 import {
   type GameState,
   type Holding,
+  playerPower,
   powerOf,
   type ShipState,
   type Stockpile,
@@ -67,6 +69,7 @@ import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
 import { AdvisorBy } from './advisor.tsx';
 import { ColonyStill } from './ColonyStill.tsx';
+import { eventTitle } from './event.tsx';
 import { give, type Play } from './play.tsx';
 import { lanePreview, queueHover } from './state.ts';
 import './colony.css';
@@ -875,6 +878,11 @@ function outpostYield(riches: Stockpile): string {
 
 /** What a need says, and what choosing it opens. */
 export function needText(world: World, game: GameState, need: Need): string {
+  if (need.kind === 'event') {
+    const ev = playerPower(game)?.event;
+    const title = ev ? eventTitle(world, game, ev) : EVENTS[need.event].name;
+    return `${title}: it needs your answer${need.left === 1 ? ' before this turn ends' : ''}.`;
+  }
   if (need.kind === 'no-research') return 'Nothing is being researched.';
   if (need.kind === 'debt')
     return need.turns === 0

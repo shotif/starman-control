@@ -519,6 +519,7 @@ export const BRIEFS: ArtBrief[] = [
   ...districts(),
   ...projects(),
   ...advisors(),
+  ...events(),
 ];
 
 /** Each home's second and third versions: the same kind of home told another way. */
@@ -829,6 +830,14 @@ function projects(): ArtBrief[] {
         'A deep-space scanner: three rounded radio dishes on earth-built plinths round a domed listening hall, a tall braced antenna, cables on posts, soft blue lights.',
       wake: 'A deep-space scanner: a salvaged warship’s sensor array bolted on top of a tower of stacked hull sections, dishes and antennas jutting at angles, hanging cables, red lights.',
     },
+    // Increment 25 (M2_WORLDS.md §27.5).
+    'flare-shield': {
+      authority:
+        'A flare shield: a squat, heavily armoured generator building of thick grey panels with a tall mast carrying a ring of magnetic coils, glowing faintly, thick cables running out to the ground, green lights.',
+      cooperative:
+        'A flare shield: a low rounded earth-built bunker half sunk into a mound, a cluster of three coil towers wound with copper on its roof, a soft blue glow between them, solar sails folded down.',
+      wake: 'A flare shield: a starship’s magnetic deflector ring salvaged and stood upright on a frame of girders over a blockhouse of hull plates, cables and coolant pipes, a faint violet glow, red lights.',
+    },
   };
   const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
   return Object.entries(own).flatMap(([kind, by]) =>
@@ -943,5 +952,80 @@ function advisors(): ArtBrief[] {
     series: 'portrait' as const,
     subject,
     purpose: `Advisors: ${who} (M2, fiction).`,
+  }));
+}
+
+/**
+ * Increment 25's events (M2_WORLDS.md §27.2): one picture for each, shared by every power, so none
+ * shows one power's buildings or ships. All are fiction but the flare's star.
+ */
+function events(): ArtBrief[] {
+  const each: [string, string][] = [
+    [
+      'flare',
+      'From the surface of a dim, rocky world, a red dwarf sun low in a black sky erupts in a blinding white-blue flare; ' +
+        'in the foreground a small settlement of plain grey domes has its shutters closed and its lights dimmed, long hard shadows across the ground.',
+    ],
+    [
+      'comet',
+      'A bright comet with a long, faint blue tail swings past a ringless rocky planet; a small, plain tug ship with work lights ' +
+        'closes on its icy nucleus, venting jets of vapour sparkling in the sunlight.',
+    ],
+    [
+      'harvest',
+      'Golden fields of tall grain under a pale, hazy sky with a small second moon, on a colony world; harvesting machines ' +
+        'work in rows at dusk with their lamps on, and plain storage silos stand full beyond.',
+    ],
+    [
+      'blight',
+      'Inside a long greenhouse on a colony world, rows of crops gone grey and spotted under grow lights; ' +
+        'a worker in plain overalls kneels to look closely at a sick leaf with a handheld lamp.',
+    ],
+    [
+      'strike',
+      'Outside the closed gates of a factory on a colony world, a crowd of workers stands together in work clothes with folded arms, ' +
+        'idle cranes and cold chimneys behind them, under a hazy amber sky; plain blank banners, no writing.',
+    ],
+    [
+      'epidemic',
+      'A colony clinic corridor sealed with translucent plastic sheeting; medical staff in pale protective suits and visors ' +
+        'move between beds, warm lights, a quiet and serious mood.',
+    ],
+    [
+      'derelict',
+      'An ancient human starship hangs dark and silent in deep space, its hull pitted and scarred, a dead engine ring; ' +
+        "a small survey ship's searchlight sweeps across its flank.",
+    ],
+    [
+      'lane-drift',
+      'A great ring-shaped lane beacon floating in space, its blue light flickering and uneven, a ripple of distortion ' +
+        'running through the space inside the ring; a small maintenance craft hovers beside it with work lights on.',
+    ],
+    [
+      'petition',
+      "Settlers gathered at a colony's landing field with bundles, crates and children, looking up at a plain colony ship " +
+        'standing on its pad in the evening light; hopeful and restless.',
+    ],
+    [
+      'defectors',
+      'A small, plain survey ship drifts towards a docking light in space; through its lit bridge window its few crew can be seen ' +
+        'looking out, uncertain; a quiet, tense moment.',
+    ],
+    [
+      'smugglers',
+      'At night in a hidden corner of a spaceport, a battered cargo shuttle with its ramp down; figures in hooded jackets unload ' +
+        'crates of softly glowing fuel cells by the light of a single lamp.',
+    ],
+    [
+      'founders-day',
+      "A colony's central square at night, crowds celebrating under strings of warm lanterns and bursts of fireworks over plain domes, " +
+        'a simple stone monument in the middle; joyful.',
+    ],
+  ];
+  return each.map(([id, subject]) => ({
+    id: `event-${id}`,
+    series: 'illustration' as const,
+    subject,
+    purpose: `An event's picture (M2_WORLDS.md §27.2): ${id.replaceAll('-', ' ')}, shared by every power.`,
   }));
 }

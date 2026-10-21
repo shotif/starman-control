@@ -10,6 +10,7 @@ import { type FieldId, TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
 import { approvalOf, settleable, treasuryOf } from './economy.ts';
+import { rivalChoice } from './events.ts';
 import { habitability } from './habitability.ts';
 import { laneTargets } from './lanes.ts';
 import { blindReachDeci, findRoute } from './movement.ts';
@@ -57,7 +58,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
   },
 };
 
-/** Below this, a rival builds no ships. */
+/** Below this, or with no income to keep one, a rival builds no ships. */
 const SHIP_TREASURY = 20;
 /** Below this and falling, a rival raises its taxes a step; from twice it, it goes back to its own. */
 const LOW_TREASURY = 30;
@@ -148,9 +149,11 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const settleTargets = (kind: 'colony' | 'outpost') =>
     power.surveyed.some((id) => settleable(world, state, faction, id, kind).length > 0);
   const unsurveyedLeft = world.systems.some((x) => !power.surveyed.includes(x.id));
+  // A ship costs upkeep: none is built while the treasury gains nothing a turn.
+  const income = treasuryOf(world, state, faction).total;
   for (const h of mine) {
     if (!h.projects.includes('shipyard') || h.queue.some((q) => q.kind === 'ship')) continue;
-    if (power.treasury < SHIP_TREASURY) continue;
+    if (power.treasury < SHIP_TREASURY || income <= 0) continue;
     const ship: QueueItem | null =
       idle('colony') === 0 && settleTargets('colony')
         ? { kind: 'ship', ship: 'colony' }
@@ -197,5 +200,8 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
           ? me.taxes
           : power.taxes;
   if (power.taxes !== taxes) orders.push({ type: 'taxes', rate: taxes });
+
+  // Its event (§27.4): the first choice when it can pay and keep 20 credits, else the second.
+  if (power.event && power.event.answer === null) orders.push({ type: 'answer', choice: rivalChoice(state, faction) });
   return orders;
 }

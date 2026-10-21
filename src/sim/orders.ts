@@ -10,6 +10,7 @@ import { isTechId, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
 import { approvalOf, queueRefusal, settleRefusal } from './economy.ts';
+import { choiceRefusal } from './events.ts';
 import { formatLy } from './geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
@@ -50,7 +51,9 @@ export type Order =
   /** Research a technology (and what it needs): after the rest of the queue, or `now`, first. */
   | { type: 'research'; tech: TechId; now?: boolean }
   /** Take a technology out of the research queue, with anything later that needs it. */
-  | { type: 'unresearch'; tech: TechId };
+  | { type: 'unresearch'; tech: TechId }
+  /** The answer to the event waiting (M2_WORLDS.md §27), taken as the turn ends; it may be changed until then. */
+  | { type: 'answer'; choice: 0 | 1 };
 
 type HoldingOrder = Extract<Order, { holding: number }>;
 type ResearchOrder = Extract<Order, { tech: TechId }>;
@@ -126,6 +129,7 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     return order.rate === 'low' || order.rate === 'standard' || order.rate === 'high'
       ? null
       : 'There is no such tax rate.';
+  if (order.type === 'answer') return choiceRefusal(state, faction, order.choice);
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -184,6 +188,11 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'taxes') {
     powerOf(next, faction).taxes = order.rate;
+    return { ok: true, state: next };
+  }
+  if (order.type === 'answer') {
+    const ev = powerOf(next, faction).event;
+    if (ev) ev.answer = order.choice;
     return { ok: true, state: next };
   }
   if (order.type === 'edict') {

@@ -4,10 +4,11 @@
 
 import { useState } from 'preact/hooks';
 import { settings } from '../../app/settings.ts';
-import { DEPARTMENT_NAMES } from '../../content/advisors.ts';
+import { DEPARTMENT_NAMES, fillLine } from '../../content/advisors.ts';
 import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { ZONE_DEFS } from '../../content/districts.ts';
 import { EDICTS, PRIORITY_DEFS } from '../../content/edicts.ts';
+import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { itemName, PROJECTS, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
@@ -17,6 +18,7 @@ import { adviceFor } from '../../sim/advice.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
+import { eventWords } from '../../sim/events.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, previewMove } from '../../sim/movement.ts';
 import { type Need, needsOf } from '../../sim/needs.ts';
@@ -27,6 +29,7 @@ import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
 import { Founding, holdingName, needText } from './colony.tsx';
+import { eventTitle } from './event.tsx';
 import { say, targeting } from './state.ts';
 
 export interface Play {
@@ -347,11 +350,26 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'rival-ship':
       return `The Watch: ${withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`)} is at ${name(e.system)}.`;
+    case 'event':
+      return `${eventTitle(world, game, { id: e.event, turn: game.turn, ...e })}: it needs your answer.`;
+    case 'event-answered': {
+      const def = EVENTS[e.event];
+      const c = def.choices[e.choice];
+      const words = eventWords(world, game, { id: e.event, turn: game.turn, ...e });
+      return `${eventTitle(world, game, { id: e.event, turn: game.turn, ...e })}: ${c.name.toLowerCase()}${e.auto ? ', as it went unanswered' : ''}. ${fillLine(c.does, words)}`;
+    }
+    case 'event-gone':
+      return `${eventTitle(world, game, { id: e.event, turn: game.turn, ...e })}: it has passed.`;
+    case 'defected':
+      return `The crew of the ${e.ship} went over to the ${FACTIONS[e.to].shortName} at ${name(e.system)}, ship and all.`;
   }
 }
 
 /** Where a report item leads: the colony it is about, its system, or the research screen. */
-function eventPlace(game: GameState, e: ReportEvent): { holding: number } | { system: SystemId } | { research: true } {
+function eventPlace(
+  game: GameState,
+  e: ReportEvent,
+): { holding: number } | { system: SystemId } | { research: true } | { event: true } {
   switch (e.kind) {
     case 'researched':
       return { research: true };
@@ -379,6 +397,12 @@ function eventPlace(game: GameState, e: ReportEvent): { holding: number } | { sy
     case 'lane-opened':
     case 'rival-lane':
       return { system: laneEnds(e.lane)[1] };
+    case 'event':
+      return { event: true };
+    case 'event-answered':
+    case 'event-gone':
+      if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
+      return { system: e.system ?? playerPower(game)?.capital ?? 'sol' };
     default:
       return { system: e.system };
   }
@@ -409,6 +433,10 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'rival-founded': { icon: 'colony', tone: 'news' },
   'rival-lane': { icon: 'lane', tone: 'news' },
   'rival-ship': { icon: 'ship', tone: 'news' },
+  event: { icon: 'anomaly', tone: 'needs' },
+  'event-answered': { icon: 'report', tone: 'news' },
+  'event-gone': { icon: 'report', tone: 'news' },
+  defected: { icon: 'refused', tone: 'wrong' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -467,6 +495,7 @@ export function ReportView({
   onHolding,
   onResearch,
   onViewColony,
+  onEvent,
 }: {
   world: World;
   game: GameState;
@@ -475,6 +504,8 @@ export function ReportView({
   onGo: (id: SystemId) => void;
   onHolding: (id: number) => void;
   onResearch: () => void;
+  /** Opens the event waiting for an answer. */
+  onEvent?: () => void;
   /** Opens a colony's scene, to see what it finished. */
   onViewColony?: (id: number) => void;
 }) {
@@ -496,11 +527,17 @@ export function ReportView({
                 <p class="advice-who">
                   <b>{a.advisor.name}</b> <span class="dim">· {DEPARTMENT_NAMES[a.department]}</span>
                 </p>
-                {a.holding !== undefined || a.system !== undefined ? (
+                {a.event || a.holding !== undefined || a.system !== undefined ? (
                   <button
                     type="button"
                     class="link advice-text"
-                    onClick={() => (a.holding !== undefined ? onHolding(a.holding) : a.system && onGo(a.system))}
+                    onClick={() =>
+                      a.event
+                        ? onEvent?.()
+                        : a.holding !== undefined
+                          ? onHolding(a.holding)
+                          : a.system && onGo(a.system)
+                    }
                   >
                     {a.text}
                   </button>
@@ -530,6 +567,7 @@ export function ReportView({
                   const place = eventPlace(game, e);
                   if ('holding' in place) onHolding(place.holding);
                   else if ('research' in place) onResearch();
+                  else if ('event' in place) onEvent?.();
                   else onGo(place.system);
                 }}
               >
@@ -587,7 +625,11 @@ export function NeedsStack({
                   ? 'Give orders'
                   : need.kind === 'no-research'
                     ? 'Choose research'
-                    : 'Open the colony'}
+                    : need.kind === 'event'
+                      ? 'Answer'
+                      : need.kind === 'debt'
+                        ? 'Open the empire'
+                        : 'Open the colony'}
               </button>
               <button type="button" class="button button-quiet" onClick={() => setAt(at + 1)}>
                 Skip

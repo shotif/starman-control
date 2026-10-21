@@ -268,6 +268,10 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['authority-deep-space-scanner', 1573 / 1835, 36],
       ['cooperative-deep-space-scanner', 1852 / 1597, 36],
       ['wake-deep-space-scanner', 1428 / 1626, 36],
+      // Increment 25: the flare shield (M2_WORLDS.md §27.5).
+      ['authority-flare-shield', 1645 / 1861, 34],
+      ['cooperative-flare-shield', 1795 / 1300, 34],
+      ['wake-flare-shield', 1843 / 1714, 34],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );

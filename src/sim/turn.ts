@@ -26,6 +26,7 @@ import {
   upkeepOf,
   yieldsOf,
 } from './economy.ts';
+import { resolveEvents } from './events.ts';
 import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
@@ -369,7 +370,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 10. The Watch (M2_WORLDS.md §26.3): what each power newly sees of the others.
   for (const p of state.powers) events.get(p.faction)?.push(...watchNews(world, before, state, p.faction));
 
-  // 11. Reports.
+  // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
+  resolveEvents(world, state, events);
+
+  // 12. Reports.
   const reports = state.powers.map((p) => ({
     faction: p.faction,
     turn: state.turn,

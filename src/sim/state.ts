@@ -5,6 +5,7 @@
 
 import type { District } from '../content/districts.ts';
 import type { EdictId, Priority } from '../content/edicts.ts';
+import type { EventId } from '../content/events.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -16,7 +17,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 8;
+export const STATE_VERSION = 9;
 
 export interface Stockpile {
   metals: number;
@@ -54,6 +55,34 @@ export interface PowerState {
   edicts: ActiveEdict[];
   /** New colonies get a governor (the imperial start, M2_WORLDS.md §25.1). */
   governNew: boolean;
+  /** An event waiting for its answer (M2_WORLDS.md §27). */
+  event: PendingEvent | null;
+  /** The turn its last event came; 0 before any. */
+  lastEvent: number;
+  /** What its events left behind, each until it runs out. */
+  lasting: Lasting[];
+}
+
+/** An event that has come to a power, with its subject, and the answer given (taken as the turn ends). */
+export interface PendingEvent {
+  id: EventId;
+  /** The turn it came. */
+  turn: number;
+  holding: number | null;
+  system: SystemId | null;
+  lane: LaneId | null;
+  ship: number | null;
+  answer: 0 | 1 | null;
+}
+
+/** An event's lasting effect: on a colony, or on every colony (`holding` null), for `left` more turns. */
+export interface Lasting {
+  event: EventId;
+  kind: 'no-industry' | 'blight' | 'no-growth' | 'approval';
+  holding: number | null;
+  /** Approval's change; 0 for the others. */
+  amount: number;
+  left: number;
 }
 
 /** An edict in force: on a colony (or its supply network) or the whole power, for `left` more turns. */
@@ -263,6 +292,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       attention: RULES.attention.start,
       edicts: [],
       governNew: p.governed === true,
+      event: null,
+      lastEvent: 0,
+      lasting: [],
     })),
     lanes,
     ships: [],

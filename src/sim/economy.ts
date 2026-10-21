@@ -13,6 +13,7 @@ import { SHIPS, type ShipType } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
+import { lastingLabel, lastingOn } from './events.ts';
 import { ceilDiv } from './geometry.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
@@ -85,7 +86,7 @@ export function workedSlots(h: Holding): Set<number> {
 }
 
 /** Districts of a zone that are worked. */
-function worked(h: Holding, zone: Zone): number {
+export function worked(h: Holding, zone: Zone): number {
   const slots = workedSlots(h);
   return h.districts.filter((d) => d.zone === zone && slots.has(d.slot)).length;
 }
@@ -130,12 +131,14 @@ export function zoneYield(world: World, state: GameState, h: Holding, zone: Zone
   for (const e of effects(state, h.owner, 'zone-yield')) if (e.zone === zone) tech += e.amount;
   switch (zone) {
     case 'farms': {
-      if (h.capital) return d.farms.comfortable + tech;
+      // Blight (an event, M2_WORLDS.md §27.2) takes 1 off each farm while it lasts.
+      const blight = lastingOn(state, h, 'blight').length > 0 ? 1 : 0;
+      if (h.capital) return Math.max(0, d.farms.comfortable + tech - blight);
       const body = bodyOf(world, state, h);
       const level = body ? habitability(body, speciesFor(state, h.owner)).level : 'harsh';
       const base =
         level === 'comfortable' ? d.farms.comfortable : level === 'tolerable' ? d.farms.tolerable : d.farms.harsh;
-      return base + tech;
+      return Math.max(0, base + tech - blight);
     }
     case 'works':
       return d.works + tech;
@@ -206,6 +209,7 @@ export function growthOf(world: World, state: GameState, h: Holding): number {
   const cap = capacityOf(world, state, h);
   if (h.kind !== 'colony' || h.people >= cap || cap === 0) return 0;
   if (h.hungry > 0) return 0;
+  if (lastingOn(state, h, 'no-growth').length > 0) return 0;
   const level = approvalOf(world, state, h).level;
   if (level === 'unrest' || level === 'revolt') return 0;
   // The traits' and technologies' percentages add up, then apply to the base rate.
@@ -254,6 +258,7 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   if (rationed(world, state, h)) parts.push({ label: 'rationing', value: ed.rationingApproval });
   if (power.edicts.some((e) => e.edict === 'martial-order' && e.holding !== h.id))
     parts.push({ label: 'martial order elsewhere', value: ed.martialOthersApproval });
+  for (const l of lastingOn(state, h, 'approval')) parts.push({ label: lastingLabel(l), value: l.amount });
   if (h.hungry > 0) parts.push({ label: 'hungry', value: a.hungry });
   // Idle people make nothing, and cost no approval (D-43).
   if (h.people >= capacityOf(world, state, h)) parts.push({ label: 'full', value: a.full });
@@ -376,6 +381,8 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
   if (h.kind !== 'colony')
     return { total: RULES.outposts.industry, parts: [{ label: 'an outpost’s own', value: RULES.outposts.industry }] };
   if (stopped(world, state, h)) return { total: 0, parts: [{ label: 'in revolt', value: 0 }] };
+  const halted = lastingOn(state, h, 'no-industry')[0];
+  if (halted) return { total: 0, parts: [{ label: lastingLabel(halted), value: 0 }] };
   const works = districtParts(world, state, h, 'works');
   const parts: Part[] = [...works.parts];
   if (h.capital) parts.push({ label: 'from the capital', value: RULES.capital.industry });
@@ -710,6 +717,8 @@ export function queueRefusal(world: World, state: GameState, h: Holding, item: Q
   }
   const def = PROJECTS[item.project];
   if (def.opens && !powerOf(state, h.owner).researched.includes(def.opens)) return `Needs ${TECHS[def.opens].name}.`;
+  if (item.project === 'flare-shield' && !bodyOf(world, state, h)?.flareExposed)
+    return 'Only on a world exposed to its star’s flares.';
   if (h.projects.includes(item.project))
     return `It already has ${withArticle(PROJECTS[item.project].name.toLowerCase())}.`;
   if (h.queue.some((q) => q.kind === 'project' && q.project === item.project)) {

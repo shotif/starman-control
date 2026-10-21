@@ -92,7 +92,8 @@ export type LineKind =
   | 'idle-ship'
   | 'rival-founded'
   | 'rival-lane'
-  | 'rival-ship';
+  | 'rival-ship'
+  | 'event';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
   hungry: {
@@ -196,6 +197,12 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     warm: 'Control, the {power} have a new lane {place}. Not one we can use, mind.',
     blunt: 'The {power} lit a lane {place}. Ours can’t use it.',
   },
+  // Events (M2_WORLDS.md §27.6): the department the event belongs to speaks.
+  event: {
+    formal: 'Control, {what} {where} requires your decision.',
+    warm: 'Control, {what} {where}! What shall we do? It’s your call.',
+    blunt: '{what} {where}. Your call, Control.',
+  },
   'rival-ship': {
     formal: 'Control, {ship} is at {place}.',
     warm: 'Control, we’ve spotted {ship} at {place}.',
@@ -208,6 +215,7 @@ export function fillLine(template: string, values: Record<string, string>): stri
   const line = template
     .replace(/\{(\w+)\}/g, (_, k: string) => values[k] ?? '')
     .replace(/\s+([.,])/g, '$1')
+    .replace(/ {2,}/g, ' ')
     .trim();
   return `${line.charAt(0).toUpperCase()}${line.slice(1)}`;
 }

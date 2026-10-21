@@ -9,9 +9,9 @@ export const selectedShip = signal<number | null>(null);
 /** A colony or outpost being looked at, in its system. */
 export const selectedHolding = signal<number | null>(null);
 export const mode = signal<ViewMode | null>(null);
-export const panel = signal<'search' | 'legend' | 'keys' | 'menu' | 'empire' | 'research' | 'report' | 'needs' | null>(
-  null,
-);
+export const panel = signal<
+  'search' | 'legend' | 'keys' | 'menu' | 'empire' | 'research' | 'report' | 'needs' | 'event' | null
+>(null);
 export const hover = signal<{ id: SystemId; x: number; y: number } | null>(null);
 export const query = signal('');
 export const failed = signal<string | null>(null);

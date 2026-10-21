@@ -3,6 +3,7 @@
 
 import { isZone } from '../content/districts.ts';
 import { isEdictId, isPriority } from '../content/edicts.ts';
+import { isEventId } from '../content/events.ts';
 import { isFactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -64,6 +65,36 @@ export function shapeProblems(raw: unknown): string[] {
       )
         out.push(`power ${i} has edicts it cannot have`);
       if (typeof p.governNew !== 'boolean') out.push(`power ${i} does not say whether new colonies are governed`);
+      const ev = p.event;
+      if (
+        ev !== null &&
+        !(
+          isRecord(ev) &&
+          isEventId(ev.id) &&
+          isWhole(ev.turn, 1) &&
+          (ev.holding === null || isWhole(ev.holding, 1)) &&
+          (ev.system === null || typeof ev.system === 'string') &&
+          (ev.lane === null || typeof ev.lane === 'string') &&
+          (ev.ship === null || isWhole(ev.ship, 1)) &&
+          (ev.answer === null || ev.answer === 0 || ev.answer === 1)
+        )
+      )
+        out.push(`power ${i} has an event it cannot have`);
+      if (!isWhole(p.lastEvent)) out.push(`power ${i} does not say when its last event came`);
+      if (
+        !Array.isArray(p.lasting) ||
+        !p.lasting.every(
+          (l) =>
+            isRecord(l) &&
+            isEventId(l.event) &&
+            ['no-industry', 'blight', 'no-growth', 'approval'].includes(l.kind as string) &&
+            (l.holding === null || isWhole(l.holding, 1)) &&
+            typeof l.amount === 'number' &&
+            Number.isInteger(l.amount) &&
+            isWhole(l.left, 1),
+        )
+      )
+        out.push(`power ${i} has lasting effects it cannot have`);
     }
   if (!Array.isArray(raw.lanes)) out.push('lanes is not a list');
   else

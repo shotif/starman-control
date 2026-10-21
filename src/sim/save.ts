@@ -151,6 +151,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const holdings = (g.holdings as Raw[]).map((h) => ({ ...h, governor: null, locked: [] }));
     return { ...g, version: 8, powers, holdings };
   },
+  /** 8 → 9 (M2 increment 25): events. None waiting, none come before, nothing lasting. */
+  8: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, event: null, lastEvent: 0, lasting: [] }));
+    return { ...g, version: 9, powers };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

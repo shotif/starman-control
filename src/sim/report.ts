@@ -4,6 +4,7 @@
 import type { AnomalyId } from '../content/anomalies.ts';
 import type { Zone } from '../content/districts.ts';
 import type { EdictId } from '../content/edicts.ts';
+import type { EventId } from '../content/events.ts';
 import type { FactionId } from '../content/factions.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
 import type { ShipType } from '../content/ships.ts';
@@ -81,4 +82,20 @@ export type ReportEvent =
   /** Another power opened a lane the power can see. */
   | { kind: 'rival-lane'; faction: FactionId; lane: LaneId }
   /** Another power's ship came into the power's sight. */
-  | { kind: 'rival-ship'; faction: FactionId; ship: number; type: ShipType; system: SystemId };
+  | { kind: 'rival-ship'; faction: FactionId; ship: number; type: ShipType; system: SystemId }
+  /** An event came, and waits for an answer (M2_WORLDS.md §27); its subject, as the event has it. */
+  | ({ kind: 'event'; event: EventId } & EventSubjectFields)
+  /** An event answered as the turn ended: by the choice given, or by its first when it went unanswered. */
+  | ({ kind: 'event-answered'; event: EventId; choice: 0 | 1; auto: boolean } & EventSubjectFields)
+  /** An event put away: what it was about has gone. */
+  | ({ kind: 'event-gone'; event: EventId } & EventSubjectFields)
+  /** A survey ship's crew went over to another power, ship and all. */
+  | { kind: 'defected'; ship: string; to: FactionId; system: SystemId };
+
+/** What an event is about, as a report line keeps it. */
+export interface EventSubjectFields {
+  holding: number | null;
+  system: SystemId | null;
+  lane: LaneId | null;
+  ship: number | null;
+}

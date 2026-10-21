@@ -13,6 +13,7 @@ import {
   type LineKind,
 } from '../content/advisors.ts';
 import { ZONE_DEFS } from '../content/districts.ts';
+import { EVENTS } from '../content/events.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { PROJECTS, withArticle } from '../content/projects.ts';
 import { SHIPS } from '../content/ships.ts';
@@ -20,9 +21,10 @@ import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
 import { bodyOf, fusionRuns } from './economy.ts';
+import { eventWords } from './events.ts';
 import type { Need } from './needs.ts';
 import type { ReportEvent } from './report.ts';
-import type { GameState } from './state.ts';
+import { type GameState, powerOf } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
 export interface AdviceLine {
@@ -35,6 +37,8 @@ export interface AdviceLine {
   /** Where the line points, when it is about one place. */
   holding?: number;
   system?: SystemId;
+  /** The line is about the event waiting: it opens it. */
+  event?: true;
 }
 
 /** At most this many lines a turn. */
@@ -65,7 +69,7 @@ export function adviceFor(
     priority: number,
     kind: LineKind,
     values: Record<string, string>,
-    at: { holding?: number; system?: SystemId } = {},
+    at: { holding?: number; system?: SystemId; event?: true } = {},
   ) =>
     out.push({
       department,
@@ -75,6 +79,7 @@ export function adviceFor(
       text: fillLine(LINES[kind][team.voice], values),
       ...(at.holding !== undefined ? { holding: at.holding } : {}),
       ...(at.system !== undefined ? { system: at.system } : {}),
+      ...(at.event ? { event: true as const } : {}),
     });
 
   // What needs you.
@@ -96,7 +101,20 @@ export function adviceFor(
       if (n.turns === 0) say('treasury', 1, 'debt', {});
       else say('treasury', 1, 'debt-coming', { when: when(n.turns) });
     } else if (n.kind === 'no-research') say('science', 2, 'no-research', {});
-    else if (n.kind === 'idle-yard') say('works', 4, 'idle-yard', { place: holdingName(n.holding) }, n);
+    else if (n.kind === 'event') {
+      const ev = powerOf(state, faction).event;
+      if (!ev) continue;
+      const def = EVENTS[ev.id];
+      const words = eventWords(world, state, ev);
+      const where =
+        def.subject === 'lane'
+          ? `on the lane ${words.lane ?? ''}`
+          : def.subject === 'none'
+            ? ''
+            : `at ${(def.subject === 'colony' ? words.place : words.system) ?? ''}`;
+      const what = ev.id === 'founders-day' ? def.name : `${def.name.charAt(0).toLowerCase()}${def.name.slice(1)}`;
+      say(def.department, 2, 'event', { what, where }, { event: true });
+    } else if (n.kind === 'idle-yard') say('works', 4, 'idle-yard', { place: holdingName(n.holding) }, n);
   }
   const idleShips = needs.filter((n) => n.kind === 'idle-ship').length;
   if (idleShips > 0) say('survey', 4, 'idle-ship', { count: idleShips === 1 ? 'a ship is' : `${idleShips} ships are` });
