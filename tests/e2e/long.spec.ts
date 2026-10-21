@@ -11,14 +11,15 @@ const press = (target: Locator, project: string) => (isDesktop(project) ? target
 
 interface GameHook {
   __game: () => { turn: number } | null;
+  /** The game's own measure of its last turn: from the press to the new quarter drawn. */
+  __lastTurnMs: () => number;
 }
 
+/** Ends a turn; returns how long the game took, from the press that ended it to the new quarter drawn. */
 async function endTurn(page: Page, project: string): Promise<number> {
   // The last turn is saved before the next can end: End turn waits, disabled, until then.
   await expect(page.getByRole('button', { name: /End turn/ }).first()).toBeEnabled();
   const date = await page.locator('.map-date').textContent();
-  // Timed from the press that ends the turn (on a phone, the one in what needs you).
-  let t0 = Date.now();
   if (isDesktop(project)) await page.keyboard.press('Enter');
   else {
     await page
@@ -28,13 +29,11 @@ async function endTurn(page: Page, project: string): Promise<number> {
     const needs = page.getByRole('dialog', { name: 'What needs you' });
     const report = page.getByRole('dialog', { name: 'Report' });
     await expect(needs.or(report)).toBeVisible();
-    if (await needs.isVisible()) {
-      t0 = Date.now();
-      await needs.getByRole('button', { name: /End turn/ }).tap();
-    }
+    if (await needs.isVisible()) await needs.getByRole('button', { name: /End turn/ }).tap();
   }
   await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
-  return Date.now() - t0;
+  await expect.poll(() => page.evaluate(() => (window as unknown as GameHook).__lastTurnMs())).toBeGreaterThan(0);
+  return page.evaluate(() => (window as unknown as GameHook).__lastTurnMs());
 }
 
 /** Answers an event the report says is waiting, with its first choice. */

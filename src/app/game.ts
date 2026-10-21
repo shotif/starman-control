@@ -18,9 +18,12 @@ import { world } from './world.ts';
 export { world };
 
 export const game = signal<GameState | null>(null);
-// The browser tests read the game as it stands (its size, its turn).
+/** How long the last turn took, from the press to the new quarter on the screen, in milliseconds. */
+let lastTurnMs = 0;
+
+// The browser tests read the game as it stands (its size, its turn) and how long its last turn took.
 if (typeof location !== 'undefined' && new URLSearchParams(location.search).has('test'))
-  (globalThis as unknown as { __game: () => GameState | null }).__game = () => game.value;
+  Object.assign(globalThis, { __game: () => game.value, __lastTurnMs: () => lastTurnMs });
 /** True while a turn is being worked out. */
 export const resolving = signal(false);
 /** The report of the turn that just ended, until it is read. */
@@ -104,10 +107,17 @@ export async function endTheTurn(): Promise<void> {
   const g = game.value;
   if (!g || resolving.value) return;
   resolving.value = true;
+  lastTurnMs = 0;
+  const t0 = performance.now();
   try {
     const { state } = await endTurn(world, g);
     game.value = state;
     freshReport.value = true;
+    // The new quarter is drawn on the next frame.
+    if (typeof requestAnimationFrame !== 'undefined')
+      requestAnimationFrame(() => {
+        lastTurnMs = Math.round(performance.now() - t0);
+      });
     if (pendingSave) {
       clearTimeout(pendingSave);
       pendingSave = null;
