@@ -89,7 +89,12 @@ research), 22 (advisors and the report), 23 (governors and edicts), 24 (rivals t
 asked to play a game of 50 turns or more on a phone and a desktop and say what was dull, unclear,
 slow or too easy (§29.5); their answers decide M3's first changes.
 
-**Next: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
+**Next: M2b, *Science and rivalry*** ([design/M2B_SCIENCE.md](design/M2B_SCIENCE.md)), proposed
+after M2's headless games showed two rivals stuck at 5 research a turn and the third through the
+whole tree by turn 90. Its decisions D-44 to D-50 wait for the owner; once answered, build
+increments 28 to 32 as its §12 sets out, each with a detailed design section first.
+
+**Then: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
 (goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md
 before building: first contact and translation, treaties, borders and claims, trade, memory of what
 each power did, and the first alien species (D-08's "alien species later"). Each increment's
@@ -208,6 +213,25 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
   soil. A flat backdrop is seen through glass: keying despills any pixel whose red and blue both
   stand above its green. The haze and ice grounds need their own backdrops (horizon-only mist;
   a magenta sky).
+- **M2's journeys take longer:** every new game now has rivals and events, and a full local run
+  at two workers took about 95 minutes. Run the specs an increment touches locally on all three
+  sizes, and let CI run the whole suite on the branch and on `main`.
+- **The 100-turn games** (`long.spec.ts`) run as their own projects, `long-phone` and
+  `long-desktop`, which depend on every other project: they run last, alone, because their load
+  slowed other journeys' first frames on CI. `--no-deps` runs them by themselves.
+- **End turn stays disabled until the last turn is saved**; a press before then is ignored. A
+  journey that ends many turns waits for the button to be enabled first.
+- **More test hooks** (`?test`): `window.__game()` (the game as it stands), `window.__lastTurnMs()`
+  (the last turn, from the press to the next quarter in the game), and `__map.shipMarks`. Guiding
+  stays off in tests unless the address says `guide`; music unless it says `music`.
+- **Headless questions** (what do the rivals do by turn 50?) are quickest answered with a
+  throwaway unit test that plays turns with `resolveTurn` and writes what it finds to a file; delete
+  it after. `npm run balance` writes the standing report to `docs/design/M2_BALANCE.md`.
+- **Overlapping increments:** keep each one its own commit. A fix found later in an unpushed
+  increment is folded into it with `git commit --fixup=<sha>` and
+  `GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash <base>` (commit or set aside other work first);
+  a worktree at an increment's commit (`git worktree add`, with `node_modules` linked) checks and
+  tests it exactly as it will ship.
 
 ## 5. Also open
 

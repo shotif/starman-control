@@ -40,6 +40,13 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-15, D-32 – D-41 | The M2 design: governors and edicts, districts, food, credits, approval, projects, rivals, events, advisors, the opening, the art | Decided 2026-10-21 | **as recommended**; see [Round 4](#round-4-the-m2-design-decided-21-october-2026) and [M2_WORLDS.md §21](design/M2_WORLDS.md#21-decisions-for-the-owner) |
 | D-42 | How a new colony starts, now that only districts make industry | Decided 2026-10-21 | **A, the founders' kit**: farms and works zoned, and 2 industry of its own; see [D-42](#d-42--how-a-new-colony-starts--decided) |
 | D-43 | Idle people and approval | Decided 2026-10-21 (owner's choice) | **C, no penalty**: idle people make nothing, and that is all; see [D-43](#d-43--idle-people-and-approval--decided) |
+| D-44 | Where research comes from ([M2B §4](design/M2B_SCIENCE.md#4-where-research-comes-from-d-44)) | **Open** | recommended: C, scholars and a lab for every governor |
+| D-45 | Discoveries ([M2B §5](design/M2B_SCIENCE.md#5-discoveries-d-45)) | **Open** | recommended: C, inspirations and observations of the real sky |
+| D-46 | A deeper tree ([M2B §6](design/M2B_SCIENCE.md#6-a-deeper-tree-d-46)) | **Open** | recommended: C, rising costs and tiers 4 and 5 |
+| D-47 | Forks ([M2B §7](design/M2B_SCIENCE.md#7-forks-d-47)) | **Open** | recommended: B, three doctrine pairs |
+| D-48 | Rivals' science ([M2B §8](design/M2B_SCIENCE.md#8-knowledge-spreads-and-rivals-science-is-felt-d-48)) | **Open** | recommended: spreading knowledge, the Watch's rumours and science in the standings |
+| D-49 | Great works ([M2B §9](design/M2B_SCIENCE.md#9-great-works-d-49)) | **Open** | recommended: yes, the four drafted |
+| D-50 | A score ([M2B §10](design/M2B_SCIENCE.md#10-a-score-d-50)) | **Open** | recommended: yes, no victory yet |
 | D-12 – D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -513,6 +520,15 @@ people pay taxes and eat but make nothing; approval does not count them. Built i
 | D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **decided with the M2 design** ([Round 4](#round-4-the-m2-design-decided-21-october-2026)): optional governors, edicts as policies paid from attention |
 | D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art |
 | D-18 | Free or paid, open source or not, Steam or web only | M5 | develop in the open on GitHub Pages; decide at M5 |
+
+## Round 5: science and rivalry, proposed 21 October 2026
+
+M2's headless games showed two powers making 5 research a turn for 100 turns while the third
+finished the whole tree by turn 90 ([M2B_SCIENCE.md §1](design/M2B_SCIENCE.md#1-what-m2s-games-showed)).
+The proposals, each with its options and recommendation, are in
+[M2B_SCIENCE.md §15](design/M2B_SCIENCE.md#15-decisions-for-the-owner): **D-44** where research comes
+from, **D-45** discoveries, **D-46** a deeper tree, **D-47** forks, **D-48** rivals' science,
+**D-49** great works and **D-50** a score. Nothing in them is built until the owner answers.
 
 ## Made without waiting
 
