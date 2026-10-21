@@ -64,7 +64,7 @@ function moveShip(world: World, state: GameState, ship: ShipState, events: Repor
     }
     return;
   }
-  let points = jumpPoints(state, ship.owner);
+  let points = jumpPoints(state, ship.owner, ship.type);
   while (ship.destinations.length > 0 && ship.at !== null) {
     const dest = ship.destinations[0] as SystemId;
     if (ship.at === dest) {
@@ -203,7 +203,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // What each colony makes this turn, from the state as it stands now (approval, workers, food).
   const research = new Map(state.powers.map((p) => [p.faction, researchOf(world, state, p.faction).total]));
   const income = new Map(state.holdings.map((h) => [h.id, creditsOf(world, state, h).total]));
-  const yields = new Map(state.holdings.map((h) => [h.id, yieldsOf(world, state, h).total]));
+  const yields = new Map(state.holdings.map((h) => [h.id, yieldsOf(world, state, h, false).total]));
   const food = state.powers.flatMap((p) =>
     networksOf(world, state, p.faction).map((net) => ({
       faction: p.faction,
@@ -216,15 +216,33 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       .filter((h) => h.kind === 'colony' && approvalOf(world, state, h).level === 'revolt')
       .map((h) => h.id),
   );
+  // Refineries turn volatiles into fuel, then fusion plants burn it, colony by colony, from the
+  // stockpile as it stands; a plant with no fuel left makes nothing this turn (M2_WORLDS.md §23.1).
+  const fusion = new Map<number, boolean>();
+  for (const h of state.holdings) {
+    if (h.kind !== 'colony' || revolt.has(h.id) || !h.projects.includes('refinery')) continue;
+    const s = powerOf(state, h.owner).stockpile;
+    if (s.volatiles < RULES.projects.refineryVolatiles) continue;
+    s.volatiles -= RULES.projects.refineryVolatiles;
+    s.fuel += RULES.projects.refineryFuel;
+  }
+  for (const h of state.holdings) {
+    if (h.kind !== 'colony' || revolt.has(h.id) || !h.projects.includes('fusion-plant')) continue;
+    const s = powerOf(state, h.owner).stockpile;
+    const runs = s.fuel >= RULES.projects.fusionFuel;
+    if (runs) s.fuel -= RULES.projects.fusionFuel;
+    fusion.set(h.id, runs);
+  }
   // Overdrive is paid first, colony by colony; what the treasury cannot pay is not bought.
   for (const h of state.holdings) {
     if (h.overdrive <= 0) continue;
     const power = powerOf(state, h.owner);
-    while (h.overdrive > 0 && overdriveCost(world, state, h) > Math.max(0, power.treasury)) h.overdrive--;
-    power.treasury -= overdriveCost(world, state, h);
+    const runs = fusion.get(h.id) ?? false;
+    while (h.overdrive > 0 && overdriveCost(world, state, h, runs) > Math.max(0, power.treasury)) h.overdrive--;
+    power.treasury -= overdriveCost(world, state, h, runs);
     if (h.overdrive === 0) (events.get(h.owner) as ReportEvent[]).push({ kind: 'overdrive-stopped', holding: h.id });
   }
-  const made = new Map(state.holdings.map((h) => [h.id, industryOf(world, state, h).total]));
+  const made = new Map(state.holdings.map((h) => [h.id, industryOf(world, state, h, fusion.get(h.id) ?? false).total]));
   for (const h of state.holdings) {
     const power = powerOf(state, h.owner);
     const log = events.get(h.owner) as ReportEvent[];

@@ -523,3 +523,114 @@ made without waiting and listed in DECISIONS.md.
   players of `colonies.test.ts` now zone their land, the scene and card tests; the browser
   journeys `districts.spec.ts` (rezoning a district and the report; taxes, approval and overdrive)
   on the phone, tablet and desktop, and the colony and game journeys brought up to date.
+
+## 23. Increment 21 in detail: projects and research (written before building it)
+
+**Goals.** Nine of §6's new projects, each a building in each power's architecture, and the
+research tree grown to open them and to make each zone yield more, with society's two laws; every
+number shown with its parts, as in increment 20.
+
+**Out of scope, and why.** The *flare shield* waits for events (increment 25): until a flare can
+do harm it would do nothing. The *deep-space scanner* waits for rivals (increment 24): until
+there are others' ships it would show nothing. The edicts' law waits for governors and edicts
+(increment 23). So this increment adds nine projects, not eleven, and 27 pictures, not 33.
+
+### 23.1 The nine projects
+
+As §6's table, with these exact rules:
+
+- **Hydroponics:** 3 food a turn, whatever the world, into the colony's network.
+- **Trade exchange:** 3 credits a turn, and 1 more for each worked market district here. No upkeep.
+- **Civic centre:** approval +10 here; +5 at every other colony of the power within two lane jumps.
+  A colony takes the best it is given, never both and never two of either.
+- **Recreation dome** (opens with *Shared spaces*): approval +10 here.
+- **Research institute** (opens with *Computing*): 3 research a turn, and each worked lab here 1
+  more. Upkeep 2.
+- **Fusion plant** (opens with *Fusion power*): 4 industry a turn, burning 1 fusion fuel from the
+  stockpile; with no fuel it makes nothing and says so.
+- **Refinery** (opens with *Fusion power*): turns 1 volatiles into 2 fusion fuel a turn, while
+  there are volatiles.
+- **Arcology** (opens with *Arcologies*): room for 4 million more.
+- **Medical centre** (opens with *Medicine*): the colony grows 25% faster (added to the traits'
+  and technologies' percentages, as M1's growth rule adds them).
+
+Projects' yields are not scaled by approval (approval scales what the districts yield, §5), but a
+colony in revolt makes nothing at all. Each project's upkeep is its own (§6's table); the shipyard
+keeps its 2.
+
+### 23.2 The tree, from 14 technologies to 32
+
+New technologies, by field (tier, cost in points; *needs*):
+
+| Field | Technology | Tier, cost | Needs | Effect |
+| --- | --- | --- | --- | --- |
+| Propulsion | **Fusion power** | 2, 60 | Lane engineering I | opens the fusion plant and the refinery |
+| Propulsion | **Lane trade** | 2, 60 | Lane engineering I | each market district yields 1 more |
+| Propulsion | **Lane trade II** | 3, 100 | Lane trade | each market district yields 1 more again |
+| Construction | **Automation** | 2, 60 | Automated mining | each works district yields 1 more |
+| Construction | **Automation II** | 3, 100 | Automation | each works district yields 1 more again |
+| Construction | **Deep boring** | 2, 60 | Automated mining | each mine district yields 1 more |
+| Construction | **Deep boring II** | 3, 100 | Deep boring | each mine district yields 1 more again |
+| Construction | **Arcologies** | 3, 100 | Habitat domes, Automation | opens the arcology |
+| Life Sciences | **Soil science** | 1, 30 | — | each farm district yields 1 more |
+| Life Sciences | **Soil science II** | 2, 60 | Soil science | each farm district yields 1 more again |
+| Life Sciences | **Medicine** | 2, 60 | Soil science | opens the medical centre |
+| Society | **Shared spaces** | 1, 30 | — | opens the recreation dome |
+| Society | **Fair taxation** | 2, 60 | Shared spaces | high taxes cost 10 approval instead of 15 |
+| Society | **Regional administration** | 2, 60 | Colonial charters | *far from home* begins a jump later |
+| Survey | **Computing** | 2, 60 | Deep survey | each lab district yields 1 more; opens the research institute |
+| Survey | **Computing II** | 3, 100 | Computing | each lab district yields 1 more again |
+| Survey | **Long-range sensors** | 3, 100 | Long-baseline arrays | survey ships make 1 more jump point a turn |
+| Life Sciences | **Adaptation III** | 3, 100 | Adaptation II | hot and scorching worlds cost your people one step less |
+
+The tree’s cost rises from 700 points to 2,000. A capital makes 5 a turn and a lab 2, so the
+whole tree is a long game's work, and the zone technologies reward the colonies that specialise.
+
+### 23.3 On the screen and in the scene
+
+- **The panel's *Add to the queue*** lists the new projects with their cost, upkeep and what they
+  do here ("3 food", "+10 approval here, +5 at Barnard's Star"); one that waits for a technology
+  says which.
+- **The research screen** shows the new technologies in their fields, as M1's.
+- **The scene:** each project in the power's architecture after the districts, as now (27 pictures,
+  about $2.70 with two candidates each).
+
+### 23.4 The phone's picture budget
+
+A colony's heaviest first pictures on a phone were already 1020.8 KB of the 1 MB budget, measured
+with every project. Before the new buildings are added, the colony's still (its first pictures)
+will load each picture at the width it is drawn, which on a phone is far less than 512 px:
+buildings are published at **256 px** too, and the budget measures what a phone loads for the
+still, and separately for the diorama it opens, with the game's own choice of widths.
+
+### 23.5 Tests
+
+Unit: each project's rule, the civic centre's reach and its best-of, the fusion plant without
+fuel, the refinery without volatiles, upkeep per project, every new technology's effect, the
+tree's shape (each needs only what comes before it) and cost. Browser: a project opened by research
+and queued, on phone, tablet and desktop; the budgets.
+
+### Increment 21: projects and research (21 October 2026)
+
+- **Nine projects** (§23.1): hydroponics, the trade exchange and the civic centre from the start;
+  the recreation dome, research institute, fusion plant, refinery, arcology and medical centre
+  opened by research. Each has its own upkeep (`src/content/projects.ts`); a project waiting for a
+  technology says which ("Needs Computing."). Refineries and fusion plants run as the turn begins,
+  colony by colony, from the stockpile, so a plant whose fuel ran out says so and makes nothing.
+- **The tree: 32 technologies, 2,000 points** (§23.2), as designed, but *Lane trade* needs *Lane
+  engineering I*, not *Beacon tuning*, so each technology needs only what lies above it.
+- **The pictures:** 27 buildings, 54 candidates, about $2.70; picks in DECISIONS.md. Every
+  building is also published at 256 px (`npm run art:widen`, which made the 256 px files of the 88
+  buildings already published from their 1024 px ones; approval now makes all three).
+- **The phone's pictures** (§23.4): the still loads each picture at the width it is drawn in its
+  frame (a painted landscape may be drawn up to 18% larger than its file, a building 10%), so its
+  heaviest is **618 KB of its 1 MB**, with every district and project; measured honestly at last,
+  the old way had counted 512 px buildings and a 1280 px landscape where a phone loaded the 2560
+  px one. The diorama it opens, measured the same way from the diorama's own framing, is **1.62
+  MB at most**; a new budget of **2 MB** guards it.
+- **On the screen:** *Add to the queue* shows each item's upkeep; the report, the scene's words and
+  the cards say *an arcology* and *hydroponics*, not *a arcology*.
+- **Tests:** `projects.test.ts` (each project's rule, upkeep, the civic centre's reach and its
+  best-of, the fusion plant without fuel, the refinery, the new technologies), the tree's shape
+  and cost, and `projects.spec.ts` (queueing a project and one that waits for research; the tree's
+  new technologies) on the phone, tablet and desktop.

@@ -11,10 +11,11 @@ import type { GameState, ShipState } from './state.ts';
 import { type LaneId, laneEnds, type World } from './world.ts';
 
 /** Jump points a power's ships have each turn: 2, plus any trait (the Wake's +1) and Jump tuning. */
-export function jumpPoints(state: GameState, faction: FactionId): number {
+export function jumpPoints(state: GameState, faction: FactionId, type?: ShipState['type']): number {
   let points = RULES.movement.jumpPoints;
   for (const t of FACTIONS[faction].traits) if (t.effect.kind === 'extra-jump-points') points += t.effect.points;
   for (const e of effects(state, faction, 'jump-points')) points += e.points;
+  if (type === 'survey') for (const e of effects(state, faction, 'survey-jump-points')) points += e.points;
   return points;
 }
 
@@ -142,7 +143,7 @@ export function previewMove(
     path.push(...leg);
     at = d;
   }
-  const plan = planJourney(path, jumpPoints(state, ship.owner));
+  const plan = planJourney(path, jumpPoints(state, ship.owner, ship.type));
   return { ...plan, jumps: path.length };
 }
 

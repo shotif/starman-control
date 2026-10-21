@@ -7,7 +7,8 @@ import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 import { ZONE_DEFS, ZONES, type Zone } from '../../content/districts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
-import { type Cost, itemName, PROJECTS, type QueueItem } from '../../content/projects.ts';
+import { type Cost, itemName, PROJECTS, type QueueItem, withArticle } from '../../content/projects.ts';
+import { RULES } from '../../content/rules.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
@@ -402,17 +403,20 @@ function AddToQueue({ world, game, h, play }: { world: World; game: GameState; h
       {options.map(({ item, refusal }) => {
         const name = itemName(item);
         const does = item.kind === 'ship' ? SHIPS[item.ship].does : PROJECTS[item.project].does;
+        const upkeep = item.kind === 'ship' ? RULES.credits.upkeep.ship : PROJECTS[item.project].upkeep;
         return (
           <li key={name}>
             <button
               type="button"
               class="build-option"
               disabled={refusal !== null}
-              aria-label={`Queue a ${name.toLowerCase()}`}
+              aria-label={`Queue ${withArticle(name.toLowerCase())}`}
               onClick={() => give(play, { type: 'queue', holding: h.id, item })}
             >
               <b>{name}</b>
-              <span class="build-cost">{costText(costOf(world, game, h, item))}</span>
+              <span class="build-cost">
+                {costText(costOf(world, game, h, item))} · upkeep {upkeep}
+              </span>
               <span class="build-does">{refusal ?? does}</span>
             </button>
           </li>

@@ -23,6 +23,7 @@
     "art:generate": "node scripts/art/generate.ts",
     "art:approve": "node scripts/art/approve.ts",
     "art:key": "node scripts/art/key.ts",
+    "art:widen": "node scripts/art/widen.ts",
     "art:sheet": "node scripts/art/sheet.ts",
     "art:check": "node scripts/art/check.ts",
     "music:generate": "node scripts/music/generate.ts",

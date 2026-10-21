@@ -5,7 +5,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { LANDSCAPES, structureArt } from '../../content/colonyArt.ts';
-import { artUrl, placeAll, placeProps } from '../../render/colonyPlace.ts';
+import { artUrl, frameTown, placeAll, placeProps } from '../../render/colonyPlace.ts';
 import { type ColonyScene, colonyScene } from '../../render/colonyScene.ts';
 import { drawColonyStill } from '../../render/colonyStill.ts';
 import type { GameState, Holding } from '../../sim/state.ts';
@@ -63,13 +63,15 @@ export function ColonyStill({
       if (width < 2 || height < 2) return;
       const placed = placeAll(stable, land);
       const base = import.meta.env.BASE_URL;
-      // The landscape's width on screen is the frame's over the share of it shown (about half).
-      const landUrl = artUrl(base, 'landscape', land.id, width * 2);
+      // Each picture at the width it is drawn: the landscape's is the frame's over the share of it
+      // shown (as drawColonyStill frames it), and a building's its share of that (M2_WORLDS.md §23.4).
+      const LW = width / frameTown(placed, land, width / height).uw;
+      const landUrl = artUrl(base, 'landscape', land.id, LW);
       const urls = new Map([
-        ...placed.map((p) => [p.art.id, artUrl(base, 'structure', p.art.id, p.w * width * 2.2)] as const),
+        ...placed.map((p) => [p.art.id, artUrl(base, 'structure', p.art.id, p.w * LW)] as const),
         ...placeProps(stable, land, placed).map(
           // A prop's picture fits a square: its size is its longer side.
-          (p) => [p.art.id, artUrl(base, 'prop', p.art.id, Math.max(p.w, p.h / land.aspect) * width * 2.2)] as const,
+          (p) => [p.art.id, artUrl(base, 'prop', p.art.id, Math.max(p.w, p.h / land.aspect) * LW)] as const,
         ),
       ]);
       void Promise.all([load(landUrl), ...[...urls].map(([id, url]) => load(url).then((img) => [id, img] as const))])

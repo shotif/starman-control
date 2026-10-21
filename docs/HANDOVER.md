@@ -46,11 +46,16 @@ way in.
   overdrive and debt, approval with its parts and four levels; districts stand in the colony scene
   as buildings (10 new pictures). The owner answered two questions found while building: a new
   colony arrives with farms and works and makes 2 industry of its own (D-42), and idle people cost
-  no approval (D-43).
-- **Numbers:** 295 unit tests and about 160 browser journeys pass; the title loads 20.7 KB of its
-  40 KB budget, a game's map about 297 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB)
-  and its heaviest first pictures on a phone **1020.8 KB of 1 MB** (measured over the game's own
-  scenes; see §2); state version 7.
+  no approval (D-43). **Increment 21 is built:** nine new projects (hydroponics, trade exchange,
+  civic centre, recreation dome, research institute, fusion plant, refinery, arcology, medical
+  centre), each a building in each power's architecture (27 pictures), and the research tree grown
+  to 32 technologies; every building is published at 256 px too, and the phone's picture budgets
+  measure what a phone loads.
+- **Numbers:** 309 unit tests and about 170 browser journeys pass; the title loads 20.8 KB of its
+  40 KB budget, a game's map about 300 KB of 900 KB, opening a colony 9.6 KB of code more (40 KB);
+  a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
+  1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;
+  state version 7.
 
 ## 2. The next job
 
@@ -60,19 +65,16 @@ increment 20's district buildings; apply any overrule they send (`npm run music:
 `music/out/` and `art/out/`, so a pick from a lost session means new candidates).
 
 **The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
-its §18. Increment 20 (districts, food, credits and approval, built as one) is done; next are
-projects and research (21), advisors and the report (22), governors and edicts (23), rivals that
-play (24), events (25), the guided opening (26), the proof (27). Build each as designed; put any
+its §18. Increments 20 (districts, food, credits and approval, built as one) and 21 (projects and
+research) are done; next are advisors and the report (22), governors and edicts (23), rivals that
+play (24, with the deep-space scanner), events (25, with the flare shield), the guided opening
+(26), the proof (27). Build each as designed; put any
 new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
 and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
 DECISIONS.md with their cost.
 
-**Before increment 21's 33 project buildings:** a colony's heaviest first pictures on a phone are
-already 1020.8 KB of the 1 MB budget. Publish a smaller width of each structure for the phone
-(for example 384 px, which `scripts/art/approve.ts` and `artUrl` would both need), or put a
-larger budget to the owner; do not let the budget fail.
-
-The art and music spend: about $16.85 of $25; M2's remaining 63 pictures are planned at about $7.
+The art and music spend: about $19.55 of $25; M2's remaining pictures (6 project buildings, 18
+advisors' faces, 12 events) are planned at about $3.60.
 
 ## 3. Standing instructions from the owner
 
@@ -83,7 +85,7 @@ The art and music spend: about $16.85 of $25; M2's remaining 63 pictures are pla
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$16.85** is spent (after increments 18, 19 and 20), so about **$8.15** is left. Nano
+  2026); about **$19.55** is spent (after increments 18 to 21), so about **$5.45** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
@@ -188,8 +190,8 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
-- The owner's choice of music by ear (every candidate was sent, lettered), and of increment 20's
-  district buildings (the sheet was sent).
+- The owner's choice of music by ear (every candidate was sent, lettered), and of increments 20's
+  and 21's buildings (the sheets were sent).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
   and any of the colony view's (COLONY_VIEW.md §8).
 - CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a

@@ -151,10 +151,13 @@ export function frameTown(
   return { u0, v0, uw };
 }
 
-/** The file for a picture at the smallest published width that is sharp enough. */
+/**
+ * The file for a picture at the smallest published width that is sharp enough: drawn at most a
+ * tenth larger than it is, or for a painted landscape, which lies behind everything, 18%.
+ */
 export function artUrl(base: string, kind: 'landscape' | 'structure' | 'prop', id: string, pixelsWide: number): string {
   const widths: readonly number[] =
     kind === 'landscape' ? LANDSCAPE_WIDTHS : kind === 'prop' ? PROP_WIDTHS : STRUCTURE_WIDTHS;
-  const width = widths.find((x) => x >= pixelsWide * 0.9) ?? widths.at(-1);
+  const width = widths.find((x) => x >= pixelsWide * (kind === 'landscape' ? 0.85 : 0.9)) ?? widths.at(-1);
   return `${base}art/${kind}/${id}-${width}.webp`;
 }

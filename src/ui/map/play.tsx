@@ -6,7 +6,7 @@ import { useState } from 'preact/hooks';
 import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { ZONE_DEFS } from '../../content/districts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
-import { itemName } from '../../content/projects.ts';
+import { itemName, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -292,8 +292,8 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'built': {
       const what = itemName(e.item).toLowerCase();
       return e.ship !== undefined
-        ? `${holding(e.holding)} built a ${what}, the ${shipOf(e.ship)}.`
-        : `${holding(e.holding)} built a ${what}.`;
+        ? `${holding(e.holding)} built ${withArticle(what)}, the ${shipOf(e.ship)}.`
+        : `${holding(e.holding)} built ${withArticle(what)}.`;
     }
     case 'full':
       return `${holding(e.holding)} is full: its people have no more room to grow.`;

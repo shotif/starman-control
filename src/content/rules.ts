@@ -103,8 +103,8 @@ export const RULES = {
     start: 50,
     /** A credit for every so many tenths of people, by tax rate: 4 million, 2 million, a million. */
     taxPer: { low: 40, standard: 20, high: 10 },
-    /** Upkeep a turn. */
-    upkeep: { ship: 1, outpost: 1, project: 1, shipyard: 2 },
+    /** Upkeep a turn for each ship and outpost; each project's is its own (src/content/projects.ts). */
+    upkeep: { ship: 1, outpost: 1 },
     /** Overdrive: each step buys a quarter of a colony's industry, at 1, 2 and 4 credits apiece. */
     overdriveSteps: [1, 2, 4],
   },
@@ -124,6 +124,26 @@ export const RULES = {
     /** The levels: content from 60, uneasy from 40, unrest from 20, revolt below; and what each keeps of the districts' yields. */
     levels: { content: 60, uneasy: 40, unrest: 20 },
     keeps: { content: 100, uneasy: 90, unrest: 70, revolt: 0 },
+  },
+  /** M2's projects (M2_WORLDS.md §6, §23.1). */
+  projects: {
+    hydroponicsFood: 3,
+    exchangeCredits: 3,
+    /** Approval from a civic centre here, and from one within `civicJumps` lane jumps. */
+    civicHere: 10,
+    civicNear: 5,
+    civicJumps: 2,
+    recreation: 10,
+    instituteResearch: 3,
+    /** Each worked lab with an institute yields this much more. */
+    instituteLab: 1,
+    fusionIndustry: 4,
+    fusionFuel: 1,
+    refineryVolatiles: 1,
+    refineryFuel: 2,
+    /** Room an arcology adds, in tenths. */
+    arcology: 40,
+    medicalPercent: 25,
   },
   outposts: {
     /** Industry an outpost makes for its queue, which holds lanes only. */

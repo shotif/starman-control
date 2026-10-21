@@ -3,7 +3,7 @@
 
 import { ZONE_DEFS } from '../../content/districts.ts';
 import { FACTIONS } from '../../content/factions.ts';
-import { PROJECTS } from '../../content/projects.ts';
+import { PROJECTS, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SceneBuilding } from '../../render/colonyScene.ts';
 import { costOf, queueTurns, workedSlots } from '../../sim/economy.ts';
@@ -63,7 +63,7 @@ export function buildingCard(
   }
   if (b.kind === 'scaffold' && b.project) {
     return {
-      title: `Building a ${PROJECTS[b.project].name.toLowerCase()}`,
+      title: `Building ${withArticle(PROJECTS[b.project].name.toLowerCase())}`,
       lines: [`${progress()}.`, PROJECTS[b.project].does],
     };
   }

@@ -74,7 +74,7 @@ export const SERIES: Record<SeriesId, SeriesStyle> = {
   },
   structure: {
     aspect: '1:1',
-    widths: [512, 1024],
+    widths: [256, 512, 1024],
     style: [
       "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon.",
       'Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left,',

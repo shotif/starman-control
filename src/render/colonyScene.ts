@@ -17,7 +17,7 @@ import {
 } from '../content/colonyArt.ts';
 import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { type ArchitectureId, FACTIONS, type FactionMark } from '../content/factions.ts';
-import { PROJECTS, type ProjectId } from '../content/projects.ts';
+import { PROJECTS, type ProjectId, withArticle } from '../content/projects.ts';
 import type { Atmosphere, Body } from '../sim/bodies.ts';
 import { bodiesOf } from '../sim/bodies.ts';
 import { bodyOf, costOf, districtCount } from '../sim/economy.ts';
@@ -243,7 +243,7 @@ function listWords(words: string[]): string {
 }
 
 function article(word: string): string {
-  return /^[aeiou]/i.test(word) ? `an ${word}` : `a ${word}`;
+  return withArticle(word);
 }
 
 export function colonyScene(world: World, game: GameState, h: Holding): ColonyScene | null {

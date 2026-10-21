@@ -26,7 +26,7 @@ export interface LandscapeArt {
 
 /** Published widths of each kind of picture, smallest for phones; props are drawn small. */
 export const LANDSCAPE_WIDTHS = [1280, 2560] as const;
-export const STRUCTURE_WIDTHS = [512, 1024] as const;
+export const STRUCTURE_WIDTHS = [256, 512, 1024] as const;
 export const PROP_WIDTHS = [256, 512] as const;
 
 /**
@@ -236,6 +236,34 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['wake-labs', 1779 / 1817, 34],
       ['wake-market', 1882 / 1640, 36],
       ['greenhouse-farms', 1940 / 1220, 40],
+      // Increment 21: M2's projects (M2_WORLDS.md §23.1).
+      ['authority-arcology', 1841 / 1885, 56],
+      ['authority-civic-centre', 1888 / 1785, 40],
+      ['authority-fusion-plant', 1928 / 1592, 44],
+      ['authority-hydroponics', 1850 / 1081, 38],
+      ['authority-medical-centre', 1754 / 1665, 34],
+      ['authority-recreation-dome', 1874 / 1589, 40],
+      ['authority-refinery', 1810 / 1486, 40],
+      ['authority-research-institute', 1916 / 1257, 40],
+      ['authority-trade-exchange', 1847 / 1430, 36],
+      ['cooperative-arcology', 1894 / 1870, 56],
+      ['cooperative-civic-centre', 1844 / 1693, 40],
+      ['cooperative-fusion-plant', 1813 / 1134, 44],
+      ['cooperative-hydroponics', 1870 / 1186, 38],
+      ['cooperative-medical-centre', 1850 / 1371, 34],
+      ['cooperative-recreation-dome', 1888 / 1333, 40],
+      ['cooperative-refinery', 1819 / 1708, 40],
+      ['cooperative-research-institute', 1808 / 1572, 40],
+      ['cooperative-trade-exchange', 1794 / 1519, 36],
+      ['wake-arcology', 1608 / 1780, 56],
+      ['wake-civic-centre', 1907 / 1662, 40],
+      ['wake-fusion-plant', 1782 / 1639, 44],
+      ['wake-hydroponics', 1827 / 1331, 38],
+      ['wake-medical-centre', 1800 / 1352, 34],
+      ['wake-recreation-dome', 1937 / 1596, 40],
+      ['wake-refinery', 1755 / 1713, 40],
+      ['wake-research-institute', 1704 / 1897, 40],
+      ['wake-trade-exchange', 1902 / 1468, 36],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );

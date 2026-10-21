@@ -2,6 +2,7 @@
 // field, cost in research points, what it needs first, and its effect, which the rules read. Every
 // technology states its exact effect. The numbers are starting points for balancing in M2.
 
+import type { Zone } from './districts.ts';
 import type { ShipType } from './ships.ts';
 
 export type FieldId = 'propulsion' | 'construction' | 'life-sciences' | 'society' | 'survey' | 'xenology';
@@ -29,7 +30,26 @@ export type TechId =
   | 'closed-ecologies'
   | 'colonial-charters'
   | 'deep-survey'
-  | 'long-baseline-arrays';
+  | 'long-baseline-arrays'
+  // M2 (M2_WORLDS.md §7, §23.2).
+  | 'fusion-power'
+  | 'lane-trade'
+  | 'lane-trade-2'
+  | 'automation'
+  | 'automation-2'
+  | 'deep-boring'
+  | 'deep-boring-2'
+  | 'arcologies'
+  | 'soil-science'
+  | 'soil-science-2'
+  | 'medicine'
+  | 'adaptation-3'
+  | 'shared-spaces'
+  | 'fair-taxation'
+  | 'regional-administration'
+  | 'computing'
+  | 'computing-2'
+  | 'long-range-sensors';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -52,7 +72,17 @@ export type TechEffect =
   /** Investigating an anomaly takes this many turns less (at least 1). */
   | { kind: 'investigation-turns'; turns: number }
   /** Survey stations survey this many lanes out. */
-  | { kind: 'survey-station-lanes'; lanes: number };
+  | { kind: 'survey-station-lanes'; lanes: number }
+  /** Opens projects (src/content/projects.ts names the technology each needs), and does nothing else. */
+  | { kind: 'opens' }
+  /** Each worked district of a zone yields this much more. */
+  | { kind: 'zone-yield'; zone: Zone; amount: number }
+  /** High taxes cost this much less approval. */
+  | { kind: 'tax-relief'; approval: number }
+  /** *Far from home* begins this many lane jumps later. */
+  | { kind: 'near-jumps'; jumps: number }
+  /** Survey ships make this many more jump points a turn. */
+  | { kind: 'survey-jump-points'; points: number };
 
 export interface TechDef {
   id: TechId;
@@ -208,6 +238,187 @@ export const TECHS: Record<TechId, TechDef> = {
     needs: ['deep-survey'],
     effect: { kind: 'survey-station-lanes', lanes: 2 },
     text: 'Survey stations survey every system two open lanes away.',
+  },
+  // M2's technologies (M2_WORLDS.md §23.2).
+  'fusion-power': {
+    id: 'fusion-power',
+    name: 'Fusion power',
+    field: 'propulsion',
+    tier: 2,
+    cost: 60,
+    needs: ['lane-engineering-1'],
+    effect: { kind: 'opens' },
+    text: 'Opens the fusion plant and the refinery.',
+  },
+  'lane-trade': {
+    id: 'lane-trade',
+    name: 'Lane trade',
+    field: 'propulsion',
+    tier: 2,
+    cost: 60,
+    needs: ['lane-engineering-1'],
+    effect: { kind: 'zone-yield', zone: 'market', amount: 1 },
+    text: 'Each market district yields 1 more credit.',
+  },
+  'lane-trade-2': {
+    id: 'lane-trade-2',
+    name: 'Lane trade II',
+    field: 'propulsion',
+    tier: 3,
+    cost: 100,
+    needs: ['lane-trade'],
+    effect: { kind: 'zone-yield', zone: 'market', amount: 1 },
+    text: 'Each market district yields 1 more credit again.',
+  },
+  automation: {
+    id: 'automation',
+    name: 'Automation',
+    field: 'construction',
+    tier: 2,
+    cost: 60,
+    needs: ['automated-mining'],
+    effect: { kind: 'zone-yield', zone: 'works', amount: 1 },
+    text: 'Each works district yields 1 more industry.',
+  },
+  'automation-2': {
+    id: 'automation-2',
+    name: 'Automation II',
+    field: 'construction',
+    tier: 3,
+    cost: 100,
+    needs: ['automation'],
+    effect: { kind: 'zone-yield', zone: 'works', amount: 1 },
+    text: 'Each works district yields 1 more industry again.',
+  },
+  'deep-boring': {
+    id: 'deep-boring',
+    name: 'Deep boring',
+    field: 'construction',
+    tier: 2,
+    cost: 60,
+    needs: ['automated-mining'],
+    effect: { kind: 'zone-yield', zone: 'mines', amount: 1 },
+    text: 'Each mine district yields 1 more.',
+  },
+  'deep-boring-2': {
+    id: 'deep-boring-2',
+    name: 'Deep boring II',
+    field: 'construction',
+    tier: 3,
+    cost: 100,
+    needs: ['deep-boring'],
+    effect: { kind: 'zone-yield', zone: 'mines', amount: 1 },
+    text: 'Each mine district yields 1 more again.',
+  },
+  arcologies: {
+    id: 'arcologies',
+    name: 'Arcologies',
+    field: 'construction',
+    tier: 3,
+    cost: 100,
+    needs: ['habitat-domes', 'automation'],
+    effect: { kind: 'opens' },
+    text: 'Opens the arcology: room for 4 million more in one colony.',
+  },
+  'soil-science': {
+    id: 'soil-science',
+    name: 'Soil science',
+    field: 'life-sciences',
+    tier: 1,
+    cost: 30,
+    needs: [],
+    effect: { kind: 'zone-yield', zone: 'farms', amount: 1 },
+    text: 'Each farm district yields 1 more food.',
+  },
+  'soil-science-2': {
+    id: 'soil-science-2',
+    name: 'Soil science II',
+    field: 'life-sciences',
+    tier: 2,
+    cost: 60,
+    needs: ['soil-science'],
+    effect: { kind: 'zone-yield', zone: 'farms', amount: 1 },
+    text: 'Each farm district yields 1 more food again.',
+  },
+  medicine: {
+    id: 'medicine',
+    name: 'Medicine',
+    field: 'life-sciences',
+    tier: 2,
+    cost: 60,
+    needs: ['soil-science'],
+    effect: { kind: 'opens' },
+    text: 'Opens the medical centre: a colony grows 25% faster.',
+  },
+  'adaptation-3': {
+    id: 'adaptation-3',
+    name: 'Adaptation III',
+    field: 'life-sciences',
+    tier: 3,
+    cost: 100,
+    needs: ['adaptation-2'],
+    effect: { kind: 'adaptation', condition: 'temperature', values: ['hot', 'scorching'], by: 1 },
+    text: 'Hot and scorching worlds cost your people one step less.',
+  },
+  'shared-spaces': {
+    id: 'shared-spaces',
+    name: 'Shared spaces',
+    field: 'society',
+    tier: 1,
+    cost: 30,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens the recreation dome: approval +10 in one colony.',
+  },
+  'fair-taxation': {
+    id: 'fair-taxation',
+    name: 'Fair taxation',
+    field: 'society',
+    tier: 2,
+    cost: 60,
+    needs: ['shared-spaces'],
+    effect: { kind: 'tax-relief', approval: 5 },
+    text: 'High taxes cost 10 approval instead of 15.',
+  },
+  'regional-administration': {
+    id: 'regional-administration',
+    name: 'Regional administration',
+    field: 'society',
+    tier: 2,
+    cost: 60,
+    needs: ['colonial-charters'],
+    effect: { kind: 'near-jumps', jumps: 1 },
+    text: 'Being far from home costs approval from 5 lane jumps, not 4.',
+  },
+  computing: {
+    id: 'computing',
+    name: 'Computing',
+    field: 'survey',
+    tier: 2,
+    cost: 60,
+    needs: ['deep-survey'],
+    effect: { kind: 'zone-yield', zone: 'labs', amount: 1 },
+    text: 'Each lab district yields 1 more research; opens the research institute.',
+  },
+  'computing-2': {
+    id: 'computing-2',
+    name: 'Computing II',
+    field: 'survey',
+    tier: 3,
+    cost: 100,
+    needs: ['computing'],
+    effect: { kind: 'zone-yield', zone: 'labs', amount: 1 },
+    text: 'Each lab district yields 1 more research again.',
+  },
+  'long-range-sensors': {
+    id: 'long-range-sensors',
+    name: 'Long-range sensors',
+    field: 'survey',
+    tier: 3,
+    cost: 100,
+    needs: ['long-baseline-arrays'],
+    effect: { kind: 'survey-jump-points', points: 1 },
+    text: 'Survey ships make 1 more jump point a turn.',
   },
 };
 

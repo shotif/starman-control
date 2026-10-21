@@ -1,6 +1,61 @@
 {
   "images": [
     {
+      "briefId": "authority-arcology",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. An arcology: a single enormous stepped tower of prefabricated modules housing a whole town, terraces of gardens, many lit windows, a beacon on top, smaller buildings at its foot.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:35:25.026Z",
+      "id": "authority-arcology",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:50.393Z",
+      "candidate": "art/out/authority-arcology/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-arcology-256.webp",
+          "bytes": 17790
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-arcology-512.webp",
+          "bytes": 52482
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-arcology-1024.webp",
+          "bytes": 151582
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 109,
+        "top": 26,
+        "width": 1841,
+        "height": 1885
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-cargo",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -47,6 +102,116 @@
         "top": 305,
         "width": 1678,
         "height": 1438
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "authority-civic-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A civic centre: a dignified town hall of pale prefabricated stone with a colonnade, a clock tower and a public square with benches and young trees in front, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:31:48.250Z",
+      "id": "authority-civic-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:41.768Z",
+      "candidate": "art/out/authority-civic-centre/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-civic-centre-256.webp",
+          "bytes": 17484
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-civic-centre-512.webp",
+          "bytes": 49452
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-civic-centre-1024.webp",
+          "bytes": 144754
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 77,
+        "top": 23,
+        "width": 1888,
+        "height": 1785
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "authority-fusion-plant",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A fusion power plant: a large cylindrical reactor hall of prefabricated panels with a glowing ring window, cooling towers, a switchyard of transformers and power lines, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:33:55.793Z",
+      "id": "authority-fusion-plant",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:47.190Z",
+      "candidate": "art/out/authority-fusion-plant/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-fusion-plant-256.webp",
+          "bytes": 19888
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-fusion-plant-512.webp",
+          "bytes": 58226
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-fusion-plant-1024.webp",
+          "bytes": 171502
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 68,
+        "top": 110,
+        "width": 1928,
+        "height": 1592
       },
       "aiGenerated": true
     },
@@ -114,6 +279,11 @@
       "candidate": "art/out/authority-hall/20261020-090130-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-hall-256.webp",
+          "bytes": 13796
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-hall-512.webp",
           "bytes": 47784
@@ -163,6 +333,11 @@
       "approvedAt": "2026-10-20T08:11:16.295Z",
       "candidate": "art/out/authority-homes-1-domed/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-1-domed-256.webp",
+          "bytes": 17550
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-1-domed-512.webp",
@@ -214,6 +389,11 @@
       "candidate": "art/out/authority-homes-1-domed-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-1-domed-b-256.webp",
+          "bytes": 20488
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-1-domed-b-512.webp",
           "bytes": 66910
@@ -263,6 +443,11 @@
       "approvedAt": "2026-10-21T04:42:23.688Z",
       "candidate": "art/out/authority-homes-1-domed-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-1-domed-c-256.webp",
+          "bytes": 14520
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-1-domed-c-512.webp",
@@ -315,6 +500,11 @@
       "candidate": "art/out/authority-homes-1-open/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-1-open-256.webp",
+          "bytes": 13332
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-1-open-512.webp",
           "bytes": 47002
@@ -364,6 +554,11 @@
       "approvedAt": "2026-10-21T04:42:18.870Z",
       "candidate": "art/out/authority-homes-1-open-b/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-1-open-b-256.webp",
+          "bytes": 8774
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-1-open-b-512.webp",
@@ -415,6 +610,11 @@
       "candidate": "art/out/authority-homes-1-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-1-open-c-256.webp",
+          "bytes": 10114
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-1-open-c-512.webp",
           "bytes": 34924
@@ -465,6 +665,11 @@
       "candidate": "art/out/authority-homes-2-domed/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-2-domed-256.webp",
+          "bytes": 17078
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-2-domed-512.webp",
           "bytes": 56650
@@ -514,6 +719,11 @@
       "approvedAt": "2026-10-21T04:42:25.268Z",
       "candidate": "art/out/authority-homes-2-domed-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-2-domed-b-256.webp",
+          "bytes": 14856
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-2-domed-b-512.webp",
@@ -566,6 +776,11 @@
       "candidate": "art/out/authority-homes-2-domed-c/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-2-domed-c-256.webp",
+          "bytes": 18790
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-2-domed-c-512.webp",
           "bytes": 65908
@@ -616,6 +831,11 @@
       "candidate": "art/out/authority-homes-2-open/20261020-070848-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-2-open-256.webp",
+          "bytes": 13886
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-2-open-512.webp",
           "bytes": 48240
@@ -665,6 +885,11 @@
       "approvedAt": "2026-10-20T19:28:38.604Z",
       "candidate": "art/out/authority-homes-2-open-b/20261020-192143-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-2-open-b-256.webp",
+          "bytes": 14348
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-2-open-b-512.webp",
@@ -717,6 +942,11 @@
       "candidate": "art/out/authority-homes-2-open-c/20261020-192143-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-2-open-c-256.webp",
+          "bytes": 15340
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-2-open-c-512.webp",
           "bytes": 51938
@@ -766,6 +996,11 @@
       "approvedAt": "2026-10-20T08:11:23.859Z",
       "candidate": "art/out/authority-homes-3-domed/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-3-domed-256.webp",
+          "bytes": 21414
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-3-domed-512.webp",
@@ -818,6 +1053,11 @@
       "candidate": "art/out/authority-homes-3-domed-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-3-domed-b-256.webp",
+          "bytes": 20042
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-3-domed-b-512.webp",
           "bytes": 66468
@@ -869,6 +1109,11 @@
       "candidate": "art/out/authority-homes-3-domed-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-3-domed-c-256.webp",
+          "bytes": 15324
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-3-domed-c-512.webp",
           "bytes": 54096
@@ -918,6 +1163,11 @@
       "approvedAt": "2026-10-20T08:11:21.232Z",
       "candidate": "art/out/authority-homes-3-open/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-homes-3-open-256.webp",
+          "bytes": 12922
+        },
         {
           "width": 512,
           "path": "art/structure/authority-homes-3-open-512.webp",
@@ -969,6 +1219,11 @@
       "candidate": "art/out/authority-homes-3-open-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-3-open-b-256.webp",
+          "bytes": 25994
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-3-open-b-512.webp",
           "bytes": 83110
@@ -1019,6 +1274,11 @@
       "candidate": "art/out/authority-homes-3-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-homes-3-open-c-256.webp",
+          "bytes": 22148
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-homes-3-open-c-512.webp",
           "bytes": 67072
@@ -1057,6 +1317,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-hydroponics",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A hydroponics farm: a long, low prefabricated building with a glazed roof, racks of green plants under pink-white grow lights visible through its windows, water tanks and pipes along one side, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:30:29.993Z",
+      "id": "authority-hydroponics",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:38.248Z",
+      "candidate": "art/out/authority-hydroponics/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-hydroponics-256.webp",
+          "bytes": 13364
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-hydroponics-512.webp",
+          "bytes": 39926
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-hydroponics-1024.webp",
+          "bytes": 123430
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 99,
+        "top": 533,
+        "width": 1850,
+        "height": 1081
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-labs",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -1068,6 +1383,11 @@
       "approvedAt": "2026-10-21T05:22:04.481Z",
       "candidate": "art/out/authority-labs/20261021-050637-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-labs-256.webp",
+          "bytes": 16490
+        },
         {
           "width": 512,
           "path": "art/structure/authority-labs-512.webp",
@@ -1119,6 +1439,11 @@
       "candidate": "art/out/authority-lane-station/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-lane-station-256.webp",
+          "bytes": 14990
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-lane-station-512.webp",
           "bytes": 50016
@@ -1169,6 +1494,11 @@
       "approvedAt": "2026-10-21T05:22:06.081Z",
       "candidate": "art/out/authority-market/20261021-050637-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-market-256.webp",
+          "bytes": 11434
+        },
         {
           "width": 512,
           "path": "art/structure/authority-market-512.webp",
@@ -1259,6 +1589,62 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-medical-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A medical centre: a clean white hospital building of prefabricated modules with a green cross sign, an ambulance shuttle pad on the roof and a small garden, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:35:43.952Z",
+      "note": "Here is the medical centre for the strategy game's colony view, built in the Sol Transit Authority architectural style. It is rendered in a realistic, weathered matte-painting style, featuring prefabricated modules with pale grey ceramic panels and brushed metal.\n\nThe image strictly meets all of your requirements, incorporating:\n* A three-quarter view from the front left, seen from a shallow elevated angle (approx. 15 degrees).\n* An ambulance shuttle pad on the flat roof and a small rooftop garden module.\n* Warm lit windows, glowing green guide lights, and a prominent green cross sign.\n* Zero environment, ground, shadows, vehicles, or characters, with the base cleanly cut off.\n* Complete isolation against a flat, uniform pure magenta (#FF00FF) background for easy masking/integration.",
+      "id": "authority-medical-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:52.234Z",
+      "candidate": "art/out/authority-medical-centre/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-medical-centre-256.webp",
+          "bytes": 20338
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-medical-centre-512.webp",
+          "bytes": 60114
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-medical-centre-1024.webp",
+          "bytes": 175860
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 149,
+        "top": 136,
+        "width": 1754,
+        "height": 1665
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-mine",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -1270,6 +1656,11 @@
       "approvedAt": "2026-10-20T08:11:29.687Z",
       "candidate": "art/out/authority-mine/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-mine-256.webp",
+          "bytes": 13436
+        },
         {
           "width": 512,
           "path": "art/structure/authority-mine-512.webp",
@@ -1360,6 +1751,173 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-recreation-dome",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A recreation dome: a large faceted glass dome over a small park with trees, a pond and paths, a sports field beside it, people-sized doors, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:32:55.156Z",
+      "note": "Here is the recreation dome for the Sol Transit Authority, rendered in a realistic, matte-painting style at a low-angle perspective. The facility is isolated against a pure magenta background with a clean, flat cut-off base, and contains the detailed, human-scale modules and park features you requested.",
+      "id": "authority-recreation-dome",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:43.729Z",
+      "candidate": "art/out/authority-recreation-dome/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-recreation-dome-256.webp",
+          "bytes": 19086
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-recreation-dome-512.webp",
+          "bytes": 58476
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-recreation-dome-1024.webp",
+          "bytes": 184944
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 83,
+        "top": 258,
+        "width": 1874,
+        "height": 1589
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "authority-refinery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A fuel refinery: neat columns and spherical tanks of white-painted steel, pipe racks, a tall flare stack with a small flame, a control building, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:34:32.064Z",
+      "id": "authority-refinery",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:48.661Z",
+      "candidate": "art/out/authority-refinery/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-refinery-256.webp",
+          "bytes": 15800
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-refinery-512.webp",
+          "bytes": 42436
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-refinery-1024.webp",
+          "bytes": 115306
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 140,
+        "top": 155,
+        "width": 1810,
+        "height": 1486
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "authority-research-institute",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A research institute: an imposing campus building of pale ceramic panels with a tall glass entrance, a large radio telescope dish beside it and an observatory dome, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:33:14.169Z",
+      "note": "Here is the image for your strategy game's colony view, depicting the Sol Transit Authority research institute. It features the modular, civic architecture with ceramic panels, warm-lit windows, a large radio telescope, and an observatory dome—all painted in a realistic, weathered matte-painting style and perfectly isolated on the requested solid magenta background with no ground or shadows underneath.",
+      "id": "authority-research-institute",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:45.222Z",
+      "candidate": "art/out/authority-research-institute/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-research-institute-256.webp",
+          "bytes": 13040
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-research-institute-512.webp",
+          "bytes": 39086
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-research-institute-1024.webp",
+          "bytes": 122878
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 85,
+        "top": 369,
+        "width": 1916,
+        "height": 1257
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-rig",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -1371,6 +1929,11 @@
       "approvedAt": "2026-10-20T09:07:43.936Z",
       "candidate": "art/out/authority-rig/20261020-090130-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-rig-256.webp",
+          "bytes": 14426
+        },
         {
           "width": 512,
           "path": "art/structure/authority-rig-512.webp",
@@ -1422,6 +1985,11 @@
       "candidate": "art/out/authority-shipyard/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-shipyard-256.webp",
+          "bytes": 11174
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-shipyard-512.webp",
           "bytes": 41282
@@ -1471,6 +2039,11 @@
       "approvedAt": "2026-10-20T08:34:15.888Z",
       "candidate": "art/out/authority-shuttle/20261020-083101-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-shuttle-256.webp",
+          "bytes": 11794
+        },
         {
           "width": 512,
           "path": "art/structure/authority-shuttle-512.webp",
@@ -1522,6 +2095,11 @@
       "candidate": "art/out/authority-survey-station/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-survey-station-256.webp",
+          "bytes": 12358
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-survey-station-512.webp",
           "bytes": 43696
@@ -1556,6 +2134,61 @@
         "top": 300,
         "width": 1949,
         "height": 1400
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "authority-trade-exchange",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A trade exchange: a formal civic building with a tall glass atrium, a large display board of figures over the entrance, a landing pad for cargo drones on the roof, flags, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:31:07.261Z",
+      "id": "authority-trade-exchange",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:39.949Z",
+      "candidate": "art/out/authority-trade-exchange/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-trade-exchange-256.webp",
+          "bytes": 17554
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-trade-exchange-512.webp",
+          "bytes": 51356
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-trade-exchange-1024.webp",
+          "bytes": 151490
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 117,
+        "top": 323,
+        "width": 1847,
+        "height": 1430
       },
       "aiGenerated": true
     },
@@ -1623,6 +2256,11 @@
       "candidate": "art/out/authority-works/20261021-050638-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/authority-works-256.webp",
+          "bytes": 15180
+        },
+        {
           "width": 512,
           "path": "art/structure/authority-works-512.webp",
           "bytes": 56558
@@ -1657,6 +2295,61 @@
         "top": 306,
         "width": 1932,
         "height": 1428
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-arcology",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. An arcology: a huge rounded tower of earth-printed rings wider at the base like a hill, every terrace green with gardens and lit windows, solar sails at the top.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:34:50.412Z",
+      "id": "cooperative-arcology",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:05.217Z",
+      "candidate": "art/out/cooperative-arcology/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-arcology-256.webp",
+          "bytes": 20802
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-arcology-512.webp",
+          "bytes": 61818
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-arcology-1024.webp",
+          "bytes": 196186
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 79,
+        "top": 42,
+        "width": 1894,
+        "height": 1870
       },
       "aiGenerated": true
     },
@@ -1707,6 +2400,116 @@
         "top": 238,
         "width": 1652,
         "height": 1499
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-civic-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A civic centre: a large rounded meeting house of rammed earth with a terraced amphitheatre in front, a garden roof, a tall solar sail and soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:31:51.426Z",
+      "id": "cooperative-civic-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:56.796Z",
+      "candidate": "art/out/cooperative-civic-centre/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-civic-centre-256.webp",
+          "bytes": 19920
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-civic-centre-512.webp",
+          "bytes": 56726
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-civic-centre-1024.webp",
+          "bytes": 164252
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 115,
+        "top": 84,
+        "width": 1844,
+        "height": 1693
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-fusion-plant",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A fusion power plant: a rounded earth-built reactor hall with a glowing blue ring window, curved cooling fins, a low control building and cables on posts, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:33:26.099Z",
+      "id": "cooperative-fusion-plant",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:01.601Z",
+      "candidate": "art/out/cooperative-fusion-plant/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-fusion-plant-256.webp",
+          "bytes": 14038
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-fusion-plant-512.webp",
+          "bytes": 37984
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-fusion-plant-1024.webp",
+          "bytes": 105400
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 123,
+        "top": 449,
+        "width": 1813,
+        "height": 1134
       },
       "aiGenerated": true
     },
@@ -1773,6 +2576,11 @@
       "candidate": "art/out/cooperative-hall/20261020-090130-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-hall-256.webp",
+          "bytes": 12826
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-hall-512.webp",
           "bytes": 42536
@@ -1822,6 +2630,11 @@
       "approvedAt": "2026-10-20T08:11:36.062Z",
       "candidate": "art/out/cooperative-homes-1-domed/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-1-domed-256.webp",
+          "bytes": 14056
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-1-domed-512.webp",
@@ -1873,6 +2686,11 @@
       "candidate": "art/out/cooperative-homes-1-domed-b/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-1-domed-b-256.webp",
+          "bytes": 12446
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-1-domed-b-512.webp",
           "bytes": 42382
@@ -1922,6 +2740,11 @@
       "approvedAt": "2026-10-21T04:42:39.344Z",
       "candidate": "art/out/cooperative-homes-1-domed-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-1-domed-c-256.webp",
+          "bytes": 14886
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-1-domed-c-512.webp",
@@ -1974,6 +2797,11 @@
       "candidate": "art/out/cooperative-homes-1-open/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-1-open-256.webp",
+          "bytes": 12470
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-1-open-512.webp",
           "bytes": 41270
@@ -2023,6 +2851,11 @@
       "approvedAt": "2026-10-21T04:42:34.850Z",
       "candidate": "art/out/cooperative-homes-1-open-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-1-open-b-256.webp",
+          "bytes": 11256
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-1-open-b-512.webp",
@@ -2074,6 +2907,11 @@
       "candidate": "art/out/cooperative-homes-1-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-1-open-c-256.webp",
+          "bytes": 14968
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-1-open-c-512.webp",
           "bytes": 50400
@@ -2124,6 +2962,11 @@
       "candidate": "art/out/cooperative-homes-2-domed/20261020-070230-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-2-domed-256.webp",
+          "bytes": 17186
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-2-domed-512.webp",
           "bytes": 57448
@@ -2173,6 +3016,11 @@
       "approvedAt": "2026-10-20T19:28:42.683Z",
       "candidate": "art/out/cooperative-homes-2-domed-b/20261020-192143-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-2-domed-b-256.webp",
+          "bytes": 12532
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-2-domed-b-512.webp",
@@ -2225,6 +3073,11 @@
       "candidate": "art/out/cooperative-homes-2-domed-c/20261020-192143-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-2-domed-c-256.webp",
+          "bytes": 13206
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-2-domed-c-512.webp",
           "bytes": 42900
@@ -2274,6 +3127,11 @@
       "approvedAt": "2026-10-20T08:11:38.333Z",
       "candidate": "art/out/cooperative-homes-2-open/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-2-open-256.webp",
+          "bytes": 15890
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-2-open-512.webp",
@@ -2326,6 +3184,11 @@
       "candidate": "art/out/cooperative-homes-2-open-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-2-open-b-256.webp",
+          "bytes": 13836
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-2-open-b-512.webp",
           "bytes": 45818
@@ -2376,6 +3239,11 @@
       "approvedAt": "2026-10-21T04:42:42.370Z",
       "candidate": "art/out/cooperative-homes-2-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-2-open-c-256.webp",
+          "bytes": 17534
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-2-open-c-512.webp",
@@ -2428,6 +3296,11 @@
       "candidate": "art/out/cooperative-homes-3-domed/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-3-domed-256.webp",
+          "bytes": 14470
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-3-domed-512.webp",
           "bytes": 46896
@@ -2477,6 +3350,11 @@
       "approvedAt": "2026-10-21T04:42:46.982Z",
       "candidate": "art/out/cooperative-homes-3-domed-b/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-3-domed-b-256.webp",
+          "bytes": 13426
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-3-domed-b-512.webp",
@@ -2528,6 +3406,11 @@
       "candidate": "art/out/cooperative-homes-3-domed-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-3-domed-c-256.webp",
+          "bytes": 13348
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-3-domed-c-512.webp",
           "bytes": 44638
@@ -2578,6 +3461,11 @@
       "candidate": "art/out/cooperative-homes-3-open/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-3-open-256.webp",
+          "bytes": 14380
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-3-open-512.webp",
           "bytes": 49756
@@ -2627,6 +3515,11 @@
       "approvedAt": "2026-10-21T04:42:43.978Z",
       "candidate": "art/out/cooperative-homes-3-open-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-3-open-b-256.webp",
+          "bytes": 19112
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-homes-3-open-b-512.webp",
@@ -2679,6 +3572,11 @@
       "candidate": "art/out/cooperative-homes-3-open-c/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-homes-3-open-c-256.webp",
+          "bytes": 20394
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-homes-3-open-c-512.webp",
           "bytes": 72764
@@ -2717,6 +3615,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "cooperative-hydroponics",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A hydroponics farm: a rounded earth-built greenhouse hall with a ribbed glass roof, tiers of leafy plants glowing under warm grow lights, rain barrels and a small wind vane, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:30:36.862Z",
+      "id": "cooperative-hydroponics",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:53.705Z",
+      "candidate": "art/out/cooperative-hydroponics/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-hydroponics-256.webp",
+          "bytes": 15354
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-hydroponics-512.webp",
+          "bytes": 42724
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-hydroponics-1024.webp",
+          "bytes": 126424
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 87,
+        "top": 413,
+        "width": 1870,
+        "height": 1186
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-labs",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -2728,6 +3681,11 @@
       "approvedAt": "2026-10-21T05:22:09.022Z",
       "candidate": "art/out/cooperative-labs/20261021-050637-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-labs-256.webp",
+          "bytes": 15666
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-labs-512.webp",
@@ -2779,6 +3737,11 @@
       "candidate": "art/out/cooperative-lane-station/20261020-070230-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-lane-station-256.webp",
+          "bytes": 13532
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-lane-station-512.webp",
           "bytes": 45420
@@ -2829,6 +3792,11 @@
       "approvedAt": "2026-10-21T05:22:10.400Z",
       "candidate": "art/out/cooperative-market/20261021-050637-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-market-256.webp",
+          "bytes": 14012
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-market-512.webp",
@@ -2919,6 +3887,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "cooperative-medical-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A medical centre: a rounded earth-built clinic with a healing garden, big round windows, a white awning over the entrance and a blue cross sign, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:35:32.765Z",
+      "id": "cooperative-medical-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:06.923Z",
+      "candidate": "art/out/cooperative-medical-centre/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-medical-centre-256.webp",
+          "bytes": 17138
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-medical-centre-512.webp",
+          "bytes": 46910
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-medical-centre-1024.webp",
+          "bytes": 132070
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 103,
+        "top": 280,
+        "width": 1850,
+        "height": 1371
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-mine",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -2930,6 +3953,11 @@
       "approvedAt": "2026-10-20T08:10:44.062Z",
       "candidate": "art/out/cooperative-mine/20261020-070230-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-mine-256.webp",
+          "bytes": 14096
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-mine-512.webp",
@@ -3020,6 +4048,173 @@
       "aiGenerated": true
     },
     {
+      "briefId": "cooperative-recreation-dome",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A recreation dome: a great frosted-glass bubble dome over gardens, a pool and a little open-air stage, rounded pavilions round its edge, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:32:09.185Z",
+      "id": "cooperative-recreation-dome",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:58.451Z",
+      "candidate": "art/out/cooperative-recreation-dome/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-recreation-dome-256.webp",
+          "bytes": 14696
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-recreation-dome-512.webp",
+          "bytes": 38584
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-recreation-dome-1024.webp",
+          "bytes": 105994
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 69,
+        "top": 371,
+        "width": 1888,
+        "height": 1333
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-refinery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A fuel refinery: rounded earth-built sheds round two tall distillation columns, pipes on wooden trestles, round storage tanks and soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:34:33.620Z",
+      "note": "Here is a realistic matte-painting concept of the Frontier Cooperative fuel refinery, depicted in the requested perspective with the flat magenta background:",
+      "id": "cooperative-refinery",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:03.271Z",
+      "candidate": "art/out/cooperative-refinery/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-refinery-256.webp",
+          "bytes": 22812
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-refinery-512.webp",
+          "bytes": 64502
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-refinery-1024.webp",
+          "bytes": 186154
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 131,
+        "top": 113,
+        "width": 1819,
+        "height": 1708
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-research-institute",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A research institute: a cluster of rounded earth-built halls round a courtyard, a big glass telescope dome, solar sails and a tall weather mast, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:33:07.511Z",
+      "note": "This is the realistic matte-painting concept art of the Frontier Cooperative research institute, seen from a 15-degree raised three-quarter view, cleanly cut off at its base on a flat magenta background. Let me know if you would like to adjust any of the details or features.",
+      "id": "cooperative-research-institute",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:00.102Z",
+      "candidate": "art/out/cooperative-research-institute/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-research-institute-256.webp",
+          "bytes": 19636
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-research-institute-512.webp",
+          "bytes": 54252
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-research-institute-1024.webp",
+          "bytes": 150470
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 141,
+        "top": 148,
+        "width": 1808,
+        "height": 1572
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-rig",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -3031,6 +4226,11 @@
       "approvedAt": "2026-10-20T09:07:46.822Z",
       "candidate": "art/out/cooperative-rig/20261020-090130-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-rig-256.webp",
+          "bytes": 14412
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-rig-512.webp",
@@ -3083,6 +4283,11 @@
       "candidate": "art/out/cooperative-shipyard/20261020-070129-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-shipyard-256.webp",
+          "bytes": 14434
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-shipyard-512.webp",
           "bytes": 50136
@@ -3132,6 +4337,11 @@
       "approvedAt": "2026-10-20T08:34:18.924Z",
       "candidate": "art/out/cooperative-shuttle/20261020-083101-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-shuttle-256.webp",
+          "bytes": 14942
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-shuttle-512.webp",
@@ -3183,6 +4393,11 @@
       "candidate": "art/out/cooperative-survey-station/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/cooperative-survey-station-256.webp",
+          "bytes": 11628
+        },
+        {
           "width": 512,
           "path": "art/structure/cooperative-survey-station-512.webp",
           "bytes": 39490
@@ -3217,6 +4432,62 @@
         "top": 479,
         "width": 1865,
         "height": 1080
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-trade-exchange",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A trade exchange: a round earth-built hall with a domed roof and a ring of open arches, cargo carts and crates outside, a tall mast hung with signal pennants, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:31:12.496Z",
+      "note": "Here is a realistic matte-painting concept of the Trade Exchange from a low three-quarter perspective, Isolated against a magenta background as requested.",
+      "id": "cooperative-trade-exchange",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:38:55.155Z",
+      "candidate": "art/out/cooperative-trade-exchange/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-trade-exchange-256.webp",
+          "bytes": 16390
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-trade-exchange-512.webp",
+          "bytes": 43164
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-trade-exchange-1024.webp",
+          "bytes": 116292
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 87,
+        "top": 124,
+        "width": 1794,
+        "height": 1519
       },
       "aiGenerated": true
     },
@@ -3282,6 +4553,11 @@
       "approvedAt": "2026-10-21T05:22:07.451Z",
       "candidate": "art/out/cooperative-works/20261021-050638-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-works-256.webp",
+          "bytes": 12176
+        },
         {
           "width": 512,
           "path": "art/structure/cooperative-works-512.webp",
@@ -3485,6 +4761,11 @@
       "candidate": "art/out/fields/20261020-090130-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/fields-256.webp",
+          "bytes": 11372
+        },
+        {
           "width": 512,
           "path": "art/structure/fields-512.webp",
           "bytes": 42154
@@ -3585,6 +4866,11 @@
       "approvedAt": "2026-10-21T05:22:16.302Z",
       "candidate": "art/out/greenhouse-farms/20261021-050638-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/greenhouse-farms-256.webp",
+          "bytes": 12434
+        },
         {
           "width": 512,
           "path": "art/structure/greenhouse-farms-512.webp",
@@ -4436,6 +5722,11 @@
       "candidate": "art/out/rover/20261020-083101-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/rover-256.webp",
+          "bytes": 13124
+        },
+        {
           "width": 512,
           "path": "art/structure/rover-512.webp",
           "bytes": 43292
@@ -4485,6 +5776,11 @@
       "approvedAt": "2026-10-20T08:10:46.282Z",
       "candidate": "art/out/scaffold/20261020-070230-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/scaffold-256.webp",
+          "bytes": 22288
+        },
         {
           "width": 512,
           "path": "art/structure/scaffold-512.webp",
@@ -4676,6 +5972,62 @@
       "aiGenerated": true
     },
     {
+      "briefId": "wake-arcology",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. An arcology: the hulk of a great colony ship stood upright and buried at its base, its decks turned into homes, lit portholes in rows, scaffold walkways and red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:35:01.889Z",
+      "note": "Here is the concept art of the Hollow Wake raiders' arcology building, painted in a realistic matte style and isolated on a pure magenta background:",
+      "id": "wake-arcology",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:22.007Z",
+      "candidate": "art/out/wake-arcology/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-arcology-256.webp",
+          "bytes": 23662
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-arcology-512.webp",
+          "bytes": 70052
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-arcology-1024.webp",
+          "bytes": 199524
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 221,
+        "top": 113,
+        "width": 1608,
+        "height": 1780
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "wake-cargo",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -4723,6 +6075,116 @@
         "top": 164,
         "width": 1698,
         "height": 1721
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-civic-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A civic centre: a meeting hall built in the bridge section of an old warship, a wide deck in front for gatherings, a banner of red cloth, braziers and red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:31:34.851Z",
+      "id": "wake-civic-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:12.300Z",
+      "candidate": "art/out/wake-civic-centre/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-civic-centre-256.webp",
+          "bytes": 17800
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-civic-centre-512.webp",
+          "bytes": 52718
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-civic-centre-1024.webp",
+          "bytes": 165024
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 71,
+        "top": 200,
+        "width": 1907,
+        "height": 1662
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-fusion-plant",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A fusion power plant: a starship engine section bolted upright into banked earth as a reactor, glowing violet through vents, radiator fins and thick cables, warning lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:33:59.716Z",
+      "id": "wake-fusion-plant",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:18.054Z",
+      "candidate": "art/out/wake-fusion-plant/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-fusion-plant-256.webp",
+          "bytes": 18676
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-fusion-plant-512.webp",
+          "bytes": 55780
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-fusion-plant-1024.webp",
+          "bytes": 158422
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 157,
+        "top": 182,
+        "width": 1782,
+        "height": 1639
       },
       "aiGenerated": true
     },
@@ -4789,6 +6251,11 @@
       "candidate": "art/out/wake-hall/20261020-090130-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-hall-256.webp",
+          "bytes": 14888
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-hall-512.webp",
           "bytes": 52214
@@ -4838,6 +6305,11 @@
       "approvedAt": "2026-10-20T08:11:48.966Z",
       "candidate": "art/out/wake-homes-1-domed/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-1-domed-256.webp",
+          "bytes": 15682
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-1-domed-512.webp",
@@ -4889,6 +6361,11 @@
       "candidate": "art/out/wake-homes-1-domed-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-1-domed-b-256.webp",
+          "bytes": 11264
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-1-domed-b-512.webp",
           "bytes": 40842
@@ -4938,6 +6415,11 @@
       "approvedAt": "2026-10-21T04:42:54.055Z",
       "candidate": "art/out/wake-homes-1-domed-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-1-domed-c-256.webp",
+          "bytes": 16464
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-1-domed-c-512.webp",
@@ -4990,6 +6472,11 @@
       "candidate": "art/out/wake-homes-1-open/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-1-open-256.webp",
+          "bytes": 13276
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-1-open-512.webp",
           "bytes": 46042
@@ -5039,6 +6526,11 @@
       "approvedAt": "2026-10-21T04:42:49.733Z",
       "candidate": "art/out/wake-homes-1-open-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-1-open-b-256.webp",
+          "bytes": 11928
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-1-open-b-512.webp",
@@ -5091,6 +6583,11 @@
       "candidate": "art/out/wake-homes-1-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-1-open-c-256.webp",
+          "bytes": 14072
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-1-open-c-512.webp",
           "bytes": 47296
@@ -5142,6 +6639,11 @@
       "candidate": "art/out/wake-homes-2-domed/20261020-070230-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-2-domed-256.webp",
+          "bytes": 14080
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-2-domed-512.webp",
           "bytes": 49296
@@ -5191,6 +6693,11 @@
       "approvedAt": "2026-10-20T19:28:46.214Z",
       "candidate": "art/out/wake-homes-2-domed-b/20261020-192143-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-2-domed-b-256.webp",
+          "bytes": 9022
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-2-domed-b-512.webp",
@@ -5242,6 +6749,11 @@
       "candidate": "art/out/wake-homes-2-domed-c/20261020-192143-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-2-domed-c-256.webp",
+          "bytes": 13124
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-2-domed-c-512.webp",
           "bytes": 46120
@@ -5291,6 +6803,11 @@
       "approvedAt": "2026-10-20T08:11:51.250Z",
       "candidate": "art/out/wake-homes-2-open/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-2-open-256.webp",
+          "bytes": 20000
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-2-open-512.webp",
@@ -5342,6 +6859,11 @@
       "candidate": "art/out/wake-homes-2-open-b/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-2-open-b-256.webp",
+          "bytes": 20250
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-2-open-b-512.webp",
           "bytes": 68294
@@ -5391,6 +6913,11 @@
       "approvedAt": "2026-10-21T04:42:56.884Z",
       "candidate": "art/out/wake-homes-2-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-2-open-c-256.webp",
+          "bytes": 13298
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-2-open-c-512.webp",
@@ -5442,6 +6969,11 @@
       "candidate": "art/out/wake-homes-3-domed/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-3-domed-256.webp",
+          "bytes": 21852
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-3-domed-512.webp",
           "bytes": 70460
@@ -5491,6 +7023,11 @@
       "approvedAt": "2026-10-21T04:43:01.648Z",
       "candidate": "art/out/wake-homes-3-domed-b/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-3-domed-b-256.webp",
+          "bytes": 17376
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-3-domed-b-512.webp",
@@ -5542,6 +7079,11 @@
       "candidate": "art/out/wake-homes-3-domed-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-3-domed-c-256.webp",
+          "bytes": 12834
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-3-domed-c-512.webp",
           "bytes": 44554
@@ -5592,6 +7134,11 @@
       "candidate": "art/out/wake-homes-3-open/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-3-open-256.webp",
+          "bytes": 26060
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-3-open-512.webp",
           "bytes": 92246
@@ -5641,6 +7188,11 @@
       "approvedAt": "2026-10-21T04:42:58.554Z",
       "candidate": "art/out/wake-homes-3-open-b/20261021-043348-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-homes-3-open-b-256.webp",
+          "bytes": 25174
+        },
         {
           "width": 512,
           "path": "art/structure/wake-homes-3-open-b-512.webp",
@@ -5693,6 +7245,11 @@
       "candidate": "art/out/wake-homes-3-open-c/20261021-043348-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-homes-3-open-c-256.webp",
+          "bytes": 23908
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-homes-3-open-c-512.webp",
           "bytes": 83696
@@ -5731,6 +7288,62 @@
       "aiGenerated": true
     },
     {
+      "briefId": "wake-hydroponics",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A hydroponics farm: grow racks inside opened-up cargo containers stacked in a horseshoe, pink grow lights spilling out, tarpaulins, water bladders and hoses, small red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:30:15.395Z",
+      "note": "Here is a realistic matte-painting concept of a Hollow Wake raider hydroponics farm, viewed from a slightly elevated three-quarter front-left perspective. It highlights the salvaged, rugged horseshoe-shaped architecture, the interior grow containers with glowing racks, and is isolated cleanly against a flat magenta background with no ground or shadows underneath.",
+      "id": "wake-hydroponics",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:08.695Z",
+      "candidate": "art/out/wake-hydroponics/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-hydroponics-256.webp",
+          "bytes": 17170
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-hydroponics-512.webp",
+          "bytes": 51572
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-hydroponics-1024.webp",
+          "bytes": 149192
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 113,
+        "top": 363,
+        "width": 1827,
+        "height": 1331
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "wake-labs",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -5742,6 +7355,11 @@
       "approvedAt": "2026-10-21T05:22:13.429Z",
       "candidate": "art/out/wake-labs/20261021-050637-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-labs-256.webp",
+          "bytes": 15534
+        },
         {
           "width": 512,
           "path": "art/structure/wake-labs-512.webp",
@@ -5793,6 +7411,11 @@
       "candidate": "art/out/wake-lane-station/20261020-075854-gemini-nano-banana-2.1-2.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-lane-station-256.webp",
+          "bytes": 17942
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-lane-station-512.webp",
           "bytes": 62652
@@ -5842,6 +7465,11 @@
       "approvedAt": "2026-10-21T05:22:14.956Z",
       "candidate": "art/out/wake-market/20261021-050637-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-market-256.webp",
+          "bytes": 14548
+        },
         {
           "width": 512,
           "path": "art/structure/wake-market-512.webp",
@@ -5931,6 +7559,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "wake-medical-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A medical centre: a field hospital in a salvaged medical frigate, its side opened up as a ward, a red cross painted on the hull, tents and red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:36:11.942Z",
+      "id": "wake-medical-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:23.749Z",
+      "candidate": "art/out/wake-medical-centre/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-medical-centre-256.webp",
+          "bytes": 18038
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-medical-centre-512.webp",
+          "bytes": 54724
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-medical-centre-1024.webp",
+          "bytes": 170986
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 129,
+        "top": 337,
+        "width": 1800,
+        "height": 1352
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "wake-mine",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -5942,6 +7625,11 @@
       "approvedAt": "2026-10-20T08:12:02.172Z",
       "candidate": "art/out/wake-mine/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-mine-256.webp",
+          "bytes": 16684
+        },
         {
           "width": 512,
           "path": "art/structure/wake-mine-512.webp",
@@ -6031,6 +7719,172 @@
       "aiGenerated": true
     },
     {
+      "briefId": "wake-recreation-dome",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A recreation dome: a patched glass dome salvaged from a liner, over a rough garden and a fighting ring, scrap benches, hanging lamps and red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:32:11.694Z",
+      "id": "wake-recreation-dome",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:14.204Z",
+      "candidate": "art/out/wake-recreation-dome/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-recreation-dome-256.webp",
+          "bytes": 19522
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-recreation-dome-512.webp",
+          "bytes": 58682
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-recreation-dome-1024.webp",
+          "bytes": 169690
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 57,
+        "top": 221,
+        "width": 1937,
+        "height": 1596
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-refinery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A fuel refinery: tanks cut from old fuel pods, crooked pipe runs, a flare stack burning brightly, a pump house of hull plates, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:34:41.914Z",
+      "id": "wake-refinery",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:20.023Z",
+      "candidate": "art/out/wake-refinery/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-refinery-256.webp",
+          "bytes": 18658
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-refinery-512.webp",
+          "bytes": 55042
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-refinery-1024.webp",
+          "bytes": 153596
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 134,
+        "top": 0,
+        "width": 1755,
+        "height": 1713
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-research-institute",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A research institute: the hull of a salvaged science ship stood on end and braced with girders, sensor dishes bolted on at every level, cables everywhere, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:32:53.449Z",
+      "note": "Here is the single building for the strategy game's colony view, depicting the \"Hollow Wake\" raiders' research institute. It features the salvaged starship hull stood on end, covered with sensors, dishes, and wiring, all isolatated on a flat magenta background with realistic materials and perspective.",
+      "id": "wake-research-institute",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:16.235Z",
+      "candidate": "art/out/wake-research-institute/20261021-062953-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-research-institute-256.webp",
+          "bytes": 23450
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-research-institute-512.webp",
+          "bytes": 69196
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-research-institute-1024.webp",
+          "bytes": 197026
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 173,
+        "top": 31,
+        "width": 1704,
+        "height": 1897
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "wake-rig",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6043,6 +7897,11 @@
       "approvedAt": "2026-10-20T09:07:49.579Z",
       "candidate": "art/out/wake-rig/20261020-090130-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-rig-256.webp",
+          "bytes": 13730
+        },
         {
           "width": 512,
           "path": "art/structure/wake-rig-512.webp",
@@ -6094,6 +7953,11 @@
       "candidate": "art/out/wake-shipyard/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-shipyard-256.webp",
+          "bytes": 12008
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-shipyard-512.webp",
           "bytes": 45768
@@ -6143,6 +8007,11 @@
       "approvedAt": "2026-10-20T08:34:21.501Z",
       "candidate": "art/out/wake-shuttle/20261020-083101-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-shuttle-256.webp",
+          "bytes": 12826
+        },
         {
           "width": 512,
           "path": "art/structure/wake-shuttle-512.webp",
@@ -6194,6 +8063,11 @@
       "candidate": "art/out/wake-survey-station/20261020-075854-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 256,
+          "path": "art/structure/wake-survey-station-256.webp",
+          "bytes": 19500
+        },
+        {
           "width": 512,
           "path": "art/structure/wake-survey-station-512.webp",
           "bytes": 68528
@@ -6228,6 +8102,61 @@
         "top": 129,
         "width": 1714,
         "height": 1652
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-trade-exchange",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A trade exchange: a fortified bazaar in the hull of a grounded cargo ship, its loading ramp down as an entrance, crates and barrels piled outside, a crane, armed lookouts, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T06:31:11.681Z",
+      "id": "wake-trade-exchange",
+      "series": "structure",
+      "approvedAt": "2026-10-21T06:39:10.392Z",
+      "candidate": "art/out/wake-trade-exchange/20261021-062953-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-trade-exchange-256.webp",
+          "bytes": 16604
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-trade-exchange-512.webp",
+          "bytes": 49156
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-trade-exchange-1024.webp",
+          "bytes": 130068
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 69,
+        "top": 271,
+        "width": 1902,
+        "height": 1468
       },
       "aiGenerated": true
     },
@@ -6293,6 +8222,11 @@
       "approvedAt": "2026-10-21T05:22:11.846Z",
       "candidate": "art/out/wake-works/20261021-050638-gemini-nano-banana-2.1-1.jpg",
       "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-works-256.webp",
+          "bytes": 13670
+        },
         {
           "width": 512,
           "path": "art/structure/wake-works-512.webp",

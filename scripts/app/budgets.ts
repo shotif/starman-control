@@ -79,22 +79,29 @@ for (const b of BUDGETS) {
       );
     return sizes.get(file) ?? 0;
   };
-  let worst = 0;
-  let worstName = '';
-  for (const set of colonyPictureSets()) {
-    let bytes = 0;
-    for (const f of set.files) bytes += await size(f);
-    if (bytes > worst) {
-      worst = bytes;
-      worstName = set.name;
+  // What a phone loads for a colony's still (its first pictures) and for the diorama the still
+  // opens, each picture at the width the game chooses for it (M2_WORLDS.md §23.4).
+  const sets = colonyPictureSets();
+  for (const [which, label, limit] of [
+    ['still', "A colony's first pictures on a phone (its still)", 1024 * KB],
+    ['diorama', "A colony's diorama on a phone", 2048 * KB],
+  ] as const) {
+    let worst = 0;
+    let worstName = '';
+    for (const set of sets) {
+      let bytes = 0;
+      for (const f of set[which]) bytes += await size(f);
+      if (bytes > worst) {
+        worst = bytes;
+        worstName = set.name;
+      }
     }
+    const ok = worst <= limit;
+    failed ||= !ok;
+    console.log(
+      `${ok ? 'ok  ' : 'OVER'} ${label}, at most (${worstName}): ${(worst / KB).toFixed(1)} KB of ${limit / KB} KB`,
+    );
   }
-  const limit = 1024 * KB;
-  const ok = worst <= limit;
-  failed ||= !ok;
-  console.log(
-    `${ok ? 'ok  ' : 'OVER'} A colony's first pictures on a phone, at most (${worstName}): ${(worst / KB).toFixed(1)} KB of ${limit / KB} KB`,
-  );
 }
 
 // The music (MUSIC.md §3): every piece at most 3 MB, and none in the first load or in the list the

@@ -6,9 +6,10 @@
 
 import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
-import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem } from '../content/projects.ts';
+import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem, withArticle } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS, type ShipType } from '../content/ships.ts';
+import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
 import { ceilDiv } from './geometry.ts';
@@ -121,26 +122,30 @@ export function resourceWord(r: Resource): string {
   return RESOURCE_WORD[r];
 }
 
-/** What one worked district of a zone yields at this colony, before approval. */
+/** What one worked district of a zone yields at this colony, before approval: its base, the power's technologies and the colony's projects. */
 export function zoneYield(world: World, state: GameState, h: Holding, zone: Zone): number {
   const d = RULES.districts;
+  let tech = 0;
+  for (const e of effects(state, h.owner, 'zone-yield')) if (e.zone === zone) tech += e.amount;
   switch (zone) {
     case 'farms': {
-      if (h.capital) return d.farms.comfortable;
+      if (h.capital) return d.farms.comfortable + tech;
       const body = bodyOf(world, state, h);
       const level = body ? habitability(body, speciesFor(state, h.owner)).level : 'harsh';
-      return level === 'comfortable' ? d.farms.comfortable : level === 'tolerable' ? d.farms.tolerable : d.farms.harsh;
+      const base =
+        level === 'comfortable' ? d.farms.comfortable : level === 'tolerable' ? d.farms.tolerable : d.farms.harsh;
+      return base + tech;
     }
     case 'works':
-      return d.works;
+      return d.works + tech;
     case 'labs':
-      return d.labs;
+      return d.labs + tech + (h.projects.includes('research-institute') ? RULES.projects.instituteLab : 0);
     case 'market':
-      return h.projects.includes('lane-station') ? d.marketWithStation : d.market;
+      return (h.projects.includes('lane-station') ? d.marketWithStation : d.market) + tech;
     case 'mines': {
       const body = bodyOf(world, state, h);
       const r = body ? mainResource(body) : null;
-      return body && r ? body.riches[r] + (h.projects.includes('mine') ? 1 : 0) : 0;
+      return body && r ? body.riches[r] + (h.projects.includes('mine') ? 1 : 0) + tech : 0;
     }
     case 'housing':
       return 0;
@@ -187,7 +192,9 @@ export function zoneRefusal(world: World, state: GameState, h: Holding, zone: Zo
 /** Room for people, in tenths: the world's room for its species (the capital's own), and housing. */
 export function capacityOf(world: World, state: GameState, h: Holding): number {
   if (h.kind !== 'colony') return 0;
-  const housing = h.districts.filter((d) => d.zone === 'housing').length * RULES.districts.housing;
+  const housing =
+    h.districts.filter((d) => d.zone === 'housing').length * RULES.districts.housing +
+    (h.projects.includes('arcology') ? RULES.projects.arcology : 0);
   if (h.capital) return RULES.capital.room + housing;
   const body = bodyOf(world, state, h);
   return (body ? habitability(body, speciesFor(state, h.owner)).capacity * 10 : 0) + housing;
@@ -205,6 +212,7 @@ export function growthOf(world: World, state: GameState, h: Holding): number {
   let percent = 0;
   for (const t of FACTIONS[h.owner].traits) if (t.effect.kind === 'growth-percent') percent += t.effect.percent;
   for (const e of effects(state, h.owner, 'growth-percent')) percent += e.percent;
+  if (h.projects.includes('medical-centre')) percent += RULES.projects.medicalPercent;
   const rate = base + Math.floor((base * percent) / 100);
   const grow = Math.floor((h.people * (cap - h.people) * rate) / (cap * 100));
   return Math.min(cap - h.people, Math.max(1, grow));
@@ -227,9 +235,18 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   const a = RULES.approval;
   const parts: Part[] = [{ label: 'to begin with', value: a.base }];
   const power = powerOf(state, h.owner);
-  const tax = a.taxes[power.taxes];
+  let tax: number = a.taxes[power.taxes];
+  if (power.taxes === 'high') for (const e of effects(state, h.owner, 'tax-relief')) tax += e.approval;
   if (tax !== 0) parts.push({ label: `${power.taxes} taxes`, value: tax });
   if (h.capital) parts.push({ label: 'the seat of government', value: a.capital });
+  const civic = civicOf(world, state, h);
+  if (civic > 0)
+    parts.push({
+      label: civic === RULES.projects.civicHere ? 'the civic centre' : 'a civic centre near',
+      value: civic,
+    });
+  if (h.projects.includes('recreation-dome'))
+    parts.push({ label: 'the recreation dome', value: RULES.projects.recreation });
   if (h.hungry > 0) parts.push({ label: 'hungry', value: a.hungry });
   // Idle people make nothing, and cost no approval (D-43).
   if (h.people >= capacityOf(world, state, h)) parts.push({ label: 'full', value: a.full });
@@ -237,9 +254,11 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   if (body && habitability(body, speciesFor(state, h.owner)).level === 'harsh')
     parts.push({ label: 'life under domes', value: a.domes });
   const jumps = jumpsFromCapital(world, state, h);
+  let near: number = a.nearJumps;
+  for (const e of effects(state, h.owner, 'near-jumps')) near += e.jumps;
   if (jumps === null) parts.push({ label: 'no lane to the capital', value: a.farMost });
-  else if (jumps > a.nearJumps)
-    parts.push({ label: `${jumps} jumps from the capital`, value: Math.max(a.farMost, (jumps - a.nearJumps) * a.far) });
+  else if (jumps > near)
+    parts.push({ label: `${jumps} jumps from the capital`, value: Math.max(a.farMost, (jumps - near) * a.far) });
   if (power.treasury < 0) parts.push({ label: 'the treasury in debt', value: a.debt });
   const total = Math.max(0, Math.min(100, sum(parts)));
   const level: ApprovalLevel =
@@ -251,6 +270,23 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
           ? 'unrest'
           : 'revolt';
   return { total, parts, level };
+}
+
+/**
+ * Approval from civic centres (§23.1): +10 with one here, else +5 with one at another of the power's
+ * colonies within two lane jumps; never both, never two of either.
+ */
+export function civicOf(world: World, state: GameState, h: Holding): number {
+  const p = RULES.projects;
+  if (h.kind !== 'colony') return 0;
+  if (h.projects.includes('civic-centre')) return p.civicHere;
+  for (const o of state.holdings) {
+    if (o === h || o.owner !== h.owner || !o.projects.includes('civic-centre')) continue;
+    if (o.system === h.system) return p.civicNear;
+    const route = findRoute(world, state, h.owner, o.system, h.system);
+    if (route && route.length <= p.civicJumps) return p.civicNear;
+  }
+  return 0;
 }
 
 /** What share of its districts' yields a colony keeps at its approval, in percent. */
@@ -294,8 +330,17 @@ export function overdriveOf(base: number, steps: number): { industry: number; cr
   return { industry: step * Math.min(steps, RULES.credits.overdriveSteps.length), credits };
 }
 
-/** A colony's industry a turn: its works, the capital's own, the traits', and any overdrive; an outpost's own, for lanes. */
-export function industryOf(world: World, state: GameState, h: Holding): Figure {
+/** Whether a colony's fusion plant would run this turn: it has one, and there is fuel to burn. */
+export function fusionRuns(state: GameState, h: Holding): boolean {
+  return h.projects.includes('fusion-plant') && powerOf(state, h.owner).stockpile.fuel >= RULES.projects.fusionFuel;
+}
+
+/**
+ * A colony's industry a turn: its works, the capital's own (or a colony's own), a fusion plant, the
+ * traits', and any overdrive; an outpost's own, for lanes. `fusion` says whether the plant runs
+ * (the turn decides it, as fuel is shared); by default, when there is fuel.
+ */
+export function industryOf(world: World, state: GameState, h: Holding, fusion = fusionRuns(state, h)): Figure {
   if (h.kind !== 'colony')
     return { total: RULES.outposts.industry, parts: [{ label: 'an outpost’s own', value: RULES.outposts.industry }] };
   if (approvalOf(world, state, h).level === 'revolt') return { total: 0, parts: [{ label: 'in revolt', value: 0 }] };
@@ -303,6 +348,12 @@ export function industryOf(world: World, state: GameState, h: Holding): Figure {
   const parts: Part[] = [...works.parts];
   if (h.capital) parts.push({ label: 'from the capital', value: RULES.capital.industry });
   else parts.push({ label: 'its own', value: RULES.colonies.industry });
+  if (h.projects.includes('fusion-plant'))
+    parts.push(
+      fusion
+        ? { label: 'from the fusion plant', value: RULES.projects.fusionIndustry }
+        : { label: 'the fusion plant, with no fuel', value: 0 },
+    );
   const base = sum(parts);
   for (const t of FACTIONS[h.owner].traits) {
     if (t.effect.kind !== 'industry-percent') continue;
@@ -321,16 +372,20 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
   let labs = 0;
   let lost = 0;
   let capital = 0;
+  let institutes = 0;
   for (const h of state.holdings) {
     if (h.owner !== faction || h.kind !== 'colony') continue;
     const r = districtParts(world, state, h, 'labs');
     labs += sum(r.parts.slice(0, 1));
     lost += r.value - sum(r.parts.slice(0, 1));
     if (h.capital) capital += RULES.capital.research;
+    if (h.projects.includes('research-institute') && approvalOf(world, state, h).level !== 'revolt')
+      institutes += RULES.projects.instituteResearch;
   }
   const parts: Part[] = [];
   if (labs > 0) parts.push({ label: 'from labs', value: labs });
   if (lost < 0) parts.push({ label: 'lost to unhappiness', value: lost });
+  if (institutes > 0) parts.push({ label: 'from research institutes', value: institutes });
   if (capital > 0) parts.push({ label: 'from the capital', value: capital });
   return { total: sum(parts), parts };
 }
@@ -341,7 +396,10 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
 export function foodOf(world: World, state: GameState, h: Holding): { made: Figure; eaten: number } {
   if (h.kind !== 'colony') return { made: { total: 0, parts: [] }, eaten: 0 };
   const farms = districtParts(world, state, h, 'farms');
-  return { made: { total: farms.value, parts: farms.parts }, eaten: ceilDiv(h.people, RULES.food.eatenPer) };
+  const parts = [...farms.parts];
+  if (h.projects.includes('hydroponics') && approvalOf(world, state, h).level !== 'revolt')
+    parts.push({ label: 'from hydroponics', value: RULES.projects.hydroponicsFood });
+  return { made: { total: sum(parts), parts }, eaten: ceilDiv(h.people, RULES.food.eatenPer) };
 }
 
 /** A power's supply networks: colonies joined by its open lanes, the capital's first. */
@@ -427,6 +485,8 @@ export function creditsOf(world: World, state: GameState, h: Holding): Figure {
   const parts: Part[] = [];
   if (taxes > 0) parts.push({ label: `${power.taxes} taxes`, value: taxes });
   parts.push(...districtParts(world, state, h, 'market').parts);
+  if (h.projects.includes('trade-exchange') && approvalOf(world, state, h).level !== 'revolt')
+    parts.push({ label: 'the trade exchange', value: RULES.projects.exchangeCredits + worked(h, 'market') });
   return { total: sum(parts), parts };
 }
 
@@ -436,8 +496,7 @@ export function upkeepOf(state: GameState, faction: FactionId): Figure {
   const ships = state.ships.filter((s) => s.owner === faction).length * u.ship;
   const outposts = state.holdings.filter((h) => h.owner === faction && h.kind === 'outpost').length * u.outpost;
   let projects = 0;
-  for (const h of state.holdings)
-    if (h.owner === faction) for (const p of h.projects) projects += p === 'shipyard' ? u.shipyard : u.project;
+  for (const h of state.holdings) if (h.owner === faction) for (const p of h.projects) projects += PROJECTS[p].upkeep;
   const parts: Part[] = [];
   if (ships > 0) parts.push({ label: 'ships', value: ships });
   if (outposts > 0) parts.push({ label: 'outposts', value: outposts });
@@ -462,19 +521,23 @@ export function treasuryOf(world: World, state: GameState, faction: FactionId): 
 }
 
 /** What a colony's overdrive costs this turn. */
-export function overdriveCost(world: World, state: GameState, h: Holding): number {
+export function overdriveCost(world: World, state: GameState, h: Holding, fusion = fusionRuns(state, h)): number {
   if (h.kind !== 'colony' || h.overdrive <= 0) return 0;
-  const base = industryOf(world, state, { ...h, overdrive: 0 }).total;
+  const base = industryOf(world, state, { ...h, overdrive: 0 }, fusion).total;
   return overdriveOf(base, h.overdrive).credits;
 }
 
 // ---------------------------------------------------------------- resources
 
-/** What a holding adds to the stockpile a turn, each with its reason. */
+/**
+ * What a holding adds to the stockpile a turn, each with its reason. With `converters`, what a
+ * fusion plant burns and a refinery turns into fuel too (the turn runs those itself, first).
+ */
 export function yieldsOf(
   world: World,
   state: GameState,
   h: Holding,
+  converters = true,
 ): { total: Stockpile; parts: (Part & { resource: Resource })[] } {
   const parts: (Part & { resource: Resource })[] = [];
   const body = bodyOf(world, state, h);
@@ -491,6 +554,16 @@ export function yieldsOf(
   if (h.kind === 'colony' && mainOf) {
     const mines = districtParts(world, state, h, 'mines');
     if (mines.value > 0) parts.push({ label: `its mines on ${body?.name}`, value: mines.value, resource: mainOf });
+  }
+  if (converters && h.kind === 'colony' && approvalOf(world, state, h).level !== 'revolt') {
+    const p = RULES.projects;
+    const s = powerOf(state, h.owner).stockpile;
+    if (h.projects.includes('refinery') && s.volatiles >= p.refineryVolatiles) {
+      parts.push({ label: 'into the refinery', value: -p.refineryVolatiles, resource: 'volatiles' });
+      parts.push({ label: 'from the refinery', value: p.refineryFuel, resource: 'fuel' });
+    }
+    if (fusionRuns(state, h))
+      parts.push({ label: 'burnt by the fusion plant', value: -p.fusionFuel, resource: 'fuel' });
   }
   if (h.capital) {
     const y = RULES.capital.yields;
@@ -584,9 +657,14 @@ export function queueRefusal(world: World, state: GameState, h: Holding, item: Q
     if (!h.projects.includes('shipyard')) return 'Ships need a shipyard.';
     return null;
   }
-  if (h.projects.includes(item.project)) return `It already has a ${PROJECTS[item.project].name.toLowerCase()}.`;
-  if (h.queue.some((q) => q.kind === 'project' && q.project === item.project))
-    return `A ${PROJECTS[item.project].name.toLowerCase()} is already queued.`;
+  const def = PROJECTS[item.project];
+  if (def.opens && !powerOf(state, h.owner).researched.includes(def.opens)) return `Needs ${TECHS[def.opens].name}.`;
+  if (h.projects.includes(item.project))
+    return `It already has ${withArticle(PROJECTS[item.project].name.toLowerCase())}.`;
+  if (h.queue.some((q) => q.kind === 'project' && q.project === item.project)) {
+    const what = withArticle(PROJECTS[item.project].name.toLowerCase());
+    return `${what[0]?.toUpperCase()}${what.slice(1)} is already queued.`;
+  }
   return null;
 }
 

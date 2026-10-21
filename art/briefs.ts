@@ -512,7 +512,7 @@ const FIRST: ArtBrief[] = [
 
 // The colony view, increment 18 (COLONY_VIEW.md §9): two more versions of every home, so neighbours
 // differ, and small props between the buildings.
-export const BRIEFS: ArtBrief[] = [...FIRST, ...homeVersions(FIRST), ...props(), ...districts()];
+export const BRIEFS: ArtBrief[] = [...FIRST, ...homeVersions(FIRST), ...props(), ...districts(), ...projects()];
 
 /** Each home's second and third versions: the same kind of home told another way. */
 function homeVersions(first: ArtBrief[]): ArtBrief[] {
@@ -746,4 +746,82 @@ function districts(): ArtBrief[] {
       purpose: 'Colony view: a farm district under glass, where the colony is sealed, for every power (M2).',
     },
   ];
+}
+
+/** Increment 21's projects (M2_WORLDS.md §23.1), each in every power's architecture. */
+function projects(): ArtBrief[] {
+  const own: Record<string, Record<ArchitectureId, string>> = {
+    hydroponics: {
+      authority:
+        'A hydroponics farm: a long, low prefabricated building with a glazed roof, racks of green plants under pink-white grow lights visible through its windows, water tanks and pipes along one side, green lights.',
+      cooperative:
+        'A hydroponics farm: a rounded earth-built greenhouse hall with a ribbed glass roof, tiers of leafy plants glowing under warm grow lights, rain barrels and a small wind vane, soft blue lights.',
+      wake: 'A hydroponics farm: grow racks inside opened-up cargo containers stacked in a horseshoe, pink grow lights spilling out, tarpaulins, water bladders and hoses, small red lights.',
+    },
+    'trade-exchange': {
+      authority:
+        'A trade exchange: a formal civic building with a tall glass atrium, a large display board of figures over the entrance, a landing pad for cargo drones on the roof, flags, green lights.',
+      cooperative:
+        'A trade exchange: a round earth-built hall with a domed roof and a ring of open arches, cargo carts and crates outside, a tall mast hung with signal pennants, soft blue lights.',
+      wake: 'A trade exchange: a fortified bazaar in the hull of a grounded cargo ship, its loading ramp down as an entrance, crates and barrels piled outside, a crane, armed lookouts, red lights.',
+    },
+    'civic-centre': {
+      authority:
+        'A civic centre: a dignified town hall of pale prefabricated stone with a colonnade, a clock tower and a public square with benches and young trees in front, green lights.',
+      cooperative:
+        'A civic centre: a large rounded meeting house of rammed earth with a terraced amphitheatre in front, a garden roof, a tall solar sail and soft blue lights.',
+      wake: 'A civic centre: a meeting hall built in the bridge section of an old warship, a wide deck in front for gatherings, a banner of red cloth, braziers and red lights.',
+    },
+    'recreation-dome': {
+      authority:
+        'A recreation dome: a large faceted glass dome over a small park with trees, a pond and paths, a sports field beside it, people-sized doors, green lights.',
+      cooperative:
+        'A recreation dome: a great frosted-glass bubble dome over gardens, a pool and a little open-air stage, rounded pavilions round its edge, soft blue lights.',
+      wake: 'A recreation dome: a patched glass dome salvaged from a liner, over a rough garden and a fighting ring, scrap benches, hanging lamps and red lights.',
+    },
+    'research-institute': {
+      authority:
+        'A research institute: an imposing campus building of pale ceramic panels with a tall glass entrance, a large radio telescope dish beside it and an observatory dome, green lights.',
+      cooperative:
+        'A research institute: a cluster of rounded earth-built halls round a courtyard, a big glass telescope dome, solar sails and a tall weather mast, soft blue lights.',
+      wake: 'A research institute: the hull of a salvaged science ship stood on end and braced with girders, sensor dishes bolted on at every level, cables everywhere, red lights.',
+    },
+    'fusion-plant': {
+      authority:
+        'A fusion power plant: a large cylindrical reactor hall of prefabricated panels with a glowing ring window, cooling towers, a switchyard of transformers and power lines, green lights.',
+      cooperative:
+        'A fusion power plant: a rounded earth-built reactor hall with a glowing blue ring window, curved cooling fins, a low control building and cables on posts, soft blue lights.',
+      wake: 'A fusion power plant: a starship engine section bolted upright into banked earth as a reactor, glowing violet through vents, radiator fins and thick cables, warning lights.',
+    },
+    refinery: {
+      authority:
+        'A fuel refinery: neat columns and spherical tanks of white-painted steel, pipe racks, a tall flare stack with a small flame, a control building, green lights.',
+      cooperative:
+        'A fuel refinery: rounded earth-built sheds round two tall distillation columns, pipes on wooden trestles, round storage tanks and soft blue lights.',
+      wake: 'A fuel refinery: tanks cut from old fuel pods, crooked pipe runs, a flare stack burning brightly, a pump house of hull plates, red lights.',
+    },
+    arcology: {
+      authority:
+        'An arcology: a single enormous stepped tower of prefabricated modules housing a whole town, terraces of gardens, many lit windows, a beacon on top, smaller buildings at its foot.',
+      cooperative:
+        'An arcology: a huge rounded tower of earth-printed rings wider at the base like a hill, every terrace green with gardens and lit windows, solar sails at the top.',
+      wake: 'An arcology: the hulk of a great colony ship stood upright and buried at its base, its decks turned into homes, lit portholes in rows, scaffold walkways and red lights.',
+    },
+    'medical-centre': {
+      authority:
+        'A medical centre: a clean white hospital building of prefabricated modules with a green cross sign, an ambulance shuttle pad on the roof and a small garden, green lights.',
+      cooperative:
+        'A medical centre: a rounded earth-built clinic with a healing garden, big round windows, a white awning over the entrance and a blue cross sign, soft blue lights.',
+      wake: 'A medical centre: a field hospital in a salvaged medical frigate, its side opened up as a ward, a red cross painted on the hull, tents and red lights.',
+    },
+  };
+  const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
+  return Object.entries(own).flatMap(([kind, by]) =>
+    (Object.keys(by) as ArchitectureId[]).map((a) => ({
+      id: `${a}-${kind}`,
+      series: 'structure' as const,
+      subject: `${ARCHITECTURE[a]} ${by[a]}`,
+      purpose: `Colony view: the ${kind.replace('-', ' ')}, in the ${names[a]}'s architecture (M2).`,
+    })),
+  );
 }
