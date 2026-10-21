@@ -22,6 +22,8 @@ export interface Settings {
   advisors: AdvisorSetting;
   /** Edicts and the attention that pays for them shown, or hidden (M2_WORLDS.md §25.2). */
   edicts: SoundSetting;
+  /** The guided opening: on for a first game, or never (M2_WORLDS.md §28.1). */
+  guide: SoundSetting;
 }
 
 const KEY = 'starman-control:settings';
@@ -33,6 +35,7 @@ export const DEFAULT_SETTINGS: Settings = {
   music: 'on',
   advisors: 'speak',
   edicts: 'on',
+  guide: 'on',
 };
 
 /** Reads stored settings, keeping only values the game knows. */
@@ -48,6 +51,7 @@ export function parseSettings(raw: unknown): Settings {
   if (r.music === 'on' || r.music === 'off') s.music = r.music;
   if (r.advisors === 'speak' || r.advisors === 'quiet' || r.advisors === 'off') s.advisors = r.advisors;
   if (r.edicts === 'on' || r.edicts === 'off') s.edicts = r.edicts;
+  if (r.guide === 'on' || r.guide === 'off') s.guide = r.guide;
   return s;
 }
 

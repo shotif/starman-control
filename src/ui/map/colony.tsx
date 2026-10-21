@@ -407,7 +407,7 @@ function Queue({
 function AddToQueue({ world, game, h, play }: { world: World; game: GameState; h: Holding; play: Play }) {
   const options = buildOptions(world, game, h);
   return (
-    <ul class="build-options">
+    <ul class="build-options" data-guide="queue">
       {options.map(({ item, refusal }) => {
         const name = itemName(item);
         const does = item.kind === 'ship' ? SHIPS[item.ship].does : PROJECTS[item.project].does;
@@ -439,7 +439,7 @@ function LanesFromHere({ world, game, h, play }: { world: World; game: GameState
   const targets = laneTargets(world, game, h.owner, h.system);
   if (targets.length === 0) return <p class="dim">No star is within your lane reach from here.</p>;
   return (
-    <ul class="build-options lane-options">
+    <ul class="build-options lane-options" data-guide="lanes">
       {targets.map(({ quote: q, refusal }) => {
         const to = world.system(q.to).name;
         const turns = `tuned for ${q.turns} turn${q.turns === 1 ? '' : 's'}`;
@@ -501,7 +501,7 @@ export function zoneYieldText(world: World, game: GameState, h: Holding, zone: Z
 function GovernorChoice({ h, play }: { h: Holding; play: Play }) {
   const set = (priority: Priority | null) => give(play, { type: 'governor', holding: h.id, priority });
   return (
-    <section class="governor" aria-label="Governor">
+    <section class="governor" aria-label="Governor" data-guide="governor">
       <h3>
         Governor <span class="dim">· {h.governor ? PRIORITY_DEFS[h.governor].name : 'none: you run it'}</span>
       </h3>
@@ -537,7 +537,7 @@ function Districts({ world, game, h, play }: { world: World; game: GameState; h:
   const slots = Array.from({ length: n }, (_, i) => i + 1);
   const open = chosen === null ? undefined : districtAt(h, chosen);
   return (
-    <section class="districts" aria-label="Districts">
+    <section class="districts" aria-label="Districts" data-guide="queue">
       <h3>
         Districts{' '}
         <span class="dim">
@@ -1111,7 +1111,12 @@ export function EmpireView({
               {sorted.map((h) => (
                 <tr key={h.id}>
                   <td>
-                    <button type="button" class="link" onClick={() => onHolding(h.id)}>
+                    <button
+                      type="button"
+                      class="link"
+                      data-guide={h.capital ? 'capital' : undefined}
+                      onClick={() => onHolding(h.id)}
+                    >
                       {holdingName(world, game, h)}
                     </button>
                     {h.capital && <span class="dim"> · capital</span>} {view(h, holdingName(world, game, h))}
@@ -1134,7 +1139,12 @@ export function EmpireView({
           <ul class="empire-cards">
             {sorted.map((h) => (
               <li key={h.id}>
-                <button type="button" class="empire-card" onClick={() => onHolding(h.id)}>
+                <button
+                  type="button"
+                  class="empire-card"
+                  data-guide={h.capital ? 'capital' : undefined}
+                  onClick={() => onHolding(h.id)}
+                >
                   <b>{holdingName(world, game, h)}</b>
                   <span class="ship-type">{h.capital ? 'Capital' : world.system(h.system).name}</span>
                   <span class="ship-line">
@@ -1167,7 +1177,12 @@ export function EmpireView({
               {outposts.map((h) => (
                 <tr key={h.id}>
                   <td>
-                    <button type="button" class="link" onClick={() => onHolding(h.id)}>
+                    <button
+                      type="button"
+                      class="link"
+                      data-guide={h.capital ? 'capital' : undefined}
+                      onClick={() => onHolding(h.id)}
+                    >
                       {holdingName(world, game, h)}
                     </button>{' '}
                     {view(h, holdingName(world, game, h))}
@@ -1182,7 +1197,12 @@ export function EmpireView({
           <ul class="empire-cards">
             {outposts.map((h) => (
               <li key={h.id}>
-                <button type="button" class="empire-card" onClick={() => onHolding(h.id)}>
+                <button
+                  type="button"
+                  class="empire-card"
+                  data-guide={h.capital ? 'capital' : undefined}
+                  onClick={() => onHolding(h.id)}
+                >
                   <b>{holdingName(world, game, h)}</b>
                   <span class="ship-type">{world.system(h.system).name}</span>
                   <span class="ship-line">{yieldsText(world, game, h)}</span>

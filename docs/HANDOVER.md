@@ -63,8 +63,10 @@ way in.
   headless games in the unit tests. **Increment 25 is built:** twelve events with pictures and two
   choices each (`src/sim/events.ts`), answered from *what needs you*, the report or the advisor
   who speaks of it, or by their first choice after three turns; rivals answer theirs; the flare
-  shield and Magnetics; state version 9.
-- **Numbers:** 350 unit tests and about 196 browser journeys pass; the title loads 20.9 KB of its
+  shield and Magnetics; state version 9. **Increment 26 is built:** the guided opening, eleven
+  steps led by the advisors and done by doing them (`src/app/guide.ts`), on for a first game, with
+  *Menu → Guide me* and a setting.
+- **Numbers:** 373 unit tests and about 205 browser journeys pass; the title loads 20.9 KB of its
   40 KB budget, a game's map about 310 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
   1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;
@@ -79,11 +81,11 @@ increment 20's district buildings; apply any overrule they send (`npm run music:
 
 **The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
 its §18. Increments 20 (districts, food, credits and approval, built as one), 21 (projects and
-research), 22 (advisors and the report), 23 (governors and edicts), 24 (rivals that play) and 25
-(events) are done; next are the guided opening (26) and the proof (27, which also decides whether
-rivals use overdrive and edicts: the Hollow Wake banks credits it cannot spend). Each has a
-detailed design section in M2_WORLDS.md written before it is built (§23 to §27 so far; 26's comes
-next). Build each as designed; put any
+research), 22 (advisors and the report), 23 (governors and edicts), 24 (rivals that play), 25
+(events) and 26 (the guided opening) are done; next is the proof (27): balance from the headless
+games, whether rivals use overdrive and edicts (the Hollow Wake banks credits it cannot spend), a
+100-turn game on a phone and a desktop, the budgets and the owner's try. Its detailed design comes
+first, as §23 to §28's did. Build each as designed; put any
 new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
 and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
 DECISIONS.md with their cost.

@@ -11,6 +11,7 @@
 
 import { type ComponentChildren, Fragment } from 'preact';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { guideGameId, guideMe } from '../../app/guide.ts';
 import { setMusicMood } from '../../app/music.ts';
 import { quality, reducedMotion, settings } from '../../app/settings.ts';
 import { play as sound } from '../../app/sound.ts';
@@ -46,6 +47,7 @@ import { ColonyCard } from './ColonyCard.tsx';
 import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
 import { EventCard } from './event.tsx';
+import { GuideCard } from './guide.tsx';
 import {
   give,
   NeedsStack,
@@ -944,6 +946,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           </div>
         )}
         {desktop && play && <TargetBar world={world} game={game} play={play} />}
+        {play && colony === null && (
+          // On a phone and a tablet, under the view switch (40 px at the top bar's foot).
+          <GuideCard game={game} faction={play.faction} top={desktop ? undefined : topHeight + 56} />
+        )}
       </div>
 
       <header ref={top} class="map-top" data-covers-map>
@@ -992,6 +998,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   type="button"
                   class="chip"
                   aria-pressed={panel.value === 'empire'}
+                  data-guide="empire"
                   title="Empire (P)"
                   onClick={() => (panel.value = panel.value === 'empire' ? null : 'empire')}
                 >
@@ -1002,6 +1009,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   type="button"
                   class="chip"
                   aria-pressed={panel.value === 'research'}
+                  data-guide="research"
                   title="Research (T)"
                   onClick={() => (panel.value = panel.value === 'research' ? null : 'research')}
                 >
@@ -1021,6 +1029,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 <button
                   type="button"
                   class="button button-primary end-turn"
+                  data-guide="end-turn"
                   disabled={play.resolving}
                   onClick={() => void endTurn()}
                 >
@@ -1121,6 +1130,16 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             <button type="button" class="button" onClick={() => void play.leave()}>
               Save and leave
             </button>
+            <button
+              type="button"
+              class="button button-quiet"
+              onClick={() => {
+                guideMe(guideGameId(game, play.faction));
+                panel.value = null;
+              }}
+            >
+              Guide me
+            </button>
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
               Legend
             </button>
@@ -1173,6 +1192,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               <button
                 type="button"
                 class="bar-button"
+                data-guide="empire"
                 onClick={() => (panel.value = panel.value === 'empire' ? null : 'empire')}
               >
                 <Icon name="empire" />
@@ -1181,12 +1201,19 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               <button
                 type="button"
                 class="bar-button"
+                data-guide="research"
                 onClick={() => (panel.value = panel.value === 'research' ? null : 'research')}
               >
                 <Icon name="research" />
                 Research
               </button>
-              <button type="button" class="bar-button bar-primary" disabled={play.resolving} onClick={askEndTurn}>
+              <button
+                type="button"
+                class="bar-button bar-primary"
+                data-guide="end-turn"
+                disabled={play.resolving}
+                onClick={askEndTurn}
+              >
                 <Icon name="end-turn" />
                 {endLabel}
                 {play.needs.length > 0 && <span class="needs-count-badge">{play.needs.length}</span>}
@@ -1273,6 +1300,16 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               <nav class="menu-list">
                 <button type="button" class="button" onClick={() => void play.leave()}>
                   Save and leave
+                </button>
+                <button
+                  type="button"
+                  class="button button-quiet"
+                  onClick={() => {
+                    guideMe(guideGameId(game, play.faction));
+                    panel.value = null;
+                  }}
+                >
+                  Guide me
                 </button>
                 <button type="button" class="button button-quiet" onClick={() => (panel.value = 'search')}>
                   Find a system
@@ -1514,6 +1551,7 @@ function PlayOutliner({
             <button
               type="button"
               class={`outliner-item${selectedHolding.value === h.id ? ' is-selected' : ''}`}
+              data-guide={h.capital ? 'capital' : undefined}
               onClick={() => onHolding(h.id)}
             >
               {holdingName(world, game, h)}

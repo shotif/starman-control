@@ -9,6 +9,7 @@ import { randomSeed } from '../sim/rng.ts';
 import { exportSave, parseSave } from '../sim/save.ts';
 import { type GameState, newGame, playerPower } from '../sim/state.ts';
 import { knownView } from '../sim/visibility.ts';
+import { guideGame, guideGameId } from './guide.ts';
 import { SaveStore, type SaveSummary, type SlotInfo } from './saves.ts';
 import { detectBackend } from './storage.ts';
 import { endTurn } from './turns.ts';
@@ -65,6 +66,7 @@ export async function startGame(faction: FactionId, seed?: number, governed = fa
   });
   game.value = state;
   freshReport.value = false;
+  guideGame(guideGameId(state, faction), true);
   await (await saves()).autosave(state);
 }
 
@@ -75,6 +77,8 @@ export async function continueGame(): Promise<boolean> {
     if (!saved) return false;
     game.value = saved.game;
     freshReport.value = false;
+    const p = playerPower(saved.game);
+    if (p) guideGame(guideGameId(saved.game, p.faction), false);
     return true;
   } catch {
     return false;

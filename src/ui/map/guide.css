@@ -1,0 +1,77 @@
+/* The guided opening's card (M2_WORLDS.md §28.3): at the top of the map on a phone, under the top
+   bar and beneath any sheet; at the foot of the map on a desktop. */
+
+.guide-card {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: start;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(255, 180, 92, 0.45);
+  background: rgba(5, 9, 18, 0.95);
+  clip-path: var(--cut);
+}
+
+.layout-phone .guide-card,
+.layout-tablet .guide-card {
+  right: var(--gutter-right);
+  left: var(--gutter);
+}
+
+.layout-desktop .guide-card {
+  bottom: 44px;
+  left: 50%;
+  width: min(520px, calc(100% - 900px));
+  min-width: 360px;
+  transform: translateX(-50%);
+}
+
+.guide-card .advisor-face {
+  border-radius: 50%;
+}
+
+.guide-body p {
+  margin: 0;
+}
+
+.guide-who {
+  font-size: 0.85rem;
+}
+
+.guide-line {
+  margin-top: 0.15rem !important;
+}
+
+.guide-hint {
+  margin-top: 0.2rem !important;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+}
+
+.guide-actions .button {
+  min-height: 40px;
+}
+
+@keyframes guide-ring {
+  0%,
+  100% {
+    outline-color: rgba(255, 180, 92, 1);
+  }
+
+  50% {
+    outline-color: rgba(255, 180, 92, 0.35);
+  }
+}
+
+.reduced-motion [data-guide] {
+  animation: none !important;
+}

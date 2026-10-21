@@ -1113,3 +1113,23 @@ yours to explore). Each sentence is written in all three voices (as §24.2's lin
 Unit: each step's *done* from the state and what was opened; passing over steps already done; the
 order, and steps 10 and 11's conditions. Browser: the first steps done by doing them on the phone,
 the tablet and the desktop; *Skip* and *Stop guiding*; off in a second game; on again from *Menu*.
+
+### Increment 26: the guided opening (21 October 2026)
+
+- **The steps** (`src/content/guide.ts`, `src/app/guide.ts`) as §28.2, each in its power's voice,
+  each done by doing it: worked out from the game (a queue, a ship under way, research chosen, a
+  turn ended, a lane queued, a governor chosen) and from what the player opened (the capital, the
+  empire), and passed over when already done. The governor's step waits for a second colony; the
+  Watch's for its first news of a rival (or, alone, follows the governor's); either may come first.
+- **When:** a new game is guided while no guide has been finished or stopped on the device;
+  *Menu → Guide me* guides the game being played again, from its first step not done; *Settings →
+  Guide* (*First game* or *Off*) turns guiding off altogether. The browser tests leave it off unless
+  the address says `guide`.
+- **On the screen:** the card (the advisor's face, name and department, the step's number, its
+  sentence, where to find the control, *Skip* or *Done*, *Stop guiding*) sits under the top bar on
+  a phone and a tablet, beneath any sheet, and at the foot of the map on a desktop. The control to
+  press wears a warm ring (`data-guide`), pulsing unless motion is reduced. Nothing is blocked.
+- **Tests:** `guide.test.ts` (the order, each step done by doing it, steps passed over, the
+  Watch's and the governor's conditions, playing alone, when it guides) and `guide.spec.ts` (the
+  first steps done by doing them, *Skip*, *Stop guiding* and *Guide me*; a second game not guided)
+  on the phone, tablet and desktop.

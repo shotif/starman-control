@@ -150,6 +150,22 @@ export default function SettingsScreen() {
           onPick={(edicts) => updateSettings({ edicts })}
         />
       </section>
+      <section class="page-section" aria-labelledby="set-guide">
+        <h2 id="set-guide">Guide</h2>
+        <p>
+          The advisors guide your first game one step at a time, each done by doing it. Off, no game is guided; in a
+          game, Menu → Guide me guides it again.
+        </p>
+        <Choice
+          label="Guide"
+          value={s.guide}
+          options={[
+            { value: 'on', text: 'First game' },
+            { value: 'off', text: 'Off' },
+          ]}
+          onPick={(guide) => updateSettings({ guide })}
+        />
+      </section>
     </main>
   );
 }

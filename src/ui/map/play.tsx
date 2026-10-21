@@ -196,7 +196,12 @@ export function ShipsList({
     <ul class="ships-list">
       {ships.map((s) => (
         <li key={s.id}>
-          <button type="button" class="ship-row" onClick={() => onPick(s.id)}>
+          <button
+            type="button"
+            class="ship-row"
+            data-guide={s.type === 'survey' ? 'survey-ship' : s.type === 'colony' ? 'colony-ship' : undefined}
+            onClick={() => onPick(s.id)}
+          >
             <span class="ship-chevron" style={{ '--faction': FACTIONS[s.owner].colour }} aria-hidden="true" />
             <b>{s.name}</b>
             <span class="ship-type">{SHIPS[s.type].name}</span>

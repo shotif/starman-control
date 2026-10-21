@@ -13,6 +13,7 @@ describe('settings (M1_PROOF.md §1)', () => {
         music: 'off',
         advisors: 'quiet',
         edicts: 'off',
+        guide: 'off',
       }),
     ).toEqual({
       textScale: 1.3,
@@ -22,6 +23,7 @@ describe('settings (M1_PROOF.md §1)', () => {
       music: 'off',
       advisors: 'quiet',
       edicts: 'off',
+      guide: 'off',
     });
     expect(parseSettings({ textScale: 9, motion: 'wild', quality: 'ultra', sound: 'loud', extra: 1 })).toEqual(
       DEFAULT_SETTINGS,
