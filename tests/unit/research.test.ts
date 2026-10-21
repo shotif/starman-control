@@ -4,13 +4,13 @@ import { SPECIES } from '../../src/content/species.ts';
 import { TECH_IDS, TECHS, type TechId } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
-import { capacityOf, costOf, growthOf, settleRefusal, yieldsOf } from '../../src/sim/economy.ts';
+import { capacityOf, costOf, growthOf, researchOf, settleRefusal, yieldsOf } from '../../src/sim/economy.ts';
 import { habitability } from '../../src/sim/habitability.ts';
 import { laneQuote, laneReachDeci } from '../../src/sim/lanes.ts';
 import { blindReachDeci, jumpPoints } from '../../src/sim/movement.ts';
 import { needsOf } from '../../src/sim/needs.ts';
 import { applyOrder, type Order, refuse } from '../../src/sim/orders.ts';
-import { researchOf, researchTurns, speciesFor } from '../../src/sim/research.ts';
+import { researchTurns, speciesFor } from '../../src/sim/research.ts';
 import { parseSave, SAVE_FORMAT } from '../../src/sim/save.ts';
 import { type GameState, type Holding, makeHolding, newGame, powerOf } from '../../src/sim/state.ts';
 import { resolveTurn } from '../../src/sim/turn.ts';
@@ -35,18 +35,41 @@ const knowing = (...techs: TechId[]) => {
 const capital = (g: GameState) => g.holdings[0] as Holding;
 
 describe('research points', () => {
-  it('are 1 for every 2 million people over all your colonies, rounded down', () => {
+  it('come from the labs of every colony, less what unhappiness takes, and the capital’s own', () => {
     const g = start();
-    expect(researchOf(g, 'sta')).toEqual({ total: 5, parts: [{ label: 'from 10 million people × ½', value: 5 }] });
-    makeHolding(g, { owner: 'sta', kind: 'colony', system: 'sol', body: 'mars', capital: false, people: 15 });
-    expect(researchOf(g, 'sta').total).toBe(5); // 11.5 million: 5.75
-    makeHolding(g, { owner: 'sta', kind: 'colony', system: 'sol', body: 'moon', capital: false, people: 5 });
-    expect(researchOf(g, 'sta').total).toBe(6); // 12 million
+    expect(researchOf(world, g, 'sta')).toEqual({
+      total: 5,
+      parts: [
+        { label: 'from labs', value: 2 },
+        { label: 'from the capital', value: 3 },
+      ],
+    });
+    // A lab district on Mars, worked by its first million. Under domes, hungry and at high taxes, it
+    // is in unrest and keeps 70% of its 2: 1.4, so 1. The capital, uneasy, keeps 1.8 of its 2: 2.
+    powerOf(g, 'sta').taxes = 'high';
+    const mars = makeHolding(g, {
+      owner: 'sta',
+      kind: 'colony',
+      system: 'sol',
+      body: 'mars',
+      capital: false,
+      people: 10,
+      districts: [{ zone: 'labs', slot: 1 }],
+    });
+    mars.hungry = 1;
+    expect(researchOf(world, g, 'sta')).toEqual({
+      total: 6,
+      parts: [
+        { label: 'from labs', value: 4 },
+        { label: 'lost to unhappiness', value: -1 },
+        { label: 'from the capital', value: 3 },
+      ],
+    });
   });
 
   it('go into the first technology queued, then the next with what is left', () => {
     let g = research(start(), 'lane-engineering-1');
-    expect(researchTurns(g, 'sta')).toEqual([6]);
+    expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([6]);
     for (let i = 0; i < 5; i++) g = turn(g).state;
     expect(powerOf(g, 'sta').techProgress['lane-engineering-1']).toBe(25);
     const r = turn(g);
@@ -55,7 +78,8 @@ describe('research points', () => {
     expect(r.reports[0]?.events).toContainEqual({ kind: 'researched', tech: 'lane-engineering-1' });
     // Points beyond what a technology needs go on to the next.
     let h = research(research(start(), 'habitat-domes'), 'deep-survey');
-    capital(h).people = 1220; // 61 points a turn, as if a large empire
+    // 2 points finish the first, and the other 3 the second.
+    powerOf(h, 'sta').techProgress = { 'habitat-domes': 28, 'deep-survey': 27 };
     h = turn(h).state;
     expect(powerOf(h, 'sta').researched).toEqual(['habitat-domes', 'deep-survey']);
     expect(powerOf(h, 'sta').researchQueue).toEqual([]);
@@ -75,7 +99,7 @@ describe('research points', () => {
     g = order(g, { type: 'unresearch', tech: 'adaptation-1' });
     expect(powerOf(g, 'sta').techProgress['adaptation-1']).toBe(10);
     g = research(g, 'adaptation-1');
-    expect(researchTurns(g, 'sta')).toEqual([4]);
+    expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([4]);
   });
 });
 

@@ -1,4 +1,4 @@
-// Research (M1_FIRST_LIGHT.md §8, M1_LANES_RESEARCH.md §2): the points a power makes, its queue, and
+// Research (M1_FIRST_LIGHT.md §8, M1_LANES_RESEARCH.md §2): a power's queue and
 // what its technologies change. Every rule that a technology alters asks here, so a technology's
 // effect lives in one place. Pure and in whole numbers.
 
@@ -6,7 +6,6 @@ import type { FactionId } from '../content/factions.ts';
 import { FACTIONS } from '../content/factions.ts';
 import { SPECIES, type SpeciesDef } from '../content/species.ts';
 import { TECH_IDS, TECHS, type TechEffect, type TechId } from '../content/techs.ts';
-import type { Figure } from './economy.ts';
 import { type GameState, type PowerState, powerOf } from './state.ts';
 
 /** The effects of every technology a power has researched, of one kind. */
@@ -25,16 +24,6 @@ export function effects<K extends TechEffect['kind']>(
 
 export function hasTech(power: PowerState, id: TechId): boolean {
   return power.researched.includes(id);
-}
-
-/** Research points a turn: 1 for every 2 million people, over all a power's colonies, rounded down. */
-export function researchOf(state: GameState, faction: FactionId): Figure {
-  const people = state.holdings
-    .filter((h) => h.owner === faction && h.kind === 'colony')
-    .reduce((sum, h) => sum + h.people, 0);
-  const total = Math.floor(people / 20);
-  const millions = people % 10 === 0 ? String(people / 10) : (people / 10).toFixed(1);
-  return { total, parts: [{ label: `from ${millions} million people × ½`, value: total }] };
 }
 
 /** The power's species as its research has adapted it (Adaptation I and II). */
@@ -91,10 +80,12 @@ export function unqueueResearch(power: PowerState, tech: TechId): TechId[] {
   return out;
 }
 
-/** Roughly when each queued technology is done, in turns from now (1: when this turn ends); null with no points. */
-export function researchTurns(state: GameState, faction: FactionId): (number | null)[] {
+/**
+ * Roughly when each queued technology is done, in turns from now (1: when this turn ends), at a rate
+ * of research points a turn (economy.ts's researchOf); null with no points.
+ */
+export function researchTurns(state: GameState, faction: FactionId, rate: number): (number | null)[] {
   const p = powerOf(state, faction);
-  const rate = researchOf(state, faction).total;
   let need = 0;
   return p.researchQueue.map((id) => {
     need += TECHS[id].cost - (p.techProgress[id] ?? 0);

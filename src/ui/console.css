@@ -296,7 +296,7 @@
   min-width: 8rem;
 }
 
-@media (max-width: 1599px) {
+@media (max-width: 1759px) {
   .layout-desktop .map-top .res-name {
     position: absolute;
     width: 1px;
@@ -307,7 +307,7 @@
   }
 }
 
-@media (max-width: 1279px) {
+@media (max-width: 1379px) {
   .layout-desktop .map-top .chip-word {
     position: absolute;
     width: 1px;
@@ -318,6 +318,13 @@
   }
   .layout-desktop .map-top {
     gap: 0.45rem;
+  }
+  /* What each figure gains a turn waits in the empire and the panels, as on a phone. */
+  .layout-desktop .map-top .res-income {
+    display: none;
+  }
+  .layout-desktop .map-top .resources {
+    gap: 0.55rem;
   }
   /* The menu still leads back to the title. */
   .layout-desktop .map-top .brand {

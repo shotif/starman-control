@@ -2,6 +2,7 @@
 // interface words.
 
 import type { AnomalyId } from '../content/anomalies.ts';
+import type { Zone } from '../content/districts.ts';
 import type { BuildItem } from '../content/projects.ts';
 import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
@@ -47,4 +48,12 @@ export type ReportEvent =
   /** A queued lane that could not be begun when it was paid for, and why. */
   | { kind: 'lane-refused'; holding: number; to: SystemId; reason: string }
   /** A colony has grown to fill its room. */
-  | { kind: 'full'; holding: number };
+  | { kind: 'full'; holding: number }
+  /** A district zoned, or rezoned, when its industry was in (M2_WORLDS.md §2). */
+  | { kind: 'zoned'; holding: number; zone: Zone; slot: number; rezoned: boolean }
+  /** A colony's network went hungry this turn (M2_WORLDS.md §3). */
+  | { kind: 'hungry'; holding: number }
+  /** The treasury could not pay a colony's overdrive, which stopped (M2_WORLDS.md §4). */
+  | { kind: 'overdrive-stopped'; holding: number }
+  /** The treasury fell into debt (M2_WORLDS.md §4). */
+  | { kind: 'debt' };

@@ -1,19 +1,35 @@
-// Ending a turn (M1_FIRST_LIGHT.md §2, M1_TURNS.md §5, M1_COLONIES.md): every power's orders resolve
-// together, in a fixed order: movement (ships in the order they were built), arrivals (blind jumps
-// landing, surveys, colonies and outposts founded), production, research (increment 6), growth and
-// yields, then each power's report. Pure: the same world and state always give the same result, on
-// every device.
+// Ending a turn (M1_FIRST_LIGHT.md §2, M1_TURNS.md §5, M1_COLONIES.md, M2_WORLDS.md): every power's
+// orders resolve together, in a fixed order: movement (ships in the order they were built), arrivals
+// (blind jumps landing, surveys, colonies and outposts founded), production (overdrive paid first),
+// research, food, growth, yields and credits, then each power's report. What a colony makes is
+// worked out once, from the state as the turn began. Pure: the same world and state always give the
+// same result, on every device.
 
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
-import { capacityOf, costOf, growthOf, industryOf, settleRefusal, yieldsOf } from './economy.ts';
+import {
+  approvalOf,
+  capacityOf,
+  costOf,
+  creditsOf,
+  districtCount,
+  growthOf,
+  industryOf,
+  networkFood,
+  networksOf,
+  overdriveCost,
+  researchOf,
+  settleRefusal,
+  upkeepOf,
+  yieldsOf,
+} from './economy.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import type { ReportEvent } from './report.ts';
-import { effects, researchOf, speciesFor, spendResearch } from './research.ts';
+import { effects, speciesFor, spendResearch } from './research.ts';
 import {
   type GameState,
   hasSurveyed,
@@ -168,6 +184,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       capital: false,
       people: f.kind === 'colony' ? RULES.colonies.founding : 0,
     });
+    // A new colony arrives with its first districts zoned (D-42).
+    const n = districtCount(world, state, h);
+    h.districts = RULES.districts.founding.slice(0, n).map((zone, i) => ({ zone, slot: i + 1 }));
     usedUp.add(ship.id);
     log(ship).push({ kind: 'founded', holding: h.id, shipName: ship.name, system: ship.at, body: f.body });
   }
@@ -181,10 +200,36 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     (events.get(l.owner) as ReportEvent[]).push({ kind: 'lane-opened', lane: l.id });
     return { id: l.id, owner: l.owner, status: 'open' };
   });
+  // What each colony makes this turn, from the state as it stands now (approval, workers, food).
+  const research = new Map(state.powers.map((p) => [p.faction, researchOf(world, state, p.faction).total]));
+  const income = new Map(state.holdings.map((h) => [h.id, creditsOf(world, state, h).total]));
+  const yields = new Map(state.holdings.map((h) => [h.id, yieldsOf(world, state, h).total]));
+  const food = state.powers.flatMap((p) =>
+    networksOf(world, state, p.faction).map((net) => ({
+      faction: p.faction,
+      net,
+      f: networkFood(world, state, p.faction, net),
+    })),
+  );
+  const revolt = new Set(
+    state.holdings
+      .filter((h) => h.kind === 'colony' && approvalOf(world, state, h).level === 'revolt')
+      .map((h) => h.id),
+  );
+  // Overdrive is paid first, colony by colony; what the treasury cannot pay is not bought.
+  for (const h of state.holdings) {
+    if (h.overdrive <= 0) continue;
+    const power = powerOf(state, h.owner);
+    while (h.overdrive > 0 && overdriveCost(world, state, h) > Math.max(0, power.treasury)) h.overdrive--;
+    power.treasury -= overdriveCost(world, state, h);
+    if (h.overdrive === 0) (events.get(h.owner) as ReportEvent[]).push({ kind: 'overdrive-stopped', holding: h.id });
+  }
+  const made = new Map(state.holdings.map((h) => [h.id, industryOf(world, state, h).total]));
   for (const h of state.holdings) {
     const power = powerOf(state, h.owner);
     const log = events.get(h.owner) as ReportEvent[];
-    h.industry += industryOf(h).total;
+    if (revolt.has(h.id)) continue;
+    h.industry += made.get(h.id) ?? 0;
     for (;;) {
       const first = h.queue[0];
       if (!first) {
@@ -217,6 +262,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       } else if (first.kind === 'ship') {
         const ship = makeShip(state, h.owner, first.ship, h.system);
         log.push({ kind: 'built', holding: h.id, item: first, ship: ship.id });
+      } else if (first.kind === 'zone') {
+        const there = h.districts.find((d) => d.slot === first.slot);
+        if (there) there.zone = first.zone;
+        else h.districts.push({ zone: first.zone, slot: first.slot });
+        log.push({ kind: 'zoned', holding: h.id, zone: first.zone, slot: first.slot, rezoned: there !== undefined });
       } else {
         h.projects.push(first.project);
         log.push({ kind: 'built', holding: h.id, item: first });
@@ -226,12 +276,34 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 4. Research: each power's points go into its research queue.
   for (const p of state.powers) {
-    const done = spendResearch(p, researchOf(state, p.faction).total);
+    const done = spendResearch(p, research.get(p.faction) ?? 0);
     for (const tech of done) (events.get(p.faction) as ReportEvent[]).push({ kind: 'researched', tech });
   }
 
-  // 5. Growth, then what every holding yields.
+  // 5. Food, network by network (M2_WORLDS.md §3): the capital's network keeps a store; a colony
+  // cut off from it feeds itself. A shortage the store cannot cover leaves the network hungry.
+  for (const { faction, net, f } of food) {
+    const power = powerOf(state, faction);
+    let hungry = f.made < f.eaten;
+    if (net.home) {
+      const store = power.food + f.made - f.eaten;
+      hungry = store < 0;
+      power.food = Math.max(0, Math.min(f.room, store));
+    }
+    for (const c of net.colonies) {
+      const h = state.holdings.find((x) => x.id === c.id);
+      if (!h) continue;
+      if (hungry && h.hungry === 0) (events.get(faction) as ReportEvent[]).push({ kind: 'hungry', holding: h.id });
+      h.hungry = hungry ? h.hungry + 1 : 0;
+    }
+  }
+
+  // 6. Growth: none while hungry or unhappy; after long hunger, people are lost (never the last tenth).
   for (const h of state.holdings) {
+    if (h.kind === 'colony' && h.hungry > RULES.food.starveAfter && h.people > 1) {
+      h.people -= 1;
+      continue;
+    }
     const grow = growthOf(world, state, h);
     if (grow > 0) {
       h.people += grow;
@@ -239,15 +311,24 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
         (events.get(h.owner) as ReportEvent[]).push({ kind: 'full', holding: h.id });
     }
   }
+
+  // 7. Yields and credits: what every holding gathers goes to the stockpile; taxes and markets to
+  // the treasury, and upkeep out of it.
   for (const h of state.holdings) {
-    const y = yieldsOf(world, state, h).total;
-    const s = powerOf(state, h.owner).stockpile;
-    s.metals += y.metals;
-    s.volatiles += y.volatiles;
-    s.fuel += y.fuel;
+    const y = yields.get(h.id) ?? { metals: 0, volatiles: 0, fuel: 0 };
+    const power = powerOf(state, h.owner);
+    power.stockpile.metals += y.metals;
+    power.stockpile.volatiles += y.volatiles;
+    power.stockpile.fuel += y.fuel;
+    power.treasury += income.get(h.id) ?? 0;
+  }
+  for (const p of state.powers) {
+    const before = p.treasury;
+    p.treasury -= upkeepOf(state, p.faction).total;
+    if (p.treasury < 0 && before >= 0) (events.get(p.faction) as ReportEvent[]).push({ kind: 'debt' });
   }
 
-  // 7. Reports.
+  // 8. Reports.
   const reports = state.powers.map((p) => ({
     faction: p.faction,
     turn: state.turn,

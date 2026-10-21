@@ -1,7 +1,8 @@
 # M2 · Worlds
 
 **Status:** written 20 October 2026; **decided 21 October 2026**: the owner took every
-recommendation of §21. Built from increment 20 (§18), each increment with an *As built* note.
+recommendation of §21. Built from increment 20 (§18), each increment with an *As built* note
+(§22); two gaps found while building were answered on 21 October 2026 (D-42, D-43).
 The owner chose M2 as the main track with rivals that play, events and stories, leaders and
 advisors and a guided opening ([D-30](../DECISIONS.md#d-30--what-comes-next--decided): A with B, C,
 D and E). Music is a decision of its own ([D-31](../DECISIONS.md#d-31--music--decided), generated pieces, increment 19).
@@ -85,8 +86,11 @@ taxed hard, and you can tap any number to see exactly why it is what it is.
 - **People work districts.** Every whole million people works one zoned district (housing aside),
   in the order the colony lists them; you reorder them, or a governor does (§8). A district with
   no one to work it yields nothing and says so ("not worked: 1 million short"). People with no
-  district to work are **idle**: they pay taxes and eat, but make nothing, and many idle people
-  lower approval (§5).
+  district to work are **idle**: they pay taxes and eat, but make nothing; they cost no approval
+  ([D-43](../DECISIONS.md#d-43--idle-people-and-approval--decided)).
+- **A new colony arrives zoned** ([D-42](../DECISIONS.md#d-42--how-a-new-colony-starts--decided)):
+  farms, then works, as far as its world has districts, and every colony makes **2 industry of
+  its own**, as the capital and every outpost do, so it can always pay to zone.
 - **Room for people** is the world's room for the species (M1's habitability, unchanged) plus 2
   million for each housing district (and 4 for an arcology, §6). A capital has 8 million of its own
   and starts with two housing districts: 12 million, as in M1.
@@ -145,7 +149,6 @@ Every colony has an **approval** from 0 to 100, shown as a word and a number, wi
 | Taxes | low +10, standard 0, high −15 |
 | The capital | +10 (the seat of government) |
 | Hungry | −15 |
-| Idle people | −2 for each idle million, at most −10 |
 | Full | −5 at its room |
 | Under domes | −5 on a harsh world |
 | Far from home | −2 for each lane jump beyond 3 from the capital, at most −12; −12 with no lane to it |
@@ -411,19 +414,19 @@ as buildings.*
 
 Each keeps the game playable, passes `npm run check` and the browser journeys, and deploys, as
 before. (Increment 19 is the music, D-31, so M2 begins at 20.) The order follows D-30: the economy first with the opening's pieces inside it, the rivals
-once there is an economy to play by.
+once there is an economy to play by. Districts and food, and credits and approval, were built as
+one increment (20): each changes what the others yield, so none could be played or balanced alone.
 
 | # | Increment | What |
 | --- | --- | --- |
-| 20 | **Districts and food** | districts, zoning in the queue, workers, room, food and supply networks; the capitals' start; the panel's districts on phone and desktop; districts as buildings in the scene (10 pictures); state version 7 |
-| 21 | **Credits and approval** | the treasury, taxes, upkeep, overdrive and its curve, debt; approval, its parts and levels; credits and food in the top bar; every number with what changed |
-| 22 | **Projects and research** | the eleven new projects and their buildings (33 pictures); the tree to about 34 technologies |
-| 23 | **Advisors and the report** | six faces for each power (18 portraits), their lines in the report, the new needs |
-| 24 | **Governors and edicts** | governors and their contract; edicts (E2) with a setting to turn them off; the hands-on and imperial starts |
-| 25 | **Rivals that play** | the other two powers as AI in new games; what you see of them, the Watch, the standings; the headless 100-turn game in CI |
-| 26 | **Events and stories** | the twelve events, their pictures and choices |
-| 27 | **The guided opening** | the steps, on phone and desktop |
-| 28 | **The proof** | balance from headless games; a 100-turn game on a phone and a desktop; the budgets; the owner's try |
+| 20 | **Districts, food, credits and approval** | districts, zoning in the queue, workers, room, food and supply networks; the treasury, taxes, upkeep, overdrive and its curve, debt; approval, its parts and levels; the capitals' start; the panel's districts on phone and desktop; credits and food in the top bar; districts as buildings in the scene (10 pictures); state version 7 (built, §22) |
+| 21 | **Projects and research** | the eleven new projects and their buildings (33 pictures); the tree to about 34 technologies |
+| 22 | **Advisors and the report** | six faces for each power (18 portraits), their lines in the report, the new needs |
+| 23 | **Governors and edicts** | governors and their contract; edicts (E2) with a setting to turn them off; the hands-on and imperial starts |
+| 24 | **Rivals that play** | the other two powers as AI in new games; what you see of them, the Watch, the standings; the headless 100-turn game in CI |
+| 25 | **Events and stories** | the twelve events, their pictures and choices |
+| 26 | **The guided opening** | the steps, on phone and desktop |
+| 27 | **The proof** | balance from headless games; a 100-turn game on a phone and a desktop; the budgets; the owner's try |
 
 Every rule that shapes the game and is not settled in §21 is put to the owner when its increment
 reaches it.
@@ -474,3 +477,49 @@ made without waiting and listed in DECISIONS.md.
 | **D-39** | Advisors (§9) | (a) **six departments for each power, named, with faces (18 portraits), up to three lines a turn, a setting to quieten them** · (b) one advisor for each power · (c) advisors with no faces | **(a)** |
 | **D-40** | The guided opening (§12) | (a) **steps done by doing them, led by the advisors, on for a first game, skippable** · (b) a written tutorial page · (c) none in M2 | **(a)** |
 | **D-41** | The art for M2 (§20) | (a) **73 pictures, about $8, as each increment needs them** · (b) fewer (one candidate each, about $4) · (c) more for the scenes (raise D-27) | **(a)**: about $22.50 of the $25 in all |
+
+## 22. As built
+
+### Increment 20: districts, food, credits and approval (21 October 2026)
+
+- **The rules** (`src/sim/economy.ts`, numbers in `src/content/rules.ts`): districts by the world's
+  size (a capital 10), zoned through the queue for 20 industry and 5 metals, cleared at once and
+  for nothing, worked a million each in the colony's order (*Work it first* moves one to the
+  front); farms, works, mines, labs, markets and housing as §2; food pooled along each power's open
+  lanes, a store of 5 for each colony on the capital's lanes, hunger after the store is spent,
+  starving after three hungry turns; taxes at three rates, markets, upkeep, debt; overdrive in
+  three steps of a quarter of the colony's industry at 1, 2 and 4 credits apiece, stepping down
+  or stopping when the treasury cannot pay; approval with its parts and four levels. M1's mine
+  project is the deep mine.
+- **The owner's answers while building:** a new colony arrives with farms and works zoned and
+  makes 2 industry of its own (D-42 A); idle people cost no approval (D-43 C).
+- **Smaller choices** (DECISIONS.md, *Made without waiting*): a yield kept at a lower approval is
+  rounded to the nearest; what a turn yields is counted as it begins, so a new deep mine yields from
+  the next turn; only the capital's network keeps a store; *what needs you* warns of food two
+  turns ahead, of debt, of unrest, and of districts no one works once the colony is full.
+- **Saves:** state version 7. An older game's capitals are zoned as every capital starts; its
+  other colonies are zoned for their people (farms to feed them, then a mine where there are
+  riches, works, labs, a market); every power gets 5 food (what the store holds for one colony), 50 credits and standard taxes.
+- **The panel:** *Districts* as a grid of tiles (at least 64 px tall, so a thumb's target on a
+  phone), each with its zone, its yield here and whether it is worked; a tile opens its choices
+  to zone, rezone, work first or make open, each with its cost and what it would yield. Approval
+  and food sit with people and growth, each with its parts; credits beside industry; the overdrive
+  curve as four buttons whose bars rise with their cost, under the queue. Tab and Enter reach every
+  tile on a desktop; keys of their own wait for the governors (increment 23).
+- **The empire:** the treasury, its parts and the tax rate at the head, with food by network;
+  approval as a column of the desktop's table. **The top bar:** credits and food beside the
+  stockpile, red when short; to fit, a phone and a desktop narrower than 1380 px show what each
+  figure gains a turn only in the empire and the panels (CONSOLE.md §6). The food store starts at
+  5, what it holds for the capital alone.
+- **The scene:** the hall (or an outpost's rig, or a colony's first homes) in the middle, each
+  district in its slot as its zone's building, projects after the districts and then in a ring
+  round the town; a district being zoned is a scaffold of its building's size. Ten pictures (about
+  $1.00): each power's works, labs and market, and farms under glass for domed towns.
+- **Budgets:** a colony's heaviest first pictures on a phone are now 1020.8 KB of 1 MB (a colony
+  with every kind of district and every project): increment 21's 33 project buildings need the
+  phone to load smaller pictures, or a larger budget, which will be put to the owner.
+- **Tests:** `districts.test.ts` (20: districts, zoning, workers and housing, the new colony,
+  food and hunger, credits and debt, overdrive, approval, the migration), the 50-turn scripted
+  players of `colonies.test.ts` now zone their land, the scene and card tests; the browser
+  journeys `districts.spec.ts` (rezoning a district and the report; taxes, approval and overdrive)
+  on the phone, tablet and desktop, and the colony and game journeys brought up to date.

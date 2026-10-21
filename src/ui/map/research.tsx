@@ -6,8 +6,10 @@
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { FactionId } from '../../content/factions.ts';
 import { FIELDS, TECH_IDS, TECHS, type TechId } from '../../content/techs.ts';
-import { researchOf, researchTurns } from '../../sim/research.ts';
+import { researchOf } from '../../sim/economy.ts';
+import { researchTurns } from '../../sim/research.ts';
 import { type GameState, powerOf } from '../../sim/state.ts';
+import type { World } from '../../sim/world.ts';
 import { give, type Play } from './play.tsx';
 import './research.css';
 
@@ -116,11 +118,13 @@ function useNeedLines(grid: { current: HTMLElement | null }, key: string) {
 }
 
 export function ResearchView({
+  world,
   game,
   faction,
   play,
   table,
 }: {
+  world: World;
   game: GameState;
   faction: FactionId;
   play: Play;
@@ -128,8 +132,8 @@ export function ResearchView({
   table: boolean;
 }) {
   const p = powerOf(game, faction);
-  const rate = researchOf(game, faction);
-  const turns = researchTurns(game, faction);
+  const rate = researchOf(world, game, faction);
+  const turns = researchTurns(game, faction, rate.total);
   const grid = useRef<HTMLDivElement>(null);
   const lines = useNeedLines(grid, `${table}:${p.researched.join()}:${p.researchQueue.join()}`);
   const tiers = Math.max(...TECH_IDS.map((id) => TECHS[id].tier));
@@ -137,7 +141,10 @@ export function ResearchView({
     <section class="research" aria-label="Research">
       <h2 class="sheet-heading">Research</h2>
       <p class="figure">
-        <b>Research {rate.total} a turn</b> <span class="dim">= {rate.parts[0]?.label}</span>
+        <b>Research {rate.total} a turn</b>{' '}
+        {rate.parts.length > 0 && (
+          <span class="dim">= {rate.parts.map((p) => `${p.value} ${p.label}`).join(' + ')}</span>
+        )}
       </p>
       {p.researchQueue.length === 0 ? (
         <p class="waits">Nothing is being researched: choose a technology below. Points not spent are lost.</p>

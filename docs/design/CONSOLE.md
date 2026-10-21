@@ -60,10 +60,12 @@ touches the game (the browser's rule as well as ours). Music is not part of this
 
 ## 6. The desktop's top bar at every width
 
-Nothing in the top bar shrinks but the search box. Below 1600 px the resources keep their
-symbols and numbers only, and below 1280 px the chips their icons only and the name of the game
-makes way (the menu still leads to the title); the words stay as the
-accessible names and as tips, so the bar never overflows down to 1024 px.
+Nothing in the top bar shrinks but the search box. Below 1760 px the resources keep their
+symbols and numbers only, and below 1380 px the chips their icons only, the name of the game
+makes way (the menu still leads to the title) and the resources lose what each gains a turn
+(the empire and the panels show it); the words stay as the accessible names and as tips, so the
+bar never overflows down to 1024 px. (M2's increment 20 added credits and food, and moved the
+widths up from 1600 and 1280 px.) On a phone the bar shows each resource's symbol and number.
 
 ## 7. Tests
 

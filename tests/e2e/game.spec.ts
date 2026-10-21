@@ -221,7 +221,7 @@ test.describe('colonies', () => {
     await expect(empire).toContainText('+1 metals');
     await press(empire.getByRole('button', { name: /Mars/ }).first(), project);
     await expect(selection(page, project, 'Mars')).toContainText('An outpost at Sol');
-    // The top bar counts what it adds: Earth 2, the capital 2, Mars 1.
+    // The top bar counts what it adds: Earth's mine district 2, the capital 2, Mars 1.
     await expect(page.getByLabel('Stockpile')).toContainText('+5');
   });
 
@@ -232,14 +232,14 @@ test.describe('colonies', () => {
     if (isDesktop(project)) await expect(empire.getByRole('columnheader', { name: 'People' })).toBeVisible();
     await press(empire.getByRole('button', { name: /^Tau Ceti/ }).first(), project);
     const panel = selection(page, project, 'Tau Ceti');
-    await expect(panel).toContainText('Industry 12 = 10 from people + 2 from the capital');
+    await expect(panel).toContainText('Industry 11 = 9 from 3 works + 2 from the capital');
     await press(panel.getByRole('button', { name: 'Queue a survey ship' }), project);
     await expect(panel).toContainText('in about 3 turns');
     // The shipyard is busy now: four ships and research still need you.
     await expect(page.locator('.needs-count-badge').first()).toHaveText('5');
-    await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
-    await expect(panel.getByRole('button', { name: 'Queue a mine' })).toBeDisabled();
-    await expect(panel).toContainText('A mine is already queued.');
+    await press(panel.getByRole('button', { name: 'Queue a deep mine' }), project);
+    await expect(panel.getByRole('button', { name: 'Queue a deep mine' })).toBeDisabled();
+    await expect(panel).toContainText('A deep mine is already queued.');
     for (let i = 0; i < 3; i++) await endTurn(page, project);
     await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
       'Tau Ceti e built a survey ship, the Prism.',
@@ -276,7 +276,7 @@ test.describe('research', () => {
     if (isDesktop(project)) await page.keyboard.press('t');
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
     const screen = page.getByRole('dialog', { name: 'Research' });
-    await expect(screen).toContainText('Research 5 a turn = from 10 million people × ½');
+    await expect(screen).toContainText('Research 5 a turn = 2 from labs + 3 from the capital');
     await expect(screen).toContainText('Nothing is being researched');
     await expect(page.locator('.needs-count-badge').first()).toHaveText('6');
     // Lane engineering II brings Lane engineering I with it.

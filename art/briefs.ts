@@ -512,7 +512,7 @@ const FIRST: ArtBrief[] = [
 
 // The colony view, increment 18 (COLONY_VIEW.md §9): two more versions of every home, so neighbours
 // differ, and small props between the buildings.
-export const BRIEFS: ArtBrief[] = [...FIRST, ...homeVersions(FIRST), ...props()];
+export const BRIEFS: ArtBrief[] = [...FIRST, ...homeVersions(FIRST), ...props(), ...districts()];
 
 /** Each home's second and third versions: the same kind of home told another way. */
 function homeVersions(first: ArtBrief[]): ArtBrief[] {
@@ -696,4 +696,54 @@ function props(): ArtBrief[] {
     purpose: `Colony view: a prop between the buildings (${id}), shared by every power.`,
   }));
   return [...ownBriefs, ...sharedBriefs];
+}
+
+/**
+ * M2's districts (M2_WORLDS.md §15, increment 20): the buildings a zoned district shows. Farms show
+ * the shared fields in the open air and greenhouses when sealed; mines show each power's mine;
+ * housing shows homes. Works, labs and markets are new, in each power's architecture.
+ */
+function districts(): ArtBrief[] {
+  const own: Record<string, Record<ArchitectureId, string>> = {
+    works: {
+      authority:
+        'A works district: a long, orderly manufacturing hall of prefabricated modules with a sawtooth roof of skylights, a loading bay with a small gantry crane, stacked standard containers and green lights.',
+      cooperative:
+        'A works district: a cluster of rounded earth-printed workshops with wide doors open on workbenches and machines, a large printer arm under a fabric awning, solar sails, and soft blue lights.',
+      wake: 'A works district: a salvage yard and workshop built in an old freighter hold, cranes made from girders, a furnace glowing orange through an open door, stacks of hull plates, red lights.',
+    },
+    labs: {
+      authority:
+        'A research district: a clean, symmetrical laboratory block of pale ceramic panels with rows of square windows, a small observatory dome and an antenna array on its flat roof, green lights.',
+      cooperative:
+        'A research district: a rounded earth-built laboratory with a large round window, a greenhouse wing for experiments, a small telescope dome, white awnings and soft blue lights.',
+      wake: 'A research district: a laboratory improvised in a salvaged science vessel half sunk into banked earth, its sensor mast and dish still working, cables running everywhere, small red lights.',
+    },
+    market: {
+      authority:
+        'A market district: a civic trade hall with a colonnade of slim pillars, a covered arcade of small shopfronts with lit windows, a tidy square of stalls under flat canopies, green lights.',
+      cooperative:
+        'A market district: a lively covered market of rounded earth stalls under white fabric awnings, crates of produce, a shared kitchen with a chimney, strings of soft blue lights.',
+      wake: 'A market district: a black market in stacked cargo containers opened up as stalls, scrap awnings, hanging lamps, crates and barrels, a watchtower with a red light.',
+    },
+  };
+  const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
+  return [
+    ...Object.entries(own).flatMap(([kind, by]) =>
+      (Object.keys(by) as ArchitectureId[]).map((a) => ({
+        id: `${a}-${kind}`,
+        series: 'structure' as const,
+        subject: `${ARCHITECTURE[a]} ${by[a]}`,
+        purpose: `Colony view: a ${kind} district, in the ${names[a]}'s architecture (M2).`,
+      })),
+    ),
+    {
+      id: 'greenhouse-farms',
+      series: 'structure',
+      subject:
+        'Not a building but the sealed farmland of a space colony on a hostile world: three long, low, arched greenhouse tunnels of ' +
+        'clear panels side by side, green crops glowing under warm grow lights inside, pipes and a small pump house at one end.',
+      purpose: 'Colony view: a farm district under glass, where the colony is sealed, for every power (M2).',
+    },
+  ];
 }

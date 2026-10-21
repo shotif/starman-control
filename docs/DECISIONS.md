@@ -32,12 +32,14 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $15.85 spent by 21 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $16.85 spent by 21 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
 | D-31 | Music | Decided 2026-10-21 (owner's choice) | **B: pieces generated at build time with Google's Lyria**, chosen by the owner like the pictures; see [D-31](#d-31--music--decided) |
 | D-15, D-32 – D-41 | The M2 design: governors and edicts, districts, food, credits, approval, projects, rivals, events, advisors, the opening, the art | Decided 2026-10-21 | **as recommended**; see [Round 4](#round-4-the-m2-design-decided-21-october-2026) and [M2_WORLDS.md §21](design/M2_WORLDS.md#21-decisions-for-the-owner) |
+| D-42 | How a new colony starts, now that only districts make industry | Decided 2026-10-21 | **A, the founders' kit**: farms and works zoned, and 2 industry of its own; see [D-42](#d-42--how-a-new-colony-starts--decided) |
+| D-43 | Idle people and approval | Decided 2026-10-21 (owner's choice) | **C, no penalty**: idle people make nothing, and that is all; see [D-43](#d-43--idle-people-and-approval--decided) |
 | D-12 – D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -337,8 +339,9 @@ with its cost and the running total; the owner is asked before the total would p
 you can use it to continue working on the game." **About $25 in all** may now be spent without
 asking; about $8.35 was spent, so about $16.65 was left. Then about $1.90 on the first homes and
 props of increment 18, **about $10.25** in all; then about $4.20 on the rest of its homes and
-props, **about $14.45** in all; then about $1.40 on the music (D-31), **about $15.85** in all,
-leaving about **$9.15**.
+props, **about $14.45** in all; then about $1.40 on the music (D-31), **about $15.85** in all;
+then about $1.00 on increment 20's district buildings, **about $16.85** in all, leaving about
+**$8.15**.
 
 ### D-28 · The colony view — **Decided**
 
@@ -458,6 +461,45 @@ recommended, except for music use option B"). M2 is built from increment 20, aft
 | **D-40** | The guided opening ([§12](design/M2_WORLDS.md#12-the-guided-opening)) | steps done by doing them, led by the advisors, on for a first game, always skippable |
 | **D-41** | The art for M2 ([§20](design/M2_WORLDS.md#20-art-and-its-cost)) | 73 pictures (districts' and projects' buildings, advisors, events), about $8, made as each increment needs them: about $22.50 of the $25 in all |
 
+## Found while building M2
+
+### D-42 · How a new colony starts — **Decided**
+
+Increment 20 found a gap in the M2 design: a new colony has no districts, and only works make
+industry, so it could never pay the 20 industry its first zoning costs. A capital has its own 2
+industry; nothing else has any. (Asked 21 October 2026.)
+
+- **A. The founders' kit (recommended).** A new colony arrives with two districts zoned, *farms*
+  then *works* (as far as its world has districts), and every colony makes **2 industry of its
+  own**, as the capital and every outpost do. Its first million works its farms, so it feeds
+  itself from the first turn; at 2 million it works its works too. It can always pay to zone,
+  slowly at first (about 10 turns for the next district at 1 million, 4 at 2 million), and never
+  gets stuck, even with no lane to the capital.
+- **B. Bare land.** A new colony arrives with nothing zoned but makes 2 industry of its own: its
+  first zoning takes 10 turns, and until then it eats from the store, or goes hungry and does not
+  grow where it has no lane to the capital.
+- **C. Zoning paid by the power.** No industry of its own; a colony with no works may pay for
+  zoning from the treasury (20 credits instead of 20 industry).
+
+**Decided on 21 October 2026: A, as recommended.** Built in increment 20.
+
+### D-43 · Idle people and approval — **Decided**
+
+The design takes 2 approval for each idle million (at most 10). But a comfortable world has room
+for twice as many people as it has districts, and a capital at 12 million has 8 working districts,
+so a full colony would always have idle people, with nothing the player could do about it but
+lower taxes. A full capital then falls to *uneasy*, its farms make 10% less, it goes hungry and
+starts to starve, all with no orders given. (Asked 21 October 2026.)
+
+- **A. Idle people count only while there is open land to give them (recommended).** "−2 for each
+  idle million, while districts lie open, at most −10": a reason to zone, never a penalty with no
+  remedy. A full capital stays *content* (65).
+- **B. As designed.** Every idle million costs 2, whether or not there is land to give them.
+- **C. No penalty for idle people.** They still make nothing.
+
+**Decided on 21 October 2026: C, no penalty** (the owner's choice, over the recommended A). Idle
+people pay taxes and eat but make nothing; approval does not count them. Built in increment 20.
+
 ## Round 2: needed later
 
 | ID | Question | Needed by | Recommendation in brief |
@@ -522,6 +564,9 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-20 | The colony view's life (increment 16): the three shuttles and the rover, 8 candidates, about $0.40, so about **$7.65** of the owner's $15 spent in all; chosen the Authority's shuttle A, the Cooperative's B, the Wake's B, the rover A. A day of 90 seconds; weather and the most people only on medium and high quality | within D-27; a machine of four cores starts on low quality, so it has no weather |
 | 2026-10-20 | Increment 18, the first batch (D-30 2a, 2c): 38 candidates, about **$1.90**, so about **$10.25** of the owner's $25 spent in all; chosen the size-2 homes of each capital, b and c (Authority open b A, c B; Cooperative domed b A, c B; Wake domed b A, c A), and 13 props (every power's monument and mast, the Authority's cargo, the Cooperative's and the Wake's greenhouses, the solar field, landing beacon, storage spheres and supply crates; all A but the Wake's mast and both greenhouses, B). Props are published to fit a square of 256 and 512 px; the 1 MB budget for a colony's first pictures is now measured per power | within D-27; the lettered contact sheets and screenshots went to the owner, and the rest is made only after they have seen them |
 | 2026-10-21 | The owner kept increment 18's first picks ("as recommended"); the rest of the homes and props are made the same way | the owner's answer to the contact sheets |
+| 2026-10-21 | Increment 20's pictures, the districts' buildings (M2_WORLDS.md §15): 20 candidates, about **$1.00**, so about **$16.85** of the owner's $25 spent in all; chosen the Authority's works, labs and market A, the Cooperative's works A, labs B, market A, the Wake's works A, labs B (A stood on a block of ground), market A, and the greenhouse farms B | within D-27 and D-41; the lettered sheet went to the owner to overrule |
+| 2026-10-21 | Increments 20 and 21 of M2 built as one (districts and food with credits and approval): food, approval and credits each change what the others yield, so none can be played or balanced alone. M2's later increments move up one: projects and research are 21, the proof 27 | the game stays playable and balanced at every step |
+| 2026-10-21 | M2's economy in whole numbers (increment 20): a yield kept at a lower approval is rounded to the nearest (so "10% less" is not a third less of a small yield); what a turn yields is counted as the turn begins, so a deep mine yields from the next turn; only the capital's network keeps a food store (5 a colony), a colony cut off from it feeds itself; what needs you warns of food two turns ahead and names districts no one works only once the colony is full; a district scaffold takes its district's size; projects stand after the districts, then in a ring round the town | small and easy to change; each has a unit test |
 | 2026-10-21 | The music (increment 19, [MUSIC.md](design/MUSIC.md)): 15 candidates from `lyria-3.5` and four trials, about **$1.40**, so about **$15.85** of the owner's $25 spent in all; seven pieces chosen by what can be measured and sent to the owner to choose by ear; MP3 at 112 kbps levelled to −18 LUFS, about 2 MB each, downloaded only when played; music on by default with a setting | within D-27; the owner chose generated music (D-31) |
 | 2026-10-21 | Increment 18, the rest: 84 candidates, about **$4.20**, so about **$14.45** of the owner's $25 spent in all; 30 more homes and 12 more props (picks in [COLONY_VIEW.md §8](design/COLONY_VIEW.md#increment-18-the-second-part-21-october-2026)); the 1 MB budget for a colony's first pictures is measured over the game's own scenes (921 KB at most) | within D-27; the lettered sheets went to the owner to overrule |
 | 2026-10-20 | The colony view's full set (increment 17): the capitals' halls, the outposts' rigs and the fields, 14 candidates, about $0.70, so about **$8.35** of the owner's $15 spent in all; chosen the Authority's hall A, the Cooperative's A, the Wake's B, the fields A, every rig A. The hall takes the town's middle slot (the homes move one slot out, once); open-air colonies farm up to two free slots; budgets of 40 KB for the colony's code and 1 MB for its heaviest first pictures on a phone | within D-27; about $6.65 of the allowance is left |

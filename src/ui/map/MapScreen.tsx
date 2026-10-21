@@ -213,8 +213,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     panel.value = 'research';
   }, []);
   const onNeed = useCallback(
-    (n: Need) =>
-      n.kind === 'idle-ship' ? pickShip(n.ship) : n.kind === 'no-research' ? openResearch() : pickHolding(n.holding),
+    (n: Need) => {
+      if (n.kind === 'idle-ship') pickShip(n.ship);
+      else if (n.kind === 'no-research') openResearch();
+      else if (n.kind === 'debt') {
+        targeting.value = null;
+        panel.value = 'empire';
+      } else pickHolding(n.holding);
+    },
     [pickShip, pickHolding, openResearch],
   );
 
@@ -643,7 +649,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         ? n.ship === selectedShip.value
         : n.kind === 'no-research'
           ? panel.value === 'research'
-          : n.holding === selectedHolding.value,
+          : n.kind === 'debt'
+            ? panel.value === 'empire'
+            : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -802,12 +810,15 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       }}
     />
   );
-  const research = play && <ResearchView game={game} faction={play.faction} play={play} table={desktop} />;
+  const research = play && (
+    <ResearchView world={world} game={game} faction={play.faction} play={play} table={desktop} />
+  );
   const empire = play && (
     <EmpireView
       world={world}
       game={game}
       faction={play.faction}
+      play={play}
       table={desktop}
       onHolding={pickHolding}
       onView={viewColony}
@@ -1446,7 +1457,13 @@ function PlayOutliner({
         <ul class="needs-list">
           {play.needs.map((n) => (
             <li
-              key={n.kind === 'idle-ship' ? `s${n.ship}` : n.kind === 'no-research' ? n.kind : `${n.kind}-${n.holding}`}
+              key={
+                n.kind === 'idle-ship'
+                  ? `s${n.ship}`
+                  : n.kind === 'no-research' || n.kind === 'debt'
+                    ? n.kind
+                    : `${n.kind}-${n.holding}`
+              }
             >
               <button type="button" class="outliner-item" onClick={() => onNeed(n)}>
                 {needText(world, game, n)}

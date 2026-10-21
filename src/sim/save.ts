@@ -4,9 +4,10 @@
 //
 // The world is never saved: it is rebuilt from the dataset, so a save is small.
 
-import { FACTIONS, isFactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId, isFactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
-import { capitalHolding, type GameState, STATE_VERSION } from './state.ts';
+import { startZoning } from './economy.ts';
+import { capitalHolding, type GameState, type Holding, STATE_VERSION } from './state.ts';
 import { shapeProblems, stateProblems } from './validate.ts';
 import type { World } from './world.ts';
 
@@ -113,6 +114,28 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, researched: [], researchQueue: [], techProgress: {} }));
     return { ...g, version: 5, powers };
   },
+  /**
+   * 6 → 7 (M2 increment 20): districts, food, credits and approval. Each capital is zoned as every
+   * capital starts; every other colony is zoned for its people as a balanced governor would
+   * (`startZoning`); the mine project becomes the deep mine; every power gets the starting food
+   * store and treasury, at standard taxes; no colony is hungry or overdriven.
+   */
+  6: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.holdings)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({
+      ...p,
+      food: RULES.food.start,
+      treasury: RULES.credits.start,
+      taxes: 'standard',
+    }));
+    const holdings = (g.holdings as Raw[]).map((h) => ({
+      ...h,
+      districts: h.kind !== 'colony' ? [] : h.capital === true ? capitalHolding(h.owner as FactionId).districts : null,
+      hungry: 0,
+      overdrive: 0,
+    }));
+    return { ...g, version: 7, powers, holdings };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
@@ -152,6 +175,10 @@ export function readEnvelope(world: World, raw: unknown): { game: GameState; sav
     if (e instanceof SaveError) throw e;
     throw new SaveError(DAMAGED);
   }
+  // Colonies from before M2 are zoned now that the world is to hand (migration 6 → 7).
+  if (Array.isArray(game.holdings))
+    for (const h of game.holdings as Raw[])
+      if (h.districts === null) h.districts = startZoning(world, game as unknown as GameState, h as unknown as Holding);
   const problems = [...shapeProblems(game)];
   if (problems.length === 0) problems.push(...stateProblems(world, game as unknown as GameState));
   if (problems.length > 0) throw new SaveError(`This save is damaged and cannot be loaded (${problems[0]}).`);

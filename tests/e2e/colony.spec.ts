@@ -70,7 +70,7 @@ test('the Cooperative’s capital is drawn as a domed city on a warm shore, and 
   await expect(still).toHaveClass(/is-drawn/, { timeout: 20_000 });
   await expect(still).toHaveAttribute('data-biome', 'shore');
   await expect(still.getByRole('img')).toHaveAccessibleName(
-    'Tau Ceti e: a domed city of about 10 million under a yellow sun, with a shipyard and a lane station.',
+    'Tau Ceti e: a domed city of about 10 million under a yellow sun, with 2 farms, 3 works, a mine, a lab, a market, a shipyard and a lane station.',
   );
   // No label says how the picture was made (D-29); the codex's credits do.
   await expect(still).not.toContainText('Illustration');
@@ -87,9 +87,9 @@ test('the Cooperative’s capital is drawn as a domed city on a warm shore, and 
   });
   expect(varied).toBe(true);
 
-  // A queued mine stands as a scaffold where the mine will be.
-  await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
-  await expect(still.getByRole('img')).toHaveAccessibleName(/; a mine is being built\.$/);
+  // A queued deep mine stands as a scaffold where it will be.
+  await press(panel.getByRole('button', { name: 'Queue a deep mine' }), project);
+  await expect(still.getByRole('img')).toHaveAccessibleName(/; a deep mine is being built\.$/);
   expect(errors).toEqual([]);
 });
 
@@ -103,7 +103,11 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
   const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
   await enterColony(page, panel, 'Tau Ceti e', project);
   const scene = await colony(page);
-  expect(scene).toMatchObject({ biome: 'shore', architecture: 'cooperative', buildings: 6 });
+  // The hall, ten districts and two projects (M2_WORLDS.md §15).
+  expect(scene).toMatchObject({ biome: 'shore', architecture: 'cooperative', buildings: 13 });
+  expect(scene.pictures).toEqual(
+    expect.arrayContaining(['cooperative-works', 'cooperative-labs', 'cooperative-market', 'greenhouse-farms']),
+  );
   // Neighbouring homes show different versions of their picture, and props stand between the
   // buildings (COLONY_VIEW.md §9).
   const homes = scene.pictures.filter((p) => p.startsWith('cooperative-homes-'));
@@ -153,8 +157,8 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
   await expect.poll(async () => (await look(page)).cx).toBeGreaterThan(before.cx);
 
   // What is queued stands as a scaffold, in the scene too.
-  await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
-  await expect(panel).toContainText('A mine is already queued.');
+  await press(panel.getByRole('button', { name: 'Queue a deep mine' }), project);
+  await expect(panel).toContainText('A deep mine is already queued.');
   // The scaffold's picture loads first; a slow machine takes a while.
   await expect.poll(async () => (await onScreen(page)).map((b) => b.kind), { timeout: 30_000 }).toContain('scaffold');
 
@@ -169,10 +173,10 @@ test('each power builds in its own way, on its own ground', async ({ page }, inf
   test.skip(!isDesktop(info.project.name), 'one size is enough to check the three sets');
   test.slow();
   const project = info.project.name;
-  // Earth's open air leaves a slot for fields; Wolf 1061 c's town is sealed.
+  // Earth's farms are fields in the open air; Wolf 1061 c's town is sealed.
   for (const [power, capital, seed, biome, architecture, buildings] of [
-    ['Lead the Transit Authority', 'Earth', '42', 'garden', 'authority', 7],
-    ['Lead the Hollow Wake', 'Wolf 1061 c', '4242', 'inferno', 'wake', 6],
+    ['Lead the Transit Authority', 'Earth', '42', 'garden', 'authority', 13],
+    ['Lead the Hollow Wake', 'Wolf 1061 c', '4242', 'inferno', 'wake', 13],
   ] as const) {
     const panel = await openCapital(page, power, capital, seed, project);
     await enterColony(page, panel, capital, project);
@@ -214,7 +218,7 @@ test('the colony lives: people walk, a rover drives, the shuttle visits, the day
   const card = page.locator('.colony-card');
   await expect(card).toBeVisible();
   await expect(card.getByRole('heading')).toHaveText('Homes, sealed');
-  await expect(card).toContainText('10 million people live in the colony’s 3 homes.');
+  await expect(card).toContainText('10 million people live in the colony’s 2 homes.');
   await press(card.getByRole('button', { name: 'Close' }), project);
   await expect(card).toHaveCount(0);
   expect(errors).toEqual([]);
@@ -225,8 +229,8 @@ test('a finished mine stands where its scaffold was, and the report shows it', a
   test.slow();
   const project = info.project.name;
   const panel = await openCapital(page, 'Lead the Frontier Co-op', 'Tau Ceti e', '1', project);
-  await press(panel.getByRole('button', { name: 'Queue a mine' }), project);
-  // 30 industry at 12 a turn: finished in the third turn.
+  await press(panel.getByRole('button', { name: 'Queue a deep mine' }), project);
+  // 30 industry at 11 a turn: finished in the third turn.
   for (let i = 0; i < 3; i++) {
     const date = await page.locator('.map-date').textContent();
     await page.keyboard.press('Enter');
@@ -239,12 +243,13 @@ test('a finished mine stands where its scaffold was, and the report shows it', a
     }
   }
   const report = page.getByRole('dialog', { name: 'Report' });
-  await expect(report).toContainText('Tau Ceti e built a mine');
+  await expect(report).toContainText('Tau Ceti e built a deep mine');
   await report.getByRole('button', { name: 'See it' }).click();
   await expect(page.getByTestId('map')).toHaveAttribute('data-colony-ready', '1', { timeout: 30_000 });
-  const kinds = (await onScreen(page)).map((b) => b.kind);
-  expect(kinds).toContain('mine');
-  expect(kinds).not.toContain('scaffold');
+  // It stands past the town's ten districts and two projects, where its scaffold was.
+  const buildings = await onScreen(page);
+  expect(buildings.some((b) => b.kind === 'mine' && b.slot === 13)).toBe(true);
+  expect(buildings.map((b) => b.kind)).not.toContain('scaffold');
 });
 
 test('every colony and outpost can be seen from the empire’s list', async ({ page }, info) => {

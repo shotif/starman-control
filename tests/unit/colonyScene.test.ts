@@ -19,7 +19,15 @@ import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/faction
 import { PROJECT_IDS } from '../../src/content/projects.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { frameTown, placeAll, placeBuilding, placeProps } from '../../src/render/colonyPlace.ts';
-import { biomeOf, colonyScene, homesFor, homeVersions, mixHex, propsFor } from '../../src/render/colonyScene.ts';
+import {
+  biomeOf,
+  colonyScene,
+  districtKind,
+  homeSize,
+  homeVersions,
+  mixHex,
+  propsFor,
+} from '../../src/render/colonyScene.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
 import { type GameState, newGame } from '../../src/sim/state.ts';
 import { buildWorld } from '../../src/sim/world.ts';
@@ -66,13 +74,17 @@ describe('the ground of a world', () => {
   });
 });
 
-describe('homes', () => {
-  it('grow in number and size with the people, the newest a size smaller', () => {
-    expect(homesFor(5, 5)).toEqual([1]);
-    expect(homesFor(25, 5)).toEqual([1]);
-    expect(homesFor(100, 5)).toEqual([2, 2, 1]);
-    expect(homesFor(200, 6)).toEqual([3, 3, 3, 3, 2]);
-    expect(homesFor(200, 3)).toEqual([3, 3, 2]);
+describe('homes and districts', () => {
+  it('grow in size with the people: houses, then blocks from 3 million, towers from 15', () => {
+    expect([5, 29, 30, 149, 150, 200].map(homeSize)).toEqual([1, 1, 2, 2, 3, 3]);
+  });
+
+  it('show each district as its zone’s building: fields in the open air, farms under glass in domes', () => {
+    expect(districtKind('farms', 'open')).toBe('fields');
+    expect(districtKind('farms', 'domed')).toBe('greenhouse-farms');
+    expect(districtKind('mines', 'open')).toBe('mine');
+    expect(districtKind('housing', 'domed')).toBe('homes');
+    for (const z of ['works', 'labs', 'market'] as const) expect(districtKind(z, 'open')).toBe(z);
   });
 });
 
@@ -87,17 +99,25 @@ describe('a colony’s scene', () => {
     expect(s?.colour).toBe(FACTIONS.frontier.colour);
     expect(s?.sun.word).toBe('yellow');
     expect(s?.sun.size).toBeGreaterThan(1);
-    expect(s?.slots).toBe(body('tau-ceti', 'tau-ceti-e', 1).size);
+    // The hall in the middle, its ten districts round it, then its projects (M2_WORLDS.md §15).
+    expect(s?.slots).toBe(13);
     expect(s?.buildings.map((b) => [b.kind, b.slot])).toEqual([
       ['hall', 0],
-      ['shipyard', 1],
+      ['homes', 1],
       ['homes', 2],
-      ['lane-station', 3],
-      ['homes', 4],
-      ['homes', 6],
+      ['greenhouse-farms', 3],
+      ['greenhouse-farms', 4],
+      ['works', 5],
+      ['works', 6],
+      ['works', 7],
+      ['mine', 8],
+      ['labs', 9],
+      ['market', 10],
+      ['shipyard', 11],
+      ['lane-station', 12],
     ]);
     expect(s?.description).toBe(
-      'Tau Ceti e: a domed city of about 10 million under a yellow sun, with a shipyard and a lane station.',
+      'Tau Ceti e: a domed city of about 10 million under a yellow sun, with 2 farms, 3 works, a mine, a lab, a market, a shipyard and a lane station.',
     );
   });
 
@@ -116,31 +136,43 @@ describe('a colony’s scene', () => {
     h.industry = 15;
     const s = colonyScene(world, g, h);
     const scaffold = s?.buildings.find((b) => b.kind === 'scaffold');
-    expect(scaffold).toEqual({ kind: 'scaffold', project: 'mine', slot: 5, progress: 0.5 });
-    // The fields that were in slot 5 make way.
-    expect(s?.buildings.filter((b) => b.slot === 5)).toHaveLength(1);
-    expect(s?.description).toMatch(/; a mine is being built\.$/);
-    // When it is finished, the mine stands in the scaffold's slot.
+    // After the hall, ten districts and two projects.
+    expect(scaffold).toEqual({ kind: 'scaffold', project: 'mine', slot: 13, progress: 0.5 });
+    expect(s?.description).toMatch(/; a deep mine is being built\.$/);
+    // When it is finished, the deep mine stands in the scaffold's slot.
     h.queue = [];
     h.projects = [...h.projects, 'mine'];
-    expect(colonyScene(world, g, h)?.buildings.find((b) => b.kind === 'mine')?.slot).toBe(5);
+    expect(colonyScene(world, g, h)?.buildings.find((b) => b.project === 'mine')?.slot).toBe(13);
   });
 
-  it('lays Earth out in the open air, under a dense sky, farming its free slot', () => {
+  it('puts a scaffold where a district is being zoned, in place of what stood there', () => {
+    const g = start('sta', 42);
+    const h = capital(g, 'sta');
+    h.queue = [{ kind: 'zone', zone: 'labs', slot: 5 }];
+    h.industry = 5;
+    const s = colonyScene(world, g, h);
+    expect(s?.buildings.filter((b) => b.slot === 5)).toEqual([
+      { kind: 'scaffold', district: 'labs', slot: 5, progress: 0.25 },
+    ]);
+    expect(s?.description).toMatch(/; a district is being zoned for labs\.$/);
+  });
+
+  it('lays Earth out in the open air, under a dense sky, its farms as fields', () => {
     const g = start('sta', 42);
     const s = colonyScene(world, g, capital(g, 'sta'));
     expect(s?.biome).toBe('garden');
     expect(s?.envelope).toBe('open');
-    // Earth's size is 7: the hall, two projects and three homes leave slot 5 for fields.
-    expect(s?.buildings.map((b) => [b.kind, b.slot])).toEqual([
-      ['hall', 0],
-      ['shipyard', 1],
-      ['homes', 2],
-      ['lane-station', 3],
-      ['homes', 4],
-      ['fields', 5],
-      ['homes', 6],
+    expect(s?.buildings.filter((b) => b.district === 'farms').map((b) => [b.kind, b.slot])).toEqual([
+      ['fields', 3],
+      ['fields', 4],
     ]);
+    // A colony's first homes stand in the middle, its housing districts' round it.
+    const colony = { ...capital(g, 'sta'), id: 7, capital: false, districts: [{ zone: 'housing' as const, slot: 2 }] };
+    expect(
+      colonyScene(world, g, colony)
+        ?.buildings.filter((b) => b.kind === 'homes')
+        .map((b) => b.slot),
+    ).toEqual([0, 2]);
     expect(s?.sky.starsByDay).toBe(false);
     expect(s?.sun.size).toBeCloseTo(1, 1);
   });
@@ -154,7 +186,14 @@ describe('a colony’s scene', () => {
 
   it('gives an outpost no homes and no people', () => {
     const g = start('hollow-wake', 42);
-    const h = { ...capital(g, 'hollow-wake'), kind: 'outpost' as const, capital: false, people: 0, projects: [] };
+    const h = {
+      ...capital(g, 'hollow-wake'),
+      kind: 'outpost' as const,
+      capital: false,
+      people: 0,
+      projects: [],
+      districts: [],
+    };
     const s = colonyScene(world, g, h);
     expect(s?.buildings).toEqual([{ kind: 'rig', slot: 0 }]);
     expect(s?.people).toBe(0);
@@ -202,6 +241,8 @@ describe('the colony view’s pictures', () => {
       expect(structureArt(a, 'fields')?.id).toBe('fields');
       expect(structureArt(a, 'hall')?.id).toBe(`${a}-hall`);
       expect(structureArt(a, 'rig')?.id).toBe(`${a}-rig`);
+      for (const z of ['works', 'labs', 'market'] as const) expect(structureArt(a, z)?.id).toBe(`${a}-${z}`);
+      expect(structureArt(a, 'greenhouse-farms')?.id).toBe('greenhouse-farms');
     }
     expect(structureId('wake', 'homes', { size: 3, envelope: 'domed' })).toBe('wake-homes-3-domed');
     expect(structureId('wake', 'homes', { size: 3, envelope: 'domed', version: 2 })).toBe('wake-homes-3-domed-c');
@@ -252,6 +293,17 @@ describe('placing the buildings', () => {
     const p = placeBuilding(scene, land, scaffold);
     const mine = placeBuilding(scene, land, { kind: 'mine', project: 'mine', slot: scaffold.slot });
     expect(p && mine && p.w / mine.w).toBeCloseTo(0.7, 5);
+    // And a district's scaffold to the district's building.
+    const zoning = placeBuilding(scene, land, { kind: 'scaffold', district: 'market', slot: 4 });
+    const market = placeBuilding(scene, land, { kind: 'market', district: 'market', slot: 4 });
+    expect(zoning && market && zoning.w / market.w).toBeCloseTo(0.7, 5);
+  });
+
+  it('stands projects past the twelfth slot in a ring round the town', () => {
+    const ring = placeBuilding(scene, land, { kind: 'mine', project: 'mine', slot: 13 });
+    expect(ring).not.toBeNull();
+    expect(ring && ring.u > 0 && ring.u < 1 && ring.v > land.horizon).toBe(true);
+    expect(placeBuilding(scene, land, { kind: 'mine', project: 'mine', slot: 40 })).toBeNull();
   });
 
   it('frames the town inside the picture at any shape', () => {
@@ -294,7 +346,11 @@ describe('three versions of every home (COLONY_VIEW.md §9.2)', () => {
 
   it('is part of every home in a scene', () => {
     const g = start('sta', 42);
-    const s = colonyScene(world, g, { ...capital(g, 'sta'), people: 160 });
+    const s = colonyScene(world, g, {
+      ...capital(g, 'sta'),
+      people: 160,
+      districts: [1, 2, 3, 4].map((slot) => ({ zone: 'housing' as const, slot })),
+    });
     const homes = s?.buildings.filter((b) => b.kind === 'homes') ?? [];
     expect(homes.length).toBeGreaterThan(2);
     expect(new Set(homes.map((b) => b.home?.version)).size).toBeGreaterThan(1);

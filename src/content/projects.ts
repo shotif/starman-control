@@ -2,6 +2,7 @@
 // ships.ts; projects are built once per colony. Costs are starting points for balancing in M2.
 
 import type { SystemId } from '../data/types.ts';
+import { ZONE_DEFS, type Zone } from './districts.ts';
 import { SHIPS, type ShipType } from './ships.ts';
 
 export type ProjectId = 'shipyard' | 'lane-station' | 'mine' | 'survey-station';
@@ -35,8 +36,8 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
   },
   mine: {
     id: 'mine',
-    name: 'Mine',
-    does: '1 more metals a turn.',
+    name: 'Deep mine',
+    does: 'Each mine district here yields 1 more.',
     cost: { industry: 30, metals: 5, volatiles: 0, fuel: 0 },
   },
   'survey-station': {
@@ -55,7 +56,10 @@ export type BuildItem = { kind: 'ship'; ship: ShipType } | { kind: 'project'; pr
 /** A lane from the holding's system to another star, new or relit (M1_LANES_RESEARCH.md §1). */
 export type LaneItem = { kind: 'lane'; to: SystemId };
 
-export type QueueItem = BuildItem | LaneItem;
+/** Zoning a district (M2_WORLDS.md §2): the open district in `slot`, or rezoning the one there. */
+export type ZoneItem = { kind: 'zone'; zone: Zone; slot: number };
+
+export type QueueItem = BuildItem | LaneItem | ZoneItem;
 
 /** The base cost of a ship or project; src/sim/economy.ts's costOf gives any item's actual cost. */
 export function itemCost(item: BuildItem): Cost {
@@ -65,5 +69,6 @@ export function itemCost(item: BuildItem): Cost {
 }
 
 export function itemName(item: QueueItem): string {
+  if (item.kind === 'zone') return `${ZONE_DEFS[item.zone].name} district`;
   return item.kind === 'lane' ? 'Lane' : item.kind === 'project' ? PROJECTS[item.project].name : SHIPS[item.ship].name;
 }

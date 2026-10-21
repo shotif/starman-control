@@ -1,35 +1,62 @@
-// Colonies and outposts on screen (M1_COLONIES.md §5): a holding's panel with its people, industry,
-// yields and build queue; the worlds a colony or outpost ship can settle; and the empire at a
-// glance. The same parts serve both layouts: the phone shows lists and cards, the desktop tables.
+// Colonies and outposts on screen (M1_COLONIES.md §5, M2_WORLDS.md §14): a holding's panel with its
+// people, approval, food, industry, credits, districts and build queue; the worlds a colony or
+// outpost ship can settle; and the empire at a glance. The same parts serve both layouts: the phone
+// shows lists and cards, the desktop tables.
 
 import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
+import { ZONE_DEFS, ZONES, type Zone } from '../../content/districts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { type Cost, itemName, PROJECTS, type QueueItem } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import {
+  type ApprovalLevel,
+  approvalOf,
   bodyOf,
   buildOptions,
   capacityOf,
   costOf,
+  creditsOf,
+  districtAt,
+  districtCount,
+  foodOf,
+  foodTurnsLeft,
   growthOf,
+  idleMillions,
   incomeOf,
   industryOf,
+  mainResource,
+  networkFood,
+  networkOf,
+  networksOf,
+  overdriveOf,
   queueTurns,
   type Resource,
+  researchOf,
   resourceWord,
   settleRefusal,
   shortfall,
+  treasuryOf,
+  workedSlots,
   yieldsOf,
+  zoneRefusal,
+  zoneYield,
 } from '../../sim/economy.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { habitability } from '../../sim/habitability.ts';
 import { laneQuote, laneTargets } from '../../sim/lanes.ts';
 import type { Need } from '../../sim/needs.ts';
-import { researchOf, speciesFor } from '../../sim/research.ts';
-import { type GameState, type Holding, powerOf, type ShipState, type Stockpile } from '../../sim/state.ts';
+import { speciesFor } from '../../sim/research.ts';
+import {
+  type GameState,
+  type Holding,
+  powerOf,
+  type ShipState,
+  type Stockpile,
+  type TaxRate,
+} from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
@@ -64,6 +91,8 @@ export function costText(c: Cost): string {
 
 /** "Survey ship", "New lane to Ross 128", "Relight the lane to Ross 128". */
 export function queueLabel(world: World, h: Holding, item: QueueItem): string {
+  if (item.kind === 'zone')
+    return `${districtAt(h, item.slot) ? 'Rezone' : 'Zone'} district ${item.slot} for ${ZONE_DEFS[item.zone].name.toLowerCase()}`;
   if (item.kind !== 'lane') return itemName(item);
   const to = world.system(item.to).name;
   return world.catalogueLane(h.system, item.to) ? `Relight the lane to ${to}` : `New lane to ${to}`;
@@ -95,7 +124,12 @@ export function incomeHelp(world: World, game: GameState, faction: FactionId, r:
 export function Resources({ world, game, faction }: { world: World; game: GameState; faction: FactionId }) {
   const s = powerOf(game, faction).stockpile;
   const income = incomeOf(world, game, faction);
-  const research = researchOf(game, faction);
+  const research = researchOf(world, game, faction);
+  const power = powerOf(game, faction);
+  const treasury = treasuryOf(world, game, faction);
+  const home = networksOf(world, game, faction).find((n) => n.home);
+  const food = home ? networkFood(world, game, faction, home) : null;
+  const signed = (n: number) => (n > 0 ? ` +${n}` : n < 0 ? ` −${-n}` : '');
   const item = (r: Resource, cls: string) => (
     <li title={incomeHelp(world, game, faction, r)}>
       <span class={`res-icon ${cls}`} aria-hidden="true" />
@@ -111,6 +145,30 @@ export function Resources({ world, game, faction }: { world: World; game: GameSt
       {item('metals', 'res-metals')}
       {item('volatiles', 'res-volatiles')}
       {item('fuel', 'res-fuel')}
+      <li
+        class={`res-credits${power.treasury < 0 ? ' is-short' : ''}`}
+        title={`Credits a turn: ${treasury.parts.map((p) => `${p.value > 0 ? '+' : ''}${p.value} ${p.label}`).join(', ')}`}
+      >
+        <span class="res-icon res-credits-icon" aria-hidden="true" />
+        <b>
+          <Count value={power.treasury} />
+        </b>
+        <span class="res-name"> credits</span>
+        <span class="res-income">{signed(treasury.total)}</span>
+      </li>
+      {food && (
+        <li
+          class={`res-food${food.made < food.eaten && food.store + food.made < food.eaten ? ' is-short' : ''}`}
+          title={`Food in store for the colonies on the capital's lanes: ${food.made} made, ${food.eaten} eaten a turn`}
+        >
+          <span class="res-icon res-food-icon" aria-hidden="true" />
+          <b>
+            <Count value={food.store} />
+          </b>
+          <span class="res-name"> food</span>
+          <span class="res-income">{signed(food.made - food.eaten)}</span>
+        </li>
+      )}
       <li class="res-research" title={`Research a turn ${research.parts.map((p) => p.label).join(', ')}`}>
         <span class="res-icon res-science" aria-hidden="true" />
         <b>
@@ -139,6 +197,52 @@ function FigureLine({
       </b>
       {parts.length > 1 && <span class="dim"> = {parts.map((p) => `${p.value} ${p.label}`).join(' + ')}</span>}
     </p>
+  );
+}
+
+/** Why a colony grows or not. */
+function growthText(world: World, game: GameState, h: Holding): string {
+  const g = growthOf(world, game, h);
+  if (g > 0) return `+${millions(g)} million a turn`;
+  if (h.hungry > 0) return 'none: the colony is hungry';
+  const level = approvalOf(world, game, h).level;
+  if (level === 'unrest' || level === 'revolt')
+    return `none: the colony is in ${level === 'revolt' ? 'revolt' : 'unrest'}`;
+  return 'none: the colony is full';
+}
+
+/** "64 · Content", and what makes it up. */
+function ApprovalText({ world, game, h }: { world: World; game: GameState; h: Holding }) {
+  const a = approvalOf(world, game, h);
+  return (
+    <>
+      <span class={`approval approval-${a.level}`}>
+        {a.total} · {APPROVAL_WORD[a.level]}
+      </span>{' '}
+      <span class="dim">
+        = {a.parts.map((p) => `${p.value > 0 && p !== a.parts[0] ? '+' : ''}${p.value} ${p.label}`).join(' ')}
+      </span>
+    </>
+  );
+}
+
+/** What the colony's farms make and its people eat, and how its network stands. */
+function FoodText({ world, game, h }: { world: World; game: GameState; h: Holding }) {
+  const f = foodOf(world, game, h);
+  const net = networkOf(world, game, h);
+  const nf = networkFood(world, game, h.owner, net);
+  const left = net.home ? foodTurnsLeft(nf) : null;
+  const where = net.home
+    ? `On the capital's lanes: ${nf.made} made, ${nf.eaten} eaten a turn, ${nf.store} in store${
+        left !== null ? `, enough for ${left} turn${left === 1 ? '' : 's'}` : ''
+      }.`
+    : nf.made < nf.eaten
+      ? 'Cut off from the capital’s lanes, and it cannot feed itself.'
+      : 'Cut off from the capital’s lanes: it feeds itself.';
+  return (
+    <>
+      {f.made.total} made, {f.eaten} eaten{h.hungry > 0 ? ' · hungry' : ''} <span class="dim">{where}</span>
+    </>
   );
 }
 
@@ -361,6 +465,183 @@ function LanesFromHere({ world, game, h, play }: { world: World; game: GameState
   );
 }
 
+const APPROVAL_WORD: Record<ApprovalLevel, string> = {
+  content: 'Content',
+  uneasy: 'Uneasy',
+  unrest: 'Unrest',
+  revolt: 'In revolt',
+};
+
+/** What a worked district of a zone yields here, in words: "3 food", "2 metals", "room for 2 million". */
+export function zoneYieldText(world: World, game: GameState, h: Holding, zone: Zone): string {
+  if (zone === 'housing') return 'room for 2 million';
+  const n = zoneYield(world, game, h, zone);
+  if (zone === 'mines') {
+    const body = bodyOf(world, game, h);
+    const r = body ? mainResource(body) : null;
+    return r ? `${n} ${resourceWord(r)}` : 'nothing';
+  }
+  const word = { farms: 'food', works: 'industry', labs: 'research', market: 'credits' }[zone];
+  return `${n} ${word}`;
+}
+
+/** The colony's districts (M2_WORLDS.md §2, §14): a tile for each, zoned or open; press one to zone it. */
+function Districts({ world, game, h, play }: { world: World; game: GameState; h: Holding; play?: Play }) {
+  const [chosen, setChosen] = useState<number | null>(null);
+  const n = districtCount(world, game, h);
+  const worked = workedSlots(h);
+  const queued = new Map(h.queue.flatMap((q) => (q.kind === 'zone' ? [[q.slot, q.zone] as const] : [])));
+  const idle = idleMillions(h);
+  const unworked = h.districts.filter((d) => ZONE_DEFS[d.zone].worked && !worked.has(d.slot)).length;
+  const mine = play?.faction === h.owner;
+  const slots = Array.from({ length: n }, (_, i) => i + 1);
+  const open = chosen === null ? undefined : districtAt(h, chosen);
+  return (
+    <section class="districts" aria-label="Districts">
+      <h3>
+        Districts{' '}
+        <span class="dim">
+          · {h.districts.length} of {n} zoned
+        </span>
+      </h3>
+      <p class="dim">
+        A million people work each district; housing needs no one.
+        {idle > 0 && ` ${idle} million have no district to work.`}
+        {unworked > 0 &&
+          ` ${unworked} district${unworked === 1 ? ' has' : 's have'} no one to work ${unworked === 1 ? 'it' : 'them'}.`}
+      </p>
+      <ul class="district-tiles">
+        {slots.map((slot) => {
+          const d = districtAt(h, slot);
+          const next = queued.get(slot);
+          const state = next
+            ? `being zoned for ${ZONE_DEFS[next].name.toLowerCase()}`
+            : !d
+              ? 'open'
+              : !ZONE_DEFS[d.zone].worked
+                ? 'lived in'
+                : worked.has(slot)
+                  ? 'worked'
+                  : 'no one to work it';
+          const label = d ? ZONE_DEFS[d.zone].name : 'Open';
+          return (
+            <li key={slot}>
+              <button
+                type="button"
+                class={`district zone-${d?.zone ?? 'open'}${d && ZONE_DEFS[d.zone].worked && !worked.has(slot) ? ' is-unworked' : ''}${chosen === slot ? ' is-chosen' : ''}`}
+                aria-pressed={chosen === slot}
+                aria-label={`District ${slot}: ${label}, ${d ? zoneYieldText(world, game, h, d.zone) : 'nothing'}, ${state}`}
+                disabled={!mine}
+                onClick={() => setChosen(chosen === slot ? null : slot)}
+              >
+                <span class="district-name">{label}</span>
+                <span class="district-yield">{d ? zoneYieldText(world, game, h, d.zone) : '—'}</span>
+                <span class="district-state">{state}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      {mine && play && chosen !== null && (
+        <fieldset class="district-choices" aria-label={`District ${chosen}`}>
+          <p>
+            <b>District {chosen}</b>{' '}
+            <span class="dim">
+              {open ? `${ZONE_DEFS[open.zone].name}: ${ZONE_DEFS[open.zone].does}` : 'Open land: zone it for a use.'}
+            </span>
+          </p>
+          <ul class="build-options">
+            {ZONES.filter((z) => z !== open?.zone).map((zone) => {
+              const refusal = zoneRefusal(world, game, h, zone, chosen);
+              const verb = open ? 'Rezone for' : 'Zone for';
+              return (
+                <li key={zone}>
+                  <button
+                    type="button"
+                    class="build-option"
+                    disabled={refusal !== null}
+                    aria-label={`${verb} ${ZONE_DEFS[zone].name.toLowerCase()}`}
+                    onClick={() => {
+                      give(play, { type: 'queue', holding: h.id, item: { kind: 'zone', zone, slot: chosen } });
+                      setChosen(null);
+                    }}
+                  >
+                    <b>
+                      {verb} {ZONE_DEFS[zone].name.toLowerCase()}
+                    </b>
+                    <span class="build-cost">
+                      {costText(costOf(world, game, h, { kind: 'zone', zone, slot: chosen }))}
+                    </span>
+                    <span class="build-does">{refusal ?? `${zoneYieldText(world, game, h, zone)} here`}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          {open && (
+            <p class="district-actions">
+              {ZONE_DEFS[open.zone].worked && h.districts[0]?.slot !== chosen && (
+                <button
+                  type="button"
+                  class="button button-small"
+                  onClick={() => give(play, { type: 'work-first', holding: h.id, slot: chosen })}
+                >
+                  Work it first
+                </button>
+              )}{' '}
+              <button
+                type="button"
+                class="button button-quiet button-small"
+                onClick={() => {
+                  give(play, { type: 'clear-district', holding: h.id, slot: chosen });
+                  setChosen(null);
+                }}
+              >
+                Make it open
+              </button>
+            </p>
+          )}
+        </fieldset>
+      )}
+    </section>
+  );
+}
+
+/** Overdrive (M2_WORLDS.md §4): industry bought with credits, each step dearer, drawn as a curve. */
+function Overdrive({ world, game, h, play }: { world: World; game: GameState; h: Holding; play: Play }) {
+  const base = industryOf(world, game, { ...h, overdrive: 0 }).total;
+  const steps = [0, 1, 2, 3].map((n) => ({ n, ...overdriveOf(base, n) }));
+  const most = Math.max(1, steps[3]?.credits ?? 1);
+  const treasury = powerOf(game, h.owner).treasury;
+  return (
+    <section class="overdrive" aria-label="Overdrive">
+      <p class="dim">
+        Buy industry with credits each turn, a quarter of {base} a step; each step costs twice the last.
+      </p>
+      <fieldset class="step-choices overdrive-steps">
+        <legend class="visually-hidden">Overdrive</legend>
+        {steps.map((s) => (
+          <button
+            key={s.n}
+            type="button"
+            class="step-choice"
+            aria-pressed={h.overdrive === s.n}
+            disabled={s.n > h.overdrive && treasury <= 0}
+            onClick={() => give(play, { type: 'overdrive', holding: h.id, steps: s.n })}
+          >
+            <span>{s.n === 0 ? 'Off' : `+${s.industry} for ${s.credits}`}</span>
+            <span
+              class="overdrive-bar"
+              aria-hidden="true"
+              style={{ height: `${Math.round((s.credits * 100) / most)}%` }}
+            />
+          </button>
+        ))}
+      </fieldset>
+    </section>
+  );
+}
+
 export function HoldingPanel({
   world,
   game,
@@ -414,19 +695,25 @@ export function HoldingPanel({
               {millions(h.people)} million, room for {millions(capacityOf(world, game, h))} million
             </dd>
             <dt>Growth</dt>
+            <dd>{growthText(world, game, h)}</dd>
+            <dt>Approval</dt>
             <dd>
-              {growthOf(world, game, h) > 0
-                ? `+${millions(growthOf(world, game, h))} million a turn`
-                : 'none: the colony is full'}
+              <ApprovalText world={world} game={game} h={h} />
+            </dd>
+            <dt>Food</dt>
+            <dd>
+              <FoodText world={world} game={game} h={h} />
             </dd>
           </dl>
-          <FigureLine label="Industry" {...industryOf(h)} />
+          <FigureLine label="Industry" {...industryOf(world, game, h)} />
+          <FigureLine label="Credits" {...creditsOf(world, game, h)} />
         </>
       ) : (
         <p class="dim">Outposts have no people; they gather their world’s riches, and can build lanes.</p>
       )}
       <YieldsLine world={world} game={game} h={h} />
-      {h.kind === 'outpost' && <FigureLine label="Industry" {...industryOf(h)} />}
+      {h.kind === 'outpost' && <FigureLine label="Industry" {...industryOf(world, game, h)} />}
+      {h.kind === 'colony' && <Districts world={world} game={game} h={h} play={play} />}
       {h.kind === 'colony' && (
         <>
           <h3>Built here</h3>
@@ -446,9 +733,10 @@ export function HoldingPanel({
       {mine && play && (
         <>
           <h3>
-            Building <span class="dim">· {industryOf(h).total} industry a turn</span>
+            Building <span class="dim">· {industryOf(world, game, h).total} industry a turn</span>
           </h3>
           <Queue world={world} game={game} h={h} play={play} table={table} />
+          {h.kind === 'colony' && <Overdrive world={world} game={game} h={h} play={play} />}
           {h.kind === 'colony' && (
             <>
               <h3>Add to the queue</h3>
@@ -534,6 +822,10 @@ function outpostYield(riches: Stockpile): string {
 /** What a need says, and what choosing it opens. */
 export function needText(world: World, game: GameState, need: Need): string {
   if (need.kind === 'no-research') return 'Nothing is being researched.';
+  if (need.kind === 'debt')
+    return need.turns === 0
+      ? 'The treasury is in debt: every colony is unhappier until it is paid off.'
+      : `The treasury will be in debt in ${need.turns} turn${need.turns === 1 ? '' : 's'}: raise taxes, zone markets or cut overdrive.`;
   const where = world.system(need.system).name;
   if (need.kind === 'idle-ship') {
     const s = game.ships.find((x) => x.id === need.ship);
@@ -549,19 +841,101 @@ export function needText(world: World, game: GameState, need: Need): string {
   if (!h) return '';
   const name = holdingName(world, game, h);
   if (need.kind === 'idle-yard') return `${name}’s shipyard is building nothing.`;
+  if (need.kind === 'food') {
+    const when = need.turns === 1 ? 'when this turn ends' : 'in two turns';
+    if (need.home)
+      return need.turns === 0
+        ? 'The colonies on the capital’s lanes are hungry: zone farms.'
+        : `Food on the capital’s lanes runs out ${when}: zone farms.`;
+    return need.turns === 0
+      ? `${name} is hungry: zone farms there, or join it to the capital’s lanes.`
+      : `${name} goes hungry ${when}: zone farms there, or join it to the capital’s lanes.`;
+  }
+  if (need.kind === 'unrest')
+    return need.revolt
+      ? `${name} is in revolt: it makes and builds nothing until its approval rises.`
+      : `${name} is in unrest: it makes less and does not grow.`;
+  if (need.kind === 'unworked')
+    return `${name} has ${need.districts} district${need.districts === 1 ? '' : 's'} with no one to work ${need.districts === 1 ? 'it' : 'them'}.`;
   const first = h.queue[0];
   const short = shortfall(world, game, h);
   return `${first ? queueLabel(world, h, first) : 'Its next item'} at ${name} waits for ${short ? missingText(short.missing) : 'resources'}.`;
 }
 
 type Tab = 'colonies' | 'outposts' | 'ships';
-type ColonyKey = 'name' | 'system' | 'people' | 'industry';
+type ColonyKey = 'name' | 'system' | 'people' | 'industry' | 'approval';
+
+const TAX_TEXT: Record<TaxRate, string> = {
+  low: 'a credit for every 4 million people; approval +10',
+  standard: 'a credit for every 2 million people',
+  high: 'a credit for every million people; approval −15',
+};
+
+/** The treasury, the tax rate and food by network, at the head of the empire (M2_WORLDS.md §14). */
+function Treasury({ world, game, faction, play }: { world: World; game: GameState; faction: FactionId; play?: Play }) {
+  const power = powerOf(game, faction);
+  const t = treasuryOf(world, game, faction);
+  const nets = networksOf(world, game, faction);
+  const home = nets.find((n) => n.home);
+  const hf = home ? networkFood(world, game, faction, home) : null;
+  const left = hf ? foodTurnsLeft(hf) : null;
+  const cut = nets.filter((n) => !n.home);
+  const hungry = cut.filter(
+    (n) => networkFood(world, game, faction, n).made < networkFood(world, game, faction, n).eaten,
+  );
+  return (
+    <section class="treasury" aria-label="Treasury and food">
+      <p class="figure">
+        <b>
+          Treasury {power.treasury} credits{power.treasury < 0 ? ' (in debt)' : ''}
+        </b>{' '}
+        <span class="dim">
+          {t.total >= 0 ? '+' : '−'}
+          {Math.abs(t.total)} a turn ={' '}
+          {t.parts.map((p) => `${p.value >= 0 ? '' : '−'}${Math.abs(p.value)} ${p.label}`).join(', ')}
+        </span>
+      </p>
+      <fieldset class="step-choices tax-choices">
+        <legend class="visually-hidden">Taxes</legend>
+        {(['low', 'standard', 'high'] as const).map((rate) => (
+          <button
+            key={rate}
+            type="button"
+            class="step-choice"
+            aria-pressed={power.taxes === rate}
+            disabled={!play}
+            onClick={() => play && give(play, { type: 'taxes', rate })}
+          >
+            {rate[0]?.toUpperCase()}
+            {rate.slice(1)}
+          </button>
+        ))}
+      </fieldset>
+      <p class="dim">
+        {power.taxes[0]?.toUpperCase()}
+        {power.taxes.slice(1)} taxes: {TAX_TEXT[power.taxes]}.
+      </p>
+      {hf && (
+        <p class="figure">
+          <b>Food {hf.store} in store</b>{' '}
+          <span class="dim">
+            on the capital's lanes: {hf.made} made, {hf.eaten} eaten a turn
+            {left !== null ? `, enough for ${left} turn${left === 1 ? '' : 's'}` : ''}; it holds up to {hf.room}.
+            {cut.length > 0 &&
+              ` ${cut.reduce((n, c) => n + c.colonies.length, 0)} cut off from it, feeding themselves${hungry.length > 0 ? ` (${hungry.length} hungry)` : ''}.`}
+          </span>
+        </p>
+      )}
+    </section>
+  );
+}
 
 /** The whole empire: colonies, outposts and ships, as cards (phone) or sortable tables (desktop). */
 export function EmpireView({
   world,
   game,
   faction,
+  play,
   table,
   shipsList,
   onHolding,
@@ -570,6 +944,8 @@ export function EmpireView({
   world: World;
   game: GameState;
   faction: FactionId;
+  /** The player's game, to set the taxes. */
+  play?: Play;
   table: boolean;
   /** The ships, as the screen lists them. */
   shipsList: ComponentChildren;
@@ -601,7 +977,9 @@ export function EmpireView({
         ? world.system(h.system).name
         : key === 'people'
           ? h.people
-          : industryOf(h).total;
+          : key === 'approval'
+            ? approvalOf(world, game, h).total
+            : industryOf(world, game, h).total;
   const sorted = [...colonies].sort((a, b) => {
     const x = value(a, sort.key);
     const y = value(b, sort.key);
@@ -628,6 +1006,7 @@ export function EmpireView({
   return (
     <section class="empire" aria-label="Empire">
       <h2 class="sheet-heading">The {FACTIONS[faction].name}</h2>
+      <Treasury world={world} game={game} faction={faction} play={play} />
       <div class="view-toggle empire-tabs" role="tablist">
         {(
           [
@@ -657,6 +1036,7 @@ export function EmpireView({
                 {head('system', 'System')}
                 {head('people', 'People')}
                 {head('industry', 'Industry')}
+                {head('approval', 'Approval')}
                 <th scope="col">Building</th>
               </tr>
             </thead>
@@ -673,7 +1053,11 @@ export function EmpireView({
                   <td>
                     {millions(h.people)} / {millions(capacityOf(world, game, h))}
                   </td>
-                  <td>{industryOf(h).total}</td>
+                  <td>{industryOf(world, game, h).total}</td>
+                  <td class={`approval-${approvalOf(world, game, h).level}`}>
+                    {approvalOf(world, game, h).total} {APPROVAL_WORD[approvalOf(world, game, h).level].toLowerCase()}
+                    {h.hungry > 0 ? ' · hungry' : ''}
+                  </td>
                   <td class={building(h) === 'Nothing' ? 'waits' : ''}>{building(h)}</td>
                 </tr>
               ))}
@@ -688,7 +1072,8 @@ export function EmpireView({
                   <span class="ship-type">{h.capital ? 'Capital' : world.system(h.system).name}</span>
                   <span class="ship-line">
                     {millions(h.people)} of {millions(capacityOf(world, game, h))} million · industry{' '}
-                    {industryOf(h).total}
+                    {industryOf(world, game, h).total} · {APPROVAL_WORD[approvalOf(world, game, h).level].toLowerCase()}
+                    {h.hungry > 0 ? ' · hungry' : ''}
                   </span>
                   <span class={building(h) === 'Nothing' ? 'needs-tag' : 'ship-line'}>
                     {building(h) === 'Nothing' ? 'Building nothing' : building(h)}

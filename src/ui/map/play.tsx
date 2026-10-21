@@ -4,6 +4,7 @@
 
 import { useState } from 'preact/hooks';
 import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
+import { ZONE_DEFS } from '../../content/districts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { itemName } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
@@ -17,7 +18,7 @@ import { blindJumpTurns, blindReachDeci, canJumpBlind, previewMove } from '../..
 import type { Need } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
-import type { GameState, ShipState } from '../../sim/state.ts';
+import { type GameState, playerPower, type ShipState } from '../../sim/state.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { Badge, FactionMark } from '../parts.tsx';
@@ -306,14 +307,30 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `${holding(e.holding)} could not begin the lane to ${name(e.to)}: ${e.reason}`;
     case 'researched':
       return `Researched ${TECHS[e.tech].name}: ${TECHS[e.tech].text}`;
+    case 'zoned':
+      return `${holding(e.holding)} ${e.rezoned ? 'rezoned' : 'zoned'} district ${e.slot} for ${ZONE_DEFS[e.zone].name.toLowerCase()}.`;
+    case 'hungry':
+      return `${holding(e.holding)} is hungry: its farms and the store cannot feed it. It stops growing, and its people grow unhappy.`;
+    case 'overdrive-stopped':
+      return `${holding(e.holding)}’s overdrive stopped: the treasury could not pay for it.`;
+    case 'debt':
+      return 'The treasury is in debt: every colony is unhappier until it is paid off.';
   }
 }
 
 /** Where a report item leads: the colony it is about, its system, or the research screen. */
-function eventPlace(e: ReportEvent): { holding: number } | { system: SystemId } | { research: true } {
+function eventPlace(game: GameState, e: ReportEvent): { holding: number } | { system: SystemId } | { research: true } {
   switch (e.kind) {
     case 'researched':
       return { research: true };
+    case 'zoned':
+    case 'hungry':
+    case 'overdrive-stopped':
+      return { holding: e.holding };
+    case 'debt': {
+      const capital = game.holdings.find((h) => h.capital && h.owner === playerPower(game)?.faction);
+      return capital ? { holding: capital.id } : { research: true };
+    }
     case 'jumped':
       return { system: e.to };
     case 'built':
@@ -346,6 +363,10 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   researched: { icon: 'research', tone: 'growth' },
   'lane-refused': { icon: 'refused', tone: 'wrong' },
   full: { icon: 'report', tone: 'needs' },
+  zoned: { icon: 'growth', tone: 'growth' },
+  hungry: { icon: 'refused', tone: 'needs' },
+  'overdrive-stopped': { icon: 'refused', tone: 'wrong' },
+  debt: { icon: 'refused', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -436,7 +457,7 @@ export function ReportView({
                 type="button"
                 class="link"
                 onClick={() => {
-                  const place = eventPlace(e);
+                  const place = eventPlace(game, e);
                   if ('holding' in place) onHolding(place.holding);
                   else if ('research' in place) onResearch();
                   else onGo(place.system);

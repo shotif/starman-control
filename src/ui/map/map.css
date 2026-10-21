@@ -552,6 +552,16 @@
   background: #ffcf6a;
 }
 
+/* The date and five figures fit a phone's width only without what each gains a turn, which the
+   empire and the panels show. */
+.layout-phone .resources {
+  gap: 0.6rem;
+}
+
+.layout-phone .res-income {
+  display: none;
+}
+
 .layout-phone .res-name {
   position: absolute;
   width: 1px;

@@ -1,4 +1,5 @@
-// The numbers of M1's rules (docs/design/M1_FIRST_LIGHT.md), in one place so they can be balanced.
+// The numbers of the rules (docs/design/M1_FIRST_LIGHT.md, M2_WORLDS.md), in one place so they can
+// be balanced.
 // Distances are in tenths of a light-year (src/sim/geometry.ts); everything here is a whole number.
 
 export const RULES = {
@@ -21,10 +22,14 @@ export const RULES = {
   capital: {
     /** People, in tenths of a unit (a unit is about a million): 10 units. */
     people: 100,
-    /** Room for 12 units, whatever its world (§5). */
+    /** Room for 12 units, whatever its world (§5): its own 8 and two housing districts (M2). */
     capacity: 120,
+    /** Its own room, in tenths, before its housing districts (M2_WORLDS.md §2). */
+    room: 80,
     /** Extra industry from generations of building. */
     industry: 2,
+    /** Research of its own, from its old universities (M2_WORLDS.md §2). */
+    research: 3,
     /** Resources it yields besides its world's. */
     yields: { metals: 2, volatiles: 1, fuel: 1 },
   },
@@ -35,6 +40,8 @@ export const RULES = {
     growthPercent: 10,
     /** Industry kept with nothing to build. */
     storedIndustry: 60,
+    /** Industry every colony but the capital makes of its own, so it can always pay to zone (D-42). */
+    industry: 2,
   },
   movement: {
     /** Jump points a ship has each turn (§6), before traits and research. */
@@ -59,6 +66,64 @@ export const RULES = {
     /** Turns it is tuned once paid for: one, and one more for every 3 light-years. */
     tuningTurns: 1,
     deciPerTuningTurn: 30,
+  },
+  districts: {
+    /** A capital has this many districts, whatever its world (M2_WORLDS.md §2). */
+    capital: 10,
+    /** What zoning or rezoning a district costs, built in the colony's queue. */
+    zoneCost: { industry: 20, metals: 5, volatiles: 0, fuel: 0 },
+    /** People, in tenths, who work one district: a million. */
+    workers: 10,
+    /** Food from a worked farm district, by how habitable the world is; at a capital, the most. */
+    farms: { comfortable: 3, tolerable: 2, harsh: 1 },
+    works: 3,
+    labs: 2,
+    market: 2,
+    /** A market district where the colony has a lane station. */
+    marketWithStation: 3,
+    /** Room a housing district adds, in tenths. */
+    housing: 20,
+    /** How every capital starts, slot by slot from the first (M2_WORLDS.md §2). */
+    capitalStart: ['housing', 'housing', 'farms', 'farms', 'works', 'works', 'works', 'mines', 'labs', 'market'],
+    /** How a new colony arrives, as far as its world has districts: its founders' farms, then works (D-42). */
+    founding: ['farms', 'works'],
+  },
+  food: {
+    /** A colony eats 1 food for every this many tenths of people (2 million), rounded up. */
+    eatenPer: 20,
+    /** The capital's network keeps this much in store for each colony in it. */
+    storePerColony: 5,
+    /** What a power's store holds at the start: as much as the capital's network keeps. */
+    start: 5,
+    /** Hungry this many turns in a row, a colony starts to lose people: a tenth a turn. */
+    starveAfter: 3,
+  },
+  credits: {
+    /** The treasury at the start (M2_WORLDS.md §4). */
+    start: 50,
+    /** A credit for every so many tenths of people, by tax rate: 4 million, 2 million, a million. */
+    taxPer: { low: 40, standard: 20, high: 10 },
+    /** Upkeep a turn. */
+    upkeep: { ship: 1, outpost: 1, project: 1, shipyard: 2 },
+    /** Overdrive: each step buys a quarter of a colony's industry, at 1, 2 and 4 credits apiece. */
+    overdriveSteps: [1, 2, 4],
+  },
+  approval: {
+    /** Where every colony starts, and the parts that move it (M2_WORLDS.md §5). */
+    base: 60,
+    taxes: { low: 10, standard: 0, high: -15 },
+    capital: 10,
+    hungry: -15,
+    full: -5,
+    domes: -5,
+    /** For each lane jump beyond `nearJumps` from the capital, at most `farMost`; `farMost` with no lane. */
+    far: -2,
+    nearJumps: 3,
+    farMost: -12,
+    debt: -10,
+    /** The levels: content from 60, uneasy from 40, unrest from 20, revolt below; and what each keeps of the districts' yields. */
+    levels: { content: 60, uneasy: 40, unrest: 20 },
+    keeps: { content: 100, uneasy: 90, unrest: 70, revolt: 0 },
   },
   outposts: {
     /** Industry an outpost makes for its queue, which holds lanes only. */

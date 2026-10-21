@@ -30,7 +30,7 @@ function load(url: string): Promise<HTMLImageElement> {
 export function stillScene(world: World, game: GameState, h: Holding): ColonyScene | null {
   const scene = colonyScene(world, game, h);
   if (!scene || !LANDSCAPES[scene.biome]) return null;
-  return scene.buildings.every((b) => structureArt(scene.architecture, b.kind, b.home)) ? scene : null;
+  return scene.buildings.some((b) => structureArt(scene.architecture, b.kind, b.home)) ? scene : null;
 }
 
 export function ColonyStill({

@@ -466,3 +466,238 @@
   flex: none;
   min-height: 44px;
 }
+
+/* ---------------------------------------------------------------- districts, food, credits and approval (M2) */
+
+.res-credits-icon {
+  box-sizing: border-box;
+  border: 2px solid #7fe7a3;
+  border-radius: 50%;
+}
+
+.res-food-icon {
+  border-radius: 0 60% 0 60%;
+  background: #a6e07a;
+}
+
+.resources li.is-short b,
+.resources li.is-short .res-income {
+  color: #ff8f80;
+}
+
+.districts > p {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+}
+
+.district-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.district {
+  --zone: rgba(126, 170, 255, 0.45);
+  display: grid;
+  align-content: start;
+  gap: 0.1rem;
+  width: 100%;
+  min-height: 64px;
+  padding: 0.35rem 0.45rem 0.4rem;
+  border: 1px solid var(--panel-border);
+  border-top: 3px solid var(--zone);
+  background: rgba(92, 200, 255, 0.04);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.district:disabled {
+  cursor: default;
+}
+
+.district:hover:not(:disabled),
+.district:focus-visible,
+.district.is-chosen {
+  border-color: var(--accent);
+  border-top-color: var(--zone);
+  background: rgba(92, 200, 255, 0.12);
+}
+
+.district-name {
+  font-family: var(--font-label);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.district-yield,
+.district-state {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.district.zone-open {
+  border-style: dashed;
+  border-top-style: dashed;
+  background: transparent;
+}
+
+.district.zone-open .district-name {
+  color: var(--text-muted);
+}
+
+.district.is-unworked {
+  opacity: 0.7;
+}
+
+.district.is-unworked .district-state {
+  color: #ffb07a;
+}
+
+.zone-farms {
+  --zone: #a6e07a;
+}
+
+.zone-works {
+  --zone: #ffb259;
+}
+
+.zone-mines {
+  --zone: #b8c2d0;
+}
+
+.zone-labs {
+  --zone: #c9a5ff;
+}
+
+.zone-market {
+  --zone: #7fe7a3;
+}
+
+.zone-housing {
+  --zone: #8fd6ff;
+}
+
+.district-choices {
+  min-width: 0;
+  margin: 0.6rem 0 0;
+  padding: 0.5rem;
+  border: 1px solid var(--panel-border);
+  background: rgba(4, 8, 16, 0.5);
+}
+
+.district-choices > p {
+  margin: 0 0 0.45rem;
+  font-size: 0.9rem;
+}
+
+.district-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0;
+}
+
+.overdrive > p {
+  margin: 0 0 0.45rem;
+  font-size: 0.88rem;
+}
+
+.step-choices {
+  display: flex;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0.4rem 0;
+  padding: 0;
+  border: 0;
+}
+
+.step-choice {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--panel-border);
+  background: rgba(92, 200, 255, 0.05);
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.step-choice:hover:not(:disabled),
+.step-choice:focus-visible {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.step-choice[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgba(92, 200, 255, 0.18);
+  box-shadow: inset 0 -2px 0 var(--accent);
+  color: var(--text);
+}
+
+.step-choice:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.overdrive-steps .step-choice {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 0.3rem 0.45rem;
+  overflow: hidden;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+/* Each step's cost as a bar rising from the foot of its button: together, the overdrive curve. */
+.overdrive-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(255, 178, 89, 0.42), rgba(255, 178, 89, 0.12));
+  pointer-events: none;
+}
+
+.overdrive-steps .step-choice > :not(.overdrive-bar) {
+  position: relative;
+}
+
+.approval-content {
+  color: #7fe7a3;
+}
+
+.approval-uneasy {
+  color: #ffd27a;
+}
+
+.approval-unrest {
+  color: #ffb07a;
+}
+
+.approval-revolt {
+  color: #ff8f80;
+}
+
+.treasury {
+  margin: 0 0 0.9rem;
+}
+
+.treasury p {
+  margin: 0.2rem 0;
+}

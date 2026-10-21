@@ -13,9 +13,10 @@ import {
   propSpots,
   STRUCTURE_WIDTHS,
   type StructureArt,
+  slotAt,
   structureArt,
 } from '../content/colonyArt.ts';
-import type { ColonyScene, SceneBuilding, SceneProp } from './colonyScene.ts';
+import { type ColonyScene, districtKind, type SceneBuilding, type SceneProp } from './colonyScene.ts';
 
 /** How wide a metre is, as a share of the picture's width, per unit of depth below the horizon. */
 export const METRE = 0.0105;
@@ -36,11 +37,22 @@ export interface Placed {
 /** Where a building stands and how big it is drawn; null when it has no picture. */
 export function placeBuilding(scene: ColonyScene, land: LandscapeArt, b: SceneBuilding): Placed | null {
   const art = structureArt(scene.architecture, b.kind, b.home);
-  const slot = land.slots[b.slot];
+  const slot = slotAt(land, b.slot);
   if (!art || !slot) return null;
   const [u, v] = slot;
-  // A scaffold takes the size of what it is building.
-  const target = b.kind === 'scaffold' && b.project ? structureArt(scene.architecture, b.project) : undefined;
+  // A scaffold takes the size of what it is building: a project, or a district being zoned.
+  const target =
+    b.kind !== 'scaffold'
+      ? undefined
+      : b.project
+        ? structureArt(scene.architecture, b.project)
+        : b.district
+          ? structureArt(scene.architecture, districtKind(b.district, scene.envelope), {
+              size: 2,
+              envelope: scene.envelope,
+              version: 0,
+            })
+          : undefined;
   const metres = target ? target.metres * SCAFFOLD_SHARE : art.metres;
   const w = metres * METRE * (v - land.horizon);
   return { building: b, art, u, v, w, h: (w / art.aspect) * land.aspect };

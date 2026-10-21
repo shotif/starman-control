@@ -10,13 +10,17 @@ import { investigateRefusal } from '../../src/sim/anomalies.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
 import {
   capacityOf,
+  freeSlot,
   growthOf,
   incomeOf,
   industryOf,
+  networkFood,
+  networkOf,
   queueTurns,
   settleable,
   shortfall,
   yieldsOf,
+  zoneRefusal,
 } from '../../src/sim/economy.ts';
 import { habitability } from '../../src/sim/habitability.ts';
 import { laneTargets } from '../../src/sim/lanes.ts';
@@ -81,31 +85,38 @@ describe('the capital', () => {
     expect(capital(start('hollow-wake'), 'hollow-wake').body).toBe('wolf-1061-c');
   });
 
-  it('makes industry with every part shown: people, the capital, and the Authority’s 10%', () => {
-    const sta = industryOf(capital(start('sta'), 'sta'));
+  it('makes industry with every part shown: its works, the capital, and the Authority’s 10%', () => {
+    const g = start('sta');
+    const sta = industryOf(world, g, capital(g, 'sta'));
     expect(sta).toEqual({
-      total: 13,
+      total: 12,
       parts: [
-        { label: 'from people', value: 10 },
+        { label: 'from 3 works', value: 9 },
         { label: 'from the capital', value: 2 },
         { label: 'from Administration (+10%)', value: 1 },
       ],
     });
-    expect(industryOf(capital(start('frontier'), 'frontier')).total).toBe(12);
-    expect(industryOf(capital(start('hollow-wake'), 'hollow-wake')).total).toBe(12);
+    expect(industryOf(world, start('frontier'), capital(start('frontier'), 'frontier')).total).toBe(11);
+    expect(industryOf(world, start('hollow-wake'), capital(start('hollow-wake'), 'hollow-wake')).total).toBe(11);
   });
 
-  it('yields its world’s riches and the capital’s own, and a mine adds metals', () => {
+  it('yields its mine district’s riches and the capital’s own, and a deep mine adds a metal', () => {
     let g = start('sta');
-    // Earth is rich in metals (2), and the capital gives 2 metals, 1 volatiles and 1 fusion fuel.
+    // Earth is rich in metals, so its mine district yields 2; the capital gives 2 metals, 1 volatiles
+    // and 1 fusion fuel.
     expect(yieldsOf(world, g, capital(g, 'sta')).total).toEqual({ metals: 4, volatiles: 1, fuel: 1 });
-    // Tau Ceti e is poor in metals (1), Wolf 1061 c rich (2).
+    // Tau Ceti e is poor in metals (its mine yields 1), Wolf 1061 c rich (2).
     expect(incomeOf(world, start('frontier'), 'frontier')).toEqual({ metals: 3, volatiles: 1, fuel: 1 });
     expect(incomeOf(world, start('hollow-wake'), 'hollow-wake')).toEqual({ metals: 4, volatiles: 1, fuel: 1 });
     g = queue(g, 'sta', capital(g, 'sta').id, { kind: 'project', project: 'mine' });
     g = turns(g, 3).state;
     expect(capital(g, 'sta').projects).toContain('mine');
     expect(incomeOf(world, g, 'sta').metals).toBe(5);
+    expect(yieldsOf(world, g, capital(g, 'sta')).parts[0]).toEqual({
+      label: 'its mines on Earth',
+      value: 3,
+      resource: 'metals',
+    });
   });
 });
 
@@ -248,7 +259,7 @@ describe('the build queue', () => {
     expect(queueTurns(world, g, capital(g, 'sta'))).toEqual([3]);
     const before = g.ships.length;
     g = turns(g, 2).state;
-    expect(capital(g, 'sta').industry).toBe(26);
+    expect(capital(g, 'sta').industry).toBe(24);
     expect(g.ships).toHaveLength(before);
     const r = turn(g);
     const built = r.state.ships.at(-1) as ShipState;
@@ -259,8 +270,8 @@ describe('the build queue', () => {
       item: { kind: 'ship', ship: 'survey' },
       ship: built.id,
     });
-    // 39 made, 30 spent: 9 carried over.
-    expect(capital(r.state, 'sta').industry).toBe(9);
+    // 36 made, 30 spent: 6 carried over.
+    expect(capital(r.state, 'sta').industry).toBe(6);
     expect(capital(r.state, 'sta').queue).toEqual([]);
   });
 
@@ -273,7 +284,7 @@ describe('the build queue', () => {
     expect(queueTurns(world, g, capital(g, 'sta'))).toEqual([1, 1]);
     const r = turn(g);
     expect(r.reports[0]?.events.filter((e) => e.kind === 'built')).toHaveLength(2);
-    expect(capital(r.state, 'sta').industry).toBe(55 + 13 - 30 - 30);
+    expect(capital(r.state, 'sta').industry).toBe(55 + 12 - 30 - 30);
   });
 
   it('keeps unspent industry with nothing queued, up to 60', () => {
@@ -294,8 +305,10 @@ describe('the build queue', () => {
     expect(powerOf(g, 'sta').stockpile.metals).toBe(8);
     g = turn(g).state;
     expect(capital(g, 'sta').projects).toContain('mine');
-    // Paid for, and the new mine yields at once: 4 + 1.
-    expect(powerOf(g, 'sta').stockpile.metals).toBe(8 - 5 + 5);
+    // Paid for; the deep mine's extra metal comes from the next turn: 4, then 5 a turn.
+    expect(powerOf(g, 'sta').stockpile.metals).toBe(8 - 5 + 4);
+    g = turn(g).state;
+    expect(powerOf(g, 'sta').stockpile.metals).toBe(8 - 5 + 4 + 5);
   });
 
   it('builds ships only with a shipyard, and each project once', () => {
@@ -306,7 +319,7 @@ describe('the build queue', () => {
     );
     g = queue(g, 'sta', c.id, { kind: 'project', project: 'mine' });
     expect(why(g, 'sta', { type: 'queue', holding: c.id, item: { kind: 'project', project: 'mine' } })).toBe(
-      'A mine is already queued.',
+      'A deep mine is already queued.',
     );
     // A new colony has no shipyard.
     g.holdings.push({ ...c, id: 9, capital: false, body: 'proxima-cen-b', system: 'alpha-centauri', projects: [] });
@@ -443,6 +456,20 @@ function growerOrders(state: GameState, faction: FactionId): Order[] {
     if (h.kind === 'outpost') {
       const lane = laneTargets(world, state, faction, h.system).find((t) => t.refusal === null);
       if (lane) orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.quote.to } });
+      continue;
+    }
+    // Zone the open land: farms while its network is short of food, else mines where there are
+    // riches and none yet, else works.
+    const slot = freeSlot(world, state, h);
+    if (slot !== null) {
+      const food = networkFood(world, state, faction, networkOf(world, state, h));
+      const zone =
+        food.made < food.eaten + 2
+          ? 'farms'
+          : !h.districts.some((d) => d.zone === 'mines') && zoneRefusal(world, state, h, 'mines', slot) === null
+            ? 'mines'
+            : 'works';
+      orders.push({ type: 'queue', holding: h.id, item: { kind: 'zone', zone, slot } });
       continue;
     }
     const wants: QueueItem[] = [

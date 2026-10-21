@@ -1,4 +1,4 @@
-# Handover: Starman Control, 20 October 2026 (updated during increment 18 and the M2 design)
+# Handover: Starman Control, 21 October 2026 (updated with M2's increment 20)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -40,27 +40,39 @@ way in.
   with Google's Lyria (title, two for the map, system, a colony piece for each power), played after
   the first press, fading between places, downloaded only when played; a *Music* setting.
   `npm run music:generate`, `music:approve`, `music:check` (in `npm run check`).
-- **Numbers:** 263 unit tests and about 150 browser journeys pass; the title loads 18.9 KB of its
-  40 KB budget, a game's map about 287 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB)
-  and its heaviest first pictures on a phone 921 KB of 1 MB (measured over the game's own scenes);
-  state version 6.
+- **M2 "Worlds" has begun** ([M2_WORLDS.md](design/M2_WORLDS.md), its *As built* in §22).
+  **Increment 20 is built:** districts zoned through the queue and worked a million each, food
+  pooled along each power's lanes with hunger and starving, the treasury with taxes, upkeep,
+  overdrive and debt, approval with its parts and four levels; districts stand in the colony scene
+  as buildings (10 new pictures). The owner answered two questions found while building: a new
+  colony arrives with farms and works and makes 2 industry of its own (D-42), and idle people cost
+  no approval (D-43).
+- **Numbers:** 295 unit tests and about 160 browser journeys pass; the title loads 20.7 KB of its
+  40 KB budget, a game's map about 297 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB)
+  and its heaviest first pictures on a phone **1020.8 KB of 1 MB** (measured over the game's own
+  scenes; see §2); state version 7.
 
 ## 2. The next job
 
-The owner answered on 21 October 2026: **Round 4 as recommended** (D-15, D-32 to D-41) and **music
-by option B** (D-31, built as increment 19). The owner was sent every music candidate, lettered,
-to choose by ear, and the colony view's last sheets; apply any overrule they send
-(`npm run music:approve` / `npm run art:approve` with the candidate they name; candidates live in
-the git-ignored `music/out/` and `art/out/`, so a pick from a lost session means new candidates).
+The owner was sent every music candidate, lettered, to choose by ear, and the lettered sheet of
+increment 20's district buildings; apply any overrule they send (`npm run music:approve` /
+`npm run art:approve` with the candidate they name; candidates live in the git-ignored
+`music/out/` and `art/out/`, so a pick from a lost session means new candidates).
 
-**The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), built from
-increment 20 in the order of its §18: districts and food (20), credits and approval (21),
-projects and research (22), advisors and the report (23), governors and edicts (24), rivals that
-play (25), events (26), the guided opening (27), the proof (28). Build each as designed; put any new
-rule that shapes the game and is not settled in §21 to the owner before building it. Each
-increment's pictures are lettered sheets to the owner, recorded in DECISIONS.md with their cost.
+**The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
+its §18. Increment 20 (districts, food, credits and approval, built as one) is done; next are
+projects and research (21), advisors and the report (22), governors and edicts (23), rivals that
+play (24), events (25), the guided opening (26), the proof (27). Build each as designed; put any
+new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
+and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
+DECISIONS.md with their cost.
 
-The art and music spend: about $15.85 of $25; M2's 73 pictures are planned at about $8.
+**Before increment 21's 33 project buildings:** a colony's heaviest first pictures on a phone are
+already 1020.8 KB of the 1 MB budget. Publish a smaller width of each structure for the phone
+(for example 384 px, which `scripts/art/approve.ts` and `artUrl` would both need), or put a
+larger budget to the owner; do not let the budget fail.
+
+The art and music spend: about $16.85 of $25; M2's remaining 63 pictures are planned at about $7.
 
 ## 3. Standing instructions from the owner
 
@@ -71,7 +83,7 @@ The art and music spend: about $15.85 of $25; M2's 73 pictures are planned at ab
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$15.85** is spent (after increments 18 and 19), so about **$9.15** is left. Nano
+  2026); about **$16.85** is spent (after increments 18, 19 and 20), so about **$8.15** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
@@ -176,7 +188,8 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
-- The owner's choice of music by ear (every candidate was sent, lettered).
+- The owner's choice of music by ear (every candidate was sent, lettered), and of increment 20's
+  district buildings (the sheet was sent).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
   and any of the colony view's (COLONY_VIEW.md §8).
 - CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a

@@ -1,6 +1,7 @@
 // Checks that a game state is possible: the right shape, whole numbers only, and nothing the rules
 // forbid. Used when a save is loaded or imported, and by the tests after every turn.
 
+import { isZone } from '../content/districts.ts';
 import { isFactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { SHIPS } from '../content/ships.ts';
@@ -46,6 +47,10 @@ export function shapeProblems(raw: unknown): string[] {
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
+      if (!isWhole(p.food)) out.push(`power ${i} food is not a whole number`);
+      if (typeof p.treasury !== 'number' || !Number.isInteger(p.treasury))
+        out.push(`power ${i} treasury is not a whole number`);
+      if (p.taxes !== 'low' && p.taxes !== 'standard' && p.taxes !== 'high') out.push(`power ${i} has no tax rate`);
     }
   if (!Array.isArray(raw.lanes)) out.push('lanes is not a list');
   else
@@ -105,10 +110,15 @@ export function shapeProblems(raw: unknown): string[] {
             isRecord(q) &&
             ((q.kind === 'ship' && typeof q.ship === 'string' && q.ship in SHIPS) ||
               (q.kind === 'project' && typeof q.project === 'string' && q.project in PROJECTS) ||
+              (q.kind === 'zone' && isZone(q.zone) && isWhole(q.slot, 1)) ||
               (q.kind === 'lane' && typeof q.to === 'string')),
         )
       )
         out.push(`holding ${i} has a queue it cannot build`);
+      if (!Array.isArray(h.districts) || !h.districts.every((d) => isRecord(d) && isZone(d.zone) && isWhole(d.slot, 1)))
+        out.push(`holding ${i} has districts it cannot have`);
+      if (!isWhole(h.hungry) || !isWhole(h.overdrive) || (h.overdrive as number) > 3)
+        out.push(`holding ${i} hunger or overdrive is not a whole number`);
     }
   if (!Array.isArray(raw.reports)) out.push('reports is not a list');
   return out;
@@ -189,6 +199,11 @@ export function stateProblems(world: World, state: GameState): string[] {
       out.push(`holding ${h.id} is on ${h.body}, which is not in ${h.system}`);
     if (h.kind === 'outpost' && h.people !== 0) out.push(`outpost ${h.id} has people`);
     if (new Set(h.projects).size !== h.projects.length) out.push(`holding ${h.id} has a project twice`);
+    if (h.kind === 'outpost' && h.districts.length > 0) out.push(`outpost ${h.id} has districts`);
+    if (new Set(h.districts.map((d) => d.slot)).size !== h.districts.length)
+      out.push(`holding ${h.id} has two districts in one slot`);
+    const most = h.capital ? 10 : 12;
+    if (h.districts.some((d) => d.slot > most)) out.push(`holding ${h.id} has a district past its land`);
     for (const q of h.queue) {
       if (q.kind === 'lane' && (!world.hasSystem(q.to) || q.to === h.system))
         out.push(`holding ${h.id} queues a lane to ${q.to}, which it cannot have`);

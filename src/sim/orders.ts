@@ -12,7 +12,7 @@ import { queueRefusal, settleRefusal } from './economy.ts';
 import { formatLy } from './geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
-import { type GameState, powerOf, type ShipState } from './state.ts';
+import { type GameState, powerOf, type ShipState, type TaxRate } from './state.ts';
 import type { World } from './world.ts';
 
 export type Order =
@@ -32,6 +32,14 @@ export type Order =
   | { type: 'queue'; holding: number; item: QueueItem }
   | { type: 'unqueue'; holding: number; index: number }
   | { type: 'reorder'; holding: number; from: number; to: number }
+  /** A district made open again, at once (M2_WORLDS.md §2). */
+  | { type: 'clear-district'; holding: number; slot: number }
+  /** A district worked first, before the colony's others. */
+  | { type: 'work-first'; holding: number; slot: number }
+  /** Steps of industry bought with credits each turn, 0 to 3 (overdrive, M2_WORLDS.md §4). */
+  | { type: 'overdrive'; holding: number; steps: number }
+  /** The power's tax rate (M2_WORLDS.md §4). */
+  | { type: 'taxes'; rate: TaxRate }
   /** Research a technology (and what it needs): after the rest of the queue, or `now`, first. */
   | { type: 'research'; tech: TechId; now?: boolean }
   /** Take a technology out of the research queue, with anything later that needs it. */
@@ -56,6 +64,15 @@ function holdingRefusal(world: World, state: GameState, faction: FactionId, orde
   if (order.type === 'queue') return queueRefusal(world, state, h, order.item);
   if (order.type === 'unqueue')
     return order.index >= 0 && order.index < h.queue.length ? null : 'Nothing is queued there.';
+  if (order.type === 'clear-district' || order.type === 'work-first')
+    return h.districts.some((d) => d.slot === order.slot) ? null : 'That district is open.';
+  if (order.type === 'overdrive') {
+    if (h.kind !== 'colony') return 'Only colonies can be overdriven.';
+    if (!Number.isInteger(order.steps) || order.steps < 0 || order.steps > 3) return 'Overdrive is 0 to 3 steps.';
+    if (order.steps > h.overdrive && powerOf(state, faction).treasury <= 0)
+      return 'The treasury has nothing to pay for it.';
+    return null;
+  }
   const { from, to } = order;
   return from >= 0 && from < h.queue.length && to >= 0 && to < h.queue.length ? null : 'Nothing is queued there.';
 }
@@ -69,6 +86,10 @@ function researchOrderRefusal(state: GameState, faction: FactionId, order: Resea
 /** Why an order cannot be given, or null if it can. */
 export function refuse(world: World, state: GameState, faction: FactionId, order: Order): string | null {
   if ('tech' in order) return researchOrderRefusal(state, faction, order);
+  if (order.type === 'taxes')
+    return order.rate === 'low' || order.rate === 'standard' || order.rate === 'high'
+      ? null
+      : 'There is no such tax rate.';
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -109,11 +130,20 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
       order.type === 'research' ? queueResearch(p, order.tech, order.now === true) : unqueueResearch(p, order.tech);
     return { ok: true, state: next };
   }
+  if (order.type === 'taxes') {
+    powerOf(next, faction).taxes = order.rate;
+    return { ok: true, state: next };
+  }
   if (!('ship' in order)) {
     const h = next.holdings.find((x) => x.id === order.holding);
     if (!h) return { ok: false, reason: 'There is no such colony.' };
     if (order.type === 'queue') h.queue.push(order.item);
     else if (order.type === 'unqueue') h.queue.splice(order.index, 1);
+    else if (order.type === 'clear-district') h.districts = h.districts.filter((d) => d.slot !== order.slot);
+    else if (order.type === 'work-first') {
+      const d = h.districts.find((x) => x.slot === order.slot);
+      if (d) h.districts = [d, ...h.districts.filter((x) => x !== d)];
+    } else if (order.type === 'overdrive') h.overdrive = order.steps;
     else {
       const [item] = h.queue.splice(order.from, 1);
       if (item) h.queue.splice(order.to, 0, item);

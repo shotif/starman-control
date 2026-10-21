@@ -113,8 +113,22 @@ export interface HomeLook {
   version?: HomeVersion;
 }
 
-/** Built things; `rig` is an outpost's, `fields` an open-air colony's farmland. */
-export type StructureKind = ProjectId | 'homes' | 'hall' | 'scaffold' | 'rig' | 'fields';
+/**
+ * Built things; `rig` is an outpost's; `fields` and `greenhouse-farms` farm districts in the open
+ * air and sealed; `works`, `labs` and `market` the other districts (M2_WORLDS.md §15); a mine
+ * district shows its power's `mine`.
+ */
+export type StructureKind =
+  | ProjectId
+  | 'homes'
+  | 'hall'
+  | 'scaffold'
+  | 'rig'
+  | 'fields'
+  | 'greenhouse-farms'
+  | 'works'
+  | 'labs'
+  | 'market';
 
 export interface StructureArt {
   /** Its brief, and so its file: art/structure/<id>-<width>.webp. */
@@ -211,6 +225,17 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['wake-homes-3-domed-c', 1955 / 1560, 50],
       ['wake-homes-3-open-b', 1478 / 1941, 30],
       ['wake-homes-3-open-c', 1672 / 1813, 30],
+      // Increment 20: the districts' buildings (M2_WORLDS.md §15).
+      ['authority-works', 1932 / 1428, 40],
+      ['authority-labs', 1684 / 1733, 34],
+      ['authority-market', 1891 / 1054, 36],
+      ['cooperative-works', 1870 / 1203, 40],
+      ['cooperative-labs', 1865 / 1430, 34],
+      ['cooperative-market', 1920 / 1240, 36],
+      ['wake-works', 1964 / 1397, 40],
+      ['wake-labs', 1779 / 1817, 34],
+      ['wake-market', 1882 / 1640, 36],
+      ['greenhouse-farms', 1940 / 1220, 40],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );
@@ -219,7 +244,7 @@ const VERSION_SUFFIX = ['', '-b', '-c'] as const;
 
 /** The brief id a building would have: homes by size, envelope and version, the rest by architecture. */
 export function structureId(architecture: ArchitectureId, kind: StructureKind, home?: HomeLook): string {
-  if (kind === 'scaffold' || kind === 'fields') return kind;
+  if (kind === 'scaffold' || kind === 'fields' || kind === 'greenhouse-farms') return kind;
   if (kind === 'homes')
     return `${architecture}-homes-${home?.size ?? 2}-${home?.envelope ?? 'open'}${VERSION_SUFFIX[home?.version ?? 0]}`;
   return `${architecture}-${kind}`;
@@ -234,6 +259,36 @@ export function structureArt(
   const art = STRUCTURES[structureId(architecture, kind, home)];
   if (art || kind !== 'homes' || !home?.version) return art;
   return STRUCTURES[structureId(architecture, kind, { ...home, version: 0 })];
+}
+
+const ringCache = new Map<string, (readonly [number, number])[]>();
+
+/**
+ * Slots past a landscape's twelve (M2_WORLDS.md §15): a ring round the town, a third wider than its
+ * twelve slots, for projects that do not fit among the districts; the sides first, then behind,
+ * then in front, so they do not hide the town.
+ */
+export function ringSlots(land: LandscapeArt): (readonly [number, number])[] {
+  const cached = ringCache.get(land.id);
+  if (cached) return cached;
+  const [cu, cv] = land.slots[0] ?? [0.5, 0.6];
+  const rx = Math.max(...land.slots.map(([u]) => Math.abs(u - cu))) * 1.3;
+  const ry = Math.max(...land.slots.map(([, v]) => Math.abs(v - cv))) * 1.3;
+  const order = [0, 180, -25, 205, 25, 155, -50, 230, 50, 130, -75, 255, 75, 105, -90, 90];
+  const round = (x: number) => Math.round(x * 1000) / 1000;
+  const ring = order.map((deg) => {
+    const t = (deg * Math.PI) / 180;
+    const u = Math.max(0.04, Math.min(0.96, cu + rx * Math.cos(t)));
+    const v = Math.max(land.horizon + 0.05, Math.min(0.97, cv + ry * Math.sin(t)));
+    return [round(u), round(v)] as const;
+  });
+  ringCache.set(land.id, ring);
+  return ring;
+}
+
+/** Where a slot is on a landscape: one of its twelve, or the ring beyond them. */
+export function slotAt(land: LandscapeArt, slot: number): readonly [number, number] | undefined {
+  return slot < land.slots.length ? land.slots[slot] : ringSlots(land)[slot - land.slots.length];
 }
 
 /** Small pieces between the buildings (COLONY_VIEW.md §9.3): some in each power's architecture, some shared. */

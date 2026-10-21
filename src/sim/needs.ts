@@ -4,7 +4,17 @@
 import type { FactionId } from '../content/factions.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
-import { costOf, settleable } from './economy.ts';
+import {
+  approvalOf,
+  capacityOf,
+  costOf,
+  foodTurnsLeft,
+  networkFood,
+  networksOf,
+  settleable,
+  treasuryOf,
+  unworkedDistricts,
+} from './economy.ts';
 import { canResearch } from './research.ts';
 import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
@@ -20,7 +30,18 @@ export type Need =
   /** A colony's first item has its industry but waits for resources. */
   | { kind: 'waiting'; holding: number; system: SystemId }
   /** Nothing is being researched, and there is something to research. */
-  | { kind: 'no-research' };
+  | { kind: 'no-research' }
+  /**
+   * A network of colonies is hungry (`turns` 0), or will be when this turn ends (1) or the next (2)
+   * (M2_WORLDS.md §3); `home` for the capital's network, named by its first colony.
+   */
+  | { kind: 'food'; holding: number; system: SystemId; turns: number; home: boolean }
+  /** A colony in unrest or revolt (M2_WORLDS.md §5). */
+  | { kind: 'unrest'; holding: number; system: SystemId; revolt: boolean }
+  /** The treasury will fall into debt within `turns` (0: it is in debt) (M2_WORLDS.md §4). */
+  | { kind: 'debt'; turns: number }
+  /** Districts zoned with no one to work them. */
+  | { kind: 'unworked'; holding: number; system: SystemId; districts: number };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
@@ -59,5 +80,29 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
   }
   const power = powerOf(state, faction);
   if (power.researchQueue.length === 0 && canResearch(power).length > 0) out.push({ kind: 'no-research' });
+  // Food: a network that is hungry, or whose store runs out within two turns.
+  for (const net of networksOf(world, state, faction)) {
+    const first = net.colonies[0];
+    if (!first) continue;
+    const f = networkFood(world, state, faction, net);
+    // Turns the store still covers; hunger comes at the end of the turn after.
+    const covered = net.home ? foodTurnsLeft(f) : f.made < f.eaten ? 0 : null;
+    if (covered === null) continue;
+    const turns = net.colonies.some((h) => h.hungry > 0) ? 0 : covered + 1;
+    if (turns <= 2) out.push({ kind: 'food', holding: first.id, system: first.system, turns, home: net.home });
+  }
+  for (const h of state.holdings) {
+    if (h.owner !== faction || h.kind !== 'colony') continue;
+    const level = approvalOf(world, state, h).level;
+    if (level === 'unrest' || level === 'revolt')
+      out.push({ kind: 'unrest', holding: h.id, system: h.system, revolt: level === 'revolt' });
+    // Districts no one works matter once the colony is full; until then its people grow into them.
+    const n = unworkedDistricts(h);
+    if (n > 0 && h.people >= capacityOf(world, state, h))
+      out.push({ kind: 'unworked', holding: h.id, system: h.system, districts: n });
+  }
+  const t = treasuryOf(world, state, faction).total;
+  if (power.treasury < 0) out.push({ kind: 'debt', turns: 0 });
+  else if (t < 0 && power.treasury + 2 * t < 0) out.push({ kind: 'debt', turns: Math.floor(power.treasury / -t) + 1 });
   return out;
 }

@@ -3,6 +3,7 @@
 // game changed. Nothing here knows which power the player is: `controller` only says who sends the
 // orders, and the rules treat both the same.
 
+import type { District } from '../content/districts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -14,7 +15,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 6;
+export const STATE_VERSION = 7;
 
 export interface Stockpile {
   metals: number;
@@ -40,7 +41,16 @@ export interface PowerState {
   techProgress: Partial<Record<TechId, number>>;
   /** Systems whose anomaly it has investigated, in id order (M1_LANES_RESEARCH.md §3). */
   investigated: SystemId[];
+  /** Food in store for the colonies joined to the capital by its lanes (M2_WORLDS.md §3). */
+  food: number;
+  /** Credits in the treasury; below zero is debt (M2_WORLDS.md §4). */
+  treasury: number;
+  /** One tax rate for the whole power. */
+  taxes: TaxRate;
 }
+
+/** How hard a power taxes its people (M2_WORLDS.md §4). */
+export type TaxRate = 'low' | 'standard' | 'high';
 
 /**
  * A lane that is not dark: open, or paid for and being tuned for `left` more turns. Every lane of
@@ -95,6 +105,12 @@ export interface Holding {
   queue: QueueItem[];
   /** Industry made and not yet spent: it goes into the first item, and is kept up to a limit. */
   industry: number;
+  /** Zoned districts, in the order its people work them (M2_WORLDS.md §2); none for an outpost. */
+  districts: District[];
+  /** Turns in a row it has gone hungry (M2_WORLDS.md §3). */
+  hungry: number;
+  /** Steps of industry bought with credits each turn, 0 to 3 (overdrive, M2_WORLDS.md §4). */
+  overdrive: number;
 }
 
 export interface GameState {
@@ -148,9 +164,19 @@ export function makeShip(state: GameState, faction: FactionId, type: ShipType, a
 /** A new colony or outpost, added to the state. */
 export function makeHolding(
   state: GameState,
-  h: Omit<Holding, 'id' | 'projects' | 'queue' | 'industry'> & Partial<Pick<Holding, 'projects'>>,
+  h: Omit<Holding, 'id' | 'projects' | 'queue' | 'industry' | 'districts' | 'hungry' | 'overdrive'> &
+    Partial<Pick<Holding, 'projects' | 'districts'>>,
 ): Holding {
-  const holding: Holding = { id: state.nextHoldingId, projects: [], queue: [], industry: 0, ...h };
+  const holding: Holding = {
+    id: state.nextHoldingId,
+    projects: [],
+    queue: [],
+    industry: 0,
+    districts: [],
+    hungry: 0,
+    overdrive: 0,
+    ...h,
+  };
   state.nextHoldingId++;
   state.holdings.push(holding);
   return holding;
@@ -168,6 +194,9 @@ export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
     projects: ['shipyard', 'lane-station'],
     queue: [],
     industry: 0,
+    districts: RULES.districts.capitalStart.map((zone, i) => ({ zone, slot: i + 1 })),
+    hungry: 0,
+    overdrive: 0,
   };
 }
 
@@ -203,6 +232,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       researchQueue: [],
       techProgress: {},
       investigated: [],
+      food: RULES.food.start,
+      treasury: RULES.credits.start,
+      taxes: 'standard' as const,
     })),
     lanes,
     ships: [],

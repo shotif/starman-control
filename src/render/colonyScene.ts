@@ -13,12 +13,14 @@ import {
   LANDSCAPES,
   type PropKind,
   type StructureKind,
+  slotAt,
 } from '../content/colonyArt.ts';
+import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { type ArchitectureId, FACTIONS, type FactionMark } from '../content/factions.ts';
 import { PROJECTS, type ProjectId } from '../content/projects.ts';
 import type { Atmosphere, Body } from '../sim/bodies.ts';
 import { bodiesOf } from '../sim/bodies.ts';
-import { bodyOf, costOf } from '../sim/economy.ts';
+import { bodyOf, costOf, districtCount } from '../sim/economy.ts';
 import { habitability } from '../sim/habitability.ts';
 import { speciesFor } from '../sim/research.ts';
 import { estimateStar } from '../sim/starLight.ts';
@@ -30,6 +32,8 @@ export interface SceneBuilding {
   kind: StructureKind;
   /** For a project or its scaffold. */
   project?: ProjectId;
+  /** For a district, or a scaffold zoning one (M2_WORLDS.md §15). */
+  district?: Zone;
   home?: HomeLook;
   /** Which of the landscape's slots it stands in. */
   slot: number;
@@ -131,17 +135,24 @@ export function mixHex(a: string, b: string, t: number): string {
   return `#${c.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
-/**
- * Homes for the people (COLONY_VIEW.md §1): one for every 4 million, at least one; small houses
- * below 3 million, blocks to 15 million, towers beyond; the newest home a size smaller.
- */
-export function homesFor(peopleTenths: number, room: number): HomeSize[] {
+/** The size of a colony's homes (COLONY_VIEW.md §1): small houses below 3 million, blocks to 15 million, towers beyond. */
+export function homeSize(peopleTenths: number): HomeSize {
   const m = peopleTenths / 10;
-  const count = Math.max(1, Math.min(room, Math.ceil(m / 4)));
-  const size: HomeSize = m < 3 ? 1 : m < 15 ? 2 : 3;
-  return Array.from({ length: count }, (_, i) =>
-    i > 0 && i === count - 1 ? (Math.max(1, size - 1) as HomeSize) : size,
-  );
+  return m < 3 ? 1 : m < 15 ? 2 : 3;
+}
+
+/** The building a district shows (M2_WORLDS.md §15): farms as fields or under glass, a mine, works, labs, a market. */
+export function districtKind(zone: Zone, envelope: Envelope): StructureKind {
+  switch (zone) {
+    case 'farms':
+      return envelope === 'open' ? 'fields' : 'greenhouse-farms';
+    case 'mines':
+      return 'mine';
+    case 'housing':
+      return 'homes';
+    default:
+      return zone;
+  }
 }
 
 /**
@@ -215,6 +226,16 @@ export function propsFor(
   return turned.slice(0, count);
 }
 
+/** A district's building in words, one and many: "2 farms, 3 works, a mine". */
+const DISTRICT_WORDS: Record<Zone, readonly [string, string]> = {
+  farms: ['farm', 'farms'],
+  works: ['works', 'works'],
+  mines: ['mine', 'mines'],
+  labs: ['lab', 'labs'],
+  market: ['market', 'markets'],
+  housing: ['housing district', 'housing districts'],
+};
+
 /** "a shipyard, a lane station and a mine". */
 function listWords(words: string[]): string {
   if (words.length <= 1) return words[0] ?? '';
@@ -257,48 +278,54 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
   };
   const parentBody = body.parent ? bodiesOf(world, game.seed, h.system).find((b) => b.id === body.parent) : undefined;
 
-  // Buildings: homes in the even slots from the centre outwards (after the capital's hall, which
-  // stands in the middle), projects in the odd ones in the order they were finished, so nothing
-  // moves as the colony grows; the scaffold stands where the project it is building will stand. An
-  // outpost is its rig. An open-air colony farms up to two of the slots left free.
+  // Buildings (M2_WORLDS.md §15): the middle slot holds the capital's hall, an outpost's rig or a
+  // colony's first homes; each district stands in its own slot as its zone's building (housing as
+  // homes); projects stand in the slots after the colony's land, in the order they were finished,
+  // then in a ring round the town; a scaffold stands where what is being built will stand.
   const buildings: SceneBuilding[] = [];
-  if (outpost) buildings.push({ kind: 'rig', slot: 0 });
-  if (h.capital) buildings.push({ kind: 'hall', slot: 0 });
-  h.projects.forEach((p, i) => {
-    buildings.push({ kind: p, project: p, slot: 2 * i + 1 });
-  });
+  const land = LANDSCAPES[biomeOf(body)];
   const first = h.queue[0];
-  if (first?.kind === 'project') {
+  const progress = () => {
+    if (!first) return 0;
     const cost = costOf(world, game, h, first).industry;
-    buildings.push({
-      kind: 'scaffold',
-      project: first.project,
-      slot: 2 * h.projects.length + 1,
-      progress: cost > 0 ? Math.min(1, h.industry / cost) : 0,
-    });
+    return cost > 0 ? Math.min(1, h.industry / cost) : 0;
+  };
+  if (outpost) buildings.push({ kind: 'rig', slot: 0 });
+  else if (h.capital) buildings.push({ kind: 'hall', slot: 0 });
+  const homeSlots = [
+    ...(outpost || h.capital ? [] : [0]),
+    ...h.districts
+      .filter((d) => d.zone === 'housing')
+      .map((d) => d.slot)
+      .sort((a, b) => a - b),
+  ];
+  const versions = homeVersions(
+    h.id,
+    homeSlots.map((slot) => slotAt(land, slot) ?? ([0.5, 0.5] as const)),
+    land.aspect,
+  );
+  const size = homeSize(h.people);
+  const home = (slot: number): SceneBuilding => ({
+    kind: 'homes',
+    home: { size, envelope, version: versions[homeSlots.indexOf(slot)] ?? 0 },
+    slot,
+    ...(slot > 0 ? { district: 'housing' as const } : {}),
+  });
+  if (!outpost && !h.capital) buildings.push(home(0));
+  const zoning = first?.kind === 'zone' ? first : undefined;
+  for (const d of h.districts as District[]) {
+    if (zoning?.slot === d.slot) continue;
+    if (d.zone === 'housing') buildings.push(home(d.slot));
+    else buildings.push({ kind: districtKind(d.zone, envelope), district: d.zone, slot: d.slot });
   }
-  const needed = buildings.reduce((n, b) => Math.max(n, b.slot + 1), 1);
-  const slots = Math.min(12, Math.max(body.size, needed, 2));
-  if (!outpost) {
-    const from = h.capital ? 1 : 0;
-    const room = Math.max(1, Math.ceil(slots / 2) - from);
-    const sizes = homesFor(h.people, room);
-    const land = LANDSCAPES[biomeOf(body)];
-    const homeSlots = sizes.map((_, i) => land.slots[2 * (i + from)] ?? ([0.5, 0.5] as const));
-    const versions = homeVersions(h.id, homeSlots, land.aspect);
-    sizes.forEach((size, i) => {
-      buildings.push({
-        kind: 'homes',
-        home: { size, envelope, version: versions[i] ?? 0 },
-        slot: 2 * (i + from),
-      });
-    });
-    if (envelope === 'open') {
-      const used = new Set(buildings.map((b) => b.slot));
-      const free = Array.from({ length: slots }, (_, i) => slots - 1 - i).filter((i) => !used.has(i));
-      for (const slot of free.slice(0, 2)) buildings.push({ kind: 'fields', slot });
-    }
-  }
+  if (zoning) buildings.push({ kind: 'scaffold', district: zoning.zone, slot: zoning.slot, progress: progress() });
+  const after = outpost ? 1 : districtCount(world, game, h) + 1;
+  h.projects.forEach((p, i) => {
+    buildings.push({ kind: p, project: p, slot: after + i });
+  });
+  if (first?.kind === 'project')
+    buildings.push({ kind: 'scaffold', project: first.project, slot: after + h.projects.length, progress: progress() });
+  const slots = Math.max(...buildings.map((b) => b.slot + 1), 1);
   buildings.sort((a, b) => a.slot - b.slot);
 
   // In words.
@@ -307,11 +334,20 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
     ? 'an automated outpost'
     : `${envelope === 'domed' ? 'a domed' : 'an open-air'} ${millions >= 10 ? 'city' : 'town'} of about ${Math.max(1, millions)} million`;
   const built = h.projects.map((p) => article(PROJECTS[p].name.toLowerCase()));
+  const zoned = h.districts.filter((d) => d.zone !== 'housing');
+  if (zoned.length > 0) {
+    const counts = new Map<Zone, number>();
+    for (const d of zoned) counts.set(d.zone, (counts.get(d.zone) ?? 0) + 1);
+    built.unshift(
+      ...[...counts].map(([z, n]) => (n === 1 ? article(DISTRICT_WORDS[z][0]) : `${n} ${DISTRICT_WORDS[z][1]}`)),
+    );
+  }
   const skyWords =
     body.atmosphere === 'none' ? ' in a black sky' : body.atmosphere === 'toxic' ? ' through a choking haze' : '';
   const parts = [`${body.name}: ${place} under ${article(sun.word)} sun${skyWords}`];
   if (built.length > 0) parts[0] += `, with ${listWords(built)}`;
   if (first?.kind === 'project') parts.push(`${article(PROJECTS[first.project].name.toLowerCase())} is being built`);
+  if (first?.kind === 'zone') parts.push(`a district is being zoned for ${ZONE_DEFS[first.zone].name.toLowerCase()}`);
   const description = `${parts.join('; ')}.`;
 
   return {

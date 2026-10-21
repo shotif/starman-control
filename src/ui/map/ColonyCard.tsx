@@ -1,14 +1,15 @@
 // A building's card in the colony's scene (COLONY_VIEW.md §4): tap or click a building to light it
 // and read what it is, what it does and its numbers. The scene shows; the card and the panel tell.
 
+import { ZONE_DEFS } from '../../content/districts.ts';
 import { FACTIONS } from '../../content/factions.ts';
 import { PROJECTS } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SceneBuilding } from '../../render/colonyScene.ts';
-import { costOf, queueTurns } from '../../sim/economy.ts';
+import { costOf, queueTurns, workedSlots } from '../../sim/economy.ts';
 import type { GameState, Holding } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
-import { millions } from './colony.tsx';
+import { millions, zoneYieldText } from './colony.tsx';
 
 const HOME_WORD = { 1: 'Small homes', 2: 'Homes', 3: 'Tower homes' } as const;
 
@@ -38,6 +39,25 @@ export function buildingCard(
       lines: [
         `${millions(h.people)} million people live in the colony’s ${homes} home${homes === 1 ? '' : 's'}.`,
         sealed ? 'Sealed against the world outside: its air cannot be breathed as it is.' : 'Open to the air.',
+        ...(b.district === 'housing' ? [`District ${b.slot}, zoned for housing: room for 2 million more.`] : []),
+      ],
+    };
+  }
+  if (b.kind === 'scaffold' && b.district) {
+    const zone = ZONE_DEFS[b.district];
+    return {
+      title: `Zoning district ${b.slot} for ${zone.name.toLowerCase()}`,
+      lines: [`${progress()}.`, zone.does],
+    };
+  }
+  if (b.district && b.kind !== 'scaffold') {
+    const zone = ZONE_DEFS[b.district];
+    const worked = workedSlots(h).has(b.slot);
+    return {
+      title: b.kind === 'greenhouse-farms' ? 'Farms under glass' : zone.name,
+      lines: [
+        `District ${b.slot}: ${zoneYieldText(world, game, h, b.district)} a turn when worked.`,
+        worked ? 'A million people work it.' : 'No one works it: the colony has too few people.',
       ],
     };
   }

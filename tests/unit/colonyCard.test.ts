@@ -20,8 +20,33 @@ describe('a building’s card', () => {
       lines: [
         '10 million people live in the colony’s 3 homes.',
         'Sealed against the world outside: its air cannot be breathed as it is.',
+        'District 1, zoned for housing: room for 2 million more.',
       ],
     });
+  });
+
+  it('says what a district yields and whether it is worked, and how far its zoning has got', () => {
+    const scene = colonyScene(world, game, h);
+    const at = (slot: number) => scene?.buildings.find((b) => b.slot === slot);
+    const farms = at(3);
+    const works = at(5);
+    if (!farms || !works) throw new Error('no districts');
+    expect(buildingCard(world, game, h, farms, 3)).toEqual({
+      title: 'Farms under glass',
+      lines: ['District 3: 3 food a turn when worked.', 'A million people work it.'],
+    });
+    expect(buildingCard(world, game, h, works, 3).title).toBe('Works');
+    const zoning = { kind: 'scaffold' as const, district: 'labs' as const, slot: 5 };
+    const q = h.queue;
+    h.queue = [{ kind: 'zone', zone: 'labs', slot: 5 }];
+    try {
+      expect(buildingCard(world, game, h, zoning, 3)).toEqual({
+        title: 'Zoning district 5 for labs',
+        lines: ['0 of 20 industry, ready in about 2 turns.', '2 research.'],
+      });
+    } finally {
+      h.queue = q;
+    }
   });
 
   it('says what a project does, and what the shipyard is building', () => {
@@ -44,8 +69,8 @@ describe('a building’s card', () => {
     const scaffold = colonyScene(world, game, h)?.buildings.find((b) => b.kind === 'scaffold');
     if (!scaffold) throw new Error('no scaffold');
     expect(buildingCard(world, game, h, scaffold, 3)).toEqual({
-      title: 'Building a mine',
-      lines: ['6 of 30 industry, ready in about 2 turns.', '1 more metals a turn.'],
+      title: 'Building a deep mine',
+      lines: ['6 of 30 industry, ready in about 3 turns.', 'Each mine district here yields 1 more.'],
     });
   });
 });

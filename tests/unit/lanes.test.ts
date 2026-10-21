@@ -120,7 +120,7 @@ describe('where a lane can go', () => {
 describe('building a lane', () => {
   it('is paid from an outpost’s own 2 industry, tuned, then opened, and ships use it only then', () => {
     let { g, outpost } = withOutpost();
-    expect(industryOf(outpost).total).toBe(RULES.outposts.industry);
+    expect(industryOf(world, g, outpost).total).toBe(RULES.outposts.industry);
     // Outposts queue lanes only.
     expect(
       refuse(world, g, 'sta', { type: 'queue', holding: outpost.id, item: { kind: 'ship', ship: 'survey' } }),
