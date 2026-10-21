@@ -10,7 +10,7 @@ import { ZONE_DEFS, ZONES, type Zone } from '../../content/districts.ts';
 import { EDICT_IDS, EDICTS, type EdictId, PRIORITIES, PRIORITY_DEFS, type Priority } from '../../content/edicts.ts';
 import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
-import { type Cost, itemName, PROJECTS, type QueueItem, withArticle } from '../../content/projects.ts';
+import { type Cost, itemName, PROJECTS, projectWords, type QueueItem, withArticle } from '../../content/projects.ts';
 import { RULES } from '../../content/rules.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -429,7 +429,7 @@ function AddToQueue({ world, game, h, play }: { world: World; game: GameState; h
               type="button"
               class="build-option"
               disabled={refusal !== null}
-              aria-label={`Queue ${withArticle(name.toLowerCase())}`}
+              aria-label={`Queue ${item.kind === 'project' ? projectWords(item.project) : withArticle(name.toLowerCase())}`}
               onClick={() => give(play, { type: 'queue', holding: h.id, item })}
             >
               <b>{name}</b>
@@ -1246,6 +1246,7 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
             <th scope="col">People</th>
             <th scope="col">Lanes</th>
             <th scope="col">Science</th>
+            <th scope="col">Score</th>
           </tr>
         </thead>
         <tbody>
@@ -1266,6 +1267,7 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
                     ? 'ahead of us'
                     : r.science}
               </td>
+              <td>{r.score}</td>
             </tr>
           ))}
         </tbody>
@@ -1273,7 +1275,8 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
       <p class="dim">
         Yours in full; the others’ only as far as you can see: in systems you have surveyed. You have researched{' '}
         {rows[0]?.technologies ?? 0} technolog{rows[0]?.technologies === 1 ? 'y' : 'ies'}; the Watch hears whether each
-        power you have met is ahead of you, level or behind.
+        power you have met is ahead of you, level or behind. The score counts 10 for each colony, 1 for each million
+        people, 5 for each technology, 3 for each lane and 50 for each great work; there is no victory yet.
       </p>
       {unmet.length > 0 && (
         <p class="dim">

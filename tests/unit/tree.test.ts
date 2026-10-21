@@ -80,20 +80,20 @@ const colonyOn = (g: GameState, b: Body, people = 30) =>
   });
 
 describe('rising costs (§18.1)', () => {
-  it('7% more of its base for every technology known, rounded down', () => {
+  it('8% more of its base for every technology known, rounded down', () => {
     const g = start();
     const p = powerOf(g, 'sta');
     expect(techCost(g, p, 'lane-engineering-1')).toBe(30);
     p.researched.push(...TECH_IDS.filter((id) => id !== 'lane-engineering-1').slice(0, 10));
-    expect(techCost(g, p, 'lane-engineering-1')).toBe(51);
-    expect(techCost(g, p, 'terraforming')).toBe(408);
+    expect(techCost(g, p, 'lane-engineering-1')).toBe(54);
+    expect(techCost(g, p, 'terraforming')).toBe(432);
   });
 
   it('in the queue’s times, each one learnt making the next dearer, and when points are spent', () => {
     let g = start();
     g = order(g, { type: 'research', tech: 'deep-survey' });
     g = order(g, { type: 'research', tech: 'habitat-domes' });
-    // 7 a turn: 30 in 5 turns, then 32 (30 and 7%) more: 62 in 9.
+    // 7 a turn: 30 in 5 turns, then 32 (30 and 8%) more: 62 in 9.
     expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([5, 9]);
     powerOf(g, 'sta').techProgress = { 'deep-survey': 29 };
     const r = resolveTurn(world, g);

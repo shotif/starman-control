@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-21 | **about $35 in all** (raised from $5, then $15, then $25); about $24.05 spent by 21 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-21 | **about $35 in all** (raised from $5, then $15, then $25); about $24.45 spent by 21 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
@@ -356,8 +356,8 @@ scanners, **about $21.65** in all; then about $1.50 on increment 25's events and
 **Raised again on 21 October 2026:** "Your art budget is increased to $35." **About $35 in all**
 may now be spent without asking; about $23.15 was spent, so about **$11.85** is left. M2b's 13
 pictures are planned at about $1.30 (M2B_SCIENCE.md §14). Then about $0.90 on increment 30's lane
-relays, orbital habitats and terraforming stations, **about $24.05** in all, leaving about
-**$10.95**.
+relays, orbital habitats and terraforming stations, **about $24.05** in all; then about $0.40 on
+increment 32's four great works, **about $24.45** in all, leaving about **$10.55**.
 
 ### D-28 · The colony view — **Decided**
 
@@ -556,6 +556,8 @@ Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
+| 2026-10-21 | Increment 32 as M2B_SCIENCE.md §20 (D-49, D-50 as recommended): Great engineering at tier 5 needing Prefabrication; great works at a colony, one building each per power at a time, upkeep 3; the loser that was building it first keeps half its industry; a colony holding a great work is seen by every power; rivals build theirs at the capital; a rival's score counts its technologies once met and its great works always; each technology now costs 8% more for every one known (7% before) to meet §2's targets on every seed | the smallest reading of §9 and §10 that makes the race real; each has a unit test |
+| 2026-10-21 | Increment 32's pictures (M2B_SCIENCE.md §20.2): 8 candidates, about **$0.40**, so about **$24.45** of the owner's $35 spent in all; chosen the Long Array A (B had a row of dishes floating free), the Lapse Archive A, the Lanewright Foundry A and the Commons A | within D-27; the lettered sheet went to the owner to overrule |
 | 2026-10-21 | Increment 31 as M2B_SCIENCE.md §19 (D-47 B, D-48 all three): each pair of doctrines needs the same technology (Regional administration, Lane engineering II, Automation II); a doctrine finished first closes its pair, which leaves the queue and loses its progress; doctrines' inspirations as §19.1; a power is *met* when it sees a colony, outpost or lane of the other's in a system it has surveyed; the standings' science calls a rival ahead or behind at three technologies' difference; a `?test` hook sets up a game some way on | the smallest reading of §7 and §8; each has a unit test |
 | 2026-10-21 | Increment 30's pictures (M2B_SCIENCE.md §18.7): 18 candidates, about **$0.90**, so about **$24.05** of the owner's $35 spent in all; chosen the lane relays A, A, A (the Authority's, the Cooperative's, the Wake's), the orbital habitats A, A, B and the terraforming stations A, A, A | within D-27; the lettered sheet went to the owner to overrule |
 | 2026-10-21 | Increment 30 tuned against §2's targets with the headless games: each technology costs 7% more of its base for every one known (not §6's 3%), tiers 4 and 5 cost 240 and 480 before the rise (not 160 and 250), the scholars stay at 1 for every 4 million; the Authority's colonies run for research (the research-led power) rather than balance; rivals weigh research by base price with what it needs, their own fields at half, instead of every technology of their own fields first | at 3% and 160/250 every power reached 27 to 37 technologies by turn 100 and the Authority finished the tree by turn 150; with these, about 37, 23 and 22 at turn 100 (§2: 35–45, 15–25), the tree lasting to about turn 170–195 before increments 31 and 32 add four more |

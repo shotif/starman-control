@@ -5,6 +5,7 @@
 // worked out once, from the state as the turn began. Pure: the same world and state always give the
 // same result, on every device.
 
+import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
@@ -312,6 +313,34 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       } else {
         h.projects.push(first.project);
         log.push({ kind: 'built', holding: h.id, item: first });
+        // A great work is finished once in the neighbourhood: the race is lost for everyone else
+        // building it, and a colony that was building it keeps half its industry (§20.2).
+        if (PROJECTS[first.project].great) {
+          for (const o of state.holdings) {
+            if (o === h) continue;
+            const at = o.queue.findIndex((q) => q.kind === 'project' && q.project === first.project);
+            if (at < 0) continue;
+            o.queue.splice(at, 1);
+            const kept = at === 0 ? Math.floor((o.industry * RULES.greatWorks.lostKeepsPercent) / 100) : o.industry;
+            o.industry = kept;
+            (events.get(o.owner) as ReportEvent[]).push({
+              kind: 'great-work-lost',
+              holding: o.id,
+              project: first.project,
+              faction: h.owner,
+              kept: at === 0 ? kept : 0,
+            });
+          }
+          for (const p of state.powers)
+            if (p.faction !== h.owner)
+              (events.get(p.faction) as ReportEvent[]).push({
+                kind: 'great-work',
+                faction: h.owner,
+                project: first.project,
+                holding: h.id,
+                system: h.system,
+              });
+        }
         // An outpost's orbital habitat makes it a colony in orbit, with its founders (§18.3).
         if (first.project === 'orbital-habitat' && h.kind === 'outpost') {
           h.kind = 'colony';

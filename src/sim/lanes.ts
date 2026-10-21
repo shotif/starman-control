@@ -47,6 +47,13 @@ export function laneQuote(world: World, state: GameState, faction: FactionId, fr
   }
   // Lane weaving tunes lanes faster (M2B_SCIENCE.md §18.2).
   for (const e of effects(state, faction, 'tuning-percent')) turns = Math.max(1, ceilDiv(turns * e.percent, 100));
+  // The Lanewright Foundry (M2B_SCIENCE.md §20.2).
+  if (state.holdings.some((h) => h.owner === faction && h.projects.includes('lanewright-foundry'))) {
+    const keep = 100 - RULES.greatWorks.foundryLanePercent;
+    cost.industry = ceilDiv(cost.industry * keep, 100);
+    cost.metals = ceilDiv(cost.metals * keep, 100);
+    cost.fuel = ceilDiv(cost.fuel * keep, 100);
+  }
   for (const e of effects(state, faction, 'lane-discount')) {
     const keep = 100 - e.percent;
     cost.industry = ceilDiv(cost.industry * keep, 100);

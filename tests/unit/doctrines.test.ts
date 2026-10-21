@@ -72,7 +72,7 @@ describe('doctrines (§19.1)', () => {
     g = order(g, { type: 'research', tech: 'strong-centre' });
     g = order(g, { type: 'research', tech: 'open-frontier' });
     const p = powerOf(g, 'sta');
-    // Two technologies known: each doctrine costs 114.
+    // Two technologies known: each doctrine costs 116.
     p.techProgress = { 'strong-centre': 5, 'open-frontier': 110 };
     expect(spendResearch(g, p, 1)).toEqual([]);
     p.researchQueue = ['open-frontier', 'strong-centre'];

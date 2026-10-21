@@ -60,9 +60,9 @@ describe('inspirations (§17.1)', () => {
     expect(inspirationPoints(g, p, 'habitat-domes')).toBe(12);
     expect(inspirationPoints(g, p, 'magnetics')).toBe(24);
     expect(inspirationPoints(g, p, 'arcologies')).toBe(40);
-    // With ten technologies known, Arcologies costs 170, and its inspiration 68 (§18.1).
+    // With ten technologies known, Arcologies costs 180, and its inspiration 72 (§18.1).
     p.researched.push(...TECH_IDS.slice(0, 10));
-    expect(inspirationPoints(g, p, 'arcologies')).toBe(68);
+    expect(inspirationPoints(g, p, 'arcologies')).toBe(72);
   });
 
   it('none is done at the start, for any power', () => {
@@ -221,7 +221,7 @@ describe('inspirations (§17.1)', () => {
     makeHolding(g, { owner: 'sta', kind: 'outpost', system: fuel.systemId, body: fuel.id, capital: false, people: 0 });
     const events = new Map<FactionId, ReportEvent[]>([['sta', []]]);
     resolveInspirations(world, g, events);
-    // One technology known: Fusion power costs 64 (60, and 7% of it), and its inspiration 25.
+    // One technology known: Fusion power costs 64 (60, and 8% of it), and its inspiration 25.
     expect(events.get('sta')).toEqual([{ kind: 'inspired', tech: 'fusion-power', points: 25 }]);
     expect(p.techProgress['fusion-power']).toBe(25);
     const again = new Map<FactionId, ReportEvent[]>([['sta', []]]);

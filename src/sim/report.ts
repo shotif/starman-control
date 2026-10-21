@@ -91,6 +91,12 @@ export type ReportEvent =
   | { kind: 'rival-founded'; faction: FactionId; holding: number; system: SystemId; body: string; colony: boolean }
   /** The Watch hears that a rival met has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
   | { kind: 'rival-tech'; faction: FactionId; tech: TechId }
+  /** A great work finished by another power (all hear of it, M2B_SCIENCE.md §20.2). */
+  | { kind: 'great-work'; faction: FactionId; project: ProjectId; holding: number; system: SystemId }
+  /** The Watch sees a rival begin a great work at a colony the power can see. */
+  | { kind: 'great-work-begun'; faction: FactionId; project: ProjectId; holding: number; system: SystemId }
+  /** A great work this colony was building was finished by another power first; it keeps half its industry if it was building it. */
+  | { kind: 'great-work-lost'; holding: number; project: ProjectId; faction: FactionId; kept: number }
   /** Another power opened a lane the power can see. */
   | { kind: 'rival-lane'; faction: FactionId; lane: LaneId }
   /** Another power's ship came into the power's sight. */

@@ -389,7 +389,7 @@ test.describe('the M1 journey', () => {
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
     const queued = page.getByRole('dialog', { name: 'Research' }).locator('.research-queue li').first();
     await expect(queued).toContainText('Long-baseline arrays');
-    // Its cost is 64 now: 60, and 7% for Deep survey known (M2B_SCIENCE.md §18.1).
+    // Its cost is 64 now: 60, and 8% for Deep survey known (M2B_SCIENCE.md §18.1).
     const progress = (await queued.locator('.dim').textContent())?.match(/\d+ of 64/)?.[0] ?? 'none';
     if (isDesktop(project)) await page.keyboard.press('Escape');
     else await page.getByRole('button', { name: 'Close' }).first().tap();

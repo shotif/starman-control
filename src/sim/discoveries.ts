@@ -72,7 +72,10 @@ export function observationsAt(world: World, system: SystemId): ObservationKind[
 /** Research a power gains for observations: more with Interferometry (M2B_SCIENCE.md §18.2). */
 export function observationPoints(state: GameState, faction: FactionId, found: readonly ObservationKind[]): number {
   const base = found.reduce((n, k) => n + RULES.discoveries.observations[k], 0);
-  const more = effects(state, faction, 'observation-percent').reduce((n, e) => n + e.percent, 0);
+  let more = effects(state, faction, 'observation-percent').reduce((n, e) => n + e.percent, 0);
+  // The Long Array (M2B_SCIENCE.md §20.2).
+  if (state.holdings.some((h) => h.owner === faction && h.projects.includes('long-array')))
+    more += RULES.greatWorks.arrayObservationPercent;
   return base + Math.floor((base * more) / 100);
 }
 

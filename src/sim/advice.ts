@@ -15,7 +15,7 @@ import {
 import { ZONE_DEFS } from '../content/districts.ts';
 import { EVENTS } from '../content/events.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
-import { PROJECTS, withArticle } from '../content/projects.ts';
+import { PROJECTS, projectWords, withArticle } from '../content/projects.ts';
 import { SHIPS } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
@@ -152,7 +152,7 @@ export function adviceFor(
         'works',
         3,
         'built',
-        { place: holdingName(e.holding), what: withArticle(PROJECTS[e.item.project].name.toLowerCase()) },
+        { place: holdingName(e.holding), what: projectWords(e.item.project) },
         { holding: e.holding },
       );
     else if (e.kind === 'zoned')
@@ -177,6 +177,14 @@ export function adviceFor(
       const [a, b] = laneEnds(e.lane);
       const place = `between ${world.system(a).name} and ${world.system(b).name}`;
       say('watch', 3, 'rival-lane', { power: FACTIONS[e.faction].shortName, place }, { system: b });
+    } else if (e.kind === 'great-work') {
+      say(
+        'watch',
+        3,
+        'great-work',
+        { power: FACTIONS[e.faction].shortName, work: PROJECTS[e.project].name },
+        { system: e.system },
+      );
     } else if (e.kind === 'rival-tech') {
       say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
     } else if (e.kind === 'rival-ship') {

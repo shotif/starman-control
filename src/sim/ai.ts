@@ -5,7 +5,7 @@
 
 import type { Priority } from '../content/edicts.ts';
 import type { FactionId } from '../content/factions.ts';
-import type { QueueItem } from '../content/projects.ts';
+import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
@@ -34,6 +34,8 @@ export interface Personality {
   edict: 'crash-programme' | 'festival' | 'labour-drive';
   /** The doctrines it chooses, one of each pair (M2B_SCIENCE.md §19.1). */
   doctrines: readonly TechId[];
+  /** The great work it builds at its capital when it can (§20.2). */
+  greatWork: ProjectId;
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -47,6 +49,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     laneBuilder: true,
     edict: 'crash-programme',
     doctrines: ['strong-centre', 'lane-network', 'industrial-worlds'],
+    greatWork: 'lapse-archive',
   },
   frontier: {
     capital: 'grow',
@@ -57,6 +60,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     laneBuilder: false,
     edict: 'festival',
     doctrines: ['open-frontier', 'deep-jumpers', 'garden-worlds'],
+    greatWork: 'commons',
   },
   'hollow-wake': {
     capital: 'produce',
@@ -67,6 +71,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     laneBuilder: false,
     edict: 'labour-drive',
     doctrines: ['open-frontier', 'deep-jumpers', 'industrial-worlds'],
+    greatWork: 'lanewright-foundry',
   },
 };
 
@@ -211,6 +216,16 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       habitats++;
     }
   }
+
+  // Its great work (§20.2): at its capital, after what is queued there, when it can.
+  const capital = mine.find((h) => h.capital);
+  const work: QueueItem = { kind: 'project', project: me.greatWork };
+  if (
+    capital &&
+    !capital.queue.some((q) => q.kind === 'project' && q.project === me.greatWork) &&
+    queueRefusal(world, state, capital, work) === null
+  )
+    orders.push({ type: 'queue', holding: capital.id, item: work });
 
   // Research: the cheapest it can with what it needs, by base cost, its own fields at half the price
   // (M2B_SCIENCE.md §18.4), so a deep tree in its own fields does not keep it from the first steps of

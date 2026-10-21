@@ -4,11 +4,13 @@
 // The screens are given this view; the rules always work on the whole state.
 
 import type { FactionId } from '../content/factions.ts';
+import { GREAT_WORKS, PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ReportEvent } from './report.ts';
 import { effects, hasMet } from './research.ts';
+import { scoreOf } from './score.ts';
 import { type GameState, type Holding, type LaneState, powerOf, type ShipState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
@@ -21,11 +23,20 @@ export function watchedSystems(world: World, state: GameState, faction: FactionI
   const reach = Math.max(RULES.projects.scannerDeci, ...effects(state, faction, 'scanner-deci').map((e) => e.deci));
   if (scanners.length > 0)
     for (const s of world.systems) if (scanners.some((at) => world.distanceDeci(at, s.id) <= reach)) out.add(s.id);
+  // The Long Array sees every ship within 20 ly of where it stands (M2B_SCIENCE.md §20.2).
+  const arrays = mine.filter((h) => h.projects.includes('long-array')).map((h) => h.system);
+  for (const at of arrays)
+    for (const s of world.systems) if (world.distanceDeci(at, s.id) <= RULES.greatWorks.arrayDeci) out.add(s.id);
   return out;
 }
 
 export function seesHolding(state: GameState, faction: FactionId, h: Holding): boolean {
-  return h.owner === faction || powerOf(state, faction).surveyed.includes(h.system);
+  // A great work is famous: everyone knows where it stands (M2B_SCIENCE.md §20.2).
+  return (
+    h.owner === faction ||
+    powerOf(state, faction).surveyed.includes(h.system) ||
+    h.projects.some((p) => GREAT_WORKS.includes(p))
+  );
 }
 
 export function seesLane(state: GameState, faction: FactionId, l: LaneState): boolean {
@@ -81,6 +92,18 @@ export function watchNews(world: World, before: GameState, after: GameState, fac
   for (const s of after.ships)
     if (s.owner !== faction && s.at !== null && !seen.has(s.id) && seesShip(faction, s, watched))
       out.push({ kind: 'rival-ship', faction: s.owner, ship: s.id, type: s.type, system: s.at });
+  // A rival seen beginning a great work (M2B_SCIENCE.md §20.2): newly in a seen colony's queue.
+  for (const h of after.holdings) {
+    if (h.owner === faction || !seesHolding(after, faction, h)) continue;
+    const was = before.holdings.find((x) => x.id === h.id);
+    for (const q of h.queue)
+      if (
+        q.kind === 'project' &&
+        PROJECTS[q.project].great &&
+        !was?.queue.some((w) => w.kind === 'project' && w.project === q.project)
+      )
+        out.push({ kind: 'great-work-begun', faction: h.owner, project: q.project, holding: h.id, system: h.system });
+  }
   // Rumours (M2B_SCIENCE.md §19.3): a met rival's great steps, a tier 4 or 5 technology or a doctrine.
   const viewer = powerOf(after, faction);
   for (const p of after.powers) {
@@ -106,6 +129,8 @@ export interface Standing {
   technologies: number | null;
   /** A rival's science against the viewer's, as the Watch hears it (§19.4); null for the viewer. */
   science: 'ahead' | 'level' | 'behind' | null;
+  /** The score as far as the viewer sees it (M2B_SCIENCE.md §20.3). */
+  score: number;
 }
 
 /**
@@ -123,6 +148,7 @@ export function standings(view: GameState, viewer: FactionId): Standing[] {
       lanes: view.lanes.filter((l) => l.owner === faction).length,
       technologies: faction === viewer ? mine : null,
       science: faction === viewer ? null : compare(powerOf(view, faction).researched.length),
+      score: scoreOf(view, faction, viewer).total,
     };
   };
   const mine = powerOf(view, viewer).researched.length;

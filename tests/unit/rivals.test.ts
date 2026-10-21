@@ -482,8 +482,11 @@ describe('the headless games (§26.6)', () => {
           held.every((h) => h.hungry <= 2),
           p.faction,
         ).toBe(true);
-        // Every power's science grows with its empire (M2B_SCIENCE.md §16, D-44).
-        expect(p.researched.length, p.faction).toBeGreaterThanOrEqual(15);
+        // M2b's targets at turn 100 (M2B_SCIENCE.md §2, §20.4): the research-led Authority 35 to 45
+        // technologies, each other rival 15 to 25.
+        const [least, most] = p.faction === 'sta' ? [35, 45] : [15, 25];
+        expect(p.researched.length, p.faction).toBeGreaterThanOrEqual(least);
+        expect(p.researched.length, p.faction).toBeLessThanOrEqual(most);
         // Discoveries come from play, for rivals too (M2B_SCIENCE.md §17).
         expect(p.inspired.length, p.faction).toBeGreaterThanOrEqual(5);
       }

@@ -2,8 +2,8 @@
 
 *Proposed 21 October 2026, after M2's headless games. **Decided the same day: D-44 to D-50 all as
 recommended** ([DECISIONS.md, Round 5](../DECISIONS.md#round-5-science-and-rivalry-decided-21-october-2026)).
-Each increment gets a detailed design section, written before it is built, as M2's did, and its
-notes as built.*
+Each increment has a detailed design section, written before it was built, and its notes as built.
+**Built the same day, increments 28 to 32: M2b is complete** and waits for the owner's try (§20.4).*
 
 ## Contents
 
@@ -26,6 +26,7 @@ notes as built.*
 17. [Increment 29 in detail: discoveries](#17-increment-29-in-detail-discoveries-written-before-building-it)
 18. [Increment 30 in detail: a deeper tree](#18-increment-30-in-detail-a-deeper-tree-written-before-building-it)
 19. [Increment 31 in detail: forks and spreading knowledge](#19-increment-31-in-detail-forks-and-spreading-knowledge-written-before-building-it)
+20. [Increment 32 in detail: great works, the score, and the proof](#20-increment-32-in-detail-great-works-the-score-and-the-proof-written-before-building-it)
 
 ## 1. What M2's games showed
 
@@ -497,10 +498,11 @@ engineering and the great works (increment 32); knowledge that spreads (incremen
 
 ### 18.1 Rising costs
 
-- A technology costs its base cost plus **7% of it for every technology the power already
+- A technology costs its base cost plus **8% of it for every technology the power already
   knows**, rounded down (`RULES.research.risePercent`; §6 drafted 3%, tuned with the headless
-  games, see the notes as built): Lane engineering I costs 30 for a power that knows nothing, 51
-  for one that knows ten, 93 for one that knows thirty.
+  games to 7% in increment 30 and 8% in increment 32, see the notes as built): Lane engineering I
+  costs 30 for a power that knows nothing, 54 for one that knows ten, 102 for one that knows
+  thirty.
 - The cost is worked out when it is needed: on the cards, in the queue's times, when points are
   spent, and for an inspiration's 40% and an anomaly's progress. Progress already made is kept as
   points; since costs only rise, it never passes a cost.
@@ -762,4 +764,106 @@ closed, on the phone, tablet and desktop; the standings' science column.
   science; 120 turns with no power holding both of a pair); `doctrines.spec.ts` (a doctrine
   finished closing its pair) and the standings' science in `rivals.spec.ts`, on the phone, tablet
   and desktop.
+
+
+## 20. Increment 32 in detail: great works, the score, and the proof (written before building it)
+
+**Goals.** D-49 as decided: four great works, each finished by one power only, a race the Watch
+follows. D-50 as decided: a score in the standings, with no victory yet. The proof: the headless
+games against §2's targets on eight seeds, the 100-turn journeys, and the owner's try.
+
+**Out of scope.** Victory and defeat (SCOPE §4.17, D-14); great works beyond the four; wonders'
+upkeep wars or sabotage (M4).
+
+### 20.1 Great engineering
+
+Construction, tier 5 (480 before the rise), needs Prefabrication: opens the great works. Inspired
+by twenty projects standing.
+
+### 20.2 The four great works (all fiction)
+
+| Great work | Needs, with Great engineering | Does, for the power that holds it |
+| --- | --- | --- |
+| **The Long Array** | Interferometry | sees every ship within 20 ly of where it stands; observations give twice the research |
+| **The Lapse Archive** | Public schooling | research +20% |
+| **The Lanewright Foundry** | Lane relays | lanes cost half |
+| **The Commons** | Gene tailoring | approval +5 and growth +10% at every colony |
+
+- Each costs **400 industry and 40 metals**, upkeep 3, at a colony; one of each in the whole
+  neighbourhood. A power may build several, each at one colony at a time.
+- **The race:** when one power finishes a great work, every other colony building it loses it from
+  its queue; one that was building it first keeps **half its industry** (the rest is lost with the
+  work). The report says so.
+- **The Watch** says when a rival it can see (a colony in a system you have surveyed) begins one,
+  and when anyone finishes one, wherever it stands: great works are famous.
+- **Refusals:** "The Lapse Archive stands already, the Hollow Wake's." "The Lapse Archive is being
+  built at Tau Ceti e."
+- **Rivals** build theirs when they can: the Authority the Lapse Archive, the Cooperative the
+  Commons, the Wake the Lanewright Foundry, each at its capital, queued after what the capital's
+  governor has queued; they give up nothing to build it.
+- **On the screen:** each stands in the colony view as one building, in no power's architecture
+  (4 pictures, about $0.40, a lettered sheet to the owner); the colony's panel and *Add to the
+  queue* say what each does and who holds it.
+
+### 20.3 The score (D-50)
+
+- **10** for each colony, **1** for each million people, **5** for each technology, **3** for
+  each lane (open or being tuned), **50** for each great work (`RULES.score`).
+- **In the standings:** a *Score* column. Yours in full; a rival's as far as you can see it: its
+  colonies, people and lanes that you see, its great works (known to all), and its technologies
+  once you have met it (the Watch hears them). No victory comes of it yet.
+- **In the headless games:** `npm run balance` writes each power's full score.
+
+### 20.4 The proof
+
+- **Headless:** §2's targets on the eight seeds of `npm run balance`: at turn 100 each rival 15 to
+  25 technologies and a research-led power 35 to 45; no power learns every technology it can
+  before turn 180 (checked with 200-turn runs, reported in the notes as built). The three seeds in
+  the unit tests check the turn-100 ranges.
+- **Browser:** the 100-turn journeys on the phone and the desktop (CI, last); a great work
+  finished and a rival's lost; the standings' score; the turn at turn 100 within its budget.
+- **The owner's try:** play M2b on a phone and a desktop and say what is dull, unclear, slow or
+  too easy, as M2's try asked.
+
+### 20.5 The state
+
+No change: great works are projects; the score is worked out. The state stays version 11.
+
+### 20.6 Tests
+
+Unit: Great engineering and each great work's needs; one in the neighbourhood, one at a time per
+power; the race and the half returned; each work's effect; the Watch's lines; rivals building
+theirs; the score, in full and as seen. Headless: as §20.4. Browser: as §20.4.
+
+### Increment 32: great works, the score, and the proof (21 October 2026)
+
+- **Great engineering** and the **four great works** (`GREAT_WORKS` in `src/content/projects.ts`,
+  each with `great.needs`), as §20.1 and §20.2: one in the whole neighbourhood, one colony of a
+  power building each at a time; the turn's production finishes one for its builder and takes it
+  out of every other queue, a colony that was building it keeping half its industry
+  (`great-work-lost`); every other power hears of it (`great-work`), and the Watch sees a rival
+  begin one where it can see (`great-work-begun`). A colony holding a great work is seen by every
+  power, as a great work is famous. Their effects: the Long Array's 20 ly of sight
+  (`watchedSystems`) and its doubled observations, the Lapse Archive's +20% research, the
+  Lanewright Foundry's halved lanes, the Commons' approval and growth (`holdsGreatWork`). A great
+  work is named with *the* everywhere (`projectWords`): "Earth has finished the Lapse Archive: a
+  great work, the only one in the neighbourhood."
+- **Rivals** build theirs at the capital when they can (`PERSONALITIES[…].greatWork`).
+- **The score** (`src/sim/score.ts`), as §20.3: in the standings (a *Score* column, a rival's as far
+  as it is seen) and in `npm run balance`.
+- **Pictures:** the four great works, one each in no power's architecture (about $0.40; $24.45 of
+  $35 spent in all).
+- **Tuned for the proof:** each technology now costs **8%** more for every one known (7% in
+  increment 30). `npm run balance` at turn 100 on its eight seeds: the Authority **37.4**
+  technologies (35 to 39 by seed), the Cooperative **21.5** (19 to 24) and the Wake **22.0** (20 to
+  24): §2's targets on every seed. In 200-turn runs of the same seeds the Authority learnt all 58
+  it can on turns 181, 186 and 187 in three games and had not finished by turn 200 in the other
+  five; no rival came near. The headless unit tests check the turn-100 ranges on seeds 42, 7 and
+  2176.
+- **Tests:** `greatworks.test.ts` (the four and their needs; one in the neighbourhood and one
+  building at a time; the race and the half kept; the Watch; each effect; fame; the rivals' great
+  works; the score in full and as seen), `rivals.test.ts` (§2's targets), and
+  `greatworks.spec.ts` (a great work finished, its refusals, the standings' score) on the phone,
+  tablet and desktop; the 100-turn journeys (`long.spec.ts`) on CI.
+- **The owner's try** is next: a game of 50 turns or more on a phone and a desktop.
 

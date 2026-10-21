@@ -65,7 +65,7 @@ test('a doctrine chosen closes its pair for the game', async ({ page }, info) =>
     if (!me) return;
     me.researched.push('colonial-charters', 'regional-administration');
     me.researchQueue = ['open-frontier', 'strong-centre'];
-    me.techProgress = { 'open-frontier': 113 };
+    me.techProgress = { 'open-frontier': 115 };
     w.__setGame(g);
   });
   let screen = await openResearch(page, project);

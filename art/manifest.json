@@ -3122,6 +3122,62 @@
       "aiGenerated": true
     },
     {
+      "briefId": "commons",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: The Commons, a great work: a great round civic hall with a shallow glass dome over a garden open to everyone, a ring of arcades with market stalls and benches, a central fountain and tall trees, banners in many colours, warm lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T18:56:05.881Z",
+      "note": "Here is the isolated image of \"The Commons\" civic hall, designed for a strategy game's colony view and depicted in a detailed, realistic matte-painting style with worn materials, warm lighting, and a shallow downward perspective against a pure magenta background.",
+      "id": "commons",
+      "series": "structure",
+      "approvedAt": "2026-10-21T18:58:15.026Z",
+      "candidate": "art/out/commons/20261021-185224-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/commons-256.webp",
+          "bytes": 19612
+        },
+        {
+          "width": 512,
+          "path": "art/structure/commons-512.webp",
+          "bytes": 60520
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/commons-1024.webp",
+          "bytes": 202258
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 68,
+        "top": 201,
+        "width": 1917,
+        "height": 1622
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-arcology",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6753,6 +6809,172 @@
           "margin": 6,
           "rim": 2
         }
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "lanewright-foundry",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: The Lanewright Foundry, a great work: an immense industrial forge where lane beacons are built, a huge hangar with its doors open on a half-finished beacon ring glowing white-hot, heavy gantry cranes, smokestacks and a launch rail pointing at the sky.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T18:54:51.104Z",
+      "note": "Please see the generated game asset of The Lanewright Foundry below:",
+      "id": "lanewright-foundry",
+      "series": "structure",
+      "approvedAt": "2026-10-21T18:58:11.857Z",
+      "candidate": "art/out/lanewright-foundry/20261021-185224-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/lanewright-foundry-256.webp",
+          "bytes": 19538
+        },
+        {
+          "width": 512,
+          "path": "art/structure/lanewright-foundry-512.webp",
+          "bytes": 55564
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/lanewright-foundry-1024.webp",
+          "bytes": 152158
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 69,
+        "top": 139,
+        "width": 1918,
+        "height": 1643
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "lapse-archive",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: The Lapse Archive, a great work: a monumental stepped library of pale stone and glass, a great colonnaded entrance with wide steps, a tall central tower crowned by a slowly glowing beacon of light, terraces of reading gardens, warm light in every window.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T18:53:40.031Z",
+      "id": "lapse-archive",
+      "series": "structure",
+      "approvedAt": "2026-10-21T18:58:08.710Z",
+      "candidate": "art/out/lapse-archive/20261021-185224-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/lapse-archive-256.webp",
+          "bytes": 17996
+        },
+        {
+          "width": 512,
+          "path": "art/structure/lapse-archive-512.webp",
+          "bytes": 52828
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/lapse-archive-1024.webp",
+          "bytes": 169342
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 95,
+        "top": 18,
+        "width": 1856,
+        "height": 1868
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "long-array",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: The Long Array, a great work: a vast field of twelve identical radio-telescope dishes in a long curved line across the ground, linked by glowing cyan cables to a tall white control spire with an observation deck, all turned to the same point in the sky.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T18:52:44.407Z",
+      "id": "long-array",
+      "series": "structure",
+      "approvedAt": "2026-10-21T18:58:05.568Z",
+      "candidate": "art/out/long-array/20261021-185224-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/long-array-256.webp",
+          "bytes": 21548
+        },
+        {
+          "width": 512,
+          "path": "art/structure/long-array-512.webp",
+          "bytes": 63822
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/long-array-1024.webp",
+          "bytes": 198174
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 79,
+        "top": 79,
+        "width": 1881,
+        "height": 1767
       },
       "aiGenerated": true
     },

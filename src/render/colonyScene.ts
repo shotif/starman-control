@@ -17,7 +17,7 @@ import {
 } from '../content/colonyArt.ts';
 import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { type ArchitectureId, FACTIONS, type FactionMark } from '../content/factions.ts';
-import { PROJECTS, type ProjectId, withArticle } from '../content/projects.ts';
+import { type ProjectId, projectWords, withArticle } from '../content/projects.ts';
 import type { Atmosphere, Body } from '../sim/bodies.ts';
 import { bodiesOf } from '../sim/bodies.ts';
 import { bodyOf, costOf, districtCount, levelOf } from '../sim/economy.ts';
@@ -332,7 +332,7 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
   const place = outpost
     ? 'an automated outpost'
     : `${envelope === 'domed' ? 'a domed' : 'an open-air'} ${millions >= 10 ? 'city' : 'town'} of about ${Math.max(1, millions)} million`;
-  const built = h.projects.map((p) => article(PROJECTS[p].name.toLowerCase()));
+  const built = h.projects.map((p) => projectWords(p));
   const zoned = h.districts.filter((d) => d.zone !== 'housing');
   if (zoned.length > 0) {
     const counts = new Map<Zone, number>();
@@ -345,7 +345,7 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
     body.atmosphere === 'none' ? ' in a black sky' : body.atmosphere === 'toxic' ? ' through a choking haze' : '';
   const parts = [`${body.name}: ${place} under ${article(sun.word)} sun${skyWords}`];
   if (built.length > 0) parts[0] += `, with ${listWords(built)}`;
-  if (first?.kind === 'project') parts.push(`${article(PROJECTS[first.project].name.toLowerCase())} is being built`);
+  if (first?.kind === 'project') parts.push(`${projectWords(first.project)} is being built`);
   if (first?.kind === 'zone') parts.push(`a district is being zoned for ${ZONE_DEFS[first.zone].name.toLowerCase()}`);
   const description = `${parts.join('; ')}.`;
 

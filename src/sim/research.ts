@@ -64,7 +64,7 @@ export function knownBy(state: GameState, power: PowerState, tech: TechId): Fact
 }
 
 /**
- * What a technology costs a power now (M2B_SCIENCE.md §18.1, §19.2): its base cost, and 7% of it for
+ * What a technology costs a power now (M2B_SCIENCE.md §18.1, §19.2): its base cost, and 8% of it for
  * every technology the power already knows; then 15% less for each power it has met that knows it,
  * at most 30% (unless `spread` is false). Rounded down.
  */

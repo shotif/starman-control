@@ -4,7 +4,7 @@
 // the manifest. A world or a building with no picture yet is simply not drawn.
 
 import type { ArchitectureId } from './factions.ts';
-import type { ProjectId } from './projects.ts';
+import { GREAT_WORKS, type ProjectId } from './projects.ts';
 
 /** The kinds of ground a world can have (COLONY_VIEW.md §3). */
 export type Biome = 'garden' | 'shore' | 'steppe' | 'desert' | 'inferno' | 'tundra' | 'ice' | 'airless' | 'haze';
@@ -282,6 +282,11 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['authority-terraforming-station', 1789 / 1536, 46],
       ['cooperative-terraforming-station', 1876 / 1619, 46],
       ['wake-terraforming-station', 1982 / 1905, 46],
+      // M2b's great works (M2B_SCIENCE.md §20.2): one each, in no power's architecture.
+      ['long-array', 1881 / 1767, 64],
+      ['lapse-archive', 1856 / 1868, 60],
+      ['lanewright-foundry', 1918 / 1643, 60],
+      ['commons', 1917 / 1622, 58],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );
@@ -291,6 +296,8 @@ const VERSION_SUFFIX = ['', '-b', '-c'] as const;
 /** The brief id a building would have: homes by size, envelope and version, the rest by architecture. */
 export function structureId(architecture: ArchitectureId, kind: StructureKind, home?: HomeLook): string {
   if (kind === 'scaffold' || kind === 'fields' || kind === 'greenhouse-farms') return kind;
+  // A great work is one building in the whole neighbourhood, in no power's architecture (M2B_SCIENCE.md §20.2).
+  if ((GREAT_WORKS as readonly string[]).includes(kind)) return kind;
   if (kind === 'homes')
     return `${architecture}-homes-${home?.size ?? 2}-${home?.envelope ?? 'open'}${VERSION_SUFFIX[home?.version ?? 0]}`;
   return `${architecture}-${kind}`;

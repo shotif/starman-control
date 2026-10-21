@@ -10,7 +10,7 @@ import { ZONE_DEFS } from '../../content/districts.ts';
 import { EDICTS, PRIORITY_DEFS } from '../../content/edicts.ts';
 import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
-import { itemName, PROJECTS, withArticle } from '../../content/projects.ts';
+import { itemName, PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -305,10 +305,13 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'not-founded':
       return `${shipOf(e.ship)} could not found on ${body(e.system, e.body)}: ${e.reason}`;
     case 'built': {
-      const what = itemName(e.item).toLowerCase();
+      if (e.item.kind === 'project' && PROJECTS[e.item.project].great)
+        return `${holding(e.holding)} has finished ${projectWords(e.item.project)}: a great work, the only one in the neighbourhood.`;
+      const what =
+        e.item.kind === 'project' ? projectWords(e.item.project) : withArticle(itemName(e.item).toLowerCase());
       return e.ship !== undefined
-        ? `${holding(e.holding)} built ${withArticle(what)}, the ${shipOf(e.ship)}.`
-        : `${holding(e.holding)} built ${withArticle(what)}.`;
+        ? `${holding(e.holding)} built ${what}, the ${shipOf(e.ship)}.`
+        : `${holding(e.holding)} built ${what}.`;
     }
     case 'full':
       return `${holding(e.holding)} is full: its people have no more room to grow.`;
@@ -344,7 +347,7 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
           ? `zoned district ${e.slot} for ${e.zone ? ZONE_DEFS[e.zone].name.toLowerCase() : 'a use'}`
           : e.did === 'work'
             ? `put its ${e.zone ? ZONE_DEFS[e.zone].name.toLowerCase() : 'districts'} to work first`
-            : `queued ${e.project ? withArticle(PROJECTS[e.project].name.toLowerCase()) : 'a project'}`;
+            : `queued ${e.project ? projectWords(e.project) : 'a project'}`;
       const h = game.holdings.find((x) => x.id === e.holding);
       const why =
         e.reason === 'food'
@@ -370,6 +373,12 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `The Watch: ${withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`)} is at ${name(e.system)}.`;
     case 'rival-tech':
       return `The Watch: word from the lanes is that the ${FACTIONS[e.faction].shortName} has mastered ${TECHS[e.tech].name}.`;
+    case 'great-work':
+      return `The ${FACTIONS[e.faction].shortName} has finished the ${PROJECTS[e.project].name} at ${name(e.system)}: a great work, the only one in the neighbourhood.`;
+    case 'great-work-begun':
+      return `The Watch: the ${FACTIONS[e.faction].shortName} has begun the ${PROJECTS[e.project].name} at ${name(e.system)}.`;
+    case 'great-work-lost':
+      return `The ${FACTIONS[e.faction].shortName} finished the ${PROJECTS[e.project].name} first: ${holding(e.holding)} has lost it${e.kept > 0 ? `, and keeps ${e.kept} of its industry` : ''}.`;
     case 'event':
       return `${eventTitle(world, game, { id: e.event, turn: game.turn, ...e })}: it needs your answer.`;
     case 'event-answered': {
@@ -401,6 +410,7 @@ function eventPlace(
     case 'governed':
     case 'terraformed':
     case 'habitat-colony':
+    case 'great-work-lost':
       return { holding: e.holding };
     case 'edict-ended':
       if (e.holding !== null) return { holding: e.holding };
@@ -462,6 +472,9 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'rival-lane': { icon: 'lane', tone: 'news' },
   'rival-ship': { icon: 'ship', tone: 'news' },
   'rival-tech': { icon: 'research', tone: 'news' },
+  'great-work': { icon: 'colony', tone: 'news' },
+  'great-work-begun': { icon: 'colony', tone: 'news' },
+  'great-work-lost': { icon: 'refused', tone: 'wrong' },
   event: { icon: 'anomaly', tone: 'needs' },
   'event-answered': { icon: 'report', tone: 'news' },
   'event-gone': { icon: 'report', tone: 'news' },

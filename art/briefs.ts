@@ -518,6 +518,7 @@ export const BRIEFS: ArtBrief[] = [
   ...props(),
   ...districts(),
   ...projects(),
+  ...greatWorks(),
   ...advisors(),
   ...events(),
 ];
@@ -870,6 +871,37 @@ function projects(): ArtBrief[] {
       purpose: `Colony view: the ${kind.replaceAll('-', ' ')}, in the ${names[a]}'s architecture (M2).`,
     })),
   );
+}
+
+/**
+ * M2b's great works (M2B_SCIENCE.md §20.2): one of each in the whole neighbourhood, so each is one
+ * picture in no power's architecture, grander than any project. All fiction.
+ */
+function greatWorks(): ArtBrief[] {
+  const works: [string, string][] = [
+    [
+      'long-array',
+      'The Long Array, a great work: a vast field of twelve identical radio-telescope dishes in a long curved line across the ground, linked by glowing cyan cables to a tall white control spire with an observation deck, all turned to the same point in the sky.',
+    ],
+    [
+      'lapse-archive',
+      'The Lapse Archive, a great work: a monumental stepped library of pale stone and glass, a great colonnaded entrance with wide steps, a tall central tower crowned by a slowly glowing beacon of light, terraces of reading gardens, warm light in every window.',
+    ],
+    [
+      'lanewright-foundry',
+      'The Lanewright Foundry, a great work: an immense industrial forge where lane beacons are built, a huge hangar with its doors open on a half-finished beacon ring glowing white-hot, heavy gantry cranes, smokestacks and a launch rail pointing at the sky.',
+    ],
+    [
+      'commons',
+      'The Commons, a great work: a great round civic hall with a shallow glass dome over a garden open to everyone, a ring of arcades with market stalls and benches, a central fountain and tall trees, banners in many colours, warm lights.',
+    ],
+  ];
+  return works.map(([id, subject]) => ({
+    id,
+    series: 'structure' as const,
+    subject,
+    purpose: `Colony view: the great work ${id.replaceAll('-', ' ')}, in no power's architecture (M2b).`,
+  }));
 }
 
 /** Increment 22's advisors (M2_WORLDS.md §24.1): six faces for each power, all fiction. */

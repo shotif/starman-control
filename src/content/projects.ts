@@ -25,7 +25,12 @@ export type ProjectId =
   // M2b (M2B_SCIENCE.md §18.3).
   | 'lane-relay'
   | 'orbital-habitat'
-  | 'terraforming-station';
+  | 'terraforming-station'
+  // M2b's great works (M2B_SCIENCE.md §20.2).
+  | 'long-array'
+  | 'lapse-archive'
+  | 'lanewright-foundry'
+  | 'commons';
 
 export interface Cost {
   industry: number;
@@ -45,6 +50,8 @@ export interface ProjectDef {
   opens?: TechId;
   /** Where it may be built: a colony (the default), an outpost, or either (M2B_SCIENCE.md §18.3). */
   where?: 'colony' | 'outpost' | 'either';
+  /** A great work (§20.2): one in the whole neighbourhood, needing this technology besides `opens`. */
+  great?: { needs: TechId };
 }
 
 export const PROJECTS: Record<ProjectId, ProjectDef> = {
@@ -191,7 +198,47 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
     upkeep: 2,
     opens: 'terraforming',
   },
+  // M2b's great works (M2B_SCIENCE.md §20.2), all fiction: one of each in the whole neighbourhood.
+  'long-array': {
+    id: 'long-array',
+    name: 'Long Array',
+    does: 'A great work: sees every ship within 20 ly of where it stands, and observations give twice the research.',
+    cost: { industry: 400, metals: 40, volatiles: 0, fuel: 0 },
+    upkeep: 3,
+    opens: 'great-engineering',
+    great: { needs: 'interferometry' },
+  },
+  'lapse-archive': {
+    id: 'lapse-archive',
+    name: 'Lapse Archive',
+    does: 'A great work: research +20%.',
+    cost: { industry: 400, metals: 40, volatiles: 0, fuel: 0 },
+    upkeep: 3,
+    opens: 'great-engineering',
+    great: { needs: 'public-schooling' },
+  },
+  'lanewright-foundry': {
+    id: 'lanewright-foundry',
+    name: 'Lanewright Foundry',
+    does: 'A great work: lanes cost half.',
+    cost: { industry: 400, metals: 40, volatiles: 0, fuel: 0 },
+    upkeep: 3,
+    opens: 'great-engineering',
+    great: { needs: 'lane-relays' },
+  },
+  commons: {
+    id: 'commons',
+    name: 'Commons',
+    does: 'A great work: approval +5 and growth +10% at every colony.',
+    cost: { industry: 400, metals: 40, volatiles: 0, fuel: 0 },
+    upkeep: 3,
+    opens: 'great-engineering',
+    great: { needs: 'gene-tailoring' },
+  },
 };
+
+/** The great works (M2B_SCIENCE.md §20.2). */
+export const GREAT_WORKS = (Object.keys(PROJECTS) as ProjectId[]).filter((id) => PROJECTS[id].great);
 
 export const PROJECT_IDS = Object.keys(PROJECTS) as ProjectId[];
 
@@ -218,6 +265,12 @@ export function itemCost(item: BuildItem): Cost {
 export function withArticle(name: string): string {
   if (name.endsWith('ics')) return name;
   return /^[aeiou]/i.test(name) ? `an ${name}` : `a ${name}`;
+}
+
+/** A project in words, with its article: "a deep mine", "hydroponics", "the Lapse Archive" (a great work, §20.2). */
+export function projectWords(id: ProjectId): string {
+  const def = PROJECTS[id];
+  return def.great ? `the ${def.name}` : withArticle(def.name.toLowerCase());
 }
 
 export function itemName(item: QueueItem): string {

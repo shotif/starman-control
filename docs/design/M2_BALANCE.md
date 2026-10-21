@@ -3,65 +3,65 @@
 *Written by `npm run balance` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): three
 rivals, 8 seeds, 100 turns each. Regenerate it after any change to the rules or the rivals.*
 
-The slowest turn took 177 ms on the machine that wrote this; the largest save at turn 100
-was 41.6 KB. No power fell into debt. No colony went hungry.
+The slowest turn took 128 ms on the machine that wrote this; the largest save at turn 100
+was 39.7 KB. No power fell into debt. No colony went hungry.
 
-The tree has 60 technologies, of which a power can learn 57 (one of each pair of doctrines). No power learnt them all in 100 turns.
+The tree has 61 technologies, of which a power can learn 58 (one of each pair of doctrines). No power learnt them all in 100 turns.
 
 ## On average
 
-| Turn | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Treasury |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 25 | Transit Authority | 4.0 | 2.9 | 19.1 | 9.0 | 20.3 | 14.9 | 66 |
-| 25 | Frontier Co-op | 3.9 | 1.9 | 20.2 | 6.6 | 9.3 | 13.9 | 46 |
-| 25 | Hollow Wake | 4.1 | 2.4 | 19.9 | 7.3 | 8.8 | 15.9 | 92 |
-| 50 | Transit Authority | 5.6 | 4.4 | 27.4 | 17.9 | 38.9 | 25.6 | 68 |
-| 50 | Frontier Co-op | 6.5 | 3.8 | 39.5 | 11.9 | 16.1 | 20.8 | 52 |
-| 50 | Hollow Wake | 7.5 | 5.0 | 37.9 | 12.4 | 13.8 | 28.9 | 182 |
-| 100 | Transit Authority | 10.5 | 7.1 | 43.7 | 38.5 | 131.4 | 32.1 | 39 |
-| 100 | Frontier Co-op | 13.1 | 8.4 | 78.3 | 22.8 | 41.4 | 31.0 | 34 |
-| 100 | Hollow Wake | 15.8 | 12.6 | 91.7 | 23.0 | 41.3 | 37.6 | 228 |
+| Turn | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Score | Treasury |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 25 | Transit Authority | 4.0 | 2.9 | 19.1 | 8.6 | 20.3 | 14.9 | 126 | 66 |
+| 25 | Frontier Co-op | 3.9 | 1.9 | 20.2 | 6.4 | 9.3 | 13.9 | 109 | 46 |
+| 25 | Hollow Wake | 3.9 | 2.4 | 19.6 | 7.1 | 8.8 | 15.6 | 114 | 92 |
+| 50 | Transit Authority | 5.6 | 4.5 | 27.3 | 17.1 | 38.9 | 25.5 | 194 | 68 |
+| 50 | Frontier Co-op | 6.5 | 3.8 | 39.3 | 11.3 | 16.0 | 20.5 | 182 | 54 |
+| 50 | Hollow Wake | 7.5 | 5.1 | 37.9 | 12.1 | 13.5 | 29.3 | 199 | 173 |
+| 100 | Transit Authority | 11.1 | 7.5 | 45.4 | 37.4 | 131.9 | 32.6 | 375 | 44 |
+| 100 | Frontier Co-op | 12.9 | 8.1 | 78.8 | 21.5 | 41.3 | 31.4 | 342 | 41 |
+| 100 | Hollow Wake | 15.4 | 12.0 | 88.4 | 22.0 | 38.6 | 38.3 | 387 | 226 |
 
 ## Each game at turn 100
 
-| Seed | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Treasury |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 42 | Transit Authority | 13 | 8 | 44.5 | 38 | 115 | 32 | 29 |
-| 42 | Frontier Co-op | 12 | 9 | 60.7 | 20 | 26 | 32 | 27 |
-| 42 | Hollow Wake | 12 | 10 | 68.7 | 21 | 31 | 36 | 236 |
-| 7 | Transit Authority | 14 | 7 | 48.7 | 39 | 156 | 34 | 61 |
-| 7 | Frontier Co-op | 13 | 6 | 78.5 | 23 | 42 | 29 | 36 |
-| 7 | Hollow Wake | 14 | 10 | 82.3 | 22 | 31 | 37 | 241 |
-| 2176 | Transit Authority | 9 | 8 | 43.4 | 40 | 157 | 32 | 29 |
-| 2176 | Frontier Co-op | 13 | 11 | 81.5 | 23 | 44 | 33 | 51 |
-| 2176 | Hollow Wake | 15 | 11 | 101.8 | 24 | 42 | 39 | 241 |
-| 1 | Transit Authority | 10 | 7 | 50.9 | 41 | 178 | 32 | 34 |
-| 1 | Frontier Co-op | 13 | 7 | 80.7 | 21 | 42 | 29 | 37 |
-| 1 | Hollow Wake | 16 | 12 | 83.0 | 21 | 37 | 35 | 198 |
-| 2 | Transit Authority | 9 | 5 | 41.4 | 38 | 106 | 29 | 50 |
-| 2 | Frontier Co-op | 14 | 7 | 84.2 | 23 | 42 | 29 | 22 |
-| 2 | Hollow Wake | 22 | 21 | 99.8 | 24 | 41 | 38 | 218 |
-| 3 | Transit Authority | 9 | 7 | 36.7 | 38 | 114 | 32 | 35 |
-| 3 | Frontier Co-op | 14 | 10 | 90.0 | 25 | 50 | 33 | 49 |
-| 3 | Hollow Wake | 13 | 12 | 86.0 | 21 | 36 | 39 | 267 |
-| 4 | Transit Authority | 11 | 7 | 49.2 | 37 | 129 | 33 | 44 |
-| 4 | Frontier Co-op | 13 | 10 | 71.2 | 24 | 39 | 34 | 24 |
-| 4 | Hollow Wake | 22 | 19 | 131.4 | 27 | 70 | 41 | 272 |
-| 5 | Transit Authority | 9 | 8 | 34.8 | 37 | 96 | 33 | 28 |
-| 5 | Frontier Co-op | 13 | 7 | 79.4 | 23 | 46 | 29 | 23 |
-| 5 | Hollow Wake | 12 | 6 | 80.8 | 24 | 42 | 36 | 150 |
+| Seed | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Score | Treasury |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | Transit Authority | 13 | 10 | 45.3 | 38 | 127 | 34 | 398 | 44 |
+| 42 | Frontier Co-op | 12 | 9 | 62.9 | 19 | 28 | 32 | 304 | 38 |
+| 42 | Hollow Wake | 11 | 9 | 62.9 | 20 | 28 | 34 | 305 | 236 |
+| 7 | Transit Authority | 14 | 7 | 48.6 | 38 | 156 | 35 | 408 | 28 |
+| 7 | Frontier Co-op | 12 | 5 | 76.1 | 22 | 41 | 29 | 333 | 34 |
+| 7 | Hollow Wake | 13 | 11 | 79.0 | 21 | 32 | 39 | 350 | 242 |
+| 2176 | Transit Authority | 10 | 9 | 48.5 | 39 | 178 | 32 | 373 | 34 |
+| 2176 | Frontier Co-op | 13 | 11 | 80.8 | 21 | 44 | 34 | 342 | 33 |
+| 2176 | Hollow Wake | 14 | 9 | 95.5 | 23 | 42 | 39 | 386 | 250 |
+| 1 | Transit Authority | 13 | 7 | 56.5 | 39 | 175 | 33 | 411 | 63 |
+| 1 | Frontier Co-op | 12 | 7 | 78.6 | 19 | 38 | 29 | 320 | 41 |
+| 1 | Hollow Wake | 16 | 12 | 83.0 | 21 | 37 | 37 | 384 | 184 |
+| 2 | Transit Authority | 9 | 5 | 41.4 | 38 | 111 | 30 | 351 | 67 |
+| 2 | Frontier Co-op | 15 | 6 | 85.5 | 22 | 42 | 30 | 372 | 47 |
+| 2 | Hollow Wake | 23 | 19 | 99.6 | 23 | 36 | 39 | 480 | 247 |
+| 3 | Transit Authority | 9 | 7 | 34.9 | 36 | 97 | 31 | 340 | 27 |
+| 3 | Frontier Co-op | 13 | 9 | 97.0 | 24 | 52 | 32 | 374 | 56 |
+| 3 | Hollow Wake | 15 | 13 | 96.0 | 21 | 46 | 38 | 390 | 262 |
+| 4 | Transit Authority | 11 | 7 | 48.1 | 35 | 108 | 33 | 363 | 47 |
+| 4 | Frontier Co-op | 13 | 10 | 71.2 | 23 | 39 | 35 | 343 | 48 |
+| 4 | Hollow Wake | 19 | 17 | 111.2 | 24 | 49 | 42 | 460 | 263 |
+| 5 | Transit Authority | 10 | 8 | 39.5 | 36 | 103 | 33 | 355 | 44 |
+| 5 | Frontier Co-op | 13 | 8 | 78.7 | 22 | 46 | 30 | 345 | 29 |
+| 5 | Hollow Wake | 12 | 6 | 80.2 | 23 | 39 | 38 | 342 | 122 |
 
 ## Events, and how the rivals answered them
 
 | Event | First choice | Second choice |
 | --- | --- | --- |
-| Blight | 4 (burn and replant) | 6 (live with it) |
-| A comet | 18 (capture its ice) | 1 (study it) |
+| Blight | 7 (burn and replant) | 3 (live with it) |
+| A comet | 19 (capture its ice) | 0 (study it) |
 | A derelict | 5 (salvage it) | 0 (study it) |
-| An epidemic | 17 (medical aid) | 4 (quarantine) |
+| An epidemic | 14 (medical aid) | 6 (quarantine) |
 | Flare | 15 (shelter) | 0 (ride it out) |
-| Founders’ Day | 43 (a festival) | 5 (a quiet day) |
-| Lane drift | 25 (retune it) | 0 (let it drift) |
-| Settlers’ petition | 7 (grant it) | 7 (refuse) |
+| Founders’ Day | 42 (a festival) | 6 (a quiet day) |
+| Lane drift | 26 (retune it) | 0 (let it drift) |
+| Settlers’ petition | 8 (grant it) | 8 (refuse) |
 | A smugglers’ offer | 28 (buy) | 3 (report them) |
-| A strike | 12 (meet their demands) | 3 (wait it out) |
+| A strike | 11 (meet their demands) | 4 (wait it out) |

@@ -54,8 +54,8 @@ const knowing = (g: GameState, ...techs: TechId[]) => {
 const turn = (g: GameState) => resolveTurn(world, g).state;
 
 describe('the projects (§23.1)', () => {
-  it('are eighteen with M2b’s three, each with its upkeep, and those that wait for a technology say which', () => {
-    expect(PROJECT_IDS).toHaveLength(18);
+  it('are twenty-two with M2b’s three and its four great works, each with its upkeep, and those that wait for a technology say which', () => {
+    expect(PROJECT_IDS).toHaveLength(22);
     expect(PROJECTS['trade-exchange'].upkeep).toBe(0);
     expect(PROJECTS['research-institute'].upkeep).toBe(2);
     expect(PROJECTS.shipyard.upkeep).toBe(2);

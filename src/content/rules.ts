@@ -130,13 +130,27 @@ export const RULES = {
     /** A colony's people make 1 research for every so many tenths of them (4 million): its scholars. */
     scholarsPer: 40,
     /** Each technology costs this much more, in percent of its base, for every one already known (§18.1, tuned). */
-    risePercent: 7,
+    risePercent: 8,
     /** A technology costs this much less, in percent, for each power met that knows it, at most `spreadMost` (§19.2). */
     spreadPercent: 15,
     spreadMost: 30,
     /** The standings call a rival ahead or behind with this many technologies more or fewer (§19.4). */
     standingsGap: 3,
   },
+  /** The great works (M2B_SCIENCE.md §20.2). */
+  greatWorks: {
+    /** The Long Array sees ships this far, in tenths of a light-year. */
+    arrayDeci: 200,
+    arrayObservationPercent: 100,
+    archiveResearchPercent: 20,
+    foundryLanePercent: 50,
+    commonsApproval: 5,
+    commonsGrowthPercent: 10,
+    /** A colony that loses the race keeps this share of its industry, in percent. */
+    lostKeepsPercent: 50,
+  },
+  /** The score (M2B_SCIENCE.md §20.3, D-50). */
+  score: { colony: 10, millionPeople: 1, technology: 5, lane: 3, greatWork: 50 },
   /** Discoveries (M2B_SCIENCE.md §17, D-45). */
   discoveries: {
     /** An inspiration gives this share of its technology's cost, in percent. */

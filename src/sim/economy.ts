@@ -7,7 +7,15 @@
 import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { EDICTS, type EdictId } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
-import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem, withArticle } from '../content/projects.ts';
+import {
+  type BuildItem,
+  type Cost,
+  itemCost,
+  PROJECTS,
+  type ProjectId,
+  projectWords,
+  type QueueItem,
+} from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS, type ShipType } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
@@ -266,6 +274,7 @@ export function growthOf(world: World, state: GameState, h: Holding): number {
   for (const t of FACTIONS[h.owner].traits) if (t.effect.kind === 'growth-percent') percent += t.effect.percent;
   for (const e of effects(state, h.owner, 'growth-percent')) percent += e.percent;
   if (h.projects.includes('medical-centre')) percent += RULES.projects.medicalPercent;
+  if (holdsGreatWork(state, h.owner, 'commons')) percent += RULES.greatWorks.commonsGrowthPercent;
   const rate = base + Math.floor((base * percent) / 100);
   const grow = Math.floor((h.people * (cap - h.people) * rate) / (cap * 100));
   return Math.min(cap - h.people, Math.max(1, grow));
@@ -314,6 +323,8 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   if (home === 'harsh') parts.push({ label: 'life under domes', value: a.domes });
   else if (home === 'uninhabitable' && h.kind === 'colony') parts.push({ label: 'life in orbit', value: a.domes });
   for (const e of effects(state, h.owner, 'approval')) parts.push({ label: 'councils', value: e.amount });
+  if (holdsGreatWork(state, h.owner, 'commons'))
+    parts.push({ label: 'the Commons', value: RULES.greatWorks.commonsApproval });
   const jumps = jumpsFromCapital(world, state, h);
   // Doctrines (M2B_SCIENCE.md §19.1).
   for (const e of effects(state, h.owner, 'approval-near'))
@@ -367,6 +378,11 @@ export function keepsOf(world: World, state: GameState, h: Holding): number {
 /** A colony in revolt makes and builds nothing, unless martial order holds it (§25.2). */
 export function stopped(world: World, state: GameState, h: Holding): boolean {
   return h.kind === 'colony' && approvalOf(world, state, h).level === 'revolt' && !edictAt(state, h, 'martial-order');
+}
+
+/** Whether a power holds a great work (M2B_SCIENCE.md §20.2). */
+export function holdsGreatWork(state: GameState, faction: FactionId, work: ProjectId): boolean {
+  return state.holdings.some((h) => h.owner === faction && h.projects.includes(work));
 }
 
 /** What an edict costs a power in attention: less with Free press, at least 1 (M2B_SCIENCE.md §18.2). */
@@ -550,6 +566,11 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
   for (const e of effects(state, faction, 'research-percent')) {
     const value = Math.floor((base * e.percent) / 100);
     if (value > 0) parts.push({ label: `thinking machines (+${e.percent}%)`, value });
+  }
+  if (holdsGreatWork(state, faction, 'lapse-archive')) {
+    const percent = RULES.greatWorks.archiveResearchPercent;
+    const value = Math.floor((base * percent) / 100);
+    if (value > 0) parts.push({ label: `the Lapse Archive (+${percent}%)`, value });
   }
   if (edictOn(state, faction, 'crash-programme')) {
     const value = Math.floor((base * RULES.edicts.crashResearchPercent) / 100);
@@ -827,6 +848,11 @@ export function costOf(world: World, state: GameState, h: Holding, item: QueueIt
   return c;
 }
 
+/** A holding's place in words: its world's name, or its system's. */
+function placeName(world: World, state: GameState, h: Holding): string {
+  return bodyOf(world, state, h)?.name ?? world.system(h.system).name;
+}
+
 /** Why a colony or outpost cannot queue an item, or null (M1_COLONIES.md §3, M1_LANES_RESEARCH.md §1). */
 export function queueRefusal(world: World, state: GameState, h: Holding, item: QueueItem): string | null {
   if (item.kind === 'lane') return laneRefusal(world, state, h.owner, h.system, item.to);
@@ -842,14 +868,26 @@ export function queueRefusal(world: World, state: GameState, h: Holding, item: Q
   if (def.opens && !powerOf(state, h.owner).researched.includes(def.opens)) return `Needs ${TECHS[def.opens].name}.`;
   if (item.project === 'flare-shield' && !bodyOf(world, state, h)?.flareExposed)
     return 'Only on a world exposed to its star’s flares.';
+  if (def.great) {
+    const power = powerOf(state, h.owner);
+    if (!power.researched.includes(def.great.needs)) return `Needs ${TECHS[def.great.needs].name}.`;
+    const stands = state.holdings.find((x) => x !== h && x.projects.includes(item.project));
+    if (stands)
+      return stands.owner === h.owner
+        ? `The ${def.name} stands already, at ${placeName(world, state, stands)}.`
+        : `The ${def.name} stands already, the ${FACTIONS[stands.owner].shortName}’s.`;
+    const building = state.holdings.find(
+      (x) => x.owner === h.owner && x !== h && x.queue.some((q) => q.kind === 'project' && q.project === item.project),
+    );
+    if (building) return `The ${def.name} is being built at ${placeName(world, state, building)}.`;
+  }
   if (item.project === 'terraforming-station') {
     const level = levelOf(world, state, h);
     if (level !== 'harsh' && level !== 'tolerable') return 'Only on a world harsh or tolerable for its people.';
   }
-  if (h.projects.includes(item.project))
-    return `It already has ${withArticle(PROJECTS[item.project].name.toLowerCase())}.`;
+  if (h.projects.includes(item.project)) return `It already has ${projectWords(item.project)}.`;
   if (h.queue.some((q) => q.kind === 'project' && q.project === item.project)) {
-    const what = withArticle(PROJECTS[item.project].name.toLowerCase());
+    const what = projectWords(item.project);
     return `${what[0]?.toUpperCase()}${what.slice(1)} is already queued.`;
   }
   return null;

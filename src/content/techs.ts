@@ -83,7 +83,9 @@ export type TechId =
   | 'lane-network'
   | 'deep-jumpers'
   | 'industrial-worlds'
-  | 'garden-worlds';
+  | 'garden-worlds'
+  // M2b's great works (M2B_SCIENCE.md §20.1).
+  | 'great-engineering';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -953,6 +955,18 @@ export const TECHS: Record<TechId, TechDef> = {
       deed: { kind: 'worked', zone: 'farms', n: 10, oneColony: false },
       text: 'ten farm districts worked',
     },
+  },
+  // M2b's great works (M2B_SCIENCE.md §20.1).
+  'great-engineering': {
+    id: 'great-engineering',
+    name: 'Great engineering',
+    field: 'construction',
+    tier: 5,
+    cost: 480,
+    needs: ['prefabrication'],
+    effect: { kind: 'opens' },
+    text: 'Opens the great works: the Long Array, the Lapse Archive, the Lanewright Foundry and the Commons, each with its own technology. One of each in the whole neighbourhood.',
+    inspiration: { deed: { kind: 'projects', n: 20 }, text: 'twenty projects standing' },
   },
 };
 
