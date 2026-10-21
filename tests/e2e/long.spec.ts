@@ -14,15 +14,24 @@ interface GameHook {
 }
 
 async function endTurn(page: Page, project: string): Promise<number> {
+  // The last turn is saved before the next can end: End turn waits, disabled, until then.
+  await expect(page.getByRole('button', { name: /End turn/ }).first()).toBeEnabled();
   const date = await page.locator('.map-date').textContent();
-  const t0 = Date.now();
+  // Timed from the press that ends the turn (on a phone, the one in what needs you).
+  let t0 = Date.now();
   if (isDesktop(project)) await page.keyboard.press('Enter');
   else {
-    await page.getByRole('button', { name: /End turn/ }).tap();
+    await page
+      .getByRole('button', { name: /End turn/ })
+      .first()
+      .tap();
     const needs = page.getByRole('dialog', { name: 'What needs you' });
     const report = page.getByRole('dialog', { name: 'Report' });
     await expect(needs.or(report)).toBeVisible();
-    if (await needs.isVisible()) await needs.getByRole('button', { name: /End turn/ }).tap();
+    if (await needs.isVisible()) {
+      t0 = Date.now();
+      await needs.getByRole('button', { name: /End turn/ }).tap();
+    }
   }
   await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
   return Date.now() - t0;
@@ -52,11 +61,17 @@ test('a hundred turns with rivals and events, answered, within the budgets', asy
   await expect(page.getByTestId('map')).toHaveAttribute('data-ready', '1', { timeout: 30_000 });
 
   let slowest = 0;
+  let total = 0;
   let answered = 0;
   for (let turn = 1; turn <= 100; turn++) {
-    slowest = Math.max(slowest, await endTurn(page, project));
+    const ms = await endTurn(page, project);
+    slowest = Math.max(slowest, ms);
+    total += ms;
     if (await answer(page, project)) answered++;
   }
+  console.log(
+    `${project}: slowest turn ${slowest} ms, average ${Math.round(total / 100)} ms, ${answered} events answered`,
+  );
   expect(slowest).toBeLessThan(2000);
   expect(answered).toBeGreaterThan(3);
   const game = await page.evaluate(() => {
