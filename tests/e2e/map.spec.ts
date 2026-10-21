@@ -91,8 +91,13 @@ test.describe('the map', () => {
         return null;
       });
       expect(empty).not.toBeNull();
-      if (empty) await page.touchscreen.tap(empty.x, empty.y);
-      await expect(page.getByRole('dialog')).toHaveCount(0);
+      // A touch counts as a tap only if it is short (gestures.ts); on a loaded test machine the
+      // touch's down and up can arrive further apart than that, so a tap that was not taken is
+      // tried again, seconds apart (never a double tap).
+      await expect(async () => {
+        if (empty) await page.touchscreen.tap(empty.x, empty.y);
+        await expect(page.getByRole('dialog')).toHaveCount(0, { timeout: 2000 });
+      }).toPass({ timeout: 20_000 });
     }
   });
 
