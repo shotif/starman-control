@@ -20,6 +20,7 @@ import { SHIPS } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
+import { listWords, observationShort } from './discoveries.ts';
 import { bodyOf, fusionRuns } from './economy.ts';
 import { eventWords } from './events.ts';
 import type { Need } from './needs.ts';
@@ -128,6 +129,24 @@ export function adviceFor(
       say('treasury', 2, 'overdrive-stopped', { place: holdingName(e.holding) }, { holding: e.holding });
     else if (e.kind === 'researched')
       say('science', 3, 'researched', { tech: TECHS[e.tech].name, effect: TECHS[e.tech].text });
+    else if (e.kind === 'inspired')
+      say('science', 3, 'inspired', {
+        deed: TECHS[e.tech].inspiration.text,
+        tech: TECHS[e.tech].name,
+        points: String(e.points),
+      });
+    else if (e.kind === 'observed')
+      say(
+        'science',
+        3,
+        'observed',
+        {
+          place: world.system(e.system).name,
+          what: listWords(e.found.map((k) => observationShort(world, e.system, k))),
+          points: String(e.points),
+        },
+        { system: e.system },
+      );
     else if (e.kind === 'built' && e.item.kind === 'project')
       say(
         'works',

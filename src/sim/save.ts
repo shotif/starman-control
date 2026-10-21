@@ -157,6 +157,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, event: null, lastEvent: 0, lasting: [] }));
     return { ...g, version: 9, powers };
   },
+  /** 9 → 10 (M2b increment 29): discoveries. No inspiration had yet; deeds already done pay on the next turn. */
+  9: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, inspired: [] }));
+    return { ...g, version: 10, powers };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

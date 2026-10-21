@@ -5,7 +5,9 @@
 
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { FactionId } from '../../content/factions.ts';
+import { RULES } from '../../content/rules.ts';
 import { FIELDS, TECH_IDS, TECHS, type TechId } from '../../content/techs.ts';
+import { inspirationPoints } from '../../sim/discoveries.ts';
 import { researchOf } from '../../sim/economy.ts';
 import { researchTurns } from '../../sim/research.ts';
 import { type GameState, powerOf } from '../../sim/state.ts';
@@ -32,6 +34,7 @@ function TechCard({ game, faction, id, play }: { game: GameState; faction: Facti
   const place = p.researchQueue.indexOf(id);
   const progress = p.techProgress[id] ?? 0;
   const missing = t.needs.filter((n) => !p.researched.includes(n));
+  const inspired = p.inspired.includes(id);
   const state = done ? 'done' : place >= 0 ? 'queued' : missing.length > 0 ? 'later' : 'open';
   return (
     <li class={`tech tech-${state}`} data-tech={id}>
@@ -43,6 +46,13 @@ function TechCard({ game, faction, id, play }: { game: GameState; faction: Facti
       </div>
       <p class="tech-text">{t.text}</p>
       {!done && t.needs.length > 0 && <p class="tech-needs">Needs {t.needs.map((n) => TECHS[n].name).join(' and ')}</p>}
+      {!done && (
+        <p class={`tech-inspiration${inspired ? ' is-met' : ''}`}>
+          {inspired
+            ? `Inspired by ${t.inspiration.text}: +${inspirationPoints(id)}`
+            : `Inspired by ${t.inspiration.text}: ${inspirationPoints(id)} research`}
+        </p>
+      )}
       {!done && (
         <div class="tech-actions">
           {place >= 0 ? (
@@ -147,6 +157,11 @@ export function ResearchView({
         {rate.parts.length > 0 && (
           <span class="dim">= {rate.parts.map((p) => `${p.value} ${p.label}`).join(' + ')}</span>
         )}
+      </p>
+      <p class="dim">
+        Inspirations: {p.inspired.length} of {TECH_IDS.length} met. Each technology names a deed that teaches you{' '}
+        {RULES.discoveries.inspirationPercent}% of it once; a first survey of what astronomers have observed gives
+        research.
       </p>
       {p.researchQueue.length === 0 ? (
         <p class="waits">Nothing is being researched: choose a technology below. Points not spent are lost.</p>

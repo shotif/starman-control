@@ -1,4 +1,4 @@
-# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 28)
+# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 29)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -74,6 +74,11 @@ way in.
   colony's scholars (1 for every 4 million, kept at approval) and a lab as every fifth district for
   every governor, so every power's science grows with its empire; the colony's panel shows its
   research; `npm run balance` reports research a turn and when the tree is finished.
+  **Increment 29 is built:** discoveries (`src/sim/discoveries.ts`): every technology names a deed
+  that pays 40% of it once (an inspiration), and a first survey of what astronomers have observed
+  (white dwarfs, discs, brown dwarfs, flare stars, planets, systems of three stars) gives research
+  with a line labelled *Observed*; state version 10. Until increment 30 deepens the tree, every
+  power finishes M2's 33 technologies before turn 100.
 - **Numbers:** 375 unit tests and about 209 browser journeys pass; the title loads 21.2 KB of its
   40 KB budget, a game's map about 319 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 658 KB of pictures at most (1 MB) and the diorama it opens
@@ -98,7 +103,7 @@ slow or too easy (§29.5); their answers decide M3's first changes.
 headless games showed two rivals stuck at 5 research a turn and the third through the whole tree by
 turn 90. D-44 to D-50 were answered *as recommended* on 21 October 2026. Build increments 28 to 32
 as its §12 sets out, each with a detailed design section first (§16 onwards) and its notes as
-built. Increment 28 is done.
+built. Increments 28 and 29 are done.
 
 **Then: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
 (goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md

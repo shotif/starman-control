@@ -136,7 +136,9 @@ describe('surveys', () => {
     expect(found).toMatchObject({ kind: 'surveyed', ship: s.id, system: 'luyten-726-8' });
     r = resolveTurn(world, r.state);
     expect(ship(r.state, s.id).at).toBe('epsilon-eridani');
-    expect(r.reports[0]?.events.map((e) => e.kind).sort()).toEqual(['arrived', 'surveyed']);
+    // What astronomers have observed there (a debris disc and planets) gives research, and with
+    // Luyten 726-8's it finishes the first technology that could be researched (M2B_SCIENCE.md §17.2).
+    expect(r.reports[0]?.events.map((e) => e.kind).sort()).toEqual(['arrived', 'observed', 'researched', 'surveyed']);
     // Back home through surveyed systems, it does not stop.
     g = order(r.state, 'frontier', { type: 'move', ship: s.id, to: 'tau-ceti' });
     r = resolveTurn(world, g);

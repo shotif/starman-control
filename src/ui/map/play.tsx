@@ -18,6 +18,7 @@ import { adviceFor } from '../../sim/advice.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
+import { observationWords } from '../../sim/discoveries.ts';
 import { eventWords } from '../../sim/events.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, previewMove } from '../../sim/movement.ts';
@@ -319,6 +320,10 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `${holding(e.holding)} could not begin the lane to ${name(e.to)}: ${e.reason}`;
     case 'researched':
       return `Researched ${TECHS[e.tech].name}: ${TECHS[e.tech].text}`;
+    case 'inspired':
+      return `An inspiration: ${TECHS[e.tech].inspiration.text} taught us about ${TECHS[e.tech].name}, ${e.points} research towards it.`;
+    case 'observed':
+      return `Observed at ${name(e.system)}: ${e.found.map((k) => observationWords(world, e.system, k)).join('; ')}. ${e.points} research.`;
     case 'zoned':
       return `${holding(e.holding)} ${e.rezoned ? 'rezoned' : 'zoned'} district ${e.slot} for ${ZONE_DEFS[e.zone].name.toLowerCase()}.`;
     case 'hungry':
@@ -379,6 +384,7 @@ function eventPlace(
 ): { holding: number } | { system: SystemId } | { research: true } | { event: true } {
   switch (e.kind) {
     case 'researched':
+    case 'inspired':
       return { research: true };
     case 'zoned':
     case 'hungry':
@@ -429,6 +435,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'lane-begun': { icon: 'lane', tone: 'growth' },
   'lane-opened': { icon: 'lane', tone: 'growth' },
   researched: { icon: 'research', tone: 'growth' },
+  inspired: { icon: 'research', tone: 'growth' },
+  observed: { icon: 'survey', tone: 'growth' },
   'lane-refused': { icon: 'refused', tone: 'wrong' },
   full: { icon: 'report', tone: 'needs' },
   zoned: { icon: 'growth', tone: 'growth' },
@@ -580,6 +588,7 @@ export function ReportView({
               >
                 {eventText(world, game, e)}
               </button>
+              {e.kind === 'observed' && <Badge kind="observed" />}
               {onViewColony && e.kind === 'built' && e.item.kind === 'project' && (
                 <button type="button" class="link report-see" onClick={() => onViewColony(e.holding)}>
                   See it

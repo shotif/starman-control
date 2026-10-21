@@ -17,7 +17,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 9;
+export const STATE_VERSION = 10;
 
 export interface Stockpile {
   metals: number;
@@ -41,6 +41,8 @@ export interface PowerState {
   researchQueue: TechId[];
   /** Points put into technologies not yet finished; kept when the queue changes. */
   techProgress: Partial<Record<TechId, number>>;
+  /** Technologies whose inspiration it has had, in the order it had them (M2B_SCIENCE.md §17.1). */
+  inspired: TechId[];
   /** Systems whose anomaly it has investigated, in id order (M1_LANES_RESEARCH.md §3). */
   investigated: SystemId[];
   /** Food in store for the colonies joined to the capital by its lanes (M2_WORLDS.md §3). */
@@ -285,6 +287,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       researched: [],
       researchQueue: [],
       techProgress: {},
+      inspired: [],
       investigated: [],
       food: RULES.food.start,
       treasury: RULES.credits.start,

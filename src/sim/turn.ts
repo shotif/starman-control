@@ -10,6 +10,7 @@ import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
+import { observationPoints, observationsAt, resolveInspirations } from './discoveries.ts';
 import {
   capacityOf,
   costOf,
@@ -33,7 +34,7 @@ import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import { applyInPlace } from './orders.ts';
 import type { ReportEvent } from './report.ts';
-import { effects, speciesFor, spendResearch } from './research.ts';
+import { effects, grantResearch, speciesFor, spendResearch } from './research.ts';
 import {
   type GameState,
   hasSurveyed,
@@ -128,7 +129,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       return level === 'comfortable' || level === 'tolerable' || (domes && level === 'harsh');
     });
     const anomaly = anomalyAt(state.seed, system);
-    (events.get(power.faction) as ReportEvent[]).push({
+    const log = events.get(power.faction) as ReportEvent[];
+    log.push({
       kind: 'surveyed',
       ...by,
       system,
@@ -136,6 +138,13 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       habitable: habitable.map((b) => b.id),
       ...(anomaly ? { anomaly } : {}),
     });
+    // What astronomers have observed here gives research, once (M2B_SCIENCE.md §17.2).
+    const found = observationsAt(world, system);
+    if (found.length > 0) {
+      const points = observationPoints(found);
+      log.push({ kind: 'observed', system, found, points });
+      for (const tech of grantResearch(power, points)) log.push({ kind: 'researched', tech });
+    }
   };
   for (const ship of state.ships) {
     if (wantsSurvey(state, ship)) survey(powerOf(state, ship.owner), ship.at as SystemId, { ship: ship.id });
@@ -373,7 +382,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);
 
-  // 12. Reports.
+  // 12. Inspirations (M2B_SCIENCE.md §17.1): deeds done this turn, or standing now, teach each power
+  // something towards a technology it has not yet researched.
+  resolveInspirations(world, state, events);
+
+  // 13. Reports.
   const reports = state.powers.map((p) => ({
     faction: p.faction,
     turn: state.turn,

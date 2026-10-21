@@ -374,6 +374,14 @@ test.describe('the M1 journey', () => {
     for (let i = 0; i < 5; i++) await endTurn(page, project);
     await expect(page.locator('.map-date')).toHaveText('Q2 2177');
     if (!isDesktop(project)) await page.getByRole('button', { name: 'Close' }).first().tap();
+    // How far research has come, to find again after loading.
+    if (isDesktop(project)) await page.keyboard.press('t');
+    else await page.getByRole('button', { name: 'Research', exact: true }).tap();
+    const queued = page.getByRole('dialog', { name: 'Research' }).locator('.research-queue li').first();
+    await expect(queued).toContainText('Long-baseline arrays');
+    const progress = (await queued.locator('.dim').textContent())?.match(/\d+ of 60/)?.[0] ?? 'none';
+    if (isDesktop(project)) await page.keyboard.press('Escape');
+    else await page.getByRole('button', { name: 'Close' }).first().tap();
     await fromMenu(page, 'Saves', project);
     const slot = page.getByRole('region', { name: 'Slot 1' });
     await press(slot.getByRole('button', { name: 'Save here' }), project);
@@ -390,11 +398,12 @@ test.describe('the M1 journey', () => {
     else await page.getByRole('button', { name: 'Close' }).first().tap();
     if (isDesktop(project)) await page.keyboard.press('t');
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
-    // Five turns at 7 a turn: Deep survey's 30, and 5 into Long-baseline arrays.
+    // Deep survey is done, and Long-baseline arrays as far on as before.
     await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText(
       'Long-baseline arrays',
     );
-    await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText('5 of 60');
+    expect(progress).toMatch(/^\d+ of 60$/);
+    await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText(progress);
   });
 
   test('keeps the settings, and the text grows with them', async ({ page }, info) => {

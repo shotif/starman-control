@@ -47,6 +47,8 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isRecord(p.techProgress) || !Object.entries(p.techProgress).every(([k, v]) => isTechId(k) && isWhole(v, 1)))
         out.push(`power ${i} has progress in unknown technologies`);
       if (!isStrings(p.investigated)) out.push(`power ${i} investigated is not a list`);
+      if (!Array.isArray(p.inspired) || !p.inspired.every(isTechId))
+        out.push(`power ${i} was inspired towards unknown technologies`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -209,6 +211,8 @@ export function stateProblems(world: World, state: GameState): string[] {
         if (!seen.has(n)) out.push(`${p.faction} queues ${id} before ${n}, which it needs`);
       seen.add(id);
     }
+    if (new Set(p.inspired).size !== p.inspired.length)
+      out.push(`${p.faction} was inspired towards a technology twice`);
     for (const [id, v] of Object.entries(p.techProgress))
       if (p.researched.includes(id as never) || (v ?? 0) >= TECHS[id as keyof typeof TECHS].cost)
         out.push(`${p.faction} has progress in ${id}, which is done`);

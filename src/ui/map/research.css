@@ -64,6 +64,17 @@
   color: var(--text-dim);
 }
 
+/* What inspires a technology (M2B_SCIENCE.md §17.3): amber until met, green once it has paid. */
+.tech-inspiration {
+  margin: 0.2rem 0 0;
+  color: var(--warm);
+  font-size: 0.82rem;
+}
+
+.tech-inspiration.is-met {
+  color: #7fe7a3;
+}
+
 .tech-actions {
   display: flex;
   flex-wrap: wrap;

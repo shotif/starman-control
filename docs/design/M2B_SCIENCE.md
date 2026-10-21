@@ -23,6 +23,7 @@ notes as built.*
 14. [Art and its cost](#14-art-and-its-cost)
 15. [Decisions for the owner](#15-decisions-for-the-owner)
 16. [Increment 28 in detail: where research comes from](#16-increment-28-in-detail-where-research-comes-from-written-before-building-it)
+17. [Increment 29 in detail: discoveries](#17-increment-29-in-detail-discoveries-written-before-building-it)
 
 ## 1. What M2's games showed
 
@@ -325,4 +326,157 @@ technology takes, on the phone, tablet and desktop.
   priority, the sixth the priority's own), `rivals.test.ts` (every power at least 15 technologies
   at turn 100); the research screen's figure and times in `game.spec.ts` and `projects.spec.ts`,
   the capital's research line in `districts.spec.ts`, on the phone, tablet and desktop.
+
+## 17. Increment 29 in detail: discoveries (written before building it)
+
+**Goals.** D-45 as decided (C): every technology names a deed that teaches something towards it
+(an *inspiration*), and the first survey of a system holding something astronomers have observed
+gives research (an *observation*), with a line saying what is real. Discoveries reward playing and
+looking at the real sky; the rivals earn them by the same rules; the report and the Science
+advisor say so.
+
+**Out of scope.** Inspirations for the technologies of tiers 4 and 5 (they come with them, in
+increment 30, and Lapse studies is *opened* by investigating anomalies rather than inspired);
+Interferometry and the Long Array, which double observations (increments 30 and 32); anything new
+on the map.
+
+### 17.1 Inspirations
+
+- **What they pay:** the first time a power does a technology's deed, while it has not yet
+  researched that technology, it gains **40% of the technology's cost** (rounded down: 12 for a
+  tier-1 technology, 24 for tier 2, 40 for tier 3) towards it, whether or not it is being
+  researched. Once only for each technology and power.
+- **Where the points go:** into the technology's progress, kept if it leaves the queue. If what it
+  needs is known and its progress reaches its cost, it is researched at once; otherwise its
+  progress stops a point short, and it is finished in its place in the tree, as an anomaly's points
+  are.
+- **When:** checked for every power as the turn ends, after its events, from the turn's report and
+  the state as it then stands. A save from before increment 29 is checked on its first turn, so a
+  deed already done then pays once.
+- **The deeds**, one for each of M2's 33 technologies. "Worked" districts are those people work;
+  "at one colony" means all at the same colony.
+
+  | Field | Technology | Inspired by |
+  | --- | --- | --- |
+  | Propulsion | Lane engineering I | paying for a lane |
+  | | Lane engineering II | paying for a lane of 7 light-years or more |
+  | | Lane engineering III | paying for a lane of 9 light-years or more |
+  | | Jump tuning | a survey ship landing from a blind jump |
+  | | Beacon tuning | holding two relit lanes (Reborn's lanes beyond your home web) |
+  | | Fusion power | an outpost on a world with fusion fuel |
+  | | Lane trade | three market districts worked |
+  | | Lane trade II | 200 credits in the treasury |
+  | Construction | Habitat domes | surveying a harsh world |
+  | | Automated mining | holding two outposts |
+  | | Orbital yards | building three ships |
+  | | Magnetics | surveying a catalogued flare star |
+  | | Automation | five works districts worked |
+  | | Deep boring | three mine districts worked |
+  | | Arcologies | a colony full |
+  | | Automation II | a colony making 25 industry a turn |
+  | | Deep boring II | a deep mine built |
+  | Life sciences | Adaptation I | a colony on a cold or frozen world |
+  | | Soil science | three farm districts worked at one colony |
+  | | Adaptation II | a colony on a world of low or high gravity |
+  | | Closed ecologies | a colony under domes (on a harsh world) |
+  | | Soil science II | making 20 food a turn |
+  | | Medicine | answering an epidemic |
+  | | Adaptation III | a colony on a warm or hot world |
+  | Society | Colonial charters | holding three colonies besides the capital |
+  | | Shared spaces | a colony less than content |
+  | | Fair taxation | high taxes with every colony content |
+  | | Regional administration | a colony three lane jumps from the capital |
+  | Survey | Deep survey | investigating an anomaly |
+  | | Long-baseline arrays | ten systems surveyed besides the capital |
+  | | Computing | three labs worked at one colony |
+  | | Long-range sensors | thirty systems surveyed besides the capital |
+  | | Computing II | 30 research a turn |
+
+  The words are the species' own (a world *cold* for its temperature band, *harsh* for its
+  habitability), never human ones, so every species and power has the same deeds.
+
+### 17.2 Observations of the real sky
+
+- **What pays:** the first survey of a system, by a ship or a survey station, gives research once
+  for each thing astronomers have observed there (**Observed**, from the game's sky data):
+
+  | Observation | Systems | Research |
+  | --- | --- | --- |
+  | a white dwarf | 11 | 15 |
+  | a debris disc or an observed belt | 8 | 15 |
+  | a brown dwarf (of type L, T or Y, a subdwarf included) | 45 | 10 |
+  | a catalogued flare star | 9 | 10 |
+  | an observed planet (confirmed, contested or a candidate, as the archive says; Sol's eight too) | 47 | 10 |
+  | a system of three or more stars | 8 | 10 |
+
+  A system with several pays for each: Alpha Centauri (a debris disc, a flare star, planets, three
+  stars) 45. The capitals are surveyed from the start and pay nothing.
+- **Where the points go:** into the research queue, or with nothing queued into the first
+  technology the power could research, as an anomaly's research does.
+- **What it says** (each line labelled *Observed*, since it is real): "Observed at Sirius: Sirius B
+  is a white dwarf, the cooling core of a star that has shed its outer layers. 15 research." Planets
+  name what the archives found ("Tau Ceti e, f, g and h, all contested"); discs and belts use their
+  own names ("Epsilon Eridani belts").
+- **Fairness:** the home webs hold different things (outside the capitals, the Authority's 110
+  research, the Cooperative's 90, the Wake's 65). That is the real sky; with about 1,350 research
+  to be found across the neighbourhood, the difference is small, and the Wake's survey ships jump
+  further.
+
+### 17.3 On the screen
+
+- **The research screen:** each technology's card says what inspires it, before it is met
+  ("Inspired by holding two outposts: 12 research"), and once met ("Inspired by holding two
+  outposts: +12"). Above the queue, how many have been met ("Inspirations: 5 of 33 met").
+- **The report:** an *inspired* line ("An inspiration: holding two outposts taught us about
+  Automated mining, 12 research towards it.") opening the research screen, and an *observed* line
+  with its *Observed* badge, opening the system.
+- **The Science advisor** says one of them when there is no more pressing line, in each power's
+  voice.
+
+### 17.4 The state
+
+Version 10: each power keeps the technologies whose inspiration it has had (`inspired`). Older
+saves start with none. Observations need nothing new: a system is surveyed once.
+
+### 17.5 Tests
+
+Unit: every technology has a deed; each deed fires once, pays 40% and finishes a technology whose
+needs are known; a deed done after the technology is researched pays nothing; each observation
+kind on its systems, once, nothing at the capitals; the report lines and the advisor lines; the
+migration from version 9. Headless: the rivals earn inspirations and observations (each at least
+five inspirations by turn 100). Browser: an observation and an inspiration in the report, and the
+research screen's inspirations, on the phone, tablet and desktop.
+
+### Increment 29: discoveries (21 October 2026)
+
+- **Inspirations** (`src/sim/discoveries.ts`, each technology's `inspiration` in
+  `src/content/techs.ts`), as §17.1: the 33 deeds of the table, checked for every power as the turn
+  ends (`resolveInspirations`, after the events), each paying 40% of its technology's cost once,
+  into its progress; a technology whose needs are known is finished at once when its progress
+  reaches its cost.
+- **Observations** (`observationsAt`, `observationWords`), as §17.2, from the sky data: 11 systems
+  with a white dwarf, 8 with a disc or belt, **45** with a brown dwarf (44 of type L, T or Y, and
+  CWISE 1055+5443, a subdwarf of type T, which §5 had missed), 9 with a catalogued flare star, **47**
+  with an observed planet (Sol's eight, which the sky data keeps apart, as well as the archives' 46)
+  and 8 of three or more stars. A first survey's points go into the queue
+  as an anomaly's do; its report line is labelled *Observed*.
+- **The report and the advisor:** an *inspired* line (opening the research screen) and an
+  *observed* line (opening the system) with its badge; the Science advisor's lines for both in
+  the three voices; the report's research picture for an inspiration as for a technology.
+- **The research screen:** each technology's card names its inspiration, in amber until met and in
+  green after; "Inspirations: 1 of 33 met" above the queue. The same cards on the phone and the
+  desktop.
+- **The state:** version 10 (`inspired`), with the migration from 9.
+- **Measured** (`npm run balance`, which now counts inspirations): by turn 100 the Authority has
+  had about 15 inspirations, the Cooperative 15 and the Wake 20. With discoveries, **every power
+  now finishes M2's 33 technologies before turn 100** (the Authority between turns 62 and 75, the
+  others between 83 and 98), for discoveries add about as many points as the whole small tree
+  costs. That is expected: §17 was sized for the deeper tree of increment 30, which comes next.
+- **Tests:** `discoveries.test.ts` (every technology's deed and its 40%; none done at the start
+  for any power; each kind of deed, from the report and from the state; paid once, finished only
+  with its needs known, nothing for a technology already researched; the observations' counts,
+  points and words; a first survey only; the advisor's lines; the migration), `rivals.test.ts`
+  (every power at least 5 inspirations by turn 100), and the survey and anomaly tests updated for
+  observations; `discoveries.spec.ts` (Wolf 359's observation and Magnetics' inspiration in the
+  report, and on the research screen) on the phone, tablet and desktop.
 

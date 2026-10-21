@@ -480,6 +480,8 @@ describe('the headless games (§26.6)', () => {
         ).toBe(true);
         // Every power's science grows with its empire (M2B_SCIENCE.md §16, D-44).
         expect(p.researched.length, p.faction).toBeGreaterThanOrEqual(15);
+        // Discoveries come from play, for rivals too (M2B_SCIENCE.md §17).
+        expect(p.inspired.length, p.faction).toBeGreaterThanOrEqual(5);
       }
       expect(longestDebt).toBeLessThanOrEqual(5);
       // Credits are for spending (§29.1): no rival banks a fortune.

@@ -78,8 +78,10 @@ describe('finding and investigating', () => {
     });
     const p = powerOf(r.state, 'sta');
     expect(p.investigated).toEqual(['alpha-centauri']);
-    // 30 points towards Lane engineering I, which costs 30: brought to a point short.
-    expect(p.techProgress['lane-engineering-1']).toBe(29);
+    // The survey's observations (45 research, M2B_SCIENCE.md §17.2) finished Lane engineering I, so
+    // the anomaly's 30 points towards it went to the next that could be researched.
+    expect(p.researched).toContain('lane-engineering-1');
+    expect(p.techProgress['lane-engineering-2']).toBe(30);
     expect(petrel(r.state).investigating).toBeNull();
     // Once per power.
     expect(investigateRefusal(r.state, petrel(r.state))).toBe('The anomaly here has been investigated.');

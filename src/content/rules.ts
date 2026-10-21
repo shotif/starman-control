@@ -130,6 +130,15 @@ export const RULES = {
     /** A colony's people make 1 research for every so many tenths of them (4 million): its scholars. */
     scholarsPer: 40,
   },
+  /** Discoveries (M2B_SCIENCE.md §17, D-45). */
+  discoveries: {
+    /** An inspiration gives this share of its technology's cost, in percent. */
+    inspirationPercent: 40,
+    /** What a first survey gives for each thing astronomers have observed in a system. */
+    observations: { 'white-dwarf': 15, disc: 15, 'brown-dwarf': 10, 'flare-star': 10, planets: 10, 'many-stars': 10 },
+    /** A system of this many stars or more is an observation of its own. */
+    manyStars: 3,
+  },
   governors: {
     /** Every governor zones a lab as every so many districts, whatever its priority (D-44). */
     labEvery: 5,

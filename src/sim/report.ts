@@ -10,6 +10,7 @@ import type { BuildItem, ProjectId } from '../content/projects.ts';
 import type { ShipType } from '../content/ships.ts';
 import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
+import type { ObservationKind } from './discoveries.ts';
 import type { LaneId } from './world.ts';
 
 export type ReportEvent =
@@ -49,6 +50,10 @@ export type ReportEvent =
   | { kind: 'lane-opened'; lane: LaneId }
   /** A technology researched. */
   | { kind: 'researched'; tech: TechId }
+  /** A deed that taught the power something: points towards a technology (M2B_SCIENCE.md §17.1). */
+  | { kind: 'inspired'; tech: TechId; points: number }
+  /** A first survey that found what astronomers have observed, and the research it gave (§17.2). */
+  | { kind: 'observed'; system: SystemId; found: ObservationKind[]; points: number }
   /** A queued lane that could not be begun when it was paid for, and why. */
   | { kind: 'lane-refused'; holding: number; to: SystemId; reason: string }
   /** A colony has grown to fill its room. */

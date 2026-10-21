@@ -23,6 +23,7 @@ interface Line {
   people: number;
   techs: number;
   research: number;
+  inspired: number;
   treasury: number;
 }
 
@@ -73,22 +74,33 @@ for (const seed of SEEDS) {
         people: held.reduce((n, h) => n + h.people, 0),
         techs: p.researched.length,
         research: researchOf(world, g, p.faction).total,
+        inspired: p.inspired.length,
         treasury: p.treasury,
       };
       const key = `${turn}:${p.faction}`;
-      const t = totals.get(key) ?? { colonies: 0, outposts: 0, people: 0, techs: 0, research: 0, treasury: 0, n: 0 };
+      const t = totals.get(key) ?? {
+        colonies: 0,
+        outposts: 0,
+        people: 0,
+        techs: 0,
+        research: 0,
+        inspired: 0,
+        treasury: 0,
+        n: 0,
+      };
       totals.set(key, {
         colonies: t.colonies + line.colonies,
         outposts: t.outposts + line.outposts,
         people: t.people + line.people,
         techs: t.techs + line.techs,
         research: t.research + line.research,
+        inspired: t.inspired + line.inspired,
         treasury: t.treasury + line.treasury,
         n: t.n + 1,
       });
       if (turn === 100)
         rows.push(
-          `| ${seed} | ${FACTIONS[p.faction].shortName} | ${line.colonies} | ${line.outposts} | ${(line.people / 10).toFixed(1)} | ${line.techs} | ${line.research} | ${line.treasury} |`,
+          `| ${seed} | ${FACTIONS[p.faction].shortName} | ${line.colonies} | ${line.outposts} | ${(line.people / 10).toFixed(1)} | ${line.techs} | ${line.research} | ${line.inspired} | ${line.treasury} |`,
         );
     }
   }
@@ -99,7 +111,7 @@ const avg = (turn: number, f: FactionId) => {
   const t = totals.get(`${turn}:${f}`);
   if (!t) return '';
   const a = (n: number) => (n / t.n).toFixed(1);
-  return `| ${turn} | ${FACTIONS[f].shortName} | ${a(t.colonies)} | ${a(t.outposts)} | ${(t.people / t.n / 10).toFixed(1)} | ${a(t.techs)} | ${a(t.research)} | ${Math.round(t.treasury / t.n)} |`;
+  return `| ${turn} | ${FACTIONS[f].shortName} | ${a(t.colonies)} | ${a(t.outposts)} | ${(t.people / t.n / 10).toFixed(1)} | ${a(t.techs)} | ${a(t.research)} | ${a(t.inspired)} | ${Math.round(t.treasury / t.n)} |`;
 };
 
 /** "No power fell into debt." or "The longest time in debt was 3 turns in a row." */
@@ -118,14 +130,14 @@ The tree has ${TECH_IDS.length} technologies. ${finished.length === 0 ? 'No powe
 
 ## On average
 
-| Turn | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Treasury |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Turn | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Treasury |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${AT.flatMap((t) => FACTION_ORDER.map((f) => avg(t, f))).join('\n')}
 
 ## Each game at turn 100
 
-| Seed | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Treasury |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Seed | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Treasury |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join('\n')}
 
 ## Events, and how the rivals answered them

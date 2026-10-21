@@ -82,6 +82,8 @@ export type LineKind =
   | 'overdrive-stopped'
   | 'no-fuel'
   | 'researched'
+  | 'inspired'
+  | 'observed'
   | 'built'
   | 'zoned'
   | 'investigated'
@@ -145,6 +147,17 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, our scientists have completed {tech}. {effect}',
     warm: 'Control, we’ve cracked {tech}! {effect}',
     blunt: '{tech}: done. {effect}',
+  },
+  // Discoveries (M2B_SCIENCE.md §17).
+  inspired: {
+    formal: 'Control, {deed} has taught us something of {tech}: {points} research towards it.',
+    warm: 'Control, {deed} gave us ideas! {tech} is {points} research nearer.',
+    blunt: '{deed} taught us a thing or two. {tech}: {points} closer.',
+  },
+  observed: {
+    formal: 'Control, our survey of {place} confirms the old catalogues: {what}. {points} research.',
+    warm: 'Control, the old star catalogues were right about {place}: {what}! {points} research for the labs.',
+    blunt: '{place}: {what}, as the old catalogues said. {points} research.',
   },
   built: {
     formal: 'Control, {place} has completed {what}.',
