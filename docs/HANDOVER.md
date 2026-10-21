@@ -118,15 +118,20 @@ notes as built. **M2b is complete.** The owner was asked to try it (a game of
 50 turns or more on a phone and a desktop) and may overrule the picture picks of increments 30
 and 32 (lettered sheets sent).
 
-**Next: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
-(goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md
-before building: first contact and translation, treaties, borders and claims, trade, memory of what
-each power did, and the first alien species (D-08's "alien species later"). Each increment's
-pictures are lettered sheets to the owner, recorded in DECISIONS.md with their cost.
+**Next: M3 "Neighbours"** (SCOPE.md §5), **written and waiting for the owner's answers.**
+[design/M3_NEIGHBOURS.md](design/M3_NEIGHBOURS.md) proposes first contact and translation,
+treaties without war, borders and claims, trade, memory of what each power did, and the first two
+alien species, in increments 33 to 40. Its game-shaping questions are D-12 and D-51 to D-57
+([DECISIONS.md Round 6](DECISIONS.md#round-6-neighbours-proposed-21-october-2026)), each with a
+recommendation. **Build nothing of M3 until they are answered.** Then, as in M2b: record the
+answers, write each increment's detailed design section before building it, and send each
+increment's pictures as lettered sheets, recorded in DECISIONS.md with their cost. D-51's census
+to 33 ly needs a sky fetch on GitHub's runners (Reborn's workflow, or a copy in Control's); ask
+for it if the owner's leave is not plain in their answer.
 
-The art and music spend: about $24.45 of $35 (raised on 21 October 2026; about $10.55 left). M3
-will need more (alien species, their worlds and faces): ask the owner to raise D-27 again when its
-design is written.
+The art and music spend: about $24.45 of $35 (raised on 21 October 2026; about $10.55 left). M3's
+art is about 65 pictures (about $6.50); D-57 asks the owner to raise D-27 to $50 so M3 has room for
+re-rolls and M4 starts with some.
 
 ## 3. Standing instructions from the owner
 
@@ -271,7 +276,7 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
   starved machine took longer to load); increment 17 gave scene updates 30 s and made taps aim
   where a building really shows, and CI passed on 16 and 17. Look at the latest run before
   starting.
-- Round 2 decisions (D-12 to D-18) are for later milestones, except D-15 (governors and edicts),
-  which M2 needs.
+- Round 2 decisions (D-13, D-14, D-17, D-18) are for later milestones; D-15 was decided with M2,
+  and D-12 is proposed for M3 in Round 6.
 - Not chosen for now (D-30): second versions of the projects, halls and rigs; cold and hot homes;
   more for the colony scene (a parent planet in a moon's sky, a hull on the shipyard's pad).

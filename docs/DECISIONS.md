@@ -47,7 +47,15 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-48 | Rivals' science ([M2B §8](design/M2B_SCIENCE.md#8-knowledge-spreads-and-rivals-science-is-felt-d-48)) | Decided 2026-10-21 | **all three**: spreading knowledge, the Watch's rumours and science in the standings, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
 | D-49 | Great works ([M2B §9](design/M2B_SCIENCE.md#9-great-works-d-49)) | Decided 2026-10-21 | **yes, the four drafted**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
 | D-50 | A score ([M2B §10](design/M2B_SCIENCE.md#10-a-score-d-50)) | Decided 2026-10-21 | **yes, with no victory yet**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
-| D-12 – D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
+| D-12 | The first alien species ([M3 §5](design/M3_NEIGHBOURS.md#5-the-first-alien-species-d-12)) | **Open** | recommended: **A, the twilight folk and the cloud drifters**; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-51 | The map out to 33 light-years ([M3 §4](design/M3_NEIGHBOURS.md#4-the-map-out-to-33-light-years-d-51)) | **Open** | recommended: **A, extend the census now**, with leave to run the sky fetch on GitHub's runners; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-52 | First contact and translation ([M3 §6](design/M3_NEIGHBOURS.md#6-first-contact-and-translation-d-52)) | **Open** | recommended: **A, a process**: unaware, signal, words, talk; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-53 | Treaties ([M3 §8](design/M3_NEIGHBOURS.md#8-treaties-d-53)) | **Open** | recommended: **A, treaties without war**; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-54 | Borders and claims ([M3 §9](design/M3_NEIGHBOURS.md#9-borders-and-claims-d-54)) | **Open** | recommended: **A, claims round holdings**; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-55 | Memory and attitude ([M3 §7](design/M3_NEIGHBOURS.md#7-memory-and-attitude-d-55)) | **Open** | recommended: **A, remembered acts with their reasons**; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-56 | The Hollow Wake's dealings ([M3 §11](design/M3_NEIGHBOURS.md#11-the-hollow-wakes-dealings-d-56)) | **Open** | recommended: **A, tolls, bribes and protection in M3**; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-57 | The art for M3 ([M3 §16](design/M3_NEIGHBOURS.md#16-art-and-its-cost-d-57)) | **Open** | recommended: **raise D-27 to $50**; see [Round 6](#round-6-neighbours-proposed-21-october-2026) |
+| D-13, D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
 
@@ -520,7 +528,7 @@ people pay taxes and eat but make nothing; approval does not count them. Built i
 
 | ID | Question | Needed by | Recommendation in brief |
 | --- | --- | --- | --- |
-| D-12 | The alien roster: how many species in 1.0, and which concepts (drafts in [SCOPE.md §4.11](SCOPE.md#411-alien-species)) | M3 | five or six, each with a different way to play against — and, since they will become playable (D-08), each with enough to play as |
+| D-12 | The alien roster: how many species in 1.0, and which concepts (drafts in [SCOPE.md §4.11](SCOPE.md#411-alien-species)) | M3 | five or six, each with a different way to play against — and, since they will become playable (D-08), each with enough to play as. **M3's two are proposed in [Round 6](#round-6-neighbours-proposed-21-october-2026)** |
 | D-13 | The artefacts and the vanished species behind them ([SCOPE.md §4.12](SCOPE.md#412-unknown-artefacts-and-the-precursors)) | M5 | tie them to Reborn's old derelicts and Pyre |
 | D-14 | Victory conditions | M4 | conquest, a council vote, the artefact hunt, and a score at a turn limit |
 | D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **decided with the M2 design** ([Round 4](#round-4-the-m2-design-decided-21-october-2026)): optional governors, edicts as policies paid from attention |
@@ -549,6 +557,24 @@ increments 28 to 32, each with its detailed design written first:
 | **D-48** | spreading knowledge, the Watch's rumours and science in the standings | rivals' science is felt, and whoever is behind can catch up |
 | **D-49** | **yes:** the four great works drafted | a race anyone can win |
 | **D-50** | **yes:** a score, with no victory yet | every power's progress in one number, and a measure for the headless games |
+
+## Round 6: neighbours, proposed 21 October 2026
+
+With M2b built, M3 "Neighbours" (SCOPE.md §5) is designed in [design/M3_NEIGHBOURS.md](design/M3_NEIGHBOURS.md): first contact,
+treaties, borders, trade, memory and the first two alien species. Each question has its options
+and reasons in the section named. **Open: nothing in M3 is built until the owner answers.** Answer
+*as recommended* to take every recommendation, or name what to change.
+
+| ID | Question | Options | Recommendation | Why |
+| --- | --- | --- | --- | --- |
+| **D-12** | The first alien species ([§5](design/M3_NEIGHBOURS.md#5-the-first-alien-species-d-12)) | A the twilight folk and the cloud drifters · B the twilight folk only · C three, adding the under-ice thinkers · D another pair of the six | **A** | one that settles the red dwarfs humans struggle with, one that trades: unlike humans and each other, and each gives M3's rules something to work on |
+| **D-51** | The map out to 33 light-years ([§4](design/M3_NEIGHBOURS.md#4-the-map-out-to-33-light-years-d-51)) | A extend the census now · B stay at 27 ly · C 30 ly | **A**, with leave to run the sky fetch on GitHub's runners | D-01 and D-02 put the aliens beyond the frontier, in about 340 systems; the fetch reaches the sky archives only from GitHub's runners, as Reborn's workflow (or a copy of it in Control's repository) |
+| **D-52** | First contact and translation ([§6](design/M3_NEIGHBOURS.md#6-first-contact-and-translation-d-52)) | A a process: unaware, signal, words, talk · B talk at once | **A** | meeting an alien should feel different from meeting humans; misunderstanding is part of the story |
+| **D-53** | Treaties ([§8](design/M3_NEIGHBOURS.md#8-treaties-d-53)) | A without war: open lanes, trade, shared research, borders · B the full set, war in name only | **A** | no words without deeds: war, alliance and non-aggression come with M4's battles |
+| **D-54** | Borders and claims ([§9](design/M3_NEIGHBOURS.md#9-borders-and-claims-d-54)) | A claims round holdings · B none until M4 | **A** | gives quarrels a place on the map and memory something to remember |
+| **D-55** | Memory and attitude ([§7](design/M3_NEIGHBOURS.md#7-memory-and-attitude-d-55)) | A remembered acts, each with its reason · B a single number | **A** | every number explains itself; the player can see why a neighbour is cold |
+| **D-56** | The Hollow Wake's dealings ([§11](design/M3_NEIGHBOURS.md#11-the-hollow-wakes-dealings-d-56)) | A tolls, bribes and protection in M3 · B later, with M4's raids | **A** | the Wake should deal unlike the lawful powers from the first treaty |
+| **D-57** | The art for M3 ([§16](design/M3_NEIGHBOURS.md#16-art-and-its-cost-d-57)) | raise D-27 to $50 · keep $35 | **raise to $50** | about 65 pictures (about $6.50) fit the $10.55 left, but leave nothing for re-rolls or M4's ships |
 
 ## Made without waiting
 

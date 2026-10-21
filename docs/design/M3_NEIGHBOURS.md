@@ -1,0 +1,232 @@
+# M3 · Neighbours
+
+*Proposed 21 October 2026, after M2b. **Waiting for the owner's answers to D-12 and D-51 to D-57**
+([DECISIONS.md](../DECISIONS.md#round-6-neighbours-proposed-21-october-2026)); nothing here is built
+until they are given. Each increment will get a detailed design section, written before it is
+built, as M2's and M2b's did.*
+
+SCOPE.md's M3: *the other human powers as AI, the first two or three alien species, first contact
+and translation, treaties, borders, memory of what you did.* Done when *you meet, trade with and
+quarrel with AI powers that behave believably.* The human rivals already play (M2, D-37); M3 makes
+them, and the first aliens, powers you deal with.
+
+## Contents
+
+1. [Where M3 starts](#1-where-m3-starts)
+2. [Goals](#2-goals)
+3. [Out of scope](#3-out-of-scope)
+4. [The map out to 33 light-years (D-51)](#4-the-map-out-to-33-light-years-d-51)
+5. [The first alien species (D-12)](#5-the-first-alien-species-d-12)
+6. [First contact and translation (D-52)](#6-first-contact-and-translation-d-52)
+7. [Memory and attitude (D-55)](#7-memory-and-attitude-d-55)
+8. [Treaties (D-53)](#8-treaties-d-53)
+9. [Borders and claims (D-54)](#9-borders-and-claims-d-54)
+10. [Trade](#10-trade)
+11. [The Hollow Wake's dealings (D-56)](#11-the-hollow-wakes-dealings-d-56)
+12. [On the screen](#12-on-the-screen)
+13. [Rivals that deal](#13-rivals-that-deal)
+14. [Increments](#14-increments)
+15. [Tests and budgets](#15-tests-and-budgets)
+16. [Art and its cost (D-57)](#16-art-and-its-cost-d-57)
+17. [Decisions for the owner](#17-decisions-for-the-owner)
+
+## 1. Where M3 starts
+
+- Three human powers play every game by the same rules (M2), with science, discoveries, doctrines,
+  great works and a score (M2b). They meet only as neighbours: each other's lanes are closed to
+  them (D-37), the Watch reports what it sees, the standings compare them. There is no talk, no
+  treaty, no trade, no border, and nobody remembers anything.
+- The map is Reborn's 207 systems out to 27 light-years. D-02 decided the full game reaches
+  **33 ly (about 340 systems)**, the old sphere being humanity's heartland and the alien homes in
+  the shell beyond. Nothing lives there yet.
+- Xenology has one technology (Lapse studies, M2b); D-08 says alien species become playable later,
+  so every rule must already treat them as powers like any other.
+
+## 2. Goals
+
+- **Meet the others properly:** first contact as a process, from a signal to talk, faster with
+  Xenology and time.
+- **Deal with them:** treaties for passage, trade, shared research and borders, offered and
+  answered by the player and the AI through the same orders.
+- **Be remembered:** every power keeps an attitude to every other, with its reasons shown, built
+  from what was done; it decides what they accept and what they offer.
+- **Borders that matter:** claims round every holding, drawn on the map, and settling inside
+  another's claim has a cost.
+- **The first aliens:** two species with homes in the shell beyond 27 ly, mechanically unlike
+  humans and each other, played by the AI, designed so they could be played later.
+- **Phone and desktop alike** (D-04): a diplomacy screen for each, and every new number explained.
+
+## 3. Out of scope
+
+War, fleets, battles and invasion (M4); the council and its vote (M4, D-14); espionage (M5); relics
+and the precursors (M5, D-13); playable alien powers (later, D-08); live text from a language model
+while playing (D-17: not in 1.0); more than two species (the rest in M5, D-12).
+
+## 4. The map out to 33 light-years (D-51)
+
+The aliens' homes lie in the shell between 27 and 33 ly (D-01, D-02). The real stars there are
+not yet in the game's data: Reborn's sky snapshot keeps everything with a parallax of at least
+120 milliarcseconds (about 27 ly); 33 ly needs about 99.
+
+- **A. Extend the census now (recommended).** A fetch on GitHub's runners (Reborn's workflow,
+  which can reach SIMBAD, Gaia, the NASA archive and the Extrasolar Planets Encyclopaedia, with
+  the limit lowered to 99 mas), then `npm run data:import` as before: about 130 more systems, each
+  with its sources. Reborn's lanes end at 27 ly, so the shell starts dark and laneless: reached by
+  blind jumps and new lanes, which suits a frontier. The map, the budgets and the headless games
+  are measured again (about 340 systems; D-02 asked the phone map to stay readable at that size).
+  Needs the owner's leave to run a workflow in Reborn's repository, or a copy of it in Control's.
+- **B. Stay at 27 ly.** The aliens' homes are real stars inside the sphere that the human powers
+  never reached. Cheaper, but against D-01's "beyond the frontier" and D-02.
+- **C. Extend to 30 ly.** A half step: fewer systems to test on a phone, still a shell for the
+  aliens.
+
+## 5. The first alien species (D-12)
+
+SCOPE §4.11 drafted six concepts. M3 brings two, chosen to be unlike humans and each other, and
+to give the M3 rules something to work on: one that expands where humans cannot, one that trades.
+Their names, looks and languages are invented for the game and labelled *Fiction*; their homes are
+real stars, and the game says which facts are real.
+
+- **The twilight folk** (a working name): from a tidally locked world of a red dwarf, living in
+  the ring of twilight between the burning day and the frozen night, hardened against flares. Red
+  dwarfs are most of the real neighbourhood, so they settle where humans struggle: *the natural
+  expanders*, patient and communal. Habitability unlike humans' (locked worlds and flares cost
+  them nothing; temperate open worlds feel exposed); a government by consensus; slow to trust,
+  slow to forget.
+- **The cloud drifters** (a working name): vast, long-lived floaters in a gas giant's air, few in
+  number, living only on gas giants and trading fusion fuel. *The brokers*: they want trade
+  agreements with everyone, pay for peace, and dislike whoever closes lanes.
+- **The other four** (under-ice thinkers, the chorus, machine heirs, the unhomed) come in M5.
+
+Options: **A. These two (recommended).** **B. One only** (the twilight folk), the cheapest. **C.
+Three**, adding the under-ice thinkers. **D. A different pair** from the six.
+
+Each species is data, as humans are (D-08): its habitability costs, traits, government, names,
+its personality as an AI, its advisors' voices for when it becomes playable, and its art.
+
+## 6. First contact and translation (D-52)
+
+- **A. A process (recommended):** with each other power, a power is *unaware*, then hears a
+  **signal** (it sees a holding, lane or ship of theirs), then has **words** (translation under
+  way), then can **talk** (treaties possible). Translation comes from contact turns (each turn a
+  holding or ship of theirs is seen) and Xenology; misunderstanding is possible before *talk*: an
+  early offer may be misread and cost attitude. Between the human powers, who share languages,
+  contact goes straight to *talk*.
+- **B. Talk at once** on first sight, for every power. Simpler, and the aliens feel less alien.
+
+Xenology gains its next technologies here (translation, trade protocols, a cultural exchange),
+completing tier 2 and 3 of the field M2b began.
+
+## 7. Memory and attitude (D-55)
+
+- **A. Remembered acts (recommended):** each power holds an attitude to every other from −100 to
+  +100, the sum of what it remembers, each memory with its weight and how fast it fades: a treaty
+  kept or broken, a gift, trade, a claim crossed, a great work raced and lost, a rumour of shared
+  science, being of the same kind or not, the species' own likes and dislikes. Shown with its
+  reasons ("remembers you broke the open lanes treaty: −20"; "trades with you: +10"). It decides
+  what an AI accepts, offers and demands.
+- **B. A single number** with no reasons: less to show, against "every number explains itself".
+
+## 8. Treaties (D-53)
+
+- **A. Treaties without war (recommended):** **open lanes** (each may use the other's lanes;
+  until now others' lanes were closed, D-37), **trade** (§10), **shared research** (each pays less
+  for what the other knows, beyond M2b's spreading), **borders** (§9), each offered, accepted,
+  refused or ended, with notice; breaking one is remembered. Non-aggression, alliance and war come
+  with M4, when there is war to make.
+- **B. The full set now,** war declared but no battles until M4: the words without the deeds.
+
+## 9. Borders and claims (D-54)
+
+- **A. Claims round holdings (recommended):** every colony claims its system and every system one
+  lane jump from it (outposts their own system), drawn as the fields the map already shows (M1's
+  living map). A system claimed by two is contested. Founding a colony or outpost inside another's
+  claim is allowed but remembered (−); a border treaty settles contested systems. Claims give no
+  bonus of their own.
+- **B. No borders until M4:** territory stays a drawing.
+
+## 10. Trade
+
+A **trade agreement** gives each side credits each turn: 1 for every 4 colonies of the smaller
+side, and 1 more for each lane joining their holdings, at most 10 (numbers for balancing). Powers
+may also **exchange resources** once (metals, volatiles, fusion fuel, credits) by offer and
+acceptance. Trade is remembered (+).
+
+## 11. The Hollow Wake's dealings (D-56)
+
+SCOPE §4.9: the Wake deals differently from lawful powers.
+
+- **A. In M3 (recommended):** the Wake offers **passage for a toll** instead of open lanes (credits
+  a turn), takes **bribes** (credits for attitude), and sells **protection** (pay, and its ships
+  leave your systems alone, which matters from M4). The lawful powers remember dealing with it.
+- **B. Later, with M4's raids.**
+
+## 12. On the screen
+
+- **The diplomacy screen:** each power you know, its contact stage, attitude with its reasons,
+  treaties in force, and what you can offer or ask; on a phone a card per power with a sheet for
+  each, on a desktop a table of powers with the selected one beside it.
+- **Offers** arrive like events: in *what needs you*, the report and the advisor who speaks for
+  foreign affairs (a seventh department, the **Envoy**, with faces for each power: 3 pictures).
+- **The map:** claims as the existing fields, contested systems marked, other powers' lanes shown
+  as open to you or not.
+
+## 13. Rivals that deal
+
+The AI offers and answers treaties by its personality and its attitude, through the same orders as
+the player's: the Authority values law (borders, open lanes), the Cooperative trade and peace, the
+Wake tolls and profit; the twilight folk distrust and remember, the cloud drifters trade with all.
+Headless games check that every power ends 100 turns with at least one treaty, that attitudes
+move for reasons, and that no AI accepts what its attitude refuses.
+
+## 14. Increments
+
+| # | Increment | What |
+| --- | --- | --- |
+| 33 | **The shell** | the census to 33 ly (D-51), the map and its budgets at about 340 systems, the dark shell |
+| 34 | **Contact** | contact stages, translation, the Envoy, Xenology's new technologies |
+| 35 | **Memory** | attitudes with reasons, the diplomacy screen on phone and desktop |
+| 36 | **Treaties** | open lanes, shared research, offers and answers, the AI dealing |
+| 37 | **Borders and trade** | claims on the map, contested systems, border and trade treaties, resource exchanges, the Wake's dealings |
+| 38 | **The twilight folk** | the first species: data, home, AI, art, playable later |
+| 39 | **The cloud drifters** | the second species |
+| 40 | **The proof** | headless games with five powers, 100-turn journeys, the owner's try |
+
+## 15. Tests and budgets
+
+Unit tests for every rule (contact, memory, each treaty, claims, trade, the species' rules), the
+headless games with five powers and the save's migrations; browser journeys for contact, a treaty
+offered and accepted, borders on the map and the diplomacy screen on the phone, tablet and
+desktop; the map's budgets at 340 systems on a phone.
+
+## 16. Art and its cost (D-57)
+
+Each species is seen wherever humans are: its colonies in the colony view, its faces, its home.
+
+| For | Pictures | Candidates (×2) |
+| --- | --- | --- |
+| Each species' buildings in its own architecture (homes in three sizes, hall, rig, works, labs, market, mine, shipyard, lane station and the projects it builds) | about 24 each, 48 | 96 |
+| Each species' landscapes where no human world looks like theirs | 2 each, 4 | 8 |
+| Each species' envoy and leader faces, and a codex picture | 3 each, 6 | 12 |
+| The Envoy advisor of each human power | 3 | 6 |
+| First-contact and treaty pictures for the report | 4 | 8 |
+| **In all** | **about 65** | **about 130, about $6.50** |
+
+About $10.55 of D-27's $35 is left. M3 fits, but leaves little for M4's ships and battles. **I ask
+the owner to raise D-27 to $50** (D-57), so M3 can be made with re-rolls where pictures miss and
+M4 starts with room.
+
+## 17. Decisions for the owner
+
+Answer *as recommended* to take every recommendation, or name what to change.
+
+| ID | Question | Options | Recommendation |
+| --- | --- | --- | --- |
+| **D-12** | The first alien species (§5) | A the twilight folk and the cloud drifters · B one · C three · D another pair | **A** |
+| **D-51** | The map out to 33 ly (§4) | A extend the census now · B stay at 27 ly · C 30 ly | **A**, with leave to run the sky fetch on GitHub's runners |
+| **D-52** | First contact (§6) | A a process · B talk at once | **A** |
+| **D-53** | Treaties (§8) | A without war · B the full set, war in name | **A** |
+| **D-54** | Borders (§9) | A claims round holdings · B none until M4 | **A** |
+| **D-55** | Memory and attitude (§7) | A remembered acts with reasons · B one number | **A** |
+| **D-56** | The Wake's dealings (§11) | A in M3 · B later | **A** |
+| **D-57** | Art for M3 (§16) | raise D-27 to $50 · keep $35 | **raise to $50** |
