@@ -246,7 +246,7 @@ describe('founding', () => {
       ship: theirs.id,
       system: 'sol',
       body: 'mars',
-      reason: 'Mars already has an outpost on it.',
+      reason: 'Mars already has a Transit Authority outpost on it.',
     });
   });
 });

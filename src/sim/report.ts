@@ -4,7 +4,9 @@
 import type { AnomalyId } from '../content/anomalies.ts';
 import type { Zone } from '../content/districts.ts';
 import type { EdictId } from '../content/edicts.ts';
+import type { FactionId } from '../content/factions.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
+import type { ShipType } from '../content/ships.ts';
 import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import type { LaneId } from './world.ts';
@@ -73,4 +75,10 @@ export type ReportEvent =
       short?: number;
     }
   /** An edict ran its course (M2_WORLDS.md §25.2). */
-  | { kind: 'edict-ended'; edict: EdictId; holding: number | null };
+  | { kind: 'edict-ended'; edict: EdictId; holding: number | null }
+  /** The Watch (M2_WORLDS.md §26.3): another power founded a colony or outpost where the power can see it. */
+  | { kind: 'rival-founded'; faction: FactionId; holding: number; system: SystemId; body: string; colony: boolean }
+  /** Another power opened a lane the power can see. */
+  | { kind: 'rival-lane'; faction: FactionId; lane: LaneId }
+  /** Another power's ship came into the power's sight. */
+  | { kind: 'rival-ship'; faction: FactionId; ship: number; type: ShipType; system: SystemId };

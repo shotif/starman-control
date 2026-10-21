@@ -39,6 +39,8 @@ interface Props {
   /** The viewing power's ships here, and what to do when one is chosen. */
   ships?: readonly { id: number; name: string; kind: string; status: string }[];
   onShip?: (id: number) => void;
+  /** Other powers' ships the viewer can see here (M2_WORLDS.md §26.3): never given orders. */
+  others?: readonly { id: number; name: string; kind: string; owner: FactionId }[];
   /** An anomaly the viewer has found here: what the survey saw, or, once investigated, what was found. */
   anomaly?: { name: string; text: string; investigated: boolean };
   /** Colonies and outposts here, anyone's; the viewer's own open with `onHolding`. */
@@ -179,6 +181,7 @@ export function SystemPanel({
   surveyed = true,
   ships,
   onShip,
+  others,
   onEnter,
   holdings = [],
   onHolding,
@@ -196,7 +199,8 @@ export function SystemPanel({
       .map((l) => ({ id: l.id, lengthDeci: world.distanceDeci(...laneEnds(l.id)) })),
   ];
   const owners = new Map(game.lanes.map((l) => [l.id, l.owner]));
-  const capitalOf = game.powers.find((p) => p.capital === id)?.faction;
+  // A capital shows as one only where its colony is known (§26.3).
+  const capitalOf = game.holdings.find((h) => h.capital && h.system === id)?.owner;
   const heldBy = capitalOf ?? holdings[0]?.owner ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
   const heldBody = new Map(holdings.map((h) => [h.body, h]));
   // Charted only: astronomers' worlds (known planets, observed belts, all of Sol's), not the rest.
@@ -277,6 +281,24 @@ export function SystemPanel({
                   <span class="ship-type">{sh.kind}</span>
                   <span class="ship-line">{sh.status}</span>
                 </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {others && others.length > 0 && (
+        <>
+          <h3>Other powers’ ships here</h3>
+          <ul class="ships-here">
+            {others.map((sh) => (
+              <li key={sh.id}>
+                <div class="ship-row">
+                  <b>{sh.name}</b>
+                  <span class="ship-type">
+                    <FactionTag faction={sh.owner} /> {sh.kind.toLowerCase()}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>

@@ -706,6 +706,62 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-deep-space-scanner",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A deep-space scanner: a tall lattice mast of white steel carrying a ring of flat sensor panels, a large dish beside it pointed at the sky, a neat equipment building at its foot, cable trays, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T08:16:41.290Z",
+      "note": "Here is the realistic, matte-painting style image of a Sol Transit Authority deep-space scanner building, seen from a low 15-degree angle in a three-quarter view. It is cleanly isolated on a pure magenta background with no ground, shadows, or extra elements.",
+      "id": "authority-deep-space-scanner",
+      "series": "structure",
+      "approvedAt": "2026-10-21T08:20:30.568Z",
+      "candidate": "art/out/authority-deep-space-scanner/20261021-081605-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-deep-space-scanner-256.webp",
+          "bytes": 23392
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-deep-space-scanner-512.webp",
+          "bytes": 69494
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-deep-space-scanner-1024.webp",
+          "bytes": 205768
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 233,
+        "top": 51,
+        "width": 1573,
+        "height": 1835
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-fusion-plant",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -3000,6 +3056,61 @@
         "top": 84,
         "width": 1844,
         "height": 1693
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-deep-space-scanner",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A deep-space scanner: three rounded radio dishes on earth-built plinths round a domed listening hall, a tall braced antenna, cables on posts, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T08:17:00.631Z",
+      "id": "cooperative-deep-space-scanner",
+      "series": "structure",
+      "approvedAt": "2026-10-21T08:20:32.075Z",
+      "candidate": "art/out/cooperative-deep-space-scanner/20261021-081605-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-deep-space-scanner-256.webp",
+          "bytes": 17982
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-deep-space-scanner-512.webp",
+          "bytes": 49574
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-deep-space-scanner-1024.webp",
+          "bytes": 140580
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 88,
+        "top": 125,
+        "width": 1852,
+        "height": 1597
       },
       "aiGenerated": true
     },
@@ -6690,6 +6801,61 @@
         "top": 200,
         "width": 1907,
         "height": 1662
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-deep-space-scanner",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A deep-space scanner: a salvaged warship’s sensor array bolted on top of a tower of stacked hull sections, dishes and antennas jutting at angles, hanging cables, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-21T08:17:40.353Z",
+      "id": "wake-deep-space-scanner",
+      "series": "structure",
+      "approvedAt": "2026-10-21T08:20:33.533Z",
+      "candidate": "art/out/wake-deep-space-scanner/20261021-081605-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-deep-space-scanner-256.webp",
+          "bytes": 23052
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-deep-space-scanner-512.webp",
+          "bytes": 67426
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-deep-space-scanner-1024.webp",
+          "bytes": 190332
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 297,
+        "top": 110,
+        "width": 1428,
+        "height": 1626
       },
       "aiGenerated": true
     },

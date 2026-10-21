@@ -100,7 +100,9 @@ export function mapContent(world: World, state: GameState): MapContent {
     const f = FACTIONS[faction];
     held.set(system, { system, faction, mark: f.mark, colour: f.colour, capital, people: 0 });
   };
-  for (const p of state.powers) mark(p.capital, p.faction, true);
+  // A capital only where its colony is known: a rival's is unseen until its system is surveyed.
+  for (const p of state.powers)
+    if (state.holdings.some((h) => h.owner === p.faction && h.capital)) mark(p.capital, p.faction, true);
   for (const h of state.holdings) mark(h.system, h.owner, false);
   for (const l of state.lanes) for (const end of laneEnds(l.id)) mark(end, l.owner, false);
   const people = new Map<SystemId, number>();

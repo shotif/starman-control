@@ -56,8 +56,13 @@ way in.
   built:** optional governors with a priority (`src/sim/governor.ts`, the code the rivals will use),
   every action in the report with its reason, the player's own zoning locked; a hands-on or
   imperial start; attention and six edicts, with a setting to hide them; state version 8.
-- **Numbers:** 326 unit tests and about 190 browser journeys pass; the title loads 20.9 KB of its
-  40 KB budget, a game's map about 307 KB of 900 KB, opening a colony 9.6 KB of code more (40 KB);
+  **Increment 24 is built:** the other two powers play every new game as rivals
+  (`src/sim/ai.ts`, *play alone* in *More*), by the player's own orders and rules; the screens
+  show only what the player can see of them (`src/sim/visibility.ts`); the deep-space scanner
+  (3 pictures); the Watch's report and advisor lines; the empire's *Powers* tab; three 100-turn
+  headless games in the unit tests.
+- **Numbers:** 350 unit tests and about 196 browser journeys pass; the title loads 20.9 KB of its
+  40 KB budget, a game's map about 310 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
   1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;
   state version 8.
@@ -71,16 +76,17 @@ increment 20's district buildings; apply any overrule they send (`npm run music:
 
 **The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
 its §18. Increments 20 (districts, food, credits and approval, built as one), 21 (projects and
-research), 22 (advisors and the report) and 23 (governors and edicts) are done; next are rivals
-that play (24, with the deep-space scanner and the Watch's lines; the rivals govern their colonies
-with `govern`), events (25, with the flare shield), the guided opening (26), the proof (27). Each
-has a detailed design section in M2_WORLDS.md written before it is built (§23 to §25 so far). Build each as designed; put any
+research), 22 (advisors and the report), 23 (governors and edicts) and 24 (rivals that play) are
+done; next are events (25, with the flare shield; rivals answer them too), the guided opening
+(26), the proof (27, which also decides whether rivals use overdrive and edicts: the Hollow Wake
+banks credits it cannot spend). Each has a detailed design section in M2_WORLDS.md written before
+it is built (§23 to §26 so far; 25's comes next). Build each as designed; put any
 new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
 and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
 DECISIONS.md with their cost.
 
-The art and music spend: about $21.35 of $25; M2's remaining pictures (6 project buildings and 12
-events) are planned at about $1.80.
+The art and music spend: about $21.65 of $25; M2's remaining pictures (the flare shield's 3
+buildings and 12 events) are planned at about $1.50.
 
 ## 3. Standing instructions from the owner
 

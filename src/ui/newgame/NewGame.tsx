@@ -106,6 +106,7 @@ function PowerCard({ id, starting, onStart }: { id: FactionId; starting: Faction
 export function NewGame() {
   const [seed, setSeed] = useState('');
   const [imperial, setImperial] = useState(false);
+  const [alone, setAlone] = useState(false);
   const [starting, setStarting] = useState<FactionId | null>(null);
   const [shown, setShown] = useState(0);
   const track = useRef<HTMLDivElement>(null);
@@ -113,7 +114,7 @@ export function NewGame() {
 
   const start = async (f: FactionId) => {
     setStarting(f);
-    await startGame(f, seedNumber, imperial);
+    await startGame(f, seedNumber, imperial, alone);
     location.hash = '#/game';
   };
   // On a phone the cards are swiped; the dots follow the card in view, and take you to one.
@@ -153,7 +154,10 @@ export function NewGame() {
         <h1>Choose your power</h1>
         <p class="dim">
           Each power still tends the lanes round its home. Beyond them, the old lanes run dark, and the stars are
-          waiting.
+          waiting.{' '}
+          {alone
+            ? 'You play alone: no other power is in play.'
+            : 'The other two powers play too, as your rivals, by your rules and with no bonuses.'}
         </p>
       </header>
       <div class="power-cards" ref={track} onScroll={onScroll}>
@@ -195,6 +199,17 @@ export function NewGame() {
             <label>
               <input type="radio" name="start" checked={imperial} onChange={() => setImperial(true)} /> Imperial{' '}
               <span class="dim">: a governor runs every colony, until you take it over</span>
+            </label>
+          </fieldset>
+          <fieldset class="ng-start">
+            <legend>Rivals</legend>
+            <label>
+              <input type="radio" name="rivals" checked={!alone} onChange={() => setAlone(false)} /> With rivals{' '}
+              <span class="dim">: the other two powers play, by your rules, at one difficulty</span>
+            </label>
+            <label>
+              <input type="radio" name="rivals" checked={alone} onChange={() => setAlone(true)} /> Play alone{' '}
+              <span class="dim">: no other power in play</span>
             </label>
           </fieldset>
         </details>

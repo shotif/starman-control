@@ -11,6 +11,7 @@ import {
   needs,
   player,
   resolving,
+  seen,
   world,
 } from '../../app/game.ts';
 import { MapScreen } from '../map/MapScreen.tsx';
@@ -26,7 +27,7 @@ export default function GameRoute({ buildId }: { buildId: string }) {
       else setChecked(true);
     });
   }, []);
-  const g = game.value;
+  const g = seen.value;
   const p = player.value;
   if (!checked || !g || !p) return <p class="loading">Loading the game…</p>;
   return (

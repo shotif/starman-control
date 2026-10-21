@@ -89,7 +89,10 @@ export type LineKind =
   | 'surveyed'
   | 'founded'
   | 'idle-yard'
-  | 'idle-ship';
+  | 'idle-ship'
+  | 'rival-founded'
+  | 'rival-lane'
+  | 'rival-ship';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
   hungry: {
@@ -181,6 +184,22 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, {count} awaiting orders.',
     warm: 'Control, {count} waiting for you.',
     blunt: '{count} sitting on their hands.',
+  },
+  // The Watch (M2_WORLDS.md §26.3).
+  'rival-founded': {
+    formal: 'Control, the {power} has founded {what} on {place}.',
+    warm: 'Control, our neighbours of the {power} have {what} on {place} now.',
+    blunt: 'The {power} put {what} on {place}. I’m watching them.',
+  },
+  'rival-lane': {
+    formal: 'Control, the {power} has opened a lane {place}. It is closed to our ships.',
+    warm: 'Control, the {power} have a new lane {place}. Not one we can use, mind.',
+    blunt: 'The {power} lit a lane {place}. Ours can’t use it.',
+  },
+  'rival-ship': {
+    formal: 'Control, {ship} is at {place}.',
+    warm: 'Control, we’ve spotted {ship} at {place}.',
+    blunt: '{ship} at {place}. Keeping my eye on it.',
   },
 };
 

@@ -181,7 +181,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   );
   const pickShip = useCallback((id: number) => {
     const s = latest.current.game.ships.find((x) => x.id === id);
-    if (!s) return;
+    // Only the player's own ships take orders; others' are seen, not chosen (M2_WORLDS.md §26.3).
+    if (!s || (latest.current.play && s.owner !== latest.current.play.faction)) return;
     selectedShip.value = id;
     selectedHolding.value = null;
     selected.value = s.at;
@@ -780,6 +781,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       })()}
       ships={shipsAt(id)}
       onShip={pickShip}
+      others={
+        play
+          ? game.ships
+              .filter((s) => s.owner !== play.faction && s.at === id)
+              .map((s) => ({ id: s.id, name: s.name, kind: SHIPS[s.type].name, owner: s.owner }))
+          : undefined
+      }
       holdings={game.holdings
         .filter((h) => h.system === id)
         .map((h) => ({
@@ -832,7 +840,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       game={game}
       faction={play.faction}
       needs={play.needs.length}
-      onGo={go}
+      onGo={(id) => {
+        // A line about a place opens it, as a line about a colony does.
+        panel.value = null;
+        go(id);
+      }}
       onHolding={pickHolding}
       onResearch={openResearch}
       onViewColony={viewColony}

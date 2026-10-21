@@ -19,7 +19,8 @@ export type ProjectId =
   | 'fusion-plant'
   | 'refinery'
   | 'arcology'
-  | 'medical-centre';
+  | 'medical-centre'
+  | 'deep-space-scanner';
 
 export interface Cost {
   industry: number;
@@ -137,6 +138,15 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
     cost: { industry: 50, metals: 0, volatiles: 5, fuel: 0 },
     upkeep: 1,
     opens: 'medicine',
+  },
+  // Increment 24 (M2_WORLDS.md §26.3).
+  'deep-space-scanner': {
+    id: 'deep-space-scanner',
+    name: 'Deep-space scanner',
+    does: 'Shows other powers’ ships within 8 light-years.',
+    cost: { industry: 40, metals: 5, volatiles: 0, fuel: 0 },
+    upkeep: 1,
+    opens: 'long-baseline-arrays',
   },
 };
 

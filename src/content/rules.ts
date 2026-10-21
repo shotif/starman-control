@@ -159,6 +159,8 @@ export const RULES = {
     /** Room an arcology adds, in tenths. */
     arcology: 40,
     medicalPercent: 25,
+    /** How far a deep-space scanner sees other powers' ships, in tenths of a light-year (§26.3). */
+    scannerDeci: 80,
   },
   outposts: {
     /** Industry an outpost makes for its queue, which holds lanes only. */

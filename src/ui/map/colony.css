@@ -138,6 +138,33 @@
   letter-spacing: 0.05em;
 }
 
+/* The standings (M2_WORLDS.md §26.5): a small table on every screen. */
+.standings-table tbody th {
+  color: var(--text);
+  font-family: inherit;
+  letter-spacing: 0;
+}
+
+.standings-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.standings > p {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+  .standings-table {
+    font-size: 0.8rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 0.35rem 0.2rem;
+  }
+}
+
 .queue-table tr.is-first td {
   color: var(--text);
 }

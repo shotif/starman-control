@@ -264,6 +264,10 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['wake-refinery', 1755 / 1713, 40],
       ['wake-research-institute', 1704 / 1897, 40],
       ['wake-trade-exchange', 1902 / 1468, 36],
+      // Increment 24: the deep-space scanner (M2_WORLDS.md §26.3).
+      ['authority-deep-space-scanner', 1573 / 1835, 36],
+      ['cooperative-deep-space-scanner', 1852 / 1597, 36],
+      ['wake-deep-space-scanner', 1428 / 1626, 36],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );

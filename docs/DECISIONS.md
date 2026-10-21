@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $21.35 spent by 21 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $21.65 spent by 21 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
@@ -342,7 +342,8 @@ props of increment 18, **about $10.25** in all; then about $4.20 on the rest of 
 props, **about $14.45** in all; then about $1.40 on the music (D-31), **about $15.85** in all;
 then about $1.00 on increment 20's district buildings, **about $16.85** in all; then about $2.70
 on increment 21's project buildings, **about $19.55** in all; then about $1.80 on increment 22's
-advisors' faces, **about $21.35** in all, leaving about **$3.65**.
+advisors' faces, **about $21.35** in all; then about $0.30 on increment 24's deep-space
+scanners, **about $21.65** in all, leaving about **$3.35**.
 
 ### D-28 · The colony view — **Decided**
 
@@ -518,6 +519,9 @@ Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
+| 2026-10-21 | Increment 24's pictures, the deep-space scanner in each power's architecture (M2_WORLDS.md §26.3): 6 candidates, about **$0.30**, so about **$21.65** of the owner's $25 spent in all; chosen the Authority's B (a mast and a great dish), the Cooperative's A (three dishes round a listening hall) and the Wake's A (a tower of hull sections crowned with salvaged arrays) | within D-27 and D-41; the lettered sheet went to the owner to overrule |
+| 2026-10-21 | Increment 24's rivals as M2_WORLDS.md §26 (D-37): they give their orders as each turn begins, in the order the powers are listed, through the same orders as the player's; the screens are given only what the player can see, while the rules work on the whole game; a power's queued lanes take no beacon slot from another power and do not stop it queuing the same lane (whoever pays first relights it, and the other is told whose it is); a refusal names a rival's lane or holding; a capital shows as one only where its colony is seen; the standings are a *Powers* tab of the empire, shown only with rivals in play | the smallest reading of §10 and §26 that keeps the rivals' plans hidden; each has a unit test |
+| 2026-10-21 | A report or advisor line about a place now opens that place on a phone and a tablet, as one about a colony did; before, the report stayed in front of it | found while testing the Watch's lines |
 | 2026-10-19 | Same toolchain as Reborn: Node 22, TypeScript, Vite, Vitest, the same pinned versions, plus Preact + Signals and Biome (D-22) | one way of working across both games; proven on GitHub Pages |
 | 2026-10-19 | three.js for the map and battle replays, added with the map in M1's increment 2 (D-22) | Reborn's star map is three.js and is copied from there |
 | 2026-10-19 | Biome's style: two spaces, single quotes, semicolons, trailing commas, lines up to 120 characters; its recommended lint rules, none switched off | close to how the code was already written; the rules caught real issues on the first run |

@@ -655,7 +655,7 @@ export function settleRefusal(
   if (!power.surveyed.includes(system)) return `${world.system(system).name} has not been surveyed.`;
   const held = holdingOn(state, bodyId);
   if (held)
-    return `${body.name} already has ${held.owner === faction ? 'your' : held.kind === 'outpost' ? 'an' : 'a'} ${held.kind} on it.`;
+    return `${body.name} already has ${held.owner === faction ? 'your' : `a ${FACTIONS[held.owner].shortName}`} ${held.kind} on it.`;
   if (state.ships.some((s) => s.founding?.body === bodyId && s.owner === faction))
     return `Another ship is already founding on ${body.name}.`;
   if (kind === 'outpost') return null;

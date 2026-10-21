@@ -7,6 +7,7 @@
 
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
+import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import {
@@ -29,6 +30,7 @@ import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
+import { applyInPlace } from './orders.ts';
 import type { ReportEvent } from './report.ts';
 import { effects, speciesFor, spendResearch } from './research.ts';
 import {
@@ -41,6 +43,7 @@ import {
   powerOf,
   type ShipState,
 } from './state.ts';
+import { watchNews } from './visibility.ts';
 import { laneId, type World } from './world.ts';
 
 /** Whether a survey ship should stop to survey where it now is. */
@@ -102,6 +105,12 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   const state = structuredClone(before);
   const events = new Map(state.powers.map((p) => [p.faction, [] as ReportEvent[]]));
   const log = (ship: ShipState) => events.get(ship.owner) as ReportEvent[];
+
+  // 0. The rivals give their orders (M2_WORLDS.md §26.2), from the state as it stands, power by
+  // power in the order they are listed, through the same orders as the player's.
+  for (const p of state.powers)
+    if (p.controller === 'ai')
+      for (const o of aiOrders(world, state, p.faction)) applyInPlace(world, state, p.faction, o);
 
   // 1. Movement. A ship founding a colony or outpost stays to do it.
   for (const ship of state.ships) if (!ship.founding && !ship.investigating) moveShip(world, state, ship, log(ship));
@@ -357,7 +366,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     p.edicts = p.edicts.filter((e) => e.left > 0);
   }
 
-  // 10. Reports.
+  // 10. The Watch (M2_WORLDS.md §26.3): what each power newly sees of the others.
+  for (const p of state.powers) events.get(p.faction)?.push(...watchNews(world, before, state, p.faction));
+
+  // 11. Reports.
   const reports = state.powers.map((p) => ({
     faction: p.faction,
     turn: state.turn,

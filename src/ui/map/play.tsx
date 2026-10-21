@@ -339,6 +339,14 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'edict-ended':
       return `The ${EDICTS[e.edict].name.toLowerCase()}${e.holding !== null ? ` at ${holding(e.holding)}` : ''} is over.`;
+    case 'rival-founded':
+      return `The Watch: the ${FACTIONS[e.faction].shortName} founded ${e.colony ? 'a colony' : 'an outpost'} on ${body(e.system, e.body)} at ${name(e.system)}.`;
+    case 'rival-lane': {
+      const [a, b] = laneEnds(e.lane);
+      return `The Watch: the ${FACTIONS[e.faction].shortName} opened a lane between ${name(a)} and ${name(b)}. It is closed to your ships.`;
+    }
+    case 'rival-ship':
+      return `The Watch: ${withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`)} is at ${name(e.system)}.`;
   }
 }
 
@@ -369,6 +377,7 @@ function eventPlace(game: GameState, e: ReportEvent): { holding: number } | { sy
     case 'lane-refused':
       return { system: e.to };
     case 'lane-opened':
+    case 'rival-lane':
       return { system: laneEnds(e.lane)[1] };
     default:
       return { system: e.system };
@@ -397,6 +406,9 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   debt: { icon: 'refused', tone: 'needs' },
   governed: { icon: 'colony', tone: 'news' },
   'edict-ended': { icon: 'report', tone: 'news' },
+  'rival-founded': { icon: 'colony', tone: 'news' },
+  'rival-lane': { icon: 'lane', tone: 'news' },
+  'rival-ship': { icon: 'ship', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

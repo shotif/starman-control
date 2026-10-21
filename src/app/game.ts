@@ -2,12 +2,13 @@
 // in the worker, and the game saved after every turn and every order (§11).
 
 import { computed, signal } from '@preact/signals';
-import type { FactionId } from '../content/factions.ts';
+import { FACTION_IDS, type FactionId } from '../content/factions.ts';
 import { needsOf } from '../sim/needs.ts';
 import { applyOrder, type Order } from '../sim/orders.ts';
 import { randomSeed } from '../sim/rng.ts';
 import { exportSave, parseSave } from '../sim/save.ts';
 import { type GameState, newGame, playerPower } from '../sim/state.ts';
+import { knownView } from '../sim/visibility.ts';
 import { SaveStore, type SaveSummary, type SlotInfo } from './saves.ts';
 import { detectBackend } from './storage.ts';
 import { endTurn } from './turns.ts';
@@ -22,6 +23,10 @@ export const resolving = signal(false);
 export const freshReport = signal(false);
 
 export const player = computed(() => (game.value ? playerPower(game.value) : undefined));
+/** The game as the player knows it (M2_WORLDS.md §26.3): what the screens show. Orders use the whole state. */
+export const seen = computed(() =>
+  game.value && player.value ? knownView(world, game.value, player.value.faction) : null,
+);
 export const needs = computed(() =>
   game.value && player.value ? needsOf(world, game.value, player.value.faction) : [],
 );
@@ -47,11 +52,16 @@ function saveSoon(): void {
   }, 400);
 }
 
-/** A new game for a power; `governed` is the imperial start, with a governor for every colony (M2_WORLDS.md §25.1). */
-export async function startGame(faction: FactionId, seed?: number, governed = false): Promise<void> {
+/**
+ * A new game for a power, with the other two as rivals unless it plays alone (M2_WORLDS.md §26.1);
+ * `governed` is the imperial start, with a governor for every colony (§25.1).
+ */
+export async function startGame(faction: FactionId, seed?: number, governed = false, alone = false): Promise<void> {
   const state = newGame(world, {
     seed: seed ?? randomSeed(),
-    powers: [{ faction, controller: 'player', governed }],
+    powers: FACTION_IDS.filter((f) => f === faction || !alone).map((f) =>
+      f === faction ? { faction, controller: 'player', governed } : { faction: f, controller: 'ai' },
+    ),
   });
   game.value = state;
   freshReport.value = false;

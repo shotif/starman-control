@@ -821,6 +821,14 @@ function projects(): ArtBrief[] {
         'A medical centre: a rounded earth-built clinic with a healing garden, big round windows, a white awning over the entrance and a blue cross sign, soft blue lights.',
       wake: 'A medical centre: a field hospital in a salvaged medical frigate, its side opened up as a ward, a red cross painted on the hull, tents and red lights.',
     },
+    // Increment 24 (M2_WORLDS.md §26.3).
+    'deep-space-scanner': {
+      authority:
+        'A deep-space scanner: a tall lattice mast of white steel carrying a ring of flat sensor panels, a large dish beside it pointed at the sky, a neat equipment building at its foot, cable trays, green lights.',
+      cooperative:
+        'A deep-space scanner: three rounded radio dishes on earth-built plinths round a domed listening hall, a tall braced antenna, cables on posts, soft blue lights.',
+      wake: 'A deep-space scanner: a salvaged warship’s sensor array bolted on top of a tower of stacked hull sections, dishes and antennas jutting at angles, hanging cables, red lights.',
+    },
   };
   const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
   return Object.entries(own).flatMap(([kind, by]) =>
@@ -828,7 +836,7 @@ function projects(): ArtBrief[] {
       id: `${a}-${kind}`,
       series: 'structure' as const,
       subject: `${ARCHITECTURE[a]} ${by[a]}`,
-      purpose: `Colony view: the ${kind.replace('-', ' ')}, in the ${names[a]}'s architecture (M2).`,
+      purpose: `Colony view: the ${kind.replaceAll('-', ' ')}, in the ${names[a]}'s architecture (M2).`,
     })),
   );
 }

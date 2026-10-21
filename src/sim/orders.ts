@@ -160,6 +160,22 @@ export function applyOrder(world: World, state: GameState, faction: FactionId, o
   const reason = refuse(world, state, faction, order);
   if (reason) return { ok: false, reason };
   const next = structuredClone(state);
+  return applyChecked(world, next, faction, order);
+}
+
+/**
+ * Gives an order to a state in place (a rival's, as its turn begins, §26.2): the reason it is
+ * refused, or null once it is in effect. The state is changed only when the order is allowed.
+ */
+export function applyInPlace(world: World, state: GameState, faction: FactionId, order: Order): string | null {
+  const reason = refuse(world, state, faction, order);
+  if (reason) return reason;
+  const r = applyChecked(world, state, faction, order);
+  return r.ok ? null : r.reason;
+}
+
+/** Puts an order already checked into effect in `next`, which it changes. */
+function applyChecked(world: World, next: GameState, faction: FactionId, order: Order): OrderResult {
   if ('tech' in order) {
     const p = powerOf(next, faction);
     p.researchQueue =

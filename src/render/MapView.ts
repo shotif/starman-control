@@ -1499,7 +1499,11 @@ export class MapView {
   }
 
   /** The ships to draw: one chevron per power at each system, and one for each blind jump. */
+  /** The ship marks last drawn (read by the browser tests). */
+  shipMarks: readonly ShipMark[] = [];
+
   setShips(marks: readonly ShipMark[]): void {
+    this.shipMarks = marks;
     if (this.ships) {
       this.scene.remove(this.ships);
       this.ships.geometry.dispose();

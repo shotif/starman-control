@@ -2,7 +2,7 @@
 // lane costs, how far a power can reach, the beacon slots at each end, and why a lane cannot be
 // queued. Pure and in whole numbers.
 
-import type { FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { Cost } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
@@ -54,13 +54,18 @@ export function laneQuote(world: World, state: GameState, faction: FactionId, fr
   return { from, to, lengthDeci, relight: old !== undefined, cost, turns };
 }
 
-/** Lanes anchored at a star: open or being tuned, and (unless left out) lanes waiting in a queue. */
-export function slotsUsed(state: GameState, system: SystemId, queued = true): number {
+/**
+ * Lanes anchored at a star: open or being tuned, any power's, and lanes waiting in the queues of
+ * `queuedBy` (a power cannot see the others' queues: whoever pays first takes the slot, §26.4).
+ */
+export function slotsUsed(state: GameState, system: SystemId, queuedBy: FactionId | null = null): number {
   let n = 0;
   for (const l of state.lanes) if (laneEnds(l.id).includes(system)) n++;
-  if (queued)
-    for (const h of state.holdings)
+  if (queuedBy)
+    for (const h of state.holdings) {
+      if (h.owner !== queuedBy) continue;
       for (const item of h.queue) if (item.kind === 'lane' && (h.system === system || item.to === system)) n++;
+    }
   return n;
 }
 
@@ -81,8 +86,19 @@ export function laneRefusal(
   const name = world.system(to).name;
   const id = laneId(from, to);
   const lane = state.lanes.find((l) => l.id === id);
-  if (lane) return lane.status === 'open' ? `A lane to ${name} is already open.` : `A lane to ${name} is being tuned.`;
-  if (queued && state.holdings.some((h) => h.queue.some((q) => q.kind === 'lane' && laneId(h.system, q.to) === id)))
+  if (lane) {
+    const whose = lane.owner === faction ? 'A lane' : `The ${FACTIONS[lane.owner].shortName}’s lane`;
+    const closed = lane.owner === faction ? '' : ', closed to your ships';
+    return lane.status === 'open'
+      ? `${whose} to ${name} is already open${closed}.`
+      : `${whose} to ${name} is being tuned${closed}.`;
+  }
+  if (
+    queued &&
+    state.holdings.some(
+      (h) => h.owner === faction && h.queue.some((q) => q.kind === 'lane' && laneId(h.system, q.to) === id),
+    )
+  )
     return `A lane to ${name} is already queued.`;
   if (!world.catalogueLane(from, to)) {
     const d = world.distanceDeci(from, to);
@@ -91,7 +107,7 @@ export function laneRefusal(
   }
   for (const end of [from, to]) {
     const slots = beaconSlots(state, end);
-    if (slotsUsed(state, end, queued) >= slots)
+    if (slotsUsed(state, end, queued ? faction : null) >= slots)
       return `No free beacon slot at ${world.system(end).name}: its ${slots} are in use.`;
   }
   return null;

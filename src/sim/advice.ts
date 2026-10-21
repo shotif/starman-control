@@ -13,10 +13,12 @@ import {
   type LineKind,
 } from '../content/advisors.ts';
 import { ZONE_DEFS } from '../content/districts.ts';
-import type { FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { PROJECTS, withArticle } from '../content/projects.ts';
+import { SHIPS } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
+import { bodiesOf } from './bodies.ts';
 import { bodyOf, fusionRuns } from './economy.ts';
 import type { Need } from './needs.ts';
 import type { ReportEvent } from './report.ts';
@@ -123,7 +125,25 @@ export function adviceFor(
       const [a, b] = laneEnds(e.lane);
       say('survey', 3, 'lane-opened', { place: `between ${world.system(a).name} and ${world.system(b).name}` });
     } else if (e.kind === 'surveyed') say('survey', 3, 'surveyed', { place: world.system(e.system).name }, e);
-    else if (e.kind === 'founded') {
+    else if (e.kind === 'rival-founded') {
+      const what = e.colony ? 'a colony' : 'an outpost';
+      const body =
+        bodiesOf(world, state.seed, e.system).find((b) => b.id === e.body)?.name ?? world.system(e.system).name;
+      say(
+        'watch',
+        3,
+        'rival-founded',
+        { power: FACTIONS[e.faction].shortName, what, place: body },
+        { system: e.system },
+      );
+    } else if (e.kind === 'rival-lane') {
+      const [a, b] = laneEnds(e.lane);
+      const place = `between ${world.system(a).name} and ${world.system(b).name}`;
+      say('watch', 3, 'rival-lane', { power: FACTIONS[e.faction].shortName, place }, { system: b });
+    } else if (e.kind === 'rival-ship') {
+      const ship = withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`);
+      say('watch', 3, 'rival-ship', { ship, place: world.system(e.system).name }, e);
+    } else if (e.kind === 'founded') {
       const kind = state.holdings.find((h) => h.id === e.holding)?.kind === 'outpost' ? 'outpost' : 'colony';
       say('colonies', 3, 'founded', { place: holdingName(e.holding), what: `a new ${kind}` }, { holding: e.holding });
     }

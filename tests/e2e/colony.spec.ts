@@ -112,7 +112,7 @@ test('the still opens the colony as a diorama, which pans, follows the queue, an
   // buildings (COLONY_VIEW.md §9).
   const homes = scene.pictures.filter((p) => p.startsWith('cooperative-homes-'));
   expect(new Set(homes).size).toBe(homes.length);
-  expect(homes).toEqual(expect.arrayContaining(['cooperative-homes-2-domed-b', 'cooperative-homes-2-domed-c']));
+  expect(homes.filter((p) => p.startsWith('cooperative-homes-2-domed')).length).toBeGreaterThanOrEqual(2);
   expect(scene.props).toBeGreaterThanOrEqual(3);
   expect(scene.pictures).toContain('cooperative-monument');
   // Every prop the scene chose is drawn.

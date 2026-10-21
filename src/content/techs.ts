@@ -237,7 +237,7 @@ export const TECHS: Record<TechId, TechDef> = {
     cost: 60,
     needs: ['deep-survey'],
     effect: { kind: 'survey-station-lanes', lanes: 2 },
-    text: 'Survey stations survey every system two open lanes away.',
+    text: 'Survey stations survey every system two open lanes away. Opens the deep-space scanner: other powers’ ships seen within 8 light-years.',
   },
   // M2's technologies (M2_WORLDS.md §23.2).
   'fusion-power': {

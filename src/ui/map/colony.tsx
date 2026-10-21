@@ -61,6 +61,7 @@ import {
   type Stockpile,
   type TaxRate,
 } from '../../sim/state.ts';
+import { type Standing, standings } from '../../sim/visibility.ts';
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
@@ -915,7 +916,7 @@ export function needText(world: World, game: GameState, need: Need): string {
   return `${first ? queueLabel(world, h, first) : 'Its next item'} at ${name} waits for ${short ? missingText(short.missing) : 'resources'}.`;
 }
 
-type Tab = 'colonies' | 'outposts' | 'ships';
+type Tab = 'colonies' | 'outposts' | 'ships' | 'powers';
 type ColonyKey = 'name' | 'system' | 'people' | 'industry' | 'approval';
 
 const TAX_TEXT: Record<TaxRate, string> = {
@@ -1024,6 +1025,8 @@ export function EmpireView({
   const colonies = mine.filter((h) => h.kind === 'colony');
   const outposts = mine.filter((h) => h.kind === 'outpost');
   const ships = game.ships.filter((s) => s.owner === faction);
+  const rivals = game.powers.length > 1;
+  const known = standings(game, faction);
   const value = (h: Holding, key: ColonyKey): string | number =>
     key === 'name'
       ? holdingName(world, game, h)
@@ -1068,6 +1071,7 @@ export function EmpireView({
             ['colonies', `Colonies ${colonies.length}`],
             ['outposts', `Outposts ${outposts.length}`],
             ['ships', `Ships ${ships.length}`],
+            ...(rivals ? ([['powers', `Powers ${known.length}`]] as const) : []),
           ] as const
         ).map(([t, label]) => (
           <button
@@ -1181,7 +1185,57 @@ export function EmpireView({
           </ul>
         ))}
       {tab === 'ships' && shipsList}
+      {tab === 'powers' && <Standings game={game} faction={faction} rows={known} />}
     </section>
+  );
+}
+
+/** The standings (M2_WORLDS.md §26.5): your power in full, the others as far as you can see them. */
+function Standings({ game, faction, rows }: { game: GameState; faction: FactionId; rows: readonly Standing[] }) {
+  const unmet = game.powers.filter((p) => !rows.some((r) => r.faction === p.faction)).map((p) => p.faction);
+  return (
+    <div class="standings">
+      <table class="empire-table standings-table">
+        <thead>
+          <tr>
+            <th scope="col">Power</th>
+            <th scope="col">Colonies</th>
+            <th scope="col">Outposts</th>
+            <th scope="col">People</th>
+            <th scope="col">Lanes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.faction}>
+              <th scope="row">
+                <FactionTag faction={r.faction} />
+                {r.faction === faction && <span class="dim"> · you</span>}
+              </th>
+              <td>{r.colonies}</td>
+              <td>{r.outposts}</td>
+              <td>{millions(r.people)} m</td>
+              <td>{r.lanes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="dim">
+        Yours in full; the others’ only as far as you can see: in systems you have surveyed. You have researched{' '}
+        {rows[0]?.technologies ?? 0} technolog{rows[0]?.technologies === 1 ? 'y' : 'ies'}.
+      </p>
+      {unmet.length > 0 && (
+        <p class="dim">
+          Not yet seen:{' '}
+          {unmet.map((f, i) => (
+            <span key={f}>
+              {i > 0 && (i === unmet.length - 1 ? ' and ' : ', ')}the {FACTIONS[f].shortName}
+            </span>
+          ))}
+          .
+        </p>
+      )}
+    </div>
   );
 }
 

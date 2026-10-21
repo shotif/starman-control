@@ -100,7 +100,8 @@ describe('where a lane can go', () => {
     const { g, outpost } = withOutpost();
     // Wolf 359 has 2 of its 3 slots in use: one queued lane fills it.
     const q = order(g, 'sta', { type: 'queue', holding: outpost.id, item: { kind: 'lane', to: 'ross-128' } });
-    expect(slotsUsed(q, 'wolf-359')).toBe(3);
+    expect(slotsUsed(q, 'wolf-359', 'sta')).toBe(3);
+    expect(slotsUsed(q, 'wolf-359', 'frontier')).toBe(2);
     expect(
       refuse(world, q, 'sta', { type: 'queue', holding: outpost.id, item: { kind: 'lane', to: 'ross-128' } }),
     ).toBe('A lane to Ross 128 is already queued.');

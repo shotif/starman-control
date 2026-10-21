@@ -44,6 +44,12 @@ that asks you to choose; and a first game teaches itself. All of it on a phone a
 19. [Tests and budgets](#19-tests-and-budgets)
 20. [Art and its cost](#20-art-and-its-cost)
 21. [Decisions for the owner](#21-decisions-for-the-owner)
+22. [As built](#22-as-built)
+23. [Increment 21 in detail](#23-increment-21-in-detail-projects-and-research-written-before-building-it)
+24. [Increment 22 in detail](#24-increment-22-in-detail-advisors-and-the-report-written-before-building-it)
+25. [Increment 23 in detail](#25-increment-23-in-detail-governors-and-edicts-written-before-building-it)
+26. [Increment 24 in detail](#26-increment-24-in-detail-rivals-that-play-written-before-building-it)
+27. [Increment 25 in detail](#27-increment-25-in-detail-events-and-stories-written-before-building-it)
 
 ## 1. What playing M2 feels like
 
@@ -884,3 +890,135 @@ at turn 100 within 200 ms; the save within 200 KB.
 Unit: each of 26.2's choices; visibility (26.3); the scanner; meeting without war (26.4); the
 Watch's lines; the headless games. Browser: a new game with rivals, a rival seen on the map and in
 the standings, *play alone*, on the phone, tablet and desktop.
+
+### Increment 24: rivals that play (21 October 2026)
+
+- **Who plays:** a new game has the other two powers as rivals, listed in the powers' own order;
+  *More* offers *With rivals* (the default) or *Play alone*. The new-game screen says the rivals
+  play by your rules with no bonuses. Older saves go on as they began.
+- **How a rival plays** (`src/sim/ai.ts`), as §26.2, its orders given as each turn begins through
+  the same checks as the player's (`applyInPlace`): governors at its power's priority; survey
+  ships investigate, then go to the nearest system not yet surveyed by lane, else jump blind, else
+  jump toward the nearest one out of reach; colony and outpost ships settle in character; one ship
+  at a time from each yard while the treasury holds 20; lanes from idle outposts (and the
+  Authority's colonies); the cheapest research in its own fields; its own taxes once the treasury
+  holds 60, a step higher while below 30 and falling, low while a colony is restless and the
+  treasury holds 100.
+- **What you see** (`src/sim/visibility.ts`): the screens are given the game as the player knows
+  it (`knownView`), as §26.3; the rules always use the whole game. The system view lists the
+  other powers' ships seen there, which take no orders; the map draws them in their colours.
+- **The deep-space scanner:** opened by *Long-baseline arrays*; three pictures (about $0.30).
+- **The Watch:** a rival's colony or outpost founded, or lane opened, where you can see it, and
+  a rival ship come into sight, as report lines and as the Watch's advisor lines in three voices.
+- **Meeting without war:** as §26.4. A power's queued lanes no longer hold beacon slots or block
+  the same lane for another power: whoever pays first relights it, and the other is told whose it
+  is. A refusal names the rival whose lane or holding is in the way.
+- **Standings:** a *Powers* tab of the empire (only with rivals in play): colonies, outposts,
+  people and lanes, yours in full and the others' as far as you see, with your technologies; the
+  powers not yet seen are named.
+- **The headless games** (100 turns, three rivals, seeds 42, 7 and 2176): every power settles
+  and grows (4 to 11 colonies, 8 to 20 outposts, 26 to 78 million people); no hunger or lasting
+  debt; turn 100 in 32 to 82 ms; saves of 26 to 29 KB. The Hollow Wake banks over 1,000 credits it
+  has nothing to spend on, and the Cooperative runs its treasury close to empty: increment 27
+  decides whether rivals use overdrive and edicts.
+- **Tests:** `rivals.test.ts` (the start; each of §26.2's choices; visibility, the scanner and
+  the standings; the Watch's news and lines; meeting without war; three 100-turn games and one
+  replayed) and `rivals.spec.ts` (the Watch sees a Wake survey ship reach Sol, on the map, at Sol
+  and in the standings; *play alone*) on the phone, tablet and desktop.
+
+## 27. Increment 25 in detail: events and stories (written before building it)
+
+**Goals.** §11 as decided (D-38): twelve events, each with a picture, a few lines and two choices
+whose costs and what follows are shown before you choose; rivals get events and answer them; the
+flare shield (§6) comes with the flare.
+
+**Out of scope.** Events that chain into stories (M3 and later); Reborn's derelicts (D-13);
+events with three choices; more than twelve.
+
+### 27.1 When an event comes
+
+- **As each turn ends** (after the Watch, before the reports), each power with no event waiting
+  and none in its last six turns has a 1 in 8 chance of one, from the seed's stream for that turn
+  and power. The events whose conditions fit are listed in a fixed order and one is drawn, each as
+  likely as the others, with its subject (a colony, a system, a lane or a ship) drawn from those
+  that fit. **No event before turn 5**, so the opening is the player's own.
+- **Founders' Day** comes by the calendar, not by chance: every 40 turns from the start (turn 41,
+  81 and so on), when no other event is waiting.
+- **Unanswered** for three turns, an event takes its first choice as the turn ends, and the report
+  says so. Until then it waits at the head of *what needs you*.
+- **Its subject gone** (a ship used, a colony no longer fitting), an event that waits is put away
+  without effect as the turn ends.
+
+### 27.2 The twelve
+
+Costs come from the treasury and the stockpile, so every choice can be paid when it is made;
+credits may go into debt, as overdrive's may not. *For n turns* counts the turns that end after the
+choice. The first choice is the one taken if you do not answer.
+
+| Event | Subject | First choice | Second choice |
+| --- | --- | --- | --- |
+| **Flare** (the star is real; its flare is fiction) | a colony on a flare-exposed world with no flare shield | *Shelter*: the colony makes no industry for 1 turn | *Ride it out*: 2 tenths of a million people are lost (never the last tenth) |
+| **A comet** | a system you hold | *Capture its ice*: −10 credits, +15 volatiles | *Study it*: +20 research |
+| **A bumper harvest** | a colony on the capital's lanes with a worked farm | *Store it*: the food store fills | *Sell it*: +20 credits |
+| **Blight** | a colony with a worked farm | *Burn and replant*: −20 credits, its farms yield 1 less for 2 turns | *Live with it*: its farms yield 1 less for 5 turns |
+| **A strike** | a colony with a worked works | *Meet their demands*: −25 credits | *Wait it out*: no industry there for 2 turns, approval −10 there for 2 turns |
+| **An epidemic** | a colony of 3 million or more with no medical centre | *Medical aid*: −30 credits | *Quarantine*: no growth there for 4 turns, approval −10 there for 4 turns |
+| **A derelict** | a surveyed system with a survey ship of yours there and no holding of anyone's | *Salvage it*: +20 metals | *Study it*: +30 research |
+| **Lane drift** | an open lane of yours | *Retune it*: −10 fuel, −10 metals | *Let it drift*: the lane is retuned for 3 turns, closed to ships meanwhile |
+| **Settlers' petition** | a full colony with a shipyard | *Grant it*: −40 credits; a colony ship there, and a million people leave with it | *Refuse*: approval −5 there for 5 turns |
+| **Defectors** | another power's survey ship you can see | *Welcome them*: −10 credits; the ship is yours, where it is | *Send them home*: nothing |
+| **A smugglers' offer** | any time | *Buy*: −15 credits, +20 fusion fuel | *Report them*: approval +5 at the capital for 4 turns |
+| **Founders' Day** | every 40 turns | *A festival*: −15 credits, approval +10 at every colony for 3 turns | *A quiet day*: nothing |
+
+Every event but the flare is labelled *Fiction*; the flare names its star and says it is a
+catalogued flare star (real) while the flare itself is the game's fiction.
+
+### 27.3 What lasts
+
+An event's lasting effects are kept with its power until they run out, each naming its event:
+*no industry* at a colony, *blight* (farms 1 less), *no growth*, and *approval* (a colony's, or
+every colony's), shown among a colony's approval, food, industry and growth parts with the event's
+name ("a strike −10"). A drifting lane is a lane being tuned again.
+
+### 27.4 Rivals
+
+A rival answers its event as the turn begins, with its orders (§26.2): the first choice when its
+treasury can pay it and keep 20, else the second. A power whose survey ship defects is told so in
+its report ("The crew of the Petrel defected to the Hollow Wake").
+
+### 27.5 The flare shield
+
+40 industry and 10 metals, upkeep 1, opened by a new technology, **Magnetics** (Construction, tier
+2, 60 points, after Habitat domes): its star's flares do no harm here. It can be queued only on a
+flare-exposed world. Three buildings, one in each power's architecture.
+
+### 27.6 On the screen
+
+- **The event card:** its picture (3:2, the *illustration* series), its title and badge, a few
+  lines naming its subject, and its two choices as large buttons, each with what it costs and what
+  follows. On a phone it is a sheet over the map; on a desktop, a dialog in the middle. It opens
+  from *what needs you*, from the report's line, and by itself once after the turn that brought it.
+- **The report** says an event has come ("A comet at Barnard's Star: it needs your answer"), and
+  how one was answered when it was not. **The advisors:** the department the event belongs to
+  speaks of it (a strike is the Works', an epidemic the Colonies', a comet the Survey's, defectors
+  the Watch's).
+
+### 27.7 The state
+
+State version 9: each power's event waiting (which, when it came, its subject), the turn of its
+last event, and its events' lasting effects. Older saves: none waiting, none before, none lasting.
+
+### 27.8 Art
+
+Twelve pictures in the *illustration* series, two candidates each, and the flare shield's three
+buildings: about $1.50, leaving about $1.85 of the $25. Each event's picture is shared by the
+powers, so it shows no one power's buildings or ships.
+
+### 27.9 Tests
+
+Unit: the draw (the chance, six turns apart, none before turn 5, Founders' Day by the calendar,
+the same seed the same events); each event's condition and both choices; lasting effects and their
+end; the first choice taken after three turns; a subject gone; rivals answering, and a defection
+told to the power that lost the ship; the flare shield; the migration; the headless games with
+events. Browser: an event answered from *what needs you* on the phone, the tablet and the desktop,
+and its effect in the empire.
