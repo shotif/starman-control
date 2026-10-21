@@ -5,12 +5,20 @@
 // and the arrow keys moving between technologies.
 
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
-import type { FactionId } from '../../content/factions.ts';
+import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
 import { FIELDS, type FieldId, TECH_IDS, TECHS, type TechId } from '../../content/techs.ts';
 import { inspirationPoints } from '../../sim/discoveries.ts';
 import { researchOf } from '../../sim/economy.ts';
-import { requirementMet, requirementText, researchRefusal, researchTurns, techCost } from '../../sim/research.ts';
+import {
+  closedBy,
+  knownBy,
+  requirementMet,
+  requirementText,
+  researchRefusal,
+  researchTurns,
+  techCost,
+} from '../../sim/research.ts';
 import { type GameState, powerOf } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { AdvisorBy } from './advisor.tsx';
@@ -64,7 +72,17 @@ function TechCard({
   const missing = t.needs.filter((n) => !p.researched.includes(n));
   const inspired = p.inspired.includes(id);
   const refusal = done ? null : researchRefusal(game, faction, id);
-  const state = done ? 'done' : place >= 0 ? 'queued' : missing.length > 0 || refusal ? 'later' : 'open';
+  const closed = closedBy(p, id);
+  const spread = done ? [] : knownBy(game, p, id);
+  const state = done
+    ? 'done'
+    : closed
+      ? 'closed'
+      : place >= 0
+        ? 'queued'
+        : missing.length > 0 || refusal
+          ? 'later'
+          : 'open';
   return (
     <li
       class={`tech tech-${state}`}
@@ -80,59 +98,87 @@ function TechCard({
         </span>
       </div>
       <p class="tech-text">{t.text}</p>
-      {!done && t.needs.length > 0 && <p class="tech-needs">Needs {t.needs.map((n) => TECHS[n].name).join(' and ')}</p>}
-      {!done && t.requires && (
-        <p class={`tech-needs${requirementMet(p, id) ? '' : ' is-unmet'}`}>
-          Needs {requirementText(id)} ({p.investigated.length} so far)
+      {t.fork && !done && (
+        <p class={`tech-fork${closed ? ' is-closed' : ''}`}>
+          {closed
+            ? `Closed: you chose ${TECHS[closed].name}.`
+            : `A doctrine: it closes ${TECHS[t.fork].name} for the game.`}
         </p>
       )}
-      {!done && (
-        <p class={`tech-inspiration${inspired ? ' is-met' : ''}`}>
-          {inspired
-            ? `Inspired by ${t.inspiration.text}: +${inspirationPoints(game, p, id)}`
-            : `Inspired by ${t.inspiration.text}: ${inspirationPoints(game, p, id)} research`}
-        </p>
-      )}
-      {!done && (
-        <div class="tech-actions">
-          {place >= 0 ? (
-            <>
-              <span class="tech-place">{place === 0 ? 'Researching' : `${ordinal(place + 1)} in the queue`}</span>
-              <button
-                type="button"
-                class="button button-quiet button-small"
-                tabIndex={onKey ? -1 : undefined}
-                aria-label={`Stop researching ${t.name}`}
-                onClick={() => act(play, id, 'remove')}
-              >
-                Remove
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              class="button button-small"
-              tabIndex={onKey ? -1 : undefined}
-              disabled={refusal !== null}
-              aria-label={`Queue ${t.name}`}
-              onClick={() => act(play, id, 'queue')}
-            >
-              Queue{missing.length > 0 ? ' with what it needs' : ''}
-            </button>
+      {closed ? null : (
+        <>
+          {spread.length > 0 && (
+            <p class="tech-spread">
+              Known to the {spread.map((f) => FACTIONS[f].shortName).join(' and the ')}: −
+              {Math.min(RULES.research.spreadMost, RULES.research.spreadPercent * spread.length)}%
+            </p>
           )}
-          {place !== 0 && refusal === null && (
-            <button
-              type="button"
-              class="button button-quiet button-small"
-              tabIndex={onKey ? -1 : undefined}
-              aria-label={`Research ${t.name} now`}
-              onClick={() => act(play, id, 'now')}
-            >
-              Now
-            </button>
+          {!done && t.needs.length > 0 && (
+            <p class="tech-needs">Needs {t.needs.map((n) => TECHS[n].name).join(' and ')}</p>
           )}
-        </div>
+          {!done && t.requires && (
+            <p class={`tech-needs${requirementMet(p, id) ? '' : ' is-unmet'}`}>
+              Needs {requirementText(id)} ({p.investigated.length} so far)
+            </p>
+          )}
+          {!done && (
+            <p class={`tech-inspiration${inspired ? ' is-met' : ''}`}>
+              {inspired
+                ? `Inspired by ${t.inspiration.text}: +${inspirationPoints(game, p, id)}`
+                : `Inspired by ${t.inspiration.text}: ${inspirationPoints(game, p, id)} research`}
+            </p>
+          )}
+          {!done && (
+            <div class="tech-actions">
+              {place >= 0 ? (
+                <>
+                  <span class="tech-place">{place === 0 ? 'Researching' : `${ordinal(place + 1)} in the queue`}</span>
+                  <button
+                    type="button"
+                    class="button button-quiet button-small"
+                    tabIndex={onKey ? -1 : undefined}
+                    aria-label={`Stop researching ${t.name}`}
+                    onClick={() => act(play, id, 'remove')}
+                  >
+                    Remove
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  class="button button-small"
+                  tabIndex={onKey ? -1 : undefined}
+                  disabled={refusal !== null}
+                  aria-label={`Queue ${t.name}`}
+                  onClick={() => act(play, id, 'queue')}
+                >
+                  Queue{missing.length > 0 ? ' with what it needs' : ''}
+                </button>
+              )}
+              {place !== 0 && refusal === null && (
+                <button
+                  type="button"
+                  class="button button-quiet button-small"
+                  tabIndex={onKey ? -1 : undefined}
+                  aria-label={`Research ${t.name} now`}
+                  onClick={() => act(play, id, 'now')}
+                >
+                  Now
+                </button>
+              )}
+            </div>
+          )}
+        </>
       )}
+    </li>
+  );
+}
+
+/** The split between the two doctrines of a pair (M2B_SCIENCE.md §19.1). */
+function Or() {
+  return (
+    <li class="tech-or" aria-hidden="true">
+      or
     </li>
   );
 }
@@ -299,9 +345,10 @@ function TreeGrid({ game, faction, play }: { game: GameState; faction: FactionId
           >
             {(columns[col] ?? [])
               .filter((id) => TECHS[id].tier === row + 1)
-              .map((id) => (
-                <TechCard key={id} game={game} faction={faction} id={id} play={play} onKey={onKey} />
-              ))}
+              .flatMap((id, i, here) => [
+                ...(i > 0 && TECHS[id].fork === here[i - 1] ? [<Or key={`${id}-or`} />] : []),
+                <TechCard key={id} game={game} faction={faction} id={id} play={play} onKey={onKey} />,
+              ])}
           </ul>
         )),
       )}
@@ -346,9 +393,10 @@ function FieldTabs({ game, faction, play }: { game: GameState; faction: FactionI
             <section key={row} class="tech-field" aria-label={`${name}, tier ${row + 1}`}>
               <h4>Tier {row + 1}</h4>
               <ul class="tech-list">
-                {here.map((id) => (
-                  <TechCard key={id} game={game} faction={faction} id={id} play={play} />
-                ))}
+                {here.flatMap((id, i) => [
+                  ...(i > 0 && TECHS[id].fork === here[i - 1] ? [<Or key={`${id}-or`} />] : []),
+                  <TechCard key={id} game={game} faction={faction} id={id} play={play} />,
+                ])}
               </ul>
             </section>
           );

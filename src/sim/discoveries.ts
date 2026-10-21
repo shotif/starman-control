@@ -24,7 +24,7 @@ import {
 import { habitability } from './habitability.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
-import { effects, speciesFor, techCost } from './research.ts';
+import { closedBy, effects, learn, speciesFor, techCost } from './research.ts';
 import { starClass } from './stars.ts';
 import { type GameState, type PowerState, powerOf } from './state.ts';
 import { type LaneId, laneEnds, type World } from './world.ts';
@@ -222,9 +222,7 @@ export function inspire(state: GameState, power: PowerState, tech: TechId): { po
   power.inspired.push(tech);
   const progress = (power.techProgress[tech] ?? 0) + points;
   if (progress >= cost && TECHS[tech].needs.every((n) => power.researched.includes(n))) {
-    delete power.techProgress[tech];
-    power.researchQueue = power.researchQueue.filter((id) => id !== tech);
-    power.researched.push(tech);
+    learn(power, tech);
     return { points, finished: true };
   }
   power.techProgress[tech] = Math.min(cost - 1, progress);
@@ -241,7 +239,7 @@ export function resolveInspirations(world: World, state: GameState, events: Map<
     if (!log) continue;
     const said = [...log];
     for (const tech of TECH_IDS) {
-      if (power.researched.includes(tech) || power.inspired.includes(tech)) continue;
+      if (power.researched.includes(tech) || power.inspired.includes(tech) || closedBy(power, tech)) continue;
       if (!deedDone(world, state, power.faction, TECHS[tech].inspiration.deed, said)) continue;
       const { points, finished } = inspire(state, power, tech);
       log.push({ kind: 'inspired', tech, points });

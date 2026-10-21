@@ -368,6 +368,8 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'rival-ship':
       return `The Watch: ${withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`)} is at ${name(e.system)}.`;
+    case 'rival-tech':
+      return `The Watch: word from the lanes is that the ${FACTIONS[e.faction].shortName} has mastered ${TECHS[e.tech].name}.`;
     case 'event':
       return `${eventTitle(world, game, { id: e.event, turn: game.turn, ...e })}: it needs your answer.`;
     case 'event-answered': {
@@ -391,6 +393,7 @@ function eventPlace(
   switch (e.kind) {
     case 'researched':
     case 'inspired':
+    case 'rival-tech':
       return { research: true };
     case 'zoned':
     case 'hungry':
@@ -458,6 +461,7 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'rival-founded': { icon: 'colony', tone: 'news' },
   'rival-lane': { icon: 'lane', tone: 'news' },
   'rival-ship': { icon: 'ship', tone: 'news' },
+  'rival-tech': { icon: 'research', tone: 'news' },
   event: { icon: 'anomaly', tone: 'needs' },
   'event-answered': { icon: 'report', tone: 'news' },
   'event-gone': { icon: 'report', tone: 'news' },

@@ -83,6 +83,9 @@ test('rivals: unseen at first; the Watch sees a Wake survey ship reach Sol, on t
   const rows = empire.locator('.standings-table tbody tr');
   await expect(rows).toHaveCount(2);
   await expect(rows.nth(1)).toContainText('Hollow Wake');
+  // Science (M2B_SCIENCE.md §19.4): yours as a count, theirs ahead of you, level or behind.
+  await expect(rows.nth(0)).toContainText('known');
+  await expect(rows.nth(1)).toContainText(/ahead of us|level|behind/);
   await expect(empire.locator('.standings')).toContainText('Not yet seen: the Frontier Co-op.');
 });
 

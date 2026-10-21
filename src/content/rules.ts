@@ -131,6 +131,11 @@ export const RULES = {
     scholarsPer: 40,
     /** Each technology costs this much more, in percent of its base, for every one already known (§18.1, tuned). */
     risePercent: 7,
+    /** A technology costs this much less, in percent, for each power met that knows it, at most `spreadMost` (§19.2). */
+    spreadPercent: 15,
+    spreadMost: 30,
+    /** The standings call a rival ahead or behind with this many technologies more or fewer (§19.4). */
+    standingsGap: 3,
   },
   /** Discoveries (M2B_SCIENCE.md §17, D-45). */
   discoveries: {

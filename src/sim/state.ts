@@ -10,7 +10,7 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { type ShipType, STARTING_FLEET, shipName } from '../content/ships.ts';
-import type { TechId } from '../content/techs.ts';
+import { TECHS, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
@@ -333,7 +333,16 @@ export function beaconSlots(state: GameState, system: SystemId): number {
   const here = state.holdings.filter((h) => h.system === system);
   const station = here.some((h) => h.projects.includes('lane-station'));
   const relays = here.filter((h) => h.projects.includes('lane-relay')).length;
-  return (station ? RULES.beacons.slotsWithStation : RULES.beacons.slots) + relays * RULES.projects.relaySlots;
+  // Lane network: a slot more for each power with the doctrine and a colony here (§19.1).
+  let network = 0;
+  for (const p of state.powers) {
+    if (!here.some((h) => h.owner === p.faction && h.kind === 'colony')) continue;
+    for (const id of p.researched)
+      for (const e of [TECHS[id].effect, ...(TECHS[id].also ?? [])]) if (e.kind === 'colony-slots') network += e.slots;
+  }
+  return (
+    (station ? RULES.beacons.slotsWithStation : RULES.beacons.slots) + relays * RULES.projects.relaySlots + network
+  );
 }
 
 /** The holding on a body, if any power holds it. */

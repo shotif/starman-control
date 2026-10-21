@@ -76,7 +76,14 @@ export type TechId =
   | 'scanner-arrays'
   | 'thinking-machines'
   | 'deep-sky-survey'
-  | 'lapse-studies';
+  | 'lapse-studies'
+  // M2b's doctrines (M2B_SCIENCE.md §19.1).
+  | 'open-frontier'
+  | 'strong-centre'
+  | 'lane-network'
+  | 'deep-jumpers'
+  | 'industrial-worlds'
+  | 'garden-worlds';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -140,7 +147,16 @@ export type TechEffect =
   /** Research this much more, in percent. */
   | { kind: 'research-percent'; percent: number }
   /** Anomalies' rewards this much more, in percent. */
-  | { kind: 'anomaly-percent'; percent: number };
+  | { kind: 'anomaly-percent'; percent: number }
+  // M2b's doctrines (M2B_SCIENCE.md §19.1).
+  /** Approval at colonies within so many lane jumps of the capital, more. */
+  | { kind: 'approval-near'; amount: number; jumps: number }
+  /** The capital's own research, more. */
+  | { kind: 'capital-research'; amount: number }
+  /** Beacon slots in every system where the power holds a colony, more. */
+  | { kind: 'colony-slots'; slots: number }
+  /** Approval at colonies with this many works districts or more, changed. */
+  | { kind: 'works-unrest'; works: number; approval: number };
 
 /**
  * A deed that teaches a power something towards a technology: its inspiration (M2B_SCIENCE.md §17.1,
@@ -221,6 +237,10 @@ export interface TechDef {
   /** What it needs besides technologies: anomalies investigated (Lapse studies, §18.2). */
   requires?: { investigated: number };
   effect: TechEffect;
+  /** Further effects, for a technology that does more than one thing (a doctrine, §19.1). */
+  also?: readonly TechEffect[];
+  /** A doctrine's pair: researching one closes the other for the game (§19.1). */
+  fork?: TechId;
   /** Its exact effect, in plain words. */
   text: string;
   /** What inspires it, and that deed in words ("holding two outposts"). */
@@ -848,6 +868,91 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'anomaly-percent', percent: 50 },
     text: 'Anomalies’ rewards +50%.',
     inspiration: { deed: { kind: 'investigations', n: 5 }, text: 'five anomalies investigated' },
+  },
+  // M2b's doctrines (M2B_SCIENCE.md §19.1): each pair a fork.
+  'open-frontier': {
+    id: 'open-frontier',
+    name: 'Open frontier',
+    field: 'society',
+    tier: 3,
+    cost: 100,
+    needs: ['regional-administration'],
+    fork: 'strong-centre',
+    effect: { kind: 'ship-discount', ship: 'colony', percent: 25 },
+    also: [{ kind: 'near-jumps', jumps: 1 }],
+    text: 'A doctrine: colony ships cost 25% less, and being far from home begins a lane jump later.',
+    inspiration: { deed: { kind: 'far-colony', jumps: 5 }, text: 'a colony five lane jumps from the capital' },
+  },
+  'strong-centre': {
+    id: 'strong-centre',
+    name: 'Strong centre',
+    field: 'society',
+    tier: 3,
+    cost: 100,
+    needs: ['regional-administration'],
+    fork: 'open-frontier',
+    effect: { kind: 'approval-near', amount: 5, jumps: 3 },
+    also: [{ kind: 'capital-research', amount: 3 }],
+    text: 'A doctrine: approval +5 at colonies within three lane jumps of the capital, and the capital 3 more research.',
+    inspiration: { deed: { kind: 'colonies', n: 4 }, text: 'four colonies besides the capital' },
+  },
+  'lane-network': {
+    id: 'lane-network',
+    name: 'Lane network',
+    field: 'propulsion',
+    tier: 3,
+    cost: 100,
+    needs: ['lane-engineering-2'],
+    fork: 'deep-jumpers',
+    effect: { kind: 'lane-discount', percent: 25 },
+    also: [{ kind: 'colony-slots', slots: 1 }],
+    text: 'A doctrine: lanes cost 25% less, and every system where you hold a colony has a beacon slot more.',
+    inspiration: { deed: { kind: 'lanes-held', n: 8 }, text: 'holding eight lanes' },
+  },
+  'deep-jumpers': {
+    id: 'deep-jumpers',
+    name: 'Deep jumpers',
+    field: 'propulsion',
+    tier: 3,
+    cost: 100,
+    needs: ['lane-engineering-2'],
+    fork: 'lane-network',
+    effect: { kind: 'blind-jump', deci: 20, turns: 0 },
+    also: [{ kind: 'survey-jump-points', points: 1 }],
+    text: 'A doctrine: blind jumps reach 2 ly further, and survey ships make 1 more jump point a turn.',
+    inspiration: { deed: { kind: 'blind-jump', deci: 70 }, text: 'a blind jump of 7 light-years or more' },
+  },
+  'industrial-worlds': {
+    id: 'industrial-worlds',
+    name: 'Industrial worlds',
+    field: 'construction',
+    tier: 4,
+    cost: 240,
+    needs: ['automation-2'],
+    fork: 'garden-worlds',
+    effect: { kind: 'zone-yield', zone: 'works', amount: 1 },
+    also: [{ kind: 'works-unrest', works: 3, approval: -5 }],
+    text: 'A doctrine: each works district yields 1 more industry, and approval −5 at colonies with three works or more.',
+    inspiration: {
+      deed: { kind: 'worked', zone: 'works', n: 10, oneColony: false },
+      text: 'ten works districts worked',
+    },
+  },
+  'garden-worlds': {
+    id: 'garden-worlds',
+    name: 'Garden worlds',
+    field: 'construction',
+    tier: 4,
+    cost: 240,
+    needs: ['automation-2'],
+    fork: 'industrial-worlds',
+    effect: { kind: 'zone-yield', zone: 'farms', amount: 1 },
+    also: [{ kind: 'growth-percent', percent: 15 }],
+    text: 'A doctrine: each farm district yields 1 more food, and colonies grow 15% faster.',
+    inspiration: {
+      deed: { kind: 'worked', zone: 'farms', n: 10, oneColony: false },
+      text: 'ten farm districts worked',
+    },
   },
 };
 

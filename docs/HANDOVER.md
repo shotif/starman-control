@@ -1,4 +1,4 @@
-# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 30)
+# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 31)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -81,8 +81,11 @@ way in.
   technologies (54 in all) with tiers 4 and 5, each costing 7% more for every technology known;
   the lane relay, the orbital habitat (an outpost becomes a colony in orbit) and the terraforming
   station, with their pictures; the research screen as tabs on a phone and a grid with the queue
-  beside it and arrow keys on a desktop; state version 11. At turn 100 of the headless games the
-  Authority knows about 37 technologies, the Cooperative 23 and the Wake 22.
+  beside it and arrow keys on a desktop; state version 11. **Increment 31 is built:** three pairs
+  of doctrines, each closing the other; a technology costs 15% less for each met power that knows
+  it (at most 30%); the Watch's rumours of rivals' great steps; science in the standings. At turn
+  100 of the headless games the Authority knows about 38 technologies, the Cooperative 23 and the
+  Wake 23.
 - **Numbers:** 375 unit tests and about 209 browser journeys pass; the title loads 21.2 KB of its
   40 KB budget, a game's map about 319 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 658 KB of pictures at most (1 MB) and the diorama it opens
@@ -107,7 +110,7 @@ slow or too easy (§29.5); their answers decide M3's first changes.
 headless games showed two rivals stuck at 5 research a turn and the third through the whole tree by
 turn 90. D-44 to D-50 were answered *as recommended* on 21 October 2026. Build increments 28 to 32
 as its §12 sets out, each with a detailed design section first (§16 onwards) and its notes as
-built. Increments 28 to 30 are done.
+built. Increments 28 to 31 are done.
 
 **Then: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
 (goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md
@@ -237,6 +240,8 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
   slowed other journeys' first frames on CI. `--no-deps` runs them by themselves.
 - **End turn stays disabled until the last turn is saved**; a press before then is ignored. A
   journey that ends many turns waits for the button to be enabled first.
+- **Setting a game up:** with `?test`, `window.__setGame(state)` puts a modified copy of
+  `window.__game()` into play (structured-clone it first), so a journey can start some way on.
 - **More test hooks** (`?test`): `window.__game()` (the game as it stands), `window.__lastTurnMs()`
   (the last turn, from the press to the next quarter in the game), and `__map.shipMarks`. Guiding
   stays off in tests unless the address says `guide`; music unless it says `music`.

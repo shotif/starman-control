@@ -6,7 +6,7 @@
 import { writeFileSync } from 'node:fs';
 import { EVENTS, type EventId } from '../../src/content/events.ts';
 import { FACTIONS, type FactionId } from '../../src/content/factions.ts';
-import { TECH_IDS } from '../../src/content/techs.ts';
+import { TECH_IDS, TECHS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { researchOf } from '../../src/sim/economy.ts';
 import { newGame } from '../../src/sim/state.ts';
@@ -14,6 +14,8 @@ import { resolveTurn } from '../../src/sim/turn.ts';
 import { buildWorld } from '../../src/sim/world.ts';
 
 const SEEDS = [42, 7, 2176, 1, 2, 3, 4, 5];
+/** What a power can learn: every technology but one of each pair of doctrines (M2B_SCIENCE.md §19.1). */
+const LEARNABLE = TECH_IDS.length - TECH_IDS.filter((id) => TECHS[id].fork).length / 2;
 const AT = [25, 50, 100];
 const FACTION_ORDER: FactionId[] = ['sta', 'frontier', 'hollow-wake'];
 
@@ -61,7 +63,7 @@ for (const seed of SEEDS) {
     }
     longestHunger = Math.max(longestHunger, ...g.holdings.map((h) => h.hungry));
     for (const p of g.powers)
-      if (!done.has(p.faction) && p.researched.length === TECH_IDS.length) {
+      if (!done.has(p.faction) && p.researched.length === LEARNABLE) {
         done.add(p.faction);
         finished.push(`${FACTIONS[p.faction].shortName} on turn ${turn} (seed ${seed})`);
       }
@@ -126,7 +128,7 @@ rivals, ${SEEDS.length} seeds, 100 turns each. Regenerate it after any change to
 The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
 was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
 
-The tree has ${TECH_IDS.length} technologies. ${finished.length === 0 ? 'No power finished it in 100 turns.' : `Finished by: ${finished.join('; ')}.`}
+The tree has ${TECH_IDS.length} technologies, of which a power can learn ${LEARNABLE} (one of each pair of doctrines). ${finished.length === 0 ? 'No power learnt them all in 100 turns.' : `All learnt by: ${finished.join('; ')}.`}
 
 ## On average
 

@@ -245,3 +245,35 @@
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
+
+/* Doctrines (M2B_SCIENCE.md §19.1): a fork, and the pair split by "or" */
+.tech-fork {
+  margin: 0.2rem 0 0;
+  color: var(--fiction);
+  font-size: 0.82rem;
+}
+
+.tech-fork.is-closed {
+  color: var(--text-dim);
+}
+
+.tech-closed {
+  opacity: 0.55;
+}
+
+.tech-or {
+  margin: -0.2rem 0 0.25rem;
+  color: var(--fiction);
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Knowledge that spreads (§19.2) */
+.tech-spread {
+  margin: 0.2rem 0 0;
+  color: #7fe7a3;
+  font-size: 0.82rem;
+}

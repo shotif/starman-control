@@ -207,8 +207,14 @@ export function stateProblems(world: World, state: GameState): string[] {
   for (const p of state.powers) {
     const seen = new Set<string>(p.researched);
     if (seen.size !== p.researched.length) out.push(`${p.faction} researched a technology twice`);
+    for (const id of p.researched) {
+      const fork = TECHS[id].fork;
+      if (fork && seen.has(fork)) out.push(`${p.faction} has both doctrines ${id} and ${fork}`);
+    }
     for (const id of p.researchQueue) {
       if (seen.has(id)) out.push(`${p.faction} queues ${id}, which is researched or queued already`);
+      const fork = TECHS[id].fork;
+      if (fork && p.researched.includes(fork)) out.push(`${p.faction} queues ${id}, which ${fork} has closed`);
       for (const n of TECHS[id].needs)
         if (!seen.has(n)) out.push(`${p.faction} queues ${id} before ${n}, which it needs`);
       seen.add(id);
@@ -216,7 +222,7 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (new Set(p.inspired).size !== p.inspired.length)
       out.push(`${p.faction} was inspired towards a technology twice`);
     for (const [id, v] of Object.entries(p.techProgress))
-      if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId))
+      if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId, false))
         out.push(`${p.faction} has progress in ${id}, which is done`);
   }
   const used = new Map<string, number>();

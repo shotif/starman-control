@@ -106,7 +106,7 @@ describe('rising costs (§18.1)', () => {
 
 describe('the new technologies (§18.2)', () => {
   it('are twenty-one, at tier 4 for 240 and tier 5 for 480 before the rise', () => {
-    const added = TECH_IDS.slice(TECH_IDS.indexOf('lane-relays'));
+    const added = TECH_IDS.slice(TECH_IDS.indexOf('lane-relays'), TECH_IDS.indexOf('lapse-studies') + 1);
     expect(added).toHaveLength(21);
     for (const id of added) {
       if (TECHS[id].tier === 4) expect(TECHS[id].cost, id).toBe(240);

@@ -25,6 +25,7 @@ notes as built.*
 16. [Increment 28 in detail: where research comes from](#16-increment-28-in-detail-where-research-comes-from-written-before-building-it)
 17. [Increment 29 in detail: discoveries](#17-increment-29-in-detail-discoveries-written-before-building-it)
 18. [Increment 30 in detail: a deeper tree](#18-increment-30-in-detail-a-deeper-tree-written-before-building-it)
+19. [Increment 31 in detail: forks and spreading knowledge](#19-increment-31-in-detail-forks-and-spreading-knowledge-written-before-building-it)
 
 ## 1. What M2's games showed
 
@@ -654,4 +655,111 @@ grid, side queue and keys on the desktop; a new project queued at an outpost.
   `tree.spec.ts` (the phone's and tablet's tabs, Lapse studies' requirement, a tier-4 technology
   queued with what it needs at its rising cost; the desktop's grid, side queue and keys) and an
   outpost's lane relay and orbital habitat in `game.spec.ts`, on the phone, tablet and desktop.
+
+
+## 19. Increment 31 in detail: forks and spreading knowledge (written before building it)
+
+**Goals.** D-47 as decided (B): three pairs of doctrines, each closing the other for the game. D-48
+as decided, all three: a technology costs less for each power you have met that knows it; the
+Watch hears of the great steps of the rivals you have met; the standings say whose science is
+ahead. The rivals choose their doctrines by character.
+
+**Out of scope.** Trading or stealing technologies (M3, M4); a doctrine in every field (D-47 C,
+not chosen); changing a doctrine once taken.
+
+### 19.1 Doctrines
+
+| Field and tier | Needs | One | The other |
+| --- | --- | --- | --- |
+| Society 3 (100) | Regional administration | **Open frontier:** colony ships cost 25% less; *far from home* begins a jump later | **Strong centre:** +5 approval at colonies within three lane jumps of the capital; the capital +3 research |
+| Propulsion 3 (100) | Lane engineering II | **Lane network:** lanes cost 25% less; +1 beacon slot in every system where you hold a colony | **Deep jumpers:** blind jumps reach 2 ly further; survey ships +1 jump point |
+| Construction 4 (240) | Automation II | **Industrial worlds:** each works district +1 industry; −5 approval at colonies with three works or more | **Garden worlds:** each farm district +1 food; colonies grow 15% faster |
+
+- **A fork:** a doctrine is a technology at its tier, in the tree beside its pair. Once one is
+  researched, the other is **closed** for the game: it cannot be queued, and if it was queued it
+  leaves the queue (with anything after it that needs it), its progress lost. Until then both can
+  be queued; whichever is finished first closes the other.
+- **Inspirations:** Open frontier by a colony five lane jumps from the capital; Strong centre by
+  four colonies besides the capital; Lane network by holding eight lanes; Deep jumpers by a blind
+  jump of 7 ly or more; Industrial worlds by ten works districts worked; Garden worlds by ten farm
+  districts worked. A closed doctrine inspires nothing.
+- **On the screen:** a doctrine's card says so ("A doctrine: it closes Strong centre for the
+  game"), and a closed one says why ("Closed: you chose Open frontier"). On the desktop each pair
+  stands side by side in its cell with *or* between them, the fork drawn as a split from what both
+  need; on a phone the pair is one card each with *or* between them.
+- **Rivals** choose by character: the Authority *Strong centre*, *Lane network* and *Industrial
+  worlds*; the Cooperative *Open frontier*, *Deep jumpers* and *Garden worlds*; the Wake *Open
+  frontier*, *Deep jumpers* and *Industrial worlds*. They never queue the other.
+
+### 19.2 Knowledge spreads
+
+- A technology costs **15% less for each power you have met that already knows it, at most 30%**
+  (`RULES.research.spreadPercent`, `spreadMost`), after the rise of §18.1: what has been done is
+  easier to do again. It helps whoever is behind, the player included, and every rival by the same
+  rule.
+- **Met:** a power you can see something of: a colony or outpost of theirs in a system you have
+  surveyed, or a lane of theirs with an end in one (as the standings count them, §26.5).
+- Since a cost can now fall, progress may come to exceed it; the technology is then finished with
+  the next research spent. A save's checks compare progress with the cost before the discount.
+- **On the screen:** a card whose cost is lowered says by whom ("Known to the Hollow Wake: −15%").
+
+### 19.3 The Watch's rumours
+
+When a rival you have met finishes a technology of tier 4 or 5, or a doctrine, the Watch says so in
+the report ("The Watch: word from the lanes is that the Hollow Wake has mastered Terraforming."),
+and its advisor speaks of it in each power's voice. It points to the research screen.
+
+### 19.4 Science in the standings
+
+The empire's *Powers* tab gains a **Science** column: yours as how many technologies you know; each
+rival in the standings (seen, §26.5) as **ahead of us**, **level** or **behind**: ahead with three or more
+technologies more than yours, behind with three or more fewer, as the Watch hears them.
+
+### 19.5 The state
+
+No change: a closed doctrine follows from what is researched, met powers from what is seen, and
+rumours are report lines. The state stays version 11.
+
+### 19.6 Tests
+
+Unit: each doctrine's effects; a doctrine closing its pair, in the queue and for queueing; their
+inspirations; spreading knowledge's 15% and 30%, for met powers only, and progress beyond a fallen
+cost; rumours only of met rivals and only of tier 4, 5 and doctrines; the standings' science; the
+rivals' doctrines by character. Headless: §2's targets. Browser: a doctrine chosen and its pair
+closed, on the phone, tablet and desktop; the standings' science column.
+
+### Increment 31: forks and spreading knowledge (21 October 2026)
+
+- **Doctrines** (the six in `src/content/techs.ts`, each with its `fork` and a second effect in
+  `also`), as §19.1: `learn` in `src/sim/research.ts` researches a technology and closes its
+  pair, taking it out of the queue with what needs it and dropping its progress; a closed
+  doctrine is refused ("Strong centre is closed: you chose Open frontier."), never offered to
+  `canResearch`, never inspired, and a save holding both of a pair, or queueing a closed one, is
+  refused. Strong centre's approval and research, Industrial worlds' unrest and Lane network's
+  slot are read in `economy.ts` and `beaconSlots`; the rest use the effects that already were.
+- **Knowledge spreads** (`techCost`, `hasMet`, `knownBy`): 15% less for each met power that knows
+  a technology, at most 30%, after the rise; a progress past a fallen cost is finished with the
+  next research spent, and a save's checks compare progress with the cost before the discount.
+  The card says who knows it ("Known to the Hollow Wake: −15%").
+- **Rumours** (`watchNews`): a met rival's technology of tier 4 or 5 or doctrine, as a Watch line in
+  the report that opens the research screen, and the Watch advisor's line in each voice.
+- **Standings:** a *Science* column: yours as "N known", each rival in the standings as *ahead of
+  us*, *level* or *behind*, three technologies being the gap (`RULES.research.standingsGap`).
+- **On the screen:** a doctrine's card says what it closes; a closed one is dimmed, says why and
+  has no buttons; each pair stands side by side with *or* between, on the desktop's grid and in the
+  phone's tabs.
+- **Rivals** choose their doctrines by character (`PERSONALITIES[…].doctrines`) and never queue the
+  other.
+- **A test hook:** with `?test`, `window.__setGame(state)` puts a game some way on into play, so a
+  journey need not play thirty turns to reach a doctrine.
+- **Measured** (`npm run balance`, which now counts a power's tree as finished when it has learnt
+  the 57 it can): at turn 100 the Authority knows about **38.5** technologies (37 to 41), the
+  Cooperative **22.8** (20 to 25) and the Wake **23** (21 to 27); in 200-turn runs the Authority
+  had learnt all 57 between turns 172 and 200.
+- **Tests:** `doctrines.test.ts` (the pairs; closing in the queue, by inspiration and for
+  queueing; each doctrine's effects; the rivals' choices; spreading for met powers only, its 30%
+  and progress past a fallen cost; rumours of met rivals' great steps only; the standings'
+  science; 120 turns with no power holding both of a pair); `doctrines.spec.ts` (a doctrine
+  finished closing its pair) and the standings' science in `rivals.spec.ts`, on the phone, tablet
+  and desktop.
 

@@ -177,6 +177,8 @@ export function adviceFor(
       const [a, b] = laneEnds(e.lane);
       const place = `between ${world.system(a).name} and ${world.system(b).name}`;
       say('watch', 3, 'rival-lane', { power: FACTIONS[e.faction].shortName, place }, { system: b });
+    } else if (e.kind === 'rival-tech') {
+      say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
     } else if (e.kind === 'rival-ship') {
       const ship = withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`);
       say('watch', 3, 'rival-ship', { ship, place: world.system(e.system).name }, e);

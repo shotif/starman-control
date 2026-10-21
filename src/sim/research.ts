@@ -8,6 +8,7 @@ import { RULES } from '../content/rules.ts';
 import { SPECIES, type SpeciesDef } from '../content/species.ts';
 import { TECH_IDS, TECHS, type TechEffect, type TechId } from '../content/techs.ts';
 import { type GameState, type PowerState, powerOf } from './state.ts';
+import { laneEnds } from './world.ts';
 
 /** The effects of every technology a power has researched, of one kind. */
 export function effects<K extends TechEffect['kind']>(
@@ -16,10 +17,9 @@ export function effects<K extends TechEffect['kind']>(
   kind: K,
 ): Extract<TechEffect, { kind: K }>[] {
   const out: Extract<TechEffect, { kind: K }>[] = [];
-  for (const id of powerOf(state, faction).researched) {
-    const e = TECHS[id].effect;
-    if (e.kind === kind) out.push(e as Extract<TechEffect, { kind: K }>);
-  }
+  for (const id of powerOf(state, faction).researched)
+    for (const e of [TECHS[id].effect, ...(TECHS[id].also ?? [])])
+      if (e.kind === kind) out.push(e as Extract<TechEffect, { kind: K }>);
   return out;
 }
 
@@ -44,11 +44,57 @@ export function speciesFor(state: GameState, faction: FactionId): SpeciesDef {
 }
 
 /**
- * What a technology costs a power now (M2B_SCIENCE.md §18.1): its base cost, and 3% of it for every
- * technology the power already knows, rounded down.
+ * Whether one power has met another (M2B_SCIENCE.md §19.2): it sees a colony or outpost of theirs in
+ * a system it has surveyed, or a lane of theirs with an end in one.
  */
-export function techCost(_state: GameState, power: PowerState, tech: TechId): number {
-  return Math.floor((TECHS[tech].cost * (100 + RULES.research.risePercent * power.researched.length)) / 100);
+export function hasMet(state: GameState, viewer: PowerState, other: FactionId): boolean {
+  if (other === viewer.faction) return false;
+  const surveyed = new Set(viewer.surveyed);
+  return (
+    state.holdings.some((h) => h.owner === other && surveyed.has(h.system)) ||
+    state.lanes.some((l) => l.owner === other && laneEnds(l.id).some((end) => surveyed.has(end)))
+  );
+}
+
+/** The powers a power has met that know a technology already. */
+export function knownBy(state: GameState, power: PowerState, tech: TechId): FactionId[] {
+  return state.powers
+    .filter((p) => p.faction !== power.faction && p.researched.includes(tech) && hasMet(state, power, p.faction))
+    .map((p) => p.faction);
+}
+
+/**
+ * What a technology costs a power now (M2B_SCIENCE.md §18.1, §19.2): its base cost, and 7% of it for
+ * every technology the power already knows; then 15% less for each power it has met that knows it,
+ * at most 30% (unless `spread` is false). Rounded down.
+ */
+export function techCost(state: GameState, power: PowerState, tech: TechId, spread = true): number {
+  const r = RULES.research;
+  const risen = Math.floor((TECHS[tech].cost * (100 + r.risePercent * power.researched.length)) / 100);
+  if (!spread) return risen;
+  const less = Math.min(r.spreadMost, r.spreadPercent * knownBy(state, power, tech).length);
+  return less > 0 ? Math.floor((risen * (100 - less)) / 100) : risen;
+}
+
+/** The doctrine that closes this one: its pair, when the power has researched it (§19.1). */
+export function closedBy(power: PowerState, tech: TechId): TechId | null {
+  const fork = TECHS[tech].fork;
+  return fork && power.researched.includes(fork) ? fork : null;
+}
+
+/**
+ * A technology learnt: researched, out of the queue and its progress; a doctrine closes its pair,
+ * which leaves the queue with anything after it that needs it, its progress lost (§19.1).
+ */
+export function learn(power: PowerState, tech: TechId): void {
+  delete power.techProgress[tech];
+  power.researchQueue = power.researchQueue.filter((id) => id !== tech);
+  power.researched.push(tech);
+  const fork = TECHS[tech].fork;
+  if (fork) {
+    delete power.techProgress[fork];
+    if (power.researchQueue.includes(fork)) power.researchQueue = unqueueResearch(power, fork);
+  }
 }
 
 /** Whether what a technology needs besides technologies is met: Lapse studies' anomalies (§18.2). */
@@ -70,8 +116,11 @@ export function researchRefusal(state: GameState, faction: FactionId, tech: Tech
   const p = powerOf(state, faction);
   const name = TECHS[tech].name;
   if (p.researched.includes(tech)) return `${name} is already researched.`;
-  for (const id of withNeeds(p, tech))
+  for (const id of withNeeds(p, tech)) {
+    const closed = closedBy(p, id);
+    if (closed) return `${TECHS[id].name} is closed: you chose ${TECHS[closed].name}.`;
     if (!requirementMet(p, id)) return `${TECHS[id].name} needs ${requirementText(id)}.`;
+  }
   return null;
 }
 
@@ -128,7 +177,7 @@ export function canResearch(power: PowerState): TechId[] {
     (id) =>
       !power.researched.includes(id) &&
       !power.researchQueue.includes(id) &&
-      withNeeds(power, id).every((n) => requirementMet(power, n)),
+      withNeeds(power, id).every((n) => requirementMet(power, n) && closedBy(power, n) === null),
   );
 }
 
@@ -143,6 +192,7 @@ export function grantResearch(state: GameState, power: PowerState, points: numbe
     (id) =>
       !power.researched.includes(id) &&
       requirementMet(power, id) &&
+      closedBy(power, id) === null &&
       TECHS[id].needs.every((n) => power.researched.includes(n)),
   );
   if (!open) return [];
@@ -181,9 +231,7 @@ export function spendResearch(state: GameState, power: PowerState, points: numbe
       break;
     }
     left -= Math.max(0, need);
-    delete power.techProgress[id];
-    power.researchQueue.shift();
-    power.researched.push(id);
+    learn(power, id);
     done.push(id);
   }
   return done;

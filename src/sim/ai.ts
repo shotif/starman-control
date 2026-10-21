@@ -32,6 +32,8 @@ export interface Personality {
   laneBuilder: boolean;
   /** The edict it issues when its attention is at its most (M2_WORLDS.md §29.1). */
   edict: 'crash-programme' | 'festival' | 'labour-drive';
+  /** The doctrines it chooses, one of each pair (M2B_SCIENCE.md §19.1). */
+  doctrines: readonly TechId[];
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -44,6 +46,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     taxes: 'standard',
     laneBuilder: true,
     edict: 'crash-programme',
+    doctrines: ['strong-centre', 'lane-network', 'industrial-worlds'],
   },
   frontier: {
     capital: 'grow',
@@ -53,6 +56,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     taxes: 'low',
     laneBuilder: false,
     edict: 'festival',
+    doctrines: ['open-frontier', 'deep-jumpers', 'garden-worlds'],
   },
   'hollow-wake': {
     capital: 'produce',
@@ -62,6 +66,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     taxes: 'high',
     laneBuilder: false,
     edict: 'labour-drive',
+    doctrines: ['open-frontier', 'deep-jumpers', 'industrial-worlds'],
   },
 };
 
@@ -213,7 +218,11 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   if (power.researchQueue.length === 0) {
     const price = (id: TechId) =>
       withNeeds(power, id).reduce((n, x) => n + TECHS[x].cost * (me.fields.includes(TECHS[x].field) ? 1 : 2), 0);
-    const next = canResearch(power).sort((a, b) => price(a) - price(b) || (a < b ? -1 : 1))[0];
+    // Of each pair of doctrines, only its own (§19.1).
+    const own = (id: TechId) => !TECHS[id].fork || me.doctrines.includes(id);
+    const next = canResearch(power)
+      .filter((id) => withNeeds(power, id).every(own))
+      .sort((a, b) => price(a) - price(b) || (a < b ? -1 : 1))[0];
     if (next) orders.push({ type: 'research', tech: next });
   }
 

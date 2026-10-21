@@ -315,6 +315,12 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   else if (home === 'uninhabitable' && h.kind === 'colony') parts.push({ label: 'life in orbit', value: a.domes });
   for (const e of effects(state, h.owner, 'approval')) parts.push({ label: 'councils', value: e.amount });
   const jumps = jumpsFromCapital(world, state, h);
+  // Doctrines (M2B_SCIENCE.md §19.1).
+  for (const e of effects(state, h.owner, 'approval-near'))
+    if (jumps !== null && jumps <= e.jumps) parts.push({ label: 'a strong centre', value: e.amount });
+  for (const e of effects(state, h.owner, 'works-unrest'))
+    if (h.districts.filter((d) => d.zone === 'works').length >= e.works)
+      parts.push({ label: 'an industrial world', value: e.approval });
   let near: number = a.nearJumps;
   for (const e of effects(state, h.owner, 'near-jumps')) near += e.jumps;
   const federation = effects(state, h.owner, 'no-far').length > 0;
@@ -473,6 +479,11 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
   return { total: sum(parts), parts };
 }
 
+/** The capital's own research: its old universities, and Strong centre's (M2B_SCIENCE.md §19.1). */
+function capitalResearch(state: GameState, faction: FactionId): number {
+  return RULES.capital.research + effects(state, faction, 'capital-research').reduce((n, e) => n + e.amount, 0);
+}
+
 /** A colony's scholars (M2B_SCIENCE.md §16, D-44): 1 for every 4 million of its people, 3 with Public schooling. */
 export function scholarsOf(state: GameState, h: Holding): number {
   if (h.kind !== 'colony') return 0;
@@ -501,7 +512,7 @@ export function colonyResearchOf(world: World, state: GameState, h: Holding): Fi
   const parts: Part[] = [...districtParts(world, state, h, 'labs').parts, ...scholarParts(world, state, h).parts];
   if (h.projects.includes('research-institute'))
     parts.push({ label: 'from the research institute', value: RULES.projects.instituteResearch });
-  if (h.capital) parts.push({ label: 'from the capital', value: RULES.capital.research });
+  if (h.capital) parts.push({ label: 'from the capital', value: capitalResearch(state, h.owner) });
   return { total: sum(parts), parts };
 }
 
@@ -525,7 +536,7 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
     scholars += sum(sp.parts.slice(0, 1));
     lost += sp.value - sum(sp.parts.slice(0, 1));
     if (stopped(world, state, h)) continue;
-    if (h.capital) capital += RULES.capital.research;
+    if (h.capital) capital += capitalResearch(state, faction);
     if (h.projects.includes('research-institute')) institutes += RULES.projects.instituteResearch;
   }
   const parts: Part[] = [];

@@ -89,6 +89,8 @@ export type ReportEvent =
   | { kind: 'edict-ended'; edict: EdictId; holding: number | null }
   /** The Watch (M2_WORLDS.md §26.3): another power founded a colony or outpost where the power can see it. */
   | { kind: 'rival-founded'; faction: FactionId; holding: number; system: SystemId; body: string; colony: boolean }
+  /** The Watch hears that a rival met has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
+  | { kind: 'rival-tech'; faction: FactionId; tech: TechId }
   /** Another power opened a lane the power can see. */
   | { kind: 'rival-lane'; faction: FactionId; lane: LaneId }
   /** Another power's ship came into the power's sight. */

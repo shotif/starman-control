@@ -21,9 +21,16 @@ export const game = signal<GameState | null>(null);
 /** How long the last turn took, from the press to the new quarter in the game (the worker's turn), in milliseconds. */
 let lastTurnMs = 0;
 
-// The browser tests read the game as it stands (its size, its turn) and how long its last turn took.
+// The browser tests read the game as it stands (its size, its turn) and how long its last turn took,
+// and may set it up as a journey needs (a game some way on, M2B_SCIENCE.md §19.6).
 if (typeof location !== 'undefined' && new URLSearchParams(location.search).has('test'))
-  Object.assign(globalThis, { __game: () => game.value, __lastTurnMs: () => lastTurnMs });
+  Object.assign(globalThis, {
+    __game: () => game.value,
+    __lastTurnMs: () => lastTurnMs,
+    __setGame: (g: GameState) => {
+      game.value = g;
+    },
+  });
 /** True while a turn is being worked out. */
 export const resolving = signal(false);
 /** The report of the turn that just ended, until it is read. */

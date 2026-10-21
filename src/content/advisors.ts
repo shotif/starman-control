@@ -95,6 +95,7 @@ export type LineKind =
   | 'rival-founded'
   | 'rival-lane'
   | 'rival-ship'
+  | 'rival-tech'
   | 'event';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
@@ -215,6 +216,12 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, {what} {where} requires your decision.',
     warm: 'Control, {what} {where}! What shall we do? It’s your call.',
     blunt: '{what} {where}. Your call, Control.',
+  },
+  // Rumours (M2B_SCIENCE.md §19.3).
+  'rival-tech': {
+    formal: 'Control, word from the lanes: the {power} has mastered {tech}.',
+    warm: 'Control, the talk on the lanes is that the {power} have worked out {tech}. Good for them, and a lesson for us.',
+    blunt: 'Word is the {power} cracked {tech}. Keep up.',
   },
   'rival-ship': {
     formal: 'Control, {ship} is at {place}.',

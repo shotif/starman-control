@@ -5,9 +5,10 @@
 
 import type { FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
+import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ReportEvent } from './report.ts';
-import { effects } from './research.ts';
+import { effects, hasMet } from './research.ts';
 import { type GameState, type Holding, type LaneState, powerOf, type ShipState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
@@ -80,6 +81,15 @@ export function watchNews(world: World, before: GameState, after: GameState, fac
   for (const s of after.ships)
     if (s.owner !== faction && s.at !== null && !seen.has(s.id) && seesShip(faction, s, watched))
       out.push({ kind: 'rival-ship', faction: s.owner, ship: s.id, type: s.type, system: s.at });
+  // Rumours (M2B_SCIENCE.md §19.3): a met rival's great steps, a tier 4 or 5 technology or a doctrine.
+  const viewer = powerOf(after, faction);
+  for (const p of after.powers) {
+    if (p.faction === faction || !hasMet(after, viewer, p.faction)) continue;
+    const knew = new Set(before.powers.find((x) => x.faction === p.faction)?.researched ?? []);
+    for (const tech of p.researched)
+      if (!knew.has(tech) && (TECHS[tech].tier >= 4 || TECHS[tech].fork))
+        out.push({ kind: 'rival-tech', faction: p.faction, tech });
+  }
   return out;
 }
 
@@ -94,6 +104,8 @@ export interface Standing {
   lanes: number;
   /** Counted only for the viewer's own power. */
   technologies: number | null;
+  /** A rival's science against the viewer's, as the Watch hears it (§19.4); null for the viewer. */
+  science: 'ahead' | 'level' | 'behind' | null;
 }
 
 /**
@@ -109,9 +121,13 @@ export function standings(view: GameState, viewer: FactionId): Standing[] {
       outposts: held.filter((h) => h.kind === 'outpost').length,
       people: held.reduce((sum, h) => sum + h.people, 0),
       lanes: view.lanes.filter((l) => l.owner === faction).length,
-      technologies: faction === viewer ? powerOf(view, faction).researched.length : null,
+      technologies: faction === viewer ? mine : null,
+      science: faction === viewer ? null : compare(powerOf(view, faction).researched.length),
     };
   };
+  const mine = powerOf(view, viewer).researched.length;
+  const gap = RULES.research.standingsGap;
+  const compare = (theirs: number) => (theirs >= mine + gap ? 'ahead' : theirs <= mine - gap ? 'behind' : 'level');
   const known = (f: FactionId) =>
     view.holdings.some((h) => h.owner === f) ||
     view.lanes.some((l) => l.owner === f) ||

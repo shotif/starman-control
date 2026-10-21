@@ -1245,6 +1245,7 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
             <th scope="col">Outposts</th>
             <th scope="col">People</th>
             <th scope="col">Lanes</th>
+            <th scope="col">Science</th>
           </tr>
         </thead>
         <tbody>
@@ -1258,13 +1259,21 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
               <td>{r.outposts}</td>
               <td>{millions(r.people)} m</td>
               <td>{r.lanes}</td>
+              <td class={r.science ? `science-${r.science}` : ''}>
+                {r.science === null
+                  ? `${r.technologies ?? 0} known`
+                  : r.science === 'ahead'
+                    ? 'ahead of us'
+                    : r.science}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
       <p class="dim">
         Yours in full; the others’ only as far as you can see: in systems you have surveyed. You have researched{' '}
-        {rows[0]?.technologies ?? 0} technolog{rows[0]?.technologies === 1 ? 'y' : 'ies'}.
+        {rows[0]?.technologies ?? 0} technolog{rows[0]?.technologies === 1 ? 'y' : 'ies'}; the Watch hears whether each
+        power you have met is ahead of you, level or behind.
       </p>
       {unmet.length > 0 && (
         <p class="dim">
