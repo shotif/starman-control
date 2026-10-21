@@ -197,7 +197,7 @@ function apply(
   const last = (kind: Lasting['kind'], turns: number, amount = 0, holding: number | null = h?.id ?? null) =>
     power.lasting.push({ event: ev.id, kind, holding, amount, left: turns });
   const research = (points: number) => {
-    for (const tech of grantResearch(power, points)) log.push({ kind: 'researched', tech });
+    for (const tech of grantResearch(state, power, points)) log.push({ kind: 'researched', tech });
   };
   power.treasury -= EVENTS[ev.id].choices[choice].credits;
   switch (ev.id) {

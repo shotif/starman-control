@@ -129,6 +129,8 @@ export const RULES = {
   research: {
     /** A colony's people make 1 research for every so many tenths of them (4 million): its scholars. */
     scholarsPer: 40,
+    /** Each technology costs this much more, in percent of its base, for every one already known (§18.1, tuned). */
+    risePercent: 7,
   },
   /** Discoveries (M2B_SCIENCE.md §17, D-45). */
   discoveries: {
@@ -179,6 +181,14 @@ export const RULES = {
     medicalPercent: 25,
     /** How far a deep-space scanner sees other powers' ships, in tenths of a light-year (§26.3). */
     scannerDeci: 80,
+    /** Beacon slots a lane relay adds in its system (M2B_SCIENCE.md §18.3). */
+    relaySlots: 2,
+    /** An orbital habitat's own districts and room, in tenths of people. */
+    habitatDistricts: 2,
+    habitatRoom: 20,
+    /** A terraforming station's turns for a step, and its steps, before Ecopoiesis. */
+    terraformTurns: 10,
+    terraformSteps: 1,
   },
   /** Events (M2_WORLDS.md §27): when they come, and what each choice costs and gives. */
   events: {

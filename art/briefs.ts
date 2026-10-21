@@ -838,6 +838,28 @@ function projects(): ArtBrief[] {
         'A flare shield: a low rounded earth-built bunker half sunk into a mound, a cluster of three coil towers wound with copper on its roof, a soft blue glow between them, solar sails folded down.',
       wake: 'A flare shield: a starship’s magnetic deflector ring salvaged and stood upright on a frame of girders over a blockhouse of hull plates, cables and coolant pipes, a faint violet glow, red lights.',
     },
+    // M2b's increment 30 (M2B_SCIENCE.md §18.3).
+    'lane-relay': {
+      authority:
+        'A lane relay: a slender white lattice tower carrying a ring of three large beacon dishes angled at the sky, a glowing cyan beacon lamp on its tip, a neat square control house at its foot, cable trays, green lights.',
+      cooperative:
+        'A lane relay: a tall braced mast on a rounded earth-built base, two big woven-mesh beacon dishes turned skyward, a soft blue beacon lamp on top, a small round hut and solar sails beside it.',
+      wake: 'A lane relay: a crooked tower of welded girders topped by a salvaged ship’s beacon array and a red-glowing lamp, mismatched dishes bolted on at angles, a blockhouse of hull plates and hanging cables.',
+    },
+    'orbital-habitat': {
+      authority:
+        'An orbital habitat seen from the ground: a tall space-elevator tether rising straight into the sky from a squat, orderly anchor station of prefabricated modules, a lift car halfway up, landing pads, green lights.',
+      cooperative:
+        'An orbital habitat seen from the ground: a rounded earth-built shuttle port with a domed hall and a launch ring, a shuttle rising on a thin trail towards a bright ring-shaped station small in the sky, soft blue lights.',
+      wake: 'An orbital habitat seen from the ground: a launch gantry of girders over a scorched pad, a battered shuttle on it, fuel tanks and cargo, and a patched wheel-shaped station small in the sky above, red lights.',
+    },
+    'terraforming-station': {
+      authority:
+        'A terraforming station: a great processing plant of prefabricated modules with two tall stacks breathing white vapour into the sky, spherical gas tanks, pipes and a control tower, green lights.',
+      cooperative:
+        'A terraforming station: rounded earth-built halls round a huge glass bioreactor dome glowing green with algae, tall vents breathing white vapour, terraced beds of hardy plants around it, soft blue lights.',
+      wake: 'A terraforming station: the engine block of a wrecked bulk carrier rigged as an atmosphere processor, its exhausts roaring white vapour into the sky, tanks and crooked pipes, red lights.',
+    },
   };
   const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
   return Object.entries(own).flatMap(([kind, by]) =>

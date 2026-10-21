@@ -112,17 +112,17 @@ describe('rewards', () => {
   it('give resources, research into the current technology, or only a story', () => {
     const g = start();
     const p = powerOf(g, 'sta');
-    grantReward(p, 'wake-cache');
+    grantReward(g, p, 'wake-cache');
     expect(p.stockpile.fuel).toBe(40 + 25);
     // With nothing queued, research goes into the first technology that can be researched.
-    grantReward(p, 'buried-instruments');
+    grantReward(g, p, 'buried-instruments');
     expect(p.techProgress['lane-engineering-1']).toBe(25);
     expect(p.researchQueue).toEqual([]);
     // Into the queue when there is one, finishing what it can.
     p.researchQueue = ['deep-survey'];
-    expect(grantReward(p, 'ordered-dust')).toEqual(['deep-survey']);
+    expect(grantReward(g, p, 'ordered-dust')).toEqual(['deep-survey']);
     const before = structuredClone(p);
-    grantReward(p, 'lifeboat');
+    grantReward(g, p, 'lifeboat');
     expect(p).toEqual(before);
   });
 });

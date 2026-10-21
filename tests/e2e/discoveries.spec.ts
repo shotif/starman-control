@@ -51,7 +51,8 @@ test('a first survey of Barnard’s Star: what astronomers have observed, and th
   if (isDesktop(project)) await page.keyboard.press('t');
   else await page.getByRole('button', { name: 'Research', exact: true }).tap();
   const research = page.getByRole('dialog', { name: 'Research' });
-  await expect(research).toContainText('Inspirations: 0 of 33 met.');
+  await expect(research).toContainText('Inspirations: 0 of 54 met.');
+  if (!isDesktop(project)) await research.getByRole('tab', { name: /^Construction/ }).tap();
   const magnetics = research.locator('[data-tech="magnetics"]');
   await expect(magnetics).toContainText('Inspired by surveying a catalogued flare star: 24 research');
   if (isDesktop(project)) await page.keyboard.press('Escape');
@@ -93,7 +94,8 @@ test('a first survey of Barnard’s Star: what astronomers have observed, and th
   // The inspiration leads to the research screen, where it is met.
   await press(report.getByRole('button', { name: /^An inspiration: surveying a harsh world/ }), project);
   const screen = page.getByRole('dialog', { name: 'Research' });
-  await expect(screen).toContainText('Inspirations: 1 of 33 met.');
+  await expect(screen).toContainText('Inspirations: 1 of 54 met.');
+  if (!isDesktop(project)) await screen.getByRole('tab', { name: /^Construction/ }).tap();
   const domes = screen.locator('[data-tech="habitat-domes"]');
   await expect(domes).toContainText('Inspired by surveying a harsh world: +12');
   await expect(domes).toContainText('12 of 30');

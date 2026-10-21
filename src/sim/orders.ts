@@ -9,7 +9,7 @@ import type { QueueItem } from '../content/projects.ts';
 import { isTechId, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
-import { approvalOf, queueRefusal, settleRefusal } from './economy.ts';
+import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
 import { choiceRefusal } from './events.ts';
 import { formatLy } from './geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
@@ -110,7 +110,8 @@ function edictRefusal(
   const def = EDICTS[edict];
   const power = powerOf(state, faction);
   if (power.edicts.some((e) => e.edict === edict)) return `A ${def.name.toLowerCase()} is already in force.`;
-  if (power.attention < def.cost) return `Not enough attention: it needs ${def.cost}, and there is ${power.attention}.`;
+  const cost = edictCost(state, faction, edict);
+  if (power.attention < cost) return `Not enough attention: it needs ${cost}, and there is ${power.attention}.`;
   if (def.target === 'power') return null;
   const h = state.holdings.find((x) => x.id === holding);
   if (!h || h.owner !== faction || h.kind !== 'colony') return 'Choose one of your colonies.';
@@ -198,7 +199,7 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   if (order.type === 'edict') {
     const def = EDICTS[order.edict];
     const power = powerOf(next, faction);
-    power.attention -= def.cost;
+    power.attention -= edictCost(next, faction, order.edict);
     power.edicts.push({
       edict: order.edict,
       holding: def.target === 'colony' ? (order.holding ?? null) : null,
@@ -258,7 +259,7 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
       break;
     case 'blind-jump': {
       const at = ship.at as SystemId;
-      const turns = blindJumpTurns(world.distanceDeci(at, order.to));
+      const turns = blindJumpTurns(world.distanceDeci(at, order.to), next, faction);
       ship.blindJump = { from: at, to: order.to, turns, left: turns };
       ship.destinations = [];
       ship.hold = false;

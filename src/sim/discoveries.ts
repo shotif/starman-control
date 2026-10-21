@@ -10,11 +10,21 @@ import { SOL_BODIES } from '../content/sol.ts';
 import { type Deed, TECH_IDS, TECHS, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
-import { approvalOf, bodyOf, capacityOf, foodOf, industryOf, jumpsFromCapital, researchOf, worked } from './economy.ts';
+import {
+  approvalOf,
+  bodyOf,
+  capacityOf,
+  foodOf,
+  industryOf,
+  jumpsFromCapital,
+  levelOf,
+  researchOf,
+  worked,
+} from './economy.ts';
 import { habitability } from './habitability.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
-import { speciesFor } from './research.ts';
+import { effects, speciesFor, techCost } from './research.ts';
 import { starClass } from './stars.ts';
 import { type GameState, type PowerState, powerOf } from './state.ts';
 import { type LaneId, laneEnds, type World } from './world.ts';
@@ -59,16 +69,18 @@ export function observationsAt(world: World, system: SystemId): ObservationKind[
   return found;
 }
 
-/** Research a power gains for observations. */
-export function observationPoints(found: readonly ObservationKind[]): number {
-  return found.reduce((n, k) => n + RULES.discoveries.observations[k], 0);
+/** Research a power gains for observations: more with Interferometry (M2B_SCIENCE.md §18.2). */
+export function observationPoints(state: GameState, faction: FactionId, found: readonly ObservationKind[]): number {
+  const base = found.reduce((n, k) => n + RULES.discoveries.observations[k], 0);
+  const more = effects(state, faction, 'observation-percent').reduce((n, e) => n + e.percent, 0);
+  return base + Math.floor((base * more) / 100);
 }
 
 // ---------------------------------------------------------------- inspirations
 
-/** Points an inspiration gives towards its technology: 40% of its cost, rounded down. */
-export function inspirationPoints(tech: TechId): number {
-  return Math.floor((TECHS[tech].cost * RULES.discoveries.inspirationPercent) / 100);
+/** Points an inspiration gives towards its technology: 40% of its cost to the power now, rounded down. */
+export function inspirationPoints(state: GameState, power: PowerState, tech: TechId): number {
+  return Math.floor((techCost(state, power, tech) * RULES.discoveries.inspirationPercent) / 100);
 }
 
 /** Each power's home-web lanes, worked out once for a world: its relit lanes are Reborn's others. */
@@ -171,6 +183,31 @@ export function deedDone(
       return power.surveyed.length - 1 >= deed.n;
     case 'research':
       return researchOf(world, state, faction).total >= deed.n;
+    case 'lanes-held':
+      return state.lanes.filter((l) => l.owner === faction).length >= deed.n;
+    case 'blind-jump':
+      return events.some((e) => e.kind === 'jumped' && world.distanceDeci(e.from, e.to) >= deed.deci);
+    case 'projects':
+      return mine.reduce((n, h) => n + h.projects.length, 0) >= deed.n;
+    case 'harsh-full':
+      return colonies.some((h) => levelOf(world, state, h) === 'harsh' && h.people >= capacityOf(world, state, h));
+    case 'terraformed':
+      return events.some((e) => e.kind === 'terraformed');
+    case 'edicts':
+      return power.edicts.length >= deed.n;
+    case 'colony-people':
+      return colonies.some((h) => h.people >= deed.n);
+    case 'unrest':
+      return colonies.some((h) => {
+        const level = approvalOf(world, state, h).level;
+        return level === 'unrest' || level === 'revolt';
+      });
+    case 'observed':
+      return (
+        power.surveyed.filter((id) => id !== power.capital && observationsAt(world, id).length > 0).length >= deed.n
+      );
+    case 'investigations':
+      return power.investigated.length >= deed.n;
   }
 }
 
@@ -179,9 +216,9 @@ export function deedDone(
  * researched at once if what it needs is known and its progress reaches its cost; otherwise its
  * progress stops a point short. Returns the points, and whether it was finished.
  */
-export function inspire(power: PowerState, tech: TechId): { points: number; finished: boolean } {
-  const points = inspirationPoints(tech);
-  const cost = TECHS[tech].cost;
+export function inspire(state: GameState, power: PowerState, tech: TechId): { points: number; finished: boolean } {
+  const points = inspirationPoints(state, power, tech);
+  const cost = techCost(state, power, tech);
   power.inspired.push(tech);
   const progress = (power.techProgress[tech] ?? 0) + points;
   if (progress >= cost && TECHS[tech].needs.every((n) => power.researched.includes(n))) {
@@ -206,7 +243,7 @@ export function resolveInspirations(world: World, state: GameState, events: Map<
     for (const tech of TECH_IDS) {
       if (power.researched.includes(tech) || power.inspired.includes(tech)) continue;
       if (!deedDone(world, state, power.faction, TECHS[tech].inspiration.deed, said)) continue;
-      const { points, finished } = inspire(power, tech);
+      const { points, finished } = inspire(state, power, tech);
       log.push({ kind: 'inspired', tech, points });
       if (finished) log.push({ kind: 'researched', tech });
     }

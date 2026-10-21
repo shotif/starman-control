@@ -221,6 +221,13 @@ test.describe('colonies', () => {
     await expect(empire).toContainText('+1 metals');
     await press(empire.getByRole('button', { name: /Mars/ }).first(), project);
     await expect(selection(page, project, 'Mars')).toContainText('An outpost at Sol');
+    // An outpost builds lane relays and orbital habitats, once they are known (M2B_SCIENCE.md §18.3).
+    const mars = selection(page, project, 'Mars');
+    await expect(mars.getByRole('button', { name: 'Queue a lane relay' })).toBeDisabled();
+    await expect(mars.getByRole('button', { name: 'Queue an orbital habitat' })).toContainText(
+      'Needs Orbital habitats.',
+    );
+    await expect(mars.getByRole('button', { name: 'Queue a shipyard' })).toHaveCount(0);
     // The top bar counts what it adds: Earth's mine district 2, the capital 2, Mars 1.
     await expect(page.getByLabel('Stockpile')).toContainText('+5');
   });
@@ -283,6 +290,8 @@ test.describe('research', () => {
     await press(screen.getByRole('button', { name: 'Queue Lane engineering II', exact: true }), project);
     await expect(screen.locator('.research-queue')).toContainText('Lane engineering I');
     await expect(screen.locator('.research-queue')).toContainText('Lane engineering II');
+    // On a phone and a tablet each field is a tab (M2B_SCIENCE.md §18.5).
+    if (!isDesktop(project)) await screen.getByRole('tab', { name: /^Survey/ }).tap();
     await press(screen.getByRole('button', { name: 'Research Deep survey now' }), project);
     await expect(screen.locator('.research-queue li').first()).toContainText('Deep survey');
     await expect(screen.locator('.research-queue li').first()).toContainText('done in about 5 turns');
@@ -368,6 +377,7 @@ test.describe('the M1 journey', () => {
     // Research: Long-baseline arrays, with Deep survey first.
     if (isDesktop(project)) await page.keyboard.press('t');
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
+    if (!isDesktop(project)) await page.getByRole('tab', { name: /^Survey/ }).tap();
     await press(page.getByRole('button', { name: 'Research Long-baseline arrays now' }), project);
     if (isDesktop(project)) await page.keyboard.press('Escape');
     else await page.getByRole('button', { name: 'Close' }).first().tap();
@@ -379,7 +389,8 @@ test.describe('the M1 journey', () => {
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
     const queued = page.getByRole('dialog', { name: 'Research' }).locator('.research-queue li').first();
     await expect(queued).toContainText('Long-baseline arrays');
-    const progress = (await queued.locator('.dim').textContent())?.match(/\d+ of 60/)?.[0] ?? 'none';
+    // Its cost is 64 now: 60, and 7% for Deep survey known (M2B_SCIENCE.md §18.1).
+    const progress = (await queued.locator('.dim').textContent())?.match(/\d+ of 64/)?.[0] ?? 'none';
     if (isDesktop(project)) await page.keyboard.press('Escape');
     else await page.getByRole('button', { name: 'Close' }).first().tap();
     await fromMenu(page, 'Saves', project);
@@ -402,7 +413,7 @@ test.describe('the M1 journey', () => {
     await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText(
       'Long-baseline arrays',
     );
-    expect(progress).toMatch(/^\d+ of 60$/);
+    expect(progress).toMatch(/^\d+ of 64$/);
     await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText(progress);
   });
 

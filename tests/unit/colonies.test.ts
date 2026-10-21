@@ -328,7 +328,7 @@ describe('the build queue', () => {
     );
     g.holdings.push({ ...c, id: 10, kind: 'outpost', capital: false, body: 'mars', people: 0, projects: [] });
     expect(why(g, 'sta', { type: 'queue', holding: 10, item: { kind: 'project', project: 'mine' } })).toBe(
-      'Outposts build only lanes.',
+      'Outposts build only lanes, lane relays and orbital habitats.',
     );
     expect(why(g, 'frontier', { type: 'queue', holding: c.id, item: { kind: 'ship', ship: 'survey' } })).toBe(
       'That colony is not yours.',

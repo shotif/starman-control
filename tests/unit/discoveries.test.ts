@@ -50,14 +50,19 @@ const colonyOn = (g: GameState, b: Body, people = 20) =>
   });
 
 describe('inspirations (§17.1)', () => {
-  it('every technology names a deed, worth 40% of its cost', () => {
+  it('every technology names a deed, worth 40% of its cost to the power now', () => {
+    const g = start();
+    const p = powerOf(g, 'sta');
     for (const id of TECH_IDS) {
       expect(TECHS[id].inspiration.text.length, id).toBeGreaterThan(5);
-      expect(inspirationPoints(id)).toBe(Math.floor((TECHS[id].cost * 40) / 100));
+      expect(inspirationPoints(g, p, id)).toBe(Math.floor((TECHS[id].cost * 40) / 100));
     }
-    expect(inspirationPoints('habitat-domes')).toBe(12);
-    expect(inspirationPoints('magnetics')).toBe(24);
-    expect(inspirationPoints('arcologies')).toBe(40);
+    expect(inspirationPoints(g, p, 'habitat-domes')).toBe(12);
+    expect(inspirationPoints(g, p, 'magnetics')).toBe(24);
+    expect(inspirationPoints(g, p, 'arcologies')).toBe(40);
+    // With ten technologies known, Arcologies costs 170, and its inspiration 68 (§18.1).
+    p.researched.push(...TECH_IDS.slice(0, 10));
+    expect(inspirationPoints(g, p, 'arcologies')).toBe(68);
   });
 
   it('none is done at the start, for any power', () => {
@@ -195,12 +200,12 @@ describe('inspirations (§17.1)', () => {
     const p = powerOf(g, 'sta');
     // Magnetics needs Habitat domes: its 24 points wait, and its progress stops a point short.
     p.techProgress.magnetics = 50;
-    expect(inspire(p, 'magnetics')).toEqual({ points: 24, finished: false });
+    expect(inspire(g, p, 'magnetics')).toEqual({ points: 24, finished: false });
     expect(p.techProgress.magnetics).toBe(59);
     // Habitat domes needs nothing: 12 on 20 finishes its 30, and it leaves the queue.
     p.researchQueue = ['habitat-domes'];
     p.techProgress['habitat-domes'] = 20;
-    expect(inspire(p, 'habitat-domes')).toEqual({ points: 12, finished: true });
+    expect(inspire(g, p, 'habitat-domes')).toEqual({ points: 12, finished: true });
     expect(p.researched).toEqual(['habitat-domes']);
     expect(p.researchQueue).toEqual([]);
     expect(p.techProgress['habitat-domes']).toBeUndefined();
@@ -216,8 +221,9 @@ describe('inspirations (§17.1)', () => {
     makeHolding(g, { owner: 'sta', kind: 'outpost', system: fuel.systemId, body: fuel.id, capital: false, people: 0 });
     const events = new Map<FactionId, ReportEvent[]>([['sta', []]]);
     resolveInspirations(world, g, events);
-    expect(events.get('sta')).toEqual([{ kind: 'inspired', tech: 'fusion-power', points: 24 }]);
-    expect(p.techProgress['fusion-power']).toBe(24);
+    // One technology known: Fusion power costs 64 (60, and 7% of it), and its inspiration 25.
+    expect(events.get('sta')).toEqual([{ kind: 'inspired', tech: 'fusion-power', points: 25 }]);
+    expect(p.techProgress['fusion-power']).toBe(25);
     const again = new Map<FactionId, ReportEvent[]>([['sta', []]]);
     resolveInspirations(world, g, again);
     expect(again.get('sta')).toEqual([]);
@@ -244,9 +250,9 @@ describe('observations of the real sky (§17.2)', () => {
     expect(OBSERVATION_KINDS.map(count)).toEqual([11, 8, 45, 9, 47, 8]);
     expect(observationsAt(world, 'sirius')).toEqual(['white-dwarf']);
     expect(observationsAt(world, 'alpha-centauri')).toEqual(['disc', 'flare-star', 'planets', 'many-stars']);
-    expect(observationPoints(observationsAt(world, 'alpha-centauri'))).toBe(45);
+    expect(observationPoints(start(), 'sta', observationsAt(world, 'alpha-centauri'))).toBe(45);
     expect(observationsAt(world, 'luhman-16')).toEqual(['brown-dwarf']);
-    expect(observationPoints(['white-dwarf', 'brown-dwarf'])).toBe(
+    expect(observationPoints(start(), 'sta', ['white-dwarf', 'brown-dwarf'])).toBe(
       RULES.discoveries.observations['white-dwarf'] + RULES.discoveries.observations['brown-dwarf'],
     );
   });
@@ -321,7 +327,6 @@ describe('saves', () => {
     };
     const loaded = parseSave(world, JSON.stringify(raw));
     expect(loaded.version).toBe(STATE_VERSION);
-    expect(STATE_VERSION).toBe(10);
     expect(powerOf(loaded, 'sta').inspired).toEqual([]);
   });
 });

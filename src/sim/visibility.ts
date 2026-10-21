@@ -7,6 +7,7 @@ import type { FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ReportEvent } from './report.ts';
+import { effects } from './research.ts';
 import { type GameState, type Holding, type LaneState, powerOf, type ShipState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
@@ -15,9 +16,10 @@ export function watchedSystems(world: World, state: GameState, faction: FactionI
   const mine = state.holdings.filter((h) => h.owner === faction);
   const out = new Set<SystemId>(mine.map((h) => h.system));
   const scanners = mine.filter((h) => h.projects.includes('deep-space-scanner')).map((h) => h.system);
+  // Scanner arrays see further (M2B_SCIENCE.md §18.2).
+  const reach = Math.max(RULES.projects.scannerDeci, ...effects(state, faction, 'scanner-deci').map((e) => e.deci));
   if (scanners.length > 0)
-    for (const s of world.systems)
-      if (scanners.some((at) => world.distanceDeci(at, s.id) <= RULES.projects.scannerDeci)) out.add(s.id);
+    for (const s of world.systems) if (scanners.some((at) => world.distanceDeci(at, s.id) <= reach)) out.add(s.id);
   return out;
 }
 

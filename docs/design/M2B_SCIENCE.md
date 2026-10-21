@@ -24,6 +24,7 @@ notes as built.*
 15. [Decisions for the owner](#15-decisions-for-the-owner)
 16. [Increment 28 in detail: where research comes from](#16-increment-28-in-detail-where-research-comes-from-written-before-building-it)
 17. [Increment 29 in detail: discoveries](#17-increment-29-in-detail-discoveries-written-before-building-it)
+18. [Increment 30 in detail: a deeper tree](#18-increment-30-in-detail-a-deeper-tree-written-before-building-it)
 
 ## 1. What M2's games showed
 
@@ -479,4 +480,178 @@ research screen's inspirations, on the phone, tablet and desktop.
   (every power at least 5 inspirations by turn 100), and the survey and anomaly tests updated for
   observations; `discoveries.spec.ts` (Wolf 359's observation and Magnetics' inspiration in the
   report, and on the research screen) on the phone, tablet and desktop.
+
+
+## 18. Increment 30 in detail: a deeper tree (written before building it)
+
+**Goals.** D-46 as decided (C): every technology costs more for each one a power already knows, and
+two new tiers whose technologies change how the game is played, taking the tree from 33
+technologies to 54 here (about 60 with increment 31's doctrines and increment 32's Great
+engineering); the three new projects of §6 in each power's architecture; a research screen for
+that many technologies on the phone and the desktop (§11); the rivals research and build by the
+same rules. Measured against §2's targets at turn 100.
+
+**Out of scope.** The doctrines (increment 31) and their forks drawn in the tree; Great
+engineering and the great works (increment 32); knowledge that spreads (increment 31).
+
+### 18.1 Rising costs
+
+- A technology costs its base cost plus **7% of it for every technology the power already
+  knows**, rounded down (`RULES.research.risePercent`; §6 drafted 3%, tuned with the headless
+  games, see the notes as built): Lane engineering I costs 30 for a power that knows nothing, 51
+  for one that knows ten, 93 for one that knows thirty.
+- The cost is worked out when it is needed: on the cards, in the queue's times, when points are
+  spent, and for an inspiration's 40% and an anomaly's progress. Progress already made is kept as
+  points; since costs only rise, it never passes a cost.
+
+### 18.2 Twenty-one new technologies
+
+Tier 4 costs 240 points before the rise, tier 5 480 (§6 drafted 160 and 250; tuned). Each has
+its inspiration, as §17.1's.
+
+| Field | Tier | Technology | Needs | Does | Inspired by |
+| --- | --- | --- | --- | --- | --- |
+| Propulsion | 4 | **Lane relays** | Lane engineering III | Opens the **lane relay**: two more beacon slots in its system. | holding twelve lanes |
+| | 4 | **Fast hulls** | Jump tuning, Lane engineering III | Every ship makes 1 more jump point a turn. | building ten ships |
+| | 5 | **Fold charts** | Fast hulls | Blind jumps reach 3 ly further and take a turn less (at least one). | a blind jump of 9 ly or more |
+| | 5 | **Lane weaving** | Lane relays | Lanes are tuned in half the turns, rounded up. | holding twenty lanes |
+| Construction | 4 | **Orbital habitats** | Arcologies | Opens the **orbital habitat**: an outpost becomes a colony in orbit, with room for 2 million. | holding six outposts |
+| | 4 | **Prefabrication** | Automation II | Projects cost 20% less industry. | twelve projects standing |
+| | 5 | **Mass drivers** | Deep boring II | Outposts yield twice their world's riches. | holding ten outposts |
+| Life sciences | 4 | **Terraforming** | Adaptation III | Opens the **terraforming station**: its world becomes one step more habitable after 10 turns. | a colony under domes full |
+| | 4 | **Gene tailoring** | Medicine, Closed ecologies | Colonies grow 25% faster. | a medical centre built |
+| | 5 | **Ecopoiesis** | Terraforming | Terraforming takes 5 turns a step, and goes on to a second step. | a world terraformed |
+| | 5 | **Cryosleep** | Gene tailoring | Colony ships carry 2 million settlers. | holding eight colonies besides the capital |
+| Society | 2 | **Civil service** | Colonial charters | Attention +1 a turn. | an edict in force |
+| | 3 | **Public schooling** | Civil service, Shared spaces | Scholars: 1 for every 3 million instead of 4. | a colony of 12 million |
+| | 4 | **Councils** | Public schooling | Approval +5 at every colony. | a colony in unrest |
+| | 4 | **Free press** | Civil service, Fair taxation | Edicts cost 1 attention less (at least 1). | two edicts in force at once |
+| | 5 | **Federation** | Councils, Regional administration | Being far from home costs no approval (no lane to the capital still does). | a colony six lane jumps from the capital |
+| Survey | 4 | **Interferometry** | Long-baseline arrays, Computing II | Observations give twice the research. | ten observed systems surveyed |
+| | 4 | **Scanner arrays** | Long-range sensors | Deep-space scanners see 12 ly instead of 8. | a deep-space scanner built |
+| | 5 | **Thinking machines** | Computing II | Research +10%. | 60 research a turn |
+| | 5 | **Deep-sky survey** | Interferometry, Long-range sensors | Survey stations survey every system three open lanes away. | sixty systems surveyed besides the capital |
+| Xenology | 1 | **Lapse studies** (60) | three anomalies investigated | Anomalies' rewards +50%. | five anomalies investigated |
+
+Fifteen are §6's drafts; Lane weaving, Mass drivers, Cryosleep, Free press, Federation, Thinking
+machines and Deep-sky survey complete the tiers, as §6 left to this design, each changing what a
+power can do rather than adding one to a yield. Lapse studies is the first technology opened by a
+deed rather than another technology: it cannot be queued until three anomalies have been
+investigated, and says so. In all the tree's base costs come to 8,520 points (M2: 2,060), and with
+the rise about 30,000 for a power that learns all 54.
+
+### 18.3 The three projects
+
+| Project | Opened by | Where | Cost | Upkeep | Does |
+| --- | --- | --- | --- | --- | --- |
+| **Lane relay** | Lane relays | a colony or an outpost | 80 industry, 10 metals, 10 fuel | 1 | two more beacon slots in its system |
+| **Orbital habitat** | Orbital habitats | an outpost | 100 industry, 20 metals, 10 volatiles | 2 | the outpost becomes a colony in orbit |
+| **Terraforming station** | Terraforming | a colony on a world harsh or tolerable for its people | 120 industry, 10 metals, 20 volatiles | 2 | its world one step more habitable after 10 turns |
+
+- **Outposts' queues** now hold these projects as well as lanes: the lane relay and the orbital
+  habitat. Their own 2 industry a turn builds them slowly; overdrive is for colonies.
+- **An orbital habitat** finished at an outpost makes it a colony of 1 million founders, as a
+  colony ship would, on whatever world it stands: its districts are the habitat's 2, zoned as a
+  new colony's are (farms and works, D-42), plus its world's own if its people could live there;
+  its room is 2 million plus its world's own; it keeps gathering its world's riches as the outpost
+  did. Life in orbit costs approval as life under domes does (−5), and its farms yield as under
+  glass (1). It counts as a colony from then on, for food, approval, governors and the score.
+- **A terraforming station** counts the turns it has worked (`terraform`, kept on the colony):
+  after 10 its world is one step more habitable for the colony's people (harsh to tolerable,
+  tolerable to comfortable), with all that follows: room, farms, no more *life under domes*, and
+  the colony view's open sky. With Ecopoiesis a step takes 5 turns and a second step follows. A
+  colony in revolt does not count the turn. The report says when a step is done.
+
+### 18.4 Rivals
+
+- **Research:** the cheapest technology they can queue with what it needs, by base price, their
+  own fields at half the price (before, every technology of their own fields came first, which in
+  a deep tree kept them from the first steps of the others); Lapse studies once it is open.
+- **The Authority, research-led,** runs its colonies for research as well as its capital.
+- **Projects:** governors build a terraforming station where it can work (*grow* and *balance*
+  list it after their own); a rival's idle outpost with no lane to queue builds an orbital habitat
+  when it knows how and its treasury holds 60 credits and gains each turn, one at a time.
+
+### 18.5 The research screen (§11)
+
+- **Both:** the research a turn with its parts; the queue with each technology's turns and when
+  the whole queue will be done; each card with its cost now (rising), what it needs, its
+  inspiration and its state; one tap or click queues a technology with what it needs.
+- **On a phone** (and a tablet in portrait): a tab for each field across the top (Propulsion,
+  Construction, Life Sciences, Society, Survey, Xenology), with how many of its technologies are
+  known; the field's tiers as sections; the queue above the tabs.
+- **On a desktop:** the six fields as columns and the five tiers as rows, with lines from each
+  technology to what it opens; the queue in a panel beside the tree, always in view. The arrow keys
+  move between technologies (left and right across fields, up and down through tiers), *Enter*
+  queues the one in focus, *Shift+Enter* researches it now, *Delete* takes it out of the queue.
+
+### 18.6 The state
+
+Version 11: each colony's terraforming turns (`terraform`, 0 without a station). Older saves: 0.
+
+### 18.7 Art
+
+The lane relay, the orbital habitat and the terraforming station in each power's architecture: 9
+pictures, two candidates each, about **$0.90**, with a lettered contact sheet to the owner. They
+stand in the colony view as every project does.
+
+### 18.8 Tests
+
+Unit: rising costs, in the queue's times, spending, inspirations and anomalies; every new
+technology's effect; Lapse studies' requirement; each project, its place and refusal; the orbital
+habitat's colony; terraforming's steps with and without Ecopoiesis, and none in revolt; the
+rivals' choices; the migration to version 11. Headless: §2's targets at turn 100 on eight seeds,
+reported by `npm run balance`. Browser: the research screen's tabs on the phone and tablet and its
+grid, side queue and keys on the desktop; a new project queued at an outpost.
+
+### Increment 30: a deeper tree (21 October 2026)
+
+- **Rising costs** (`techCost` in `src/sim/research.ts`): 7% of a technology's base for every one
+  known, in the cards, the queue (each queued technology at what it will cost when its turn
+  comes), spending, inspirations, anomalies and the checks of a save.
+- **Twenty-one technologies** (`src/content/techs.ts`) as §18.2's table, with tiers 4 and 5 at 240
+  and 480 before the rise, each effect where its rule lives: Fast hulls' jump point, Fold charts'
+  blind jumps (`movement.ts`), Lane weaving's tuning (`lanes.ts`), Prefabrication's projects and
+  Mass drivers' riches (`economy.ts`), Gene tailoring's growth, Cryosleep's settlers and Civil
+  service's attention (`turn.ts`), Public schooling's scholars, Councils' approval and
+  Federation's distance (`economy.ts`), Free press's edicts (`edictCost`), Interferometry's
+  observations (`discoveries.ts`), Scanner arrays' reach (`visibility.ts`), Thinking machines'
+  research (`researchOf`), Deep-sky survey's stations, and Lapse studies' anomalies
+  (`anomalies.ts`), which needs three anomalies investigated before it can be queued and is
+  inspired by five (§17 had left it without an inspiration).
+- **The three projects** (`src/content/projects.ts`, `where` saying where each may stand): the lane
+  relay's two beacon slots (`beaconSlots`), the orbital habitat making its outpost a colony in
+  orbit with its 2 districts and 2 million of room, keeping its world's riches, with *life in
+  orbit* costing approval as domes do; the terraforming station counting its turns
+  (`Holding.terraform`, `levelOf`, `terraformSteps`, `terraformNext`), its world's level raised
+  everywhere a level is read (room, farms, approval, the colony view's open sky), and a report
+  line when a step is done. Outposts' panels offer *Add to the queue* with what an outpost may
+  build. Nine pictures, one for each power (about $0.90).
+- **Rivals:** by base price with what each technology needs, their own fields at half; the
+  Authority's colonies run for research; *grow* and *balance* governors build terraforming
+  stations; an idle outpost with no lane to build raises an orbital habitat when the treasury
+  holds 60 and gains.
+- **The research screen** (`src/ui/map/research.tsx`): on a phone and a tablet the queue, then a
+  tab for each field with how many of its technologies are known, its tiers as sections; on a
+  desktop the overlay spans the screen, the tree on the left and the queue in a panel beside it,
+  the arrow keys moving between technologies, *Enter*, *Shift+Enter* and *Delete* acting on the one
+  in focus (and never reaching the map's keys, so *Enter* there never ends the turn). Each queued
+  technology can be taken out from the queue itself; with two or more queued, the screen says when
+  the whole queue will be done.
+- **The state:** version 11 (`terraform`), with the migration from 10.
+- **Tuned** with the headless games (a tuning script run over eight seeds and 100 to 200 turns):
+  at §6's 3% and 160/250, every power had 27 to 37 technologies at turn 100 and the Authority
+  finished the tree by about turn 150; rivals that put every technology of their own fields first
+  also missed the first steps of the others (the Authority, with only survey and propulsion,
+  never learnt Habitat domes and stopped settling). With the numbers above, `npm run balance`
+  gives at turn 100 the Authority about **37 technologies** (35 to 41 by seed), the Cooperative
+  **23** and the Wake **22** (§2: 35–45 and 15–25); in 200-turn runs the Authority finished the 54
+  between turns 169 and 196, before increments 31 and 32 add four more technologies.
+- **Tests:** `tree.test.ts` (rising costs in the queue and in spending; every new technology's
+  effect; Lapse studies' requirement and its +50%; each project's place and refusal, the relay's
+  slots, the habitat's colony, terraforming's steps with Ecopoiesis; the rivals' research by price
+  and their habitats; the migration), with the tree's and projects' counts updated elsewhere;
+  `tree.spec.ts` (the phone's and tablet's tabs, Lapse studies' requirement, a tier-4 technology
+  queued with what it needs at its rising cost; the desktop's grid, side queue and keys) and an
+  outpost's lane relay and orbital habitat in `game.spec.ts`, on the phone, tablet and desktop.
 

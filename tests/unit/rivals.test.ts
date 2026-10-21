@@ -469,7 +469,11 @@ describe('the headless games (§26.6)', () => {
       for (const p of g.powers) {
         const held = g.holdings.filter((h) => h.owner === p.faction);
         expect(held.filter((h) => h.kind === 'colony').length, p.faction).toBeGreaterThanOrEqual(3);
-        expect(held.filter((h) => h.kind === 'outpost').length, p.faction).toBeGreaterThanOrEqual(3);
+        // Outposts, and those an orbital habitat has made colonies (M2B_SCIENCE.md §18.3).
+        expect(
+          held.filter((h) => h.kind === 'outpost' || h.projects.includes('orbital-habitat')).length,
+          p.faction,
+        ).toBeGreaterThanOrEqual(3);
         expect(
           held.reduce((n, h) => n + h.people, 0),
           p.faction,

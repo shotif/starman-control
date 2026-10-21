@@ -5,7 +5,7 @@
 // yield. Pure and in whole numbers.
 
 import { type District, ZONE_DEFS, type Zone } from '../content/districts.ts';
-import type { EdictId } from '../content/edicts.ts';
+import { EDICTS, type EdictId } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { type BuildItem, type Cost, itemCost, PROJECTS, type QueueItem, withArticle } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -15,7 +15,7 @@ import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
 import { lastingLabel, lastingOn } from './events.ts';
 import { ceilDiv } from './geometry.ts';
-import { habitability } from './habitability.ts';
+import { type Habitability, habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
@@ -48,7 +48,51 @@ export function bodyOf(world: World, state: GameState, h: Holding): Body | undef
 export function districtCount(world: World, state: GameState, h: Holding): number {
   if (h.kind !== 'colony') return 0;
   if (h.capital) return RULES.districts.capital;
-  return Math.max(1, bodyOf(world, state, h)?.size ?? 1);
+  const body = bodyOf(world, state, h);
+  // A colony in orbit has its habitat's districts, and its world's own if its people could live there (§18.3).
+  if (h.projects.includes('orbital-habitat')) {
+    const own = body && habitability(body, speciesFor(state, h.owner)).level !== 'uninhabitable' ? body.size : 0;
+    return own + RULES.projects.habitatDistricts;
+  }
+  return Math.max(1, body?.size ?? 1);
+}
+
+// ---------------------------------------------------------------- habitability and terraforming
+
+const LEVELS: readonly Habitability[] = ['uninhabitable', 'harsh', 'tolerable', 'comfortable'];
+
+/** The steps a colony's terraforming station has made its world more habitable (M2B_SCIENCE.md §18.3). */
+export function terraformSteps(state: GameState, h: Holding): number {
+  if (!h.projects.includes('terraforming-station')) return 0;
+  const e = effects(state, h.owner, 'terraform')[0];
+  const per = e?.turnsPerStep ?? RULES.projects.terraformTurns;
+  const most = e?.steps ?? RULES.projects.terraformSteps;
+  return Math.min(most, Math.floor(h.terraform / per));
+}
+
+/** Turns a terraforming station needs for its next step here, or null when it can do no more. */
+export function terraformNext(world: World, state: GameState, h: Holding): { turns: number; to: Habitability } | null {
+  if (!h.projects.includes('terraforming-station')) return null;
+  const e = effects(state, h.owner, 'terraform')[0];
+  const per = e?.turnsPerStep ?? RULES.projects.terraformTurns;
+  const most = e?.steps ?? RULES.projects.terraformSteps;
+  const steps = terraformSteps(state, h);
+  const level = levelOf(world, state, h);
+  if (steps >= most || level === 'comfortable' || level === 'uninhabitable') return null;
+  return { turns: (steps + 1) * per - h.terraform, to: LEVELS[LEVELS.indexOf(level) + 1] as Habitability };
+}
+
+/**
+ * How habitable a holding's world is for its people: its world's own level, raised a step for each
+ * step its terraforming station has made, never past comfortable.
+ */
+export function levelOf(world: World, state: GameState, h: Holding): Habitability {
+  const body = bodyOf(world, state, h);
+  if (!body) return 'harsh';
+  const base = habitability(body, speciesFor(state, h.owner)).level;
+  if (base === 'uninhabitable') return base;
+  const at = Math.min(LEVELS.length - 1, LEVELS.indexOf(base) + terraformSteps(state, h));
+  return LEVELS[at] as Habitability;
 }
 
 /** The district in a slot, if it is zoned. */
@@ -134,8 +178,7 @@ export function zoneYield(world: World, state: GameState, h: Holding, zone: Zone
       // Blight (an event, M2_WORLDS.md §27.2) takes 1 off each farm while it lasts.
       const blight = lastingOn(state, h, 'blight').length > 0 ? 1 : 0;
       if (h.capital) return Math.max(0, d.farms.comfortable + tech - blight);
-      const body = bodyOf(world, state, h);
-      const level = body ? habitability(body, speciesFor(state, h.owner)).level : 'harsh';
+      const level = levelOf(world, state, h);
       const base =
         level === 'comfortable' ? d.farms.comfortable : level === 'tolerable' ? d.farms.tolerable : d.farms.harsh;
       return Math.max(0, base + tech - blight);
@@ -201,7 +244,12 @@ export function capacityOf(world: World, state: GameState, h: Holding): number {
     (h.projects.includes('arcology') ? RULES.projects.arcology : 0);
   if (h.capital) return RULES.capital.room + housing;
   const body = bodyOf(world, state, h);
-  return (body ? habitability(body, speciesFor(state, h.owner)).capacity * 10 : 0) + housing;
+  const size = body?.size ?? 0;
+  const level = levelOf(world, state, h);
+  const own =
+    level === 'comfortable' ? size * 2 : level === 'tolerable' ? size : level === 'harsh' ? Math.floor(size / 2) : 0;
+  const orbit = h.projects.includes('orbital-habitat') ? RULES.projects.habitatRoom : 0;
+  return own * 10 + orbit + housing;
 }
 
 /** People gained a turn, in tenths: logistic, at least a tenth while there is room; none when hungry or unhappy (§2). */
@@ -262,14 +310,16 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   if (h.hungry > 0) parts.push({ label: 'hungry', value: a.hungry });
   // Idle people make nothing, and cost no approval (D-43).
   if (h.people >= capacityOf(world, state, h)) parts.push({ label: 'full', value: a.full });
-  const body = bodyOf(world, state, h);
-  if (body && habitability(body, speciesFor(state, h.owner)).level === 'harsh')
-    parts.push({ label: 'life under domes', value: a.domes });
+  const home = h.capital ? 'comfortable' : levelOf(world, state, h);
+  if (home === 'harsh') parts.push({ label: 'life under domes', value: a.domes });
+  else if (home === 'uninhabitable' && h.kind === 'colony') parts.push({ label: 'life in orbit', value: a.domes });
+  for (const e of effects(state, h.owner, 'approval')) parts.push({ label: 'councils', value: e.amount });
   const jumps = jumpsFromCapital(world, state, h);
   let near: number = a.nearJumps;
   for (const e of effects(state, h.owner, 'near-jumps')) near += e.jumps;
+  const federation = effects(state, h.owner, 'no-far').length > 0;
   if (jumps === null) parts.push({ label: 'no lane to the capital', value: a.farMost });
-  else if (jumps > near)
+  else if (jumps > near && !federation)
     parts.push({ label: `${jumps} jumps from the capital`, value: Math.max(a.farMost, (jumps - near) * a.far) });
   if (power.treasury < 0) parts.push({ label: 'the treasury in debt', value: a.debt });
   const total = Math.max(0, Math.min(100, sum(parts)));
@@ -311,6 +361,12 @@ export function keepsOf(world: World, state: GameState, h: Holding): number {
 /** A colony in revolt makes and builds nothing, unless martial order holds it (§25.2). */
 export function stopped(world: World, state: GameState, h: Holding): boolean {
   return h.kind === 'colony' && approvalOf(world, state, h).level === 'revolt' && !edictAt(state, h, 'martial-order');
+}
+
+/** What an edict costs a power in attention: less with Free press, at least 1 (M2B_SCIENCE.md §18.2). */
+export function edictCost(state: GameState, faction: FactionId, edict: EdictId): number {
+  const less = effects(state, faction, 'edict-discount').reduce((n, e) => n + e.attention, 0);
+  return Math.max(1, EDICTS[edict].cost - less);
 }
 
 /** Whether an edict is in force for the whole of a power. */
@@ -417,14 +473,16 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
   return { total: sum(parts), parts };
 }
 
-/** A colony's scholars (M2B_SCIENCE.md §16, D-44): 1 for every 4 million of its people. */
-export function scholarsOf(h: Holding): number {
-  return h.kind === 'colony' ? Math.floor(h.people / RULES.research.scholarsPer) : 0;
+/** A colony's scholars (M2B_SCIENCE.md §16, D-44): 1 for every 4 million of its people, 3 with Public schooling. */
+export function scholarsOf(state: GameState, h: Holding): number {
+  if (h.kind !== 'colony') return 0;
+  const per = Math.min(RULES.research.scholarsPer, ...effects(state, h.owner, 'scholars').map((e) => e.per));
+  return Math.floor(h.people / per);
 }
 
 /** What a colony's scholars make, kept at its approval as a district's yield is. */
 function scholarParts(world: World, state: GameState, h: Holding): { parts: Part[]; value: number } {
-  const n = scholarsOf(h);
+  const n = scholarsOf(state, h);
   if (n === 0) return { parts: [], value: 0 };
   const keeps = keepsOf(world, state, h);
   const kept = Math.floor((n * keeps + 50) / 100);
@@ -476,8 +534,14 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
   if (lost < 0) parts.push({ label: 'lost to unhappiness', value: lost });
   if (institutes > 0) parts.push({ label: 'from research institutes', value: institutes });
   if (capital > 0) parts.push({ label: 'from the capital', value: capital });
+  // Thinking machines and a crash programme each add their share of the rest (§18.2, M2_WORLDS.md §25.2).
+  const base = sum(parts);
+  for (const e of effects(state, faction, 'research-percent')) {
+    const value = Math.floor((base * e.percent) / 100);
+    if (value > 0) parts.push({ label: `thinking machines (+${e.percent}%)`, value });
+  }
   if (edictOn(state, faction, 'crash-programme')) {
-    const value = Math.floor((sum(parts) * RULES.edicts.crashResearchPercent) / 100);
+    const value = Math.floor((base * RULES.edicts.crashResearchPercent) / 100);
     if (value > 0) parts.push({ label: `a crash programme (+${RULES.edicts.crashResearchPercent}%)`, value });
   }
   return { total: sum(parts), parts };
@@ -639,12 +703,15 @@ export function yieldsOf(
   const parts: (Part & { resource: Resource })[] = [];
   const body = bodyOf(world, state, h);
   const mainOf = body ? mainResource(body) : null;
-  if (h.kind === 'outpost' && body && mainOf) {
+  // An outpost gathers its world's riches, and so does a colony in orbit that was one (§18.3).
+  if ((h.kind === 'outpost' || h.projects.includes('orbital-habitat')) && body && mainOf) {
+    const times = Math.max(1, ...effects(state, h.owner, 'outpost-times').map((e) => e.times));
     parts.push({
       label: `${body.name} (${body.riches[mainOf] === 2 ? 'rich' : 'poor'})`,
       value: body.riches[mainOf],
       resource: mainOf,
     });
+    if (times > 1) parts.push({ label: 'mass drivers', value: body.riches[mainOf] * (times - 1), resource: mainOf });
     for (const e of effects(state, h.owner, 'outpost-yield'))
       parts.push({ label: 'automated mining', value: e.amount, resource: mainOf });
   }
@@ -742,13 +809,19 @@ export function costOf(world: World, state: GameState, h: Holding, item: QueueIt
       c.fuel = ceilDiv(c.fuel * keep, 100);
     }
   }
+  // Prefabrication (M2B_SCIENCE.md §18.2).
+  if (item.kind === 'project')
+    for (const e of effects(state, h.owner, 'project-discount'))
+      c.industry = ceilDiv(c.industry * (100 - e.percent), 100);
   return c;
 }
 
 /** Why a colony or outpost cannot queue an item, or null (M1_COLONIES.md §3, M1_LANES_RESEARCH.md §1). */
 export function queueRefusal(world: World, state: GameState, h: Holding, item: QueueItem): string | null {
   if (item.kind === 'lane') return laneRefusal(world, state, h.owner, h.system, item.to);
-  if (h.kind !== 'colony') return 'Outposts build only lanes.';
+  const where = item.kind === 'project' ? (PROJECTS[item.project].where ?? 'colony') : 'colony';
+  if (h.kind !== 'colony' && where === 'colony') return 'Outposts build only lanes, lane relays and orbital habitats.';
+  if (h.kind === 'colony' && where === 'outpost') return 'Only at an outpost.';
   if (item.kind === 'zone') return zoneRefusal(world, state, h, item.zone, item.slot);
   if (item.kind === 'ship') {
     if (!h.projects.includes('shipyard')) return 'Ships need a shipyard.';
@@ -758,6 +831,10 @@ export function queueRefusal(world: World, state: GameState, h: Holding, item: Q
   if (def.opens && !powerOf(state, h.owner).researched.includes(def.opens)) return `Needs ${TECHS[def.opens].name}.`;
   if (item.project === 'flare-shield' && !bodyOf(world, state, h)?.flareExposed)
     return 'Only on a world exposed to its star’s flares.';
+  if (item.project === 'terraforming-station') {
+    const level = levelOf(world, state, h);
+    if (level !== 'harsh' && level !== 'tolerable') return 'Only on a world harsh or tolerable for its people.';
+  }
   if (h.projects.includes(item.project))
     return `It already has ${withArticle(PROJECTS[item.project].name.toLowerCase())}.`;
   if (h.queue.some((q) => q.kind === 'project' && q.project === item.project)) {
@@ -773,8 +850,12 @@ export function buildOptions(
   state: GameState,
   h: Holding,
 ): { item: BuildItem; refusal: string | null }[] {
-  const ships: BuildItem[] = (Object.keys(SHIPS) as ShipType[]).map((ship) => ({ kind: 'ship', ship }));
-  const projects: BuildItem[] = Object.values(PROJECTS).map((p) => ({ kind: 'project', project: p.id }));
+  // An outpost is offered only what an outpost can build (§18.3).
+  const ships: BuildItem[] =
+    h.kind === 'colony' ? (Object.keys(SHIPS) as ShipType[]).map((ship) => ({ kind: 'ship', ship })) : [];
+  const projects: BuildItem[] = Object.values(PROJECTS)
+    .filter((p) => h.kind === 'colony' || (p.where ?? 'colony') !== 'colony')
+    .map((p) => ({ kind: 'project', project: p.id }));
   return [...ships, ...projects].map((item) => ({ item, refusal: queueRefusal(world, state, h, item) }));
 }
 

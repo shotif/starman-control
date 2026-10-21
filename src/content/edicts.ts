@@ -23,13 +23,13 @@ export const PRIORITY_DEFS: Record<Priority, PriorityDef> = {
     name: 'Balance',
     does: 'Feeds the colony, then zones mines, works, labs and markets in turn.',
     zones: ['mines', 'works', 'labs', 'market', 'works'],
-    projects: ['hydroponics', 'mine', 'research-institute', 'trade-exchange'],
+    projects: ['hydroponics', 'mine', 'research-institute', 'trade-exchange', 'terraforming-station'],
   },
   grow: {
     name: 'Grow',
     does: 'Farms and housing first, so the colony fills up, then works.',
     zones: ['farms', 'housing', 'works'],
-    projects: ['hydroponics', 'medical-centre', 'arcology'],
+    projects: ['hydroponics', 'medical-centre', 'arcology', 'terraforming-station'],
   },
   produce: {
     name: 'Produce',

@@ -54,7 +54,29 @@ export type TechId =
   | 'computing-2'
   | 'long-range-sensors'
   // Increment 25 (M2_WORLDS.md §27.5).
-  | 'magnetics';
+  | 'magnetics'
+  // M2b's tiers 4 and 5 and the rest (M2B_SCIENCE.md §18.2).
+  | 'lane-relays'
+  | 'fast-hulls'
+  | 'fold-charts'
+  | 'lane-weaving'
+  | 'orbital-habitats'
+  | 'prefabrication'
+  | 'mass-drivers'
+  | 'terraforming'
+  | 'gene-tailoring'
+  | 'ecopoiesis'
+  | 'cryosleep'
+  | 'civil-service'
+  | 'public-schooling'
+  | 'councils'
+  | 'free-press'
+  | 'federation'
+  | 'interferometry'
+  | 'scanner-arrays'
+  | 'thinking-machines'
+  | 'deep-sky-survey'
+  | 'lapse-studies';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -87,7 +109,38 @@ export type TechEffect =
   /** *Far from home* begins this many lane jumps later. */
   | { kind: 'near-jumps'; jumps: number }
   /** Survey ships make this many more jump points a turn. */
-  | { kind: 'survey-jump-points'; points: number };
+  | { kind: 'survey-jump-points'; points: number }
+  // M2b (M2B_SCIENCE.md §18.2).
+  /** Blind jumps reach this much further, in tenths of a light-year, and take this many turns less (at least one). */
+  | { kind: 'blind-jump'; deci: number; turns: number }
+  /** Lanes are tuned in this share of the turns, in percent, rounded up. */
+  | { kind: 'tuning-percent'; percent: number }
+  /** Projects cost this much less industry, in percent. */
+  | { kind: 'project-discount'; percent: number }
+  /** Outposts yield this many times their world's riches. */
+  | { kind: 'outpost-times'; times: number }
+  /** Terraforming takes this many turns a step, and goes on for this many steps. */
+  | { kind: 'terraform'; turnsPerStep: number; steps: number }
+  /** Colony ships carry this many tenths of people. */
+  | { kind: 'settlers'; people: number }
+  /** Attention a turn, more. */
+  | { kind: 'attention'; perTurn: number }
+  /** A scholar for every so many tenths of people. */
+  | { kind: 'scholars'; per: number }
+  /** Approval at every colony, more. */
+  | { kind: 'approval'; amount: number }
+  /** Edicts cost this much less attention (at least 1). */
+  | { kind: 'edict-discount'; attention: number }
+  /** Being far from home costs no approval. */
+  | { kind: 'no-far' }
+  /** Observations give this much more research, in percent. */
+  | { kind: 'observation-percent'; percent: number }
+  /** Deep-space scanners see this far, in tenths of a light-year. */
+  | { kind: 'scanner-deci'; deci: number }
+  /** Research this much more, in percent. */
+  | { kind: 'research-percent'; percent: number }
+  /** Anomalies' rewards this much more, in percent. */
+  | { kind: 'anomaly-percent'; percent: number };
 
 /**
  * A deed that teaches a power something towards a technology: its inspiration (M2B_SCIENCE.md §17.1,
@@ -133,7 +186,28 @@ export type Deed =
   /** Systems surveyed besides the capital. */
   | { kind: 'surveyed'; n: number }
   /** Research a turn. */
-  | { kind: 'research'; n: number };
+  | { kind: 'research'; n: number }
+  // M2b's tiers 4 and 5 (M2B_SCIENCE.md §18.2).
+  /** Lanes held, open or being tuned. */
+  | { kind: 'lanes-held'; n: number }
+  /** A blind jump begun of at least this many tenths of a light-year. */
+  | { kind: 'blind-jump'; deci: number }
+  /** Projects standing at its holdings. */
+  | { kind: 'projects'; n: number }
+  /** A colony under domes, full. */
+  | { kind: 'harsh-full' }
+  /** A world terraformed a step. */
+  | { kind: 'terraformed' }
+  /** Edicts in force at once. */
+  | { kind: 'edicts'; n: number }
+  /** A colony of this many tenths of people. */
+  | { kind: 'colony-people'; n: number }
+  /** A colony in unrest or revolt. */
+  | { kind: 'unrest' }
+  /** Systems surveyed that hold something astronomers have observed, besides the capital. */
+  | { kind: 'observed'; n: number }
+  /** Anomalies investigated. */
+  | { kind: 'investigations'; n: number };
 
 export interface TechDef {
   id: TechId;
@@ -144,6 +218,8 @@ export interface TechDef {
   /** Research points. */
   cost: number;
   needs: readonly TechId[];
+  /** What it needs besides technologies: anomalies investigated (Lapse studies, §18.2). */
+  requires?: { investigated: number };
   effect: TechEffect;
   /** Its exact effect, in plain words. */
   text: string;
@@ -539,6 +615,239 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'survey-jump-points', points: 1 },
     text: 'Survey ships make 1 more jump point a turn.',
     inspiration: { deed: { kind: 'surveyed', n: 30 }, text: 'thirty systems surveyed besides the capital' },
+  },
+  // M2b's tiers 4 and 5, and what completes them (M2B_SCIENCE.md §18.2).
+  'lane-relays': {
+    id: 'lane-relays',
+    name: 'Lane relays',
+    field: 'propulsion',
+    tier: 4,
+    cost: 240,
+    needs: ['lane-engineering-3'],
+    effect: { kind: 'opens' },
+    text: 'Opens the lane relay: two more beacon slots in its system.',
+    inspiration: { deed: { kind: 'lanes-held', n: 12 }, text: 'holding twelve lanes' },
+  },
+  'fast-hulls': {
+    id: 'fast-hulls',
+    name: 'Fast hulls',
+    field: 'propulsion',
+    tier: 4,
+    cost: 240,
+    needs: ['jump-tuning', 'lane-engineering-3'],
+    effect: { kind: 'jump-points', points: 1 },
+    text: 'Every ship makes 1 more jump point a turn.',
+    inspiration: { deed: { kind: 'ships-built', n: 10 }, text: 'building ten ships' },
+  },
+  'fold-charts': {
+    id: 'fold-charts',
+    name: 'Fold charts',
+    field: 'propulsion',
+    tier: 5,
+    cost: 480,
+    needs: ['fast-hulls'],
+    effect: { kind: 'blind-jump', deci: 30, turns: 1 },
+    text: 'Blind jumps reach 3 ly further and take a turn less (at least one).',
+    inspiration: { deed: { kind: 'blind-jump', deci: 90 }, text: 'a blind jump of 9 light-years or more' },
+  },
+  'lane-weaving': {
+    id: 'lane-weaving',
+    name: 'Lane weaving',
+    field: 'propulsion',
+    tier: 5,
+    cost: 480,
+    needs: ['lane-relays'],
+    effect: { kind: 'tuning-percent', percent: 50 },
+    text: 'Lanes are tuned in half the turns, rounded up.',
+    inspiration: { deed: { kind: 'lanes-held', n: 20 }, text: 'holding twenty lanes' },
+  },
+  'orbital-habitats': {
+    id: 'orbital-habitats',
+    name: 'Orbital habitats',
+    field: 'construction',
+    tier: 4,
+    cost: 240,
+    needs: ['arcologies'],
+    effect: { kind: 'opens' },
+    text: 'Opens the orbital habitat: an outpost becomes a colony in orbit, with room for 2 million.',
+    inspiration: { deed: { kind: 'outposts', n: 6 }, text: 'holding six outposts' },
+  },
+  prefabrication: {
+    id: 'prefabrication',
+    name: 'Prefabrication',
+    field: 'construction',
+    tier: 4,
+    cost: 240,
+    needs: ['automation-2'],
+    effect: { kind: 'project-discount', percent: 20 },
+    text: 'Projects cost 20% less industry.',
+    inspiration: { deed: { kind: 'projects', n: 12 }, text: 'twelve projects standing' },
+  },
+  'mass-drivers': {
+    id: 'mass-drivers',
+    name: 'Mass drivers',
+    field: 'construction',
+    tier: 5,
+    cost: 480,
+    needs: ['deep-boring-2'],
+    effect: { kind: 'outpost-times', times: 2 },
+    text: 'Outposts yield twice their world’s riches.',
+    inspiration: { deed: { kind: 'outposts', n: 10 }, text: 'holding ten outposts' },
+  },
+  terraforming: {
+    id: 'terraforming',
+    name: 'Terraforming',
+    field: 'life-sciences',
+    tier: 4,
+    cost: 240,
+    needs: ['adaptation-3'],
+    effect: { kind: 'opens' },
+    text: 'Opens the terraforming station: its world becomes one step more habitable after 10 turns.',
+    inspiration: { deed: { kind: 'harsh-full' }, text: 'a colony under domes full' },
+  },
+  'gene-tailoring': {
+    id: 'gene-tailoring',
+    name: 'Gene tailoring',
+    field: 'life-sciences',
+    tier: 4,
+    cost: 240,
+    needs: ['medicine', 'closed-ecologies'],
+    effect: { kind: 'growth-percent', percent: 25 },
+    text: 'Colonies grow 25% faster.',
+    inspiration: { deed: { kind: 'project', project: 'medical-centre' }, text: 'a medical centre built' },
+  },
+  ecopoiesis: {
+    id: 'ecopoiesis',
+    name: 'Ecopoiesis',
+    field: 'life-sciences',
+    tier: 5,
+    cost: 480,
+    needs: ['terraforming'],
+    effect: { kind: 'terraform', turnsPerStep: 5, steps: 2 },
+    text: 'Terraforming takes 5 turns a step, and goes on to a second step.',
+    inspiration: { deed: { kind: 'terraformed' }, text: 'a world terraformed' },
+  },
+  cryosleep: {
+    id: 'cryosleep',
+    name: 'Cryosleep',
+    field: 'life-sciences',
+    tier: 5,
+    cost: 480,
+    needs: ['gene-tailoring'],
+    effect: { kind: 'settlers', people: 20 },
+    text: 'Colony ships carry 2 million settlers.',
+    inspiration: { deed: { kind: 'colonies', n: 8 }, text: 'holding eight colonies besides the capital' },
+  },
+  'civil-service': {
+    id: 'civil-service',
+    name: 'Civil service',
+    field: 'society',
+    tier: 2,
+    cost: 60,
+    needs: ['colonial-charters'],
+    effect: { kind: 'attention', perTurn: 1 },
+    text: 'Attention +1 a turn.',
+    inspiration: { deed: { kind: 'edicts', n: 1 }, text: 'an edict in force' },
+  },
+  'public-schooling': {
+    id: 'public-schooling',
+    name: 'Public schooling',
+    field: 'society',
+    tier: 3,
+    cost: 100,
+    needs: ['civil-service', 'shared-spaces'],
+    effect: { kind: 'scholars', per: 30 },
+    text: 'Scholars: 1 for every 3 million people instead of 4.',
+    inspiration: { deed: { kind: 'colony-people', n: 120 }, text: 'a colony of 12 million' },
+  },
+  councils: {
+    id: 'councils',
+    name: 'Councils',
+    field: 'society',
+    tier: 4,
+    cost: 240,
+    needs: ['public-schooling'],
+    effect: { kind: 'approval', amount: 5 },
+    text: 'Approval +5 at every colony.',
+    inspiration: { deed: { kind: 'unrest' }, text: 'a colony in unrest' },
+  },
+  'free-press': {
+    id: 'free-press',
+    name: 'Free press',
+    field: 'society',
+    tier: 4,
+    cost: 240,
+    needs: ['civil-service', 'fair-taxation'],
+    effect: { kind: 'edict-discount', attention: 1 },
+    text: 'Edicts cost 1 attention less (at least 1).',
+    inspiration: { deed: { kind: 'edicts', n: 2 }, text: 'two edicts in force at once' },
+  },
+  federation: {
+    id: 'federation',
+    name: 'Federation',
+    field: 'society',
+    tier: 5,
+    cost: 480,
+    needs: ['councils', 'regional-administration'],
+    effect: { kind: 'no-far' },
+    text: 'Being far from home costs no approval (no lane to the capital still does).',
+    inspiration: { deed: { kind: 'far-colony', jumps: 6 }, text: 'a colony six lane jumps from the capital' },
+  },
+  interferometry: {
+    id: 'interferometry',
+    name: 'Interferometry',
+    field: 'survey',
+    tier: 4,
+    cost: 240,
+    needs: ['long-baseline-arrays', 'computing-2'],
+    effect: { kind: 'observation-percent', percent: 100 },
+    text: 'Observations give twice the research.',
+    inspiration: { deed: { kind: 'observed', n: 10 }, text: 'ten observed systems surveyed' },
+  },
+  'scanner-arrays': {
+    id: 'scanner-arrays',
+    name: 'Scanner arrays',
+    field: 'survey',
+    tier: 4,
+    cost: 240,
+    needs: ['long-range-sensors'],
+    effect: { kind: 'scanner-deci', deci: 120 },
+    text: 'Deep-space scanners see 12 ly instead of 8.',
+    inspiration: { deed: { kind: 'project', project: 'deep-space-scanner' }, text: 'a deep-space scanner built' },
+  },
+  'thinking-machines': {
+    id: 'thinking-machines',
+    name: 'Thinking machines',
+    field: 'survey',
+    tier: 5,
+    cost: 480,
+    needs: ['computing-2'],
+    effect: { kind: 'research-percent', percent: 10 },
+    text: 'Research +10%.',
+    inspiration: { deed: { kind: 'research', n: 60 }, text: '60 research a turn' },
+  },
+  'deep-sky-survey': {
+    id: 'deep-sky-survey',
+    name: 'Deep-sky survey',
+    field: 'survey',
+    tier: 5,
+    cost: 480,
+    needs: ['interferometry', 'long-range-sensors'],
+    effect: { kind: 'survey-station-lanes', lanes: 3 },
+    text: 'Survey stations survey every system three open lanes away.',
+    inspiration: { deed: { kind: 'surveyed', n: 60 }, text: 'sixty systems surveyed besides the capital' },
+  },
+  'lapse-studies': {
+    id: 'lapse-studies',
+    name: 'Lapse studies',
+    field: 'xenology',
+    tier: 1,
+    cost: 60,
+    needs: [],
+    requires: { investigated: 3 },
+    effect: { kind: 'anomaly-percent', percent: 50 },
+    text: 'Anomalies’ rewards +50%.',
+    inspiration: { deed: { kind: 'investigations', n: 5 }, text: 'five anomalies investigated' },
   },
 };
 

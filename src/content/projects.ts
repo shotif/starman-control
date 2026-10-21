@@ -21,7 +21,11 @@ export type ProjectId =
   | 'arcology'
   | 'medical-centre'
   | 'deep-space-scanner'
-  | 'flare-shield';
+  | 'flare-shield'
+  // M2b (M2B_SCIENCE.md §18.3).
+  | 'lane-relay'
+  | 'orbital-habitat'
+  | 'terraforming-station';
 
 export interface Cost {
   industry: number;
@@ -39,6 +43,8 @@ export interface ProjectDef {
   upkeep: number;
   /** The technology that opens it; none for those open from the start. */
   opens?: TechId;
+  /** Where it may be built: a colony (the default), an outpost, or either (M2B_SCIENCE.md §18.3). */
+  where?: 'colony' | 'outpost' | 'either';
 }
 
 export const PROJECTS: Record<ProjectId, ProjectDef> = {
@@ -157,6 +163,33 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
     cost: { industry: 40, metals: 10, volatiles: 0, fuel: 0 },
     upkeep: 1,
     opens: 'magnetics',
+  },
+  // M2b (M2B_SCIENCE.md §18.3).
+  'lane-relay': {
+    id: 'lane-relay',
+    name: 'Lane relay',
+    does: 'Two more beacon slots in its system. At a colony or an outpost.',
+    cost: { industry: 80, metals: 10, volatiles: 0, fuel: 10 },
+    upkeep: 1,
+    opens: 'lane-relays',
+    where: 'either',
+  },
+  'orbital-habitat': {
+    id: 'orbital-habitat',
+    name: 'Orbital habitat',
+    does: 'The outpost becomes a colony in orbit: 1 million settlers, room for 2 million, 2 districts of its own, on any world.',
+    cost: { industry: 100, metals: 20, volatiles: 10, fuel: 0 },
+    upkeep: 2,
+    opens: 'orbital-habitats',
+    where: 'outpost',
+  },
+  'terraforming-station': {
+    id: 'terraforming-station',
+    name: 'Terraforming station',
+    does: 'Its world becomes one step more habitable after 10 turns. On a harsh or tolerable world.',
+    cost: { industry: 120, metals: 10, volatiles: 20, fuel: 0 },
+    upkeep: 2,
+    opens: 'terraforming',
   },
 };
 

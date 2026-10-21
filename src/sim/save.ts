@@ -163,6 +163,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, inspired: [] }));
     return { ...g, version: 10, powers };
   },
+  /** 10 → 11 (M2b increment 30): terraforming. No colony has worked a terraforming station yet. */
+  10: (g) => {
+    if (!Array.isArray(g.holdings)) throw new SaveError(DAMAGED);
+    const holdings = (g.holdings as Raw[]).map((h) => ({ ...h, terraform: 0 }));
+    return { ...g, version: 11, holdings };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

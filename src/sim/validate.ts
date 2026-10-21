@@ -8,9 +8,10 @@ import { isFactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS } from '../content/ships.ts';
-import { isTechId, TECHS } from '../content/techs.ts';
+import { isTechId, TECHS, type TechId } from '../content/techs.ts';
 import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
+import { techCost } from './research.ts';
 import { beaconSlots, type GameState } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
@@ -169,6 +170,7 @@ export function shapeProblems(raw: unknown): string[] {
       if (h.governor !== null && !isPriority(h.governor)) out.push(`holding ${i} has a governor with no priority`);
       if (!Array.isArray(h.locked) || !h.locked.every((s) => isWhole(s, 1)))
         out.push(`holding ${i} has locks it cannot have`);
+      if (!isWhole(h.terraform)) out.push(`holding ${i} terraforming is not a whole number`);
     }
   if (!Array.isArray(raw.reports)) out.push('reports is not a list');
   return out;
@@ -214,7 +216,7 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (new Set(p.inspired).size !== p.inspired.length)
       out.push(`${p.faction} was inspired towards a technology twice`);
     for (const [id, v] of Object.entries(p.techProgress))
-      if (p.researched.includes(id as never) || (v ?? 0) >= TECHS[id as keyof typeof TECHS].cost)
+      if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId))
         out.push(`${p.faction} has progress in ${id}, which is done`);
   }
   const used = new Map<string, number>();
@@ -260,7 +262,9 @@ export function stateProblems(world: World, state: GameState): string[] {
     for (const q of h.queue) {
       if (q.kind === 'lane' && (!world.hasSystem(q.to) || q.to === h.system))
         out.push(`holding ${h.id} queues a lane to ${q.to}, which it cannot have`);
-      if (q.kind !== 'lane' && h.kind === 'outpost') out.push(`outpost ${h.id} queues something other than a lane`);
+      const outposts =
+        q.kind === 'lane' || (q.kind === 'project' && (PROJECTS[q.project].where ?? 'colony') !== 'colony');
+      if (!outposts && h.kind === 'outpost') out.push(`outpost ${h.id} queues what only a colony builds`);
     }
   }
   let lastShip = 0;

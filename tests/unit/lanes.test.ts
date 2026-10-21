@@ -125,7 +125,7 @@ describe('building a lane', () => {
     // Outposts queue lanes only.
     expect(
       refuse(world, g, 'sta', { type: 'queue', holding: outpost.id, item: { kind: 'ship', ship: 'survey' } }),
-    ).toBe('Outposts build only lanes.');
+    ).toBe('Outposts build only lanes, lane relays and orbital habitats.');
     g = order(g, 'sta', { type: 'queue', holding: outpost.id, item: { kind: 'lane', to: 'ross-128' } });
     expect(costOf(world, g, outpost, { kind: 'lane', to: 'ross-128' }).industry).toBe(22);
     const before = g.powers[0]?.stockpile.fuel ?? 0;

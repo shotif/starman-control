@@ -20,9 +20,7 @@ import { type ArchitectureId, FACTIONS, type FactionMark } from '../content/fact
 import { PROJECTS, type ProjectId, withArticle } from '../content/projects.ts';
 import type { Atmosphere, Body } from '../sim/bodies.ts';
 import { bodiesOf } from '../sim/bodies.ts';
-import { bodyOf, costOf, districtCount } from '../sim/economy.ts';
-import { habitability } from '../sim/habitability.ts';
-import { speciesFor } from '../sim/research.ts';
+import { bodyOf, costOf, districtCount, levelOf } from '../sim/economy.ts';
 import { estimateStar } from '../sim/starLight.ts';
 import { type StarClass, starClass } from '../sim/stars.ts';
 import type { GameState, Holding } from '../sim/state.ts';
@@ -253,7 +251,8 @@ export function colonyScene(world: World, game: GameState, h: Holding): ColonySc
   const star = system.sky.stars.find((s) => s.id === body.star) ?? system.sky.stars[0];
   if (!star) return null;
   const faction = FACTIONS[h.owner];
-  const level = habitability(body, speciesFor(game, h.owner)).level;
+  // As terraformed (M2B_SCIENCE.md §18.3): a world made comfortable shows the open sky.
+  const level = levelOf(world, game, h);
   const envelope: Envelope = level === 'comfortable' ? 'open' : 'domed';
   const outpost = h.kind === 'outpost';
 

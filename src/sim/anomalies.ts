@@ -47,18 +47,25 @@ export function investigateRefusal(state: GameState, ship: ShipState): string | 
   return null;
 }
 
+/** An anomaly's reward as a power has it: more with Lapse studies (M2B_SCIENCE.md §18.2). */
+export function rewardTimes(state: GameState, faction: FactionId, amount: number): number {
+  const more = effects(state, faction, 'anomaly-percent').reduce((sum, e) => sum + e.percent, 0);
+  return amount + Math.floor((amount * more) / 100);
+}
+
 /** Gives an anomaly's reward to a power. Returns any technologies it finishes. */
-export function grantReward(power: PowerState, id: AnomalyId): TechId[] {
+export function grantReward(state: GameState, power: PowerState, id: AnomalyId): TechId[] {
   const r = ANOMALIES[id].reward;
+  const more = (n: number) => rewardTimes(state, power.faction, n);
   switch (r.kind) {
     case 'research':
-      return grantResearch(power, r.points);
+      return grantResearch(state, power, more(r.points));
     case 'tech':
-      return grantTechProgress(power, r.tech, r.points);
+      return grantTechProgress(state, power, r.tech, more(r.points));
     case 'resources':
-      power.stockpile.metals += r.metals ?? 0;
-      power.stockpile.volatiles += r.volatiles ?? 0;
-      power.stockpile.fuel += r.fuel ?? 0;
+      power.stockpile.metals += more(r.metals ?? 0);
+      power.stockpile.volatiles += more(r.volatiles ?? 0);
+      power.stockpile.fuel += more(r.fuel ?? 0);
       return [];
     case 'story':
       return [];

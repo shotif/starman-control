@@ -15,7 +15,7 @@ import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
 import { adviceFor } from '../../sim/advice.ts';
-import { anomalyAt, investigateRefusal, investigationTurns } from '../../sim/anomalies.ts';
+import { anomalyAt, investigateRefusal, investigationTurns, rewardTimes } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { observationWords } from '../../sim/discoveries.ts';
@@ -215,18 +215,18 @@ export function ShipsList({
   );
 }
 
-/** "Reward: 25 research points." */
-export function rewardText(r: AnomalyReward): string {
+/** "Reward: 25 research points." With `more`, as Lapse studies makes it (M2B_SCIENCE.md §18.2). */
+export function rewardText(r: AnomalyReward, more: (n: number) => number = (n) => n): string {
   switch (r.kind) {
     case 'research':
-      return `${r.points} research points.`;
+      return `${more(r.points)} research points.`;
     case 'tech':
-      return `${r.points} research points towards ${TECHS[r.tech].name}.`;
+      return `${more(r.points)} research points towards ${TECHS[r.tech].name}.`;
     case 'resources': {
       const parts: string[] = [];
-      if (r.metals) parts.push(`${r.metals} metals`);
-      if (r.volatiles) parts.push(`${r.volatiles} volatiles`);
-      if (r.fuel) parts.push(`${r.fuel} fusion fuel`);
+      if (r.metals) parts.push(`${more(r.metals)} metals`);
+      if (r.volatiles) parts.push(`${more(r.volatiles)} volatiles`);
+      if (r.fuel) parts.push(`${more(r.fuel)} fusion fuel`);
       return `${parts.join(' and ')} for the stockpile.`;
     }
     case 'story':
@@ -286,7 +286,9 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'investigated': {
       const a = ANOMALIES[e.anomaly];
-      return `${shipOf(e.ship)} investigated ${a.name.replace(/^An? /, (m) => m.toLowerCase())} at ${name(e.system)}. ${a.found} ${rewardText(a.reward)}`;
+      const owner = game.ships.find((x) => x.id === e.ship)?.owner ?? playerPower(game)?.faction;
+      const more = (n: number) => (owner ? rewardTimes(game, owner, n) : n);
+      return `${shipOf(e.ship)} investigated ${a.name.replace(/^An? /, (m) => m.toLowerCase())} at ${name(e.system)}. ${a.found} ${rewardText(a.reward, more)}`;
     }
     case 'arrived':
       return `${shipOf(e.ship)} reached ${name(e.system)}.`;
@@ -320,6 +322,10 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `${holding(e.holding)} could not begin the lane to ${name(e.to)}: ${e.reason}`;
     case 'researched':
       return `Researched ${TECHS[e.tech].name}: ${TECHS[e.tech].text}`;
+    case 'terraformed':
+      return `${holding(e.holding)}’s world is ${e.level} for its people now: its terraforming station has done its work.`;
+    case 'habitat-colony':
+      return `${holding(e.holding)} is a colony now: its orbital habitat holds its first million settlers.`;
     case 'inspired':
       return `An inspiration: ${TECHS[e.tech].inspiration.text} taught us about ${TECHS[e.tech].name}, ${e.points} research towards it.`;
     case 'observed':
@@ -390,6 +396,8 @@ function eventPlace(
     case 'hungry':
     case 'overdrive-stopped':
     case 'governed':
+    case 'terraformed':
+    case 'habitat-colony':
       return { holding: e.holding };
     case 'edict-ended':
       if (e.holding !== null) return { holding: e.holding };
@@ -436,6 +444,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'lane-opened': { icon: 'lane', tone: 'growth' },
   researched: { icon: 'research', tone: 'growth' },
   inspired: { icon: 'research', tone: 'growth' },
+  terraformed: { icon: 'colony', tone: 'growth' },
+  'habitat-colony': { icon: 'colony', tone: 'growth' },
   observed: { icon: 'survey', tone: 'growth' },
   'lane-refused': { icon: 'refused', tone: 'wrong' },
   full: { icon: 'report', tone: 'needs' },
@@ -698,7 +708,7 @@ export function planFor(
       ok: false,
       text: `${name} is ${formatLy(d)} away: too far to jump blind (reach ${formatLy(reach)})${blind ? '' : ', and no open lane leads there'}.`,
     };
-  const turns = blindJumpTurns(d);
+  const turns = blindJumpTurns(d, game, ship.owner);
   return {
     ok: true,
     text: `${ship.name} → ${name}: a blind jump of ${formatLy(d)}, ${turns} turn${turns === 1 ? '' : 's'}`,

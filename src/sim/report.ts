@@ -52,6 +52,10 @@ export type ReportEvent =
   | { kind: 'researched'; tech: TechId }
   /** A deed that taught the power something: points towards a technology (M2B_SCIENCE.md §17.1). */
   | { kind: 'inspired'; tech: TechId; points: number }
+  /** A colony's terraforming station has made its world a step more habitable (M2B_SCIENCE.md §18.3). */
+  | { kind: 'terraformed'; holding: number; level: 'tolerable' | 'comfortable' }
+  /** An outpost's orbital habitat is finished: it is a colony now (§18.3). */
+  | { kind: 'habitat-colony'; holding: number }
   /** A first survey that found what astronomers have observed, and the research it gave (§17.2). */
   | { kind: 'observed'; system: SystemId; found: ObservationKind[]; points: number }
   /** A queued lane that could not be begun when it was paid for, and why. */

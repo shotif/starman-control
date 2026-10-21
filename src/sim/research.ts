@@ -4,6 +4,7 @@
 
 import type { FactionId } from '../content/factions.ts';
 import { FACTIONS } from '../content/factions.ts';
+import { RULES } from '../content/rules.ts';
 import { SPECIES, type SpeciesDef } from '../content/species.ts';
 import { TECH_IDS, TECHS, type TechEffect, type TechId } from '../content/techs.ts';
 import { type GameState, type PowerState, powerOf } from './state.ts';
@@ -42,11 +43,35 @@ export function speciesFor(state: GameState, faction: FactionId): SpeciesDef {
   return { ...base, costs: costs as unknown as SpeciesDef['costs'] };
 }
 
+/**
+ * What a technology costs a power now (M2B_SCIENCE.md §18.1): its base cost, and 3% of it for every
+ * technology the power already knows, rounded down.
+ */
+export function techCost(_state: GameState, power: PowerState, tech: TechId): number {
+  return Math.floor((TECHS[tech].cost * (100 + RULES.research.risePercent * power.researched.length)) / 100);
+}
+
+/** Whether what a technology needs besides technologies is met: Lapse studies' anomalies (§18.2). */
+export function requirementMet(power: PowerState, tech: TechId): boolean {
+  const r = TECHS[tech].requires;
+  return !r || power.investigated.length >= r.investigated;
+}
+
+/** "three anomalies investigated", for a refusal. */
+export function requirementText(tech: TechId): string | null {
+  const r = TECHS[tech].requires;
+  if (!r) return null;
+  const n = ['no', 'one', 'two', 'three', 'four', 'five', 'six'][r.investigated] ?? String(r.investigated);
+  return `${n} anomal${r.investigated === 1 ? 'y' : 'ies'} investigated`;
+}
+
 /** Why a power cannot queue a technology, or null if it can. */
 export function researchRefusal(state: GameState, faction: FactionId, tech: TechId): string | null {
   const p = powerOf(state, faction);
   const name = TECHS[tech].name;
   if (p.researched.includes(tech)) return `${name} is already researched.`;
+  for (const id of withNeeds(p, tech))
+    if (!requirementMet(p, id)) return `${TECHS[id].name} needs ${requirementText(id)}.`;
   return null;
 }
 
@@ -82,13 +107,16 @@ export function unqueueResearch(power: PowerState, tech: TechId): TechId[] {
 
 /**
  * Roughly when each queued technology is done, in turns from now (1: when this turn ends), at a rate
- * of research points a turn (economy.ts's researchOf); null with no points.
+ * of research points a turn (economy.ts's researchOf); null with no points. Each one learnt makes
+ * the next cost more, as it will.
  */
 export function researchTurns(state: GameState, faction: FactionId, rate: number): (number | null)[] {
   const p = powerOf(state, faction);
+  const ahead: PowerState = { ...p, researched: [...p.researched] };
   let need = 0;
   return p.researchQueue.map((id) => {
-    need += TECHS[id].cost - (p.techProgress[id] ?? 0);
+    need += techCost(state, ahead, id) - (p.techProgress[id] ?? 0);
+    ahead.researched.push(id);
     if (need <= 0) return 1;
     return rate > 0 ? Math.max(1, Math.ceil(need / rate)) : null;
   });
@@ -96,21 +124,30 @@ export function researchTurns(state: GameState, faction: FactionId, rate: number
 
 /** Technologies a power has neither researched nor queued but could queue, for what needs you. */
 export function canResearch(power: PowerState): TechId[] {
-  return TECH_IDS.filter((id) => !power.researched.includes(id) && !power.researchQueue.includes(id));
+  return TECH_IDS.filter(
+    (id) =>
+      !power.researched.includes(id) &&
+      !power.researchQueue.includes(id) &&
+      withNeeds(power, id).every((n) => requirementMet(power, n)),
+  );
 }
 
 /**
- * Research points from elsewhere (an anomaly): into the queue, or, with nothing queued, into the
- * first technology the power could research, without queueing it. Returns what they finish.
+ * Research points from elsewhere (an anomaly, an observation): into the queue, or, with nothing
+ * queued, into the first technology the power could research, without queueing it. Returns what
+ * they finish.
  */
-export function grantResearch(power: PowerState, points: number): TechId[] {
-  if (power.researchQueue.length > 0) return spendResearch(power, points);
+export function grantResearch(state: GameState, power: PowerState, points: number): TechId[] {
+  if (power.researchQueue.length > 0) return spendResearch(state, power, points);
   const open = TECH_IDS.find(
-    (id) => !power.researched.includes(id) && TECHS[id].needs.every((n) => power.researched.includes(n)),
+    (id) =>
+      !power.researched.includes(id) &&
+      requirementMet(power, id) &&
+      TECHS[id].needs.every((n) => power.researched.includes(n)),
   );
   if (!open) return [];
   power.researchQueue = [open];
-  const done = spendResearch(power, points);
+  const done = spendResearch(state, power, points);
   power.researchQueue = [];
   return done;
 }
@@ -120,9 +157,9 @@ export function grantResearch(power: PowerState, points: number): TechId[] {
  * point of done, never past, so it is still researched in its place in the tree; if it is
  * researched already, the points go to the current research instead.
  */
-export function grantTechProgress(power: PowerState, tech: TechId, points: number): TechId[] {
-  if (power.researched.includes(tech)) return grantResearch(power, points);
-  power.techProgress[tech] = Math.min(TECHS[tech].cost - 1, (power.techProgress[tech] ?? 0) + points);
+export function grantTechProgress(state: GameState, power: PowerState, tech: TechId, points: number): TechId[] {
+  if (power.researched.includes(tech)) return grantResearch(state, power, points);
+  power.techProgress[tech] = Math.min(techCost(state, power, tech) - 1, (power.techProgress[tech] ?? 0) + points);
   return [];
 }
 
@@ -130,20 +167,20 @@ export function grantTechProgress(power: PowerState, tech: TechId, points: numbe
  * Puts a turn's points into the queue: the first technology, then the next with what is left.
  * Points with nothing queued are lost. Returns the technologies finished, in order.
  */
-export function spendResearch(power: PowerState, points: number): TechId[] {
+export function spendResearch(state: GameState, power: PowerState, points: number): TechId[] {
   const done: TechId[] = [];
   let left = points;
   while (left > 0) {
     const id = power.researchQueue[0];
     if (!id) break;
     const have = power.techProgress[id] ?? 0;
-    const need = TECHS[id].cost - have;
+    const need = techCost(state, power, id) - have;
     if (left < need) {
       power.techProgress[id] = have + left;
       left = 0;
       break;
     }
-    left -= need;
+    left -= Math.max(0, need);
     delete power.techProgress[id];
     power.researchQueue.shift();
     power.researched.push(id);

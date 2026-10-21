@@ -45,6 +45,8 @@ export function laneQuote(world: World, state: GameState, faction: FactionId, fr
     cost.fuel = ceilDiv(cost.fuel, 2);
     turns = ceilDiv(turns, 2);
   }
+  // Lane weaving tunes lanes faster (M2B_SCIENCE.md §18.2).
+  for (const e of effects(state, faction, 'tuning-percent')) turns = Math.max(1, ceilDiv(turns * e.percent, 100));
   for (const e of effects(state, faction, 'lane-discount')) {
     const keep = 100 - e.percent;
     cost.industry = ceilDiv(cost.industry * keep, 100);

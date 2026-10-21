@@ -54,10 +54,13 @@ test('the research tree has M2’s technologies, each with its exact effect', as
   if (isDesktop(project)) await page.keyboard.press('t');
   else await page.getByRole('button', { name: 'Research', exact: true }).tap();
   const screen = page.getByRole('dialog', { name: 'Research' });
-  await expect(screen).toContainText('Soil science');
-  await expect(screen).toContainText('Each farm district yields 1 more food.');
+  // On a phone and a tablet each field is a tab (M2B_SCIENCE.md §18.5).
+  if (!isDesktop(project)) await screen.getByRole('tab', { name: /^Survey/ }).tap();
   await expect(screen).toContainText('Computing');
   await expect(screen).toContainText('opens the research institute');
+  if (!isDesktop(project)) await screen.getByRole('tab', { name: /^Life Sciences/ }).tap();
+  await expect(screen).toContainText('Soil science');
+  await expect(screen).toContainText('Each farm district yields 1 more food.');
   await press(screen.getByRole('button', { name: 'Queue Soil science', exact: true }), project);
   await expect(screen.locator('.research-queue')).toContainText('Soil science');
   await expect(screen.locator('.research-queue li').first()).toContainText('done in about 5 turns');

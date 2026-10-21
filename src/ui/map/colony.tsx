@@ -32,6 +32,7 @@ import {
   idleMillions,
   incomeOf,
   industryOf,
+  levelOf,
   mainResource,
   networkFood,
   networkOf,
@@ -43,6 +44,7 @@ import {
   resourceWord,
   settleRefusal,
   shortfall,
+  terraformNext,
   treasuryOf,
   workedSlots,
   yieldsOf,
@@ -208,6 +210,14 @@ function FigureLine({
       {parts.length > 1 && <span class="dim"> = {parts.map((p) => `${p.value} ${p.label}`).join(' + ')}</span>}
     </p>
   );
+}
+
+/** How far its terraforming station has come (M2B_SCIENCE.md §18.3). */
+function terraformText(world: World, game: GameState, h: Holding): string {
+  const next = terraformNext(world, game, h);
+  const level = levelOf(world, game, h);
+  if (!next) return `done: its world is ${level} for its people`;
+  return `${level} now, ${next.to} in ${next.turns} turn${next.turns === 1 ? '' : 's'}`;
 }
 
 /** Why a colony grows or not. */
@@ -761,6 +771,12 @@ export function HoldingPanel({
             <dd>
               <FoodText world={world} game={game} h={h} />
             </dd>
+            {h.projects.includes('terraforming-station') && (
+              <>
+                <dt>Terraforming</dt>
+                <dd>{terraformText(world, game, h)}</dd>
+              </>
+            )}
           </dl>
           <FigureLine label="Industry" {...industryOf(world, game, h)} />
           <FigureLine label="Research" {...colonyResearchOf(world, game, h)} />
@@ -796,12 +812,8 @@ export function HoldingPanel({
           </h3>
           <Queue world={world} game={game} h={h} play={play} table={table} />
           {h.kind === 'colony' && <Overdrive world={world} game={game} h={h} play={play} />}
-          {h.kind === 'colony' && (
-            <>
-              <h3>Add to the queue</h3>
-              <AddToQueue world={world} game={game} h={h} play={play} />
-            </>
-          )}
+          <h3>Add to the queue</h3>
+          <AddToQueue world={world} game={game} h={h} play={play} />
           <h3>Lanes from here</h3>
           <LanesFromHere world={world} game={game} h={h} play={play} />
         </>

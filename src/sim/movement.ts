@@ -153,12 +153,17 @@ export function previewMove(
 
 /** How far a power's survey ships can jump without a lane: 6 ly, and 2 more for each Lane engineering. */
 export function blindReachDeci(state: GameState, owner: FactionId): number {
-  return RULES.blindJump.reachDeci + effects(state, owner, 'reach').reduce((sum, e) => sum + e.deci, 0);
+  return (
+    RULES.blindJump.reachDeci +
+    effects(state, owner, 'reach').reduce((sum, e) => sum + e.deci, 0) +
+    effects(state, owner, 'blind-jump').reduce((sum, e) => sum + e.deci, 0)
+  );
 }
 
-/** Turns a blind jump takes: one for every 3 ly, rounded up. */
-export function blindJumpTurns(distanceDeci: number): number {
-  return Math.max(1, ceilDiv(distanceDeci, RULES.blindJump.deciPerTurn));
+/** Turns a blind jump takes: one for every 3 ly, rounded up, less Fold charts' turn (at least one). */
+export function blindJumpTurns(distanceDeci: number, state?: GameState, owner?: FactionId): number {
+  const less = state && owner ? effects(state, owner, 'blind-jump').reduce((sum, e) => sum + e.turns, 0) : 0;
+  return Math.max(1, ceilDiv(distanceDeci, RULES.blindJump.deciPerTurn) - less);
 }
 
 export function canJumpBlind(ship: ShipState): boolean {

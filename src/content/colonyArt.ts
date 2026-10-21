@@ -272,6 +272,16 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['authority-flare-shield', 1645 / 1861, 34],
       ['cooperative-flare-shield', 1795 / 1300, 34],
       ['wake-flare-shield', 1843 / 1714, 34],
+      // M2b's increment 30 (M2B_SCIENCE.md §18.3).
+      ['authority-lane-relay', 1067 / 1885, 26],
+      ['cooperative-lane-relay', 1172 / 1680, 28],
+      ['wake-lane-relay', 1533 / 1815, 30],
+      ['authority-orbital-habitat', 1637 / 1825, 44],
+      ['cooperative-orbital-habitat', 1689 / 1517, 44],
+      ['wake-orbital-habitat', 1778 / 1616, 44],
+      ['authority-terraforming-station', 1789 / 1536, 46],
+      ['cooperative-terraforming-station', 1876 / 1619, 46],
+      ['wake-terraforming-station', 1982 / 1905, 46],
     ] as const
   ).map(([id, aspect, metres]) => [id, { id, aspect, metres }]),
 );

@@ -18,12 +18,15 @@ import {
   districtCount,
   growthOf,
   industryOf,
+  levelOf,
   networkFood,
   networksOf,
   overdriveCost,
   researchOf,
   settleRefusal,
   stopped,
+  terraformNext,
+  terraformSteps,
   upkeepOf,
   yieldsOf,
 } from './economy.ts';
@@ -141,9 +144,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     // What astronomers have observed here gives research, once (M2B_SCIENCE.md §17.2).
     const found = observationsAt(world, system);
     if (found.length > 0) {
-      const points = observationPoints(found);
+      const points = observationPoints(state, power.faction, found);
       log.push({ kind: 'observed', system, found, points });
-      for (const tech of grantResearch(power, points)) log.push({ kind: 'researched', tech });
+      for (const tech of grantResearch(state, power, points)) log.push({ kind: 'researched', tech });
     }
   };
   for (const ship of state.ships) {
@@ -184,7 +187,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     power.investigated.push(inv.system);
     power.investigated.sort();
     log(ship).push({ kind: 'investigated', ship: ship.id, system: inv.system, anomaly: id });
-    for (const tech of grantReward(power, id)) log(ship).push({ kind: 'researched', tech });
+    for (const tech of grantReward(state, power, id)) log(ship).push({ kind: 'researched', tech });
   }
   const usedUp = new Set<number>();
   for (const ship of state.ships) {
@@ -202,7 +205,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       system: ship.at,
       body: f.body,
       capital: false,
-      people: f.kind === 'colony' ? RULES.colonies.founding : 0,
+      // Cryosleep's colony ships carry more settlers (M2B_SCIENCE.md §18.2).
+      people:
+        f.kind === 'colony'
+          ? Math.max(RULES.colonies.founding, ...effects(state, ship.owner, 'settlers').map((e) => e.people))
+          : 0,
     });
     // A new colony arrives with its first districts zoned (D-42), and a governor in an imperial game.
     const n = districtCount(world, state, h);
@@ -305,13 +312,23 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       } else {
         h.projects.push(first.project);
         log.push({ kind: 'built', holding: h.id, item: first });
+        // An outpost's orbital habitat makes it a colony in orbit, with its founders (§18.3).
+        if (first.project === 'orbital-habitat' && h.kind === 'outpost') {
+          h.kind = 'colony';
+          h.people = RULES.colonies.founding;
+          h.districts = RULES.districts.founding
+            .slice(0, districtCount(world, state, h))
+            .map((zone, i) => ({ zone, slot: i + 1 }));
+          if (power.governNew) h.governor = 'balance';
+          log.push({ kind: 'habitat-colony', holding: h.id });
+        }
       }
     }
   }
 
   // 4. Research: each power's points go into its research queue.
   for (const p of state.powers) {
-    const done = spendResearch(p, research.get(p.faction) ?? 0);
+    const done = spendResearch(state, p, research.get(p.faction) ?? 0);
     for (const tech of done) (events.get(p.faction) as ReportEvent[]).push({ kind: 'researched', tech });
   }
 
@@ -330,6 +347,19 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       if (!h) continue;
       if (hungry && h.hungry === 0) (events.get(faction) as ReportEvent[]).push({ kind: 'hungry', holding: h.id });
       h.hungry = hungry ? h.hungry + 1 : 0;
+    }
+  }
+
+  // 5b. Terraforming (M2B_SCIENCE.md §18.3): each station works a turn, unless its colony is in revolt
+  // or it can do no more; a step done makes the world more habitable.
+  for (const h of state.holdings) {
+    if (revolt.has(h.id) || terraformNext(world, state, h) === null) continue;
+    const before = terraformSteps(state, h);
+    h.terraform += 1;
+    if (terraformSteps(state, h) > before) {
+      const level = levelOf(world, state, h);
+      if (level === 'tolerable' || level === 'comfortable')
+        (events.get(h.owner) as ReportEvent[]).push({ kind: 'terraformed', holding: h.id, level });
     }
   }
 
@@ -367,9 +397,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // report shows it and the player can undo it before the next.
   for (const [faction, said] of governAll(world, state)) (events.get(faction) as ReportEvent[]).push(...said);
 
-  // 9. Attention grows, and edicts run their course (§25.2).
+  // 9. Attention grows (more with Civil service, M2B_SCIENCE.md §18.2), and edicts run their course (§25.2).
   for (const p of state.powers) {
-    p.attention = Math.min(RULES.attention.most, p.attention + RULES.attention.perTurn);
+    const more = effects(state, p.faction, 'attention').reduce((n, e) => n + e.perTurn, 0);
+    p.attention = Math.min(RULES.attention.most, p.attention + RULES.attention.perTurn + more);
     for (const e of p.edicts) e.left--;
     for (const e of p.edicts.filter((x) => x.left <= 0))
       (events.get(p.faction) as ReportEvent[]).push({ kind: 'edict-ended', edict: e.edict, holding: e.holding });

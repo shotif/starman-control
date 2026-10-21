@@ -100,7 +100,7 @@ describe('research points', () => {
       people: 85,
       districts: [],
     });
-    expect(scholarsOf(mars)).toBe(2);
+    expect(scholarsOf(g, mars)).toBe(2);
     expect(colonyResearchOf(world, g, mars).total).toBe(2);
     powerOf(g, 'sta').taxes = 'high';
     mars.hungry = 1;
@@ -117,7 +117,7 @@ describe('research points', () => {
     powerOf(g, 'sta').treasury = -10;
     powerOf(g, 'sta').lasting.push({ event: 'strike', kind: 'approval', holding: mars.id, amount: -30, left: 2 });
     expect(colonyResearchOf(world, g, mars)).toEqual({ total: 0, parts: [{ label: 'in revolt', value: 0 }] });
-    expect(scholarsOf({ ...mars, kind: 'outpost', people: 0 })).toBe(0);
+    expect(scholarsOf(g, { ...mars, kind: 'outpost', people: 0 })).toBe(0);
   });
 
   it('go into the first technology queued, then the next with what is left', () => {
@@ -157,9 +157,14 @@ describe('research points', () => {
 });
 
 describe('the research tree', () => {
-  it('has 33 technologies costing 2,060 points, each needing only what comes before it (M2_WORLDS.md §23.2, §27.5)', () => {
-    expect(TECH_IDS).toHaveLength(33);
-    expect(TECH_IDS.reduce((sum, id) => sum + TECHS[id].cost, 0)).toBe(2060);
+  it('has 54 technologies costing 8,520 points before the rise, each needing only what comes before it (M2B_SCIENCE.md §18.2)', () => {
+    expect(TECH_IDS).toHaveLength(54);
+    expect(TECH_IDS.reduce((sum, id) => sum + TECHS[id].cost, 0)).toBe(8520);
+    for (const f of ['propulsion', 'construction', 'life-sciences', 'society', 'survey'] as const)
+      expect(
+        TECH_IDS.some((id) => TECHS[id].field === f && TECHS[id].tier === 4),
+        f,
+      ).toBe(true);
     for (const id of TECH_IDS)
       for (const n of TECHS[id].needs) expect(TECHS[n].tier, `${id} needs ${n}`).toBeLessThan(TECHS[id].tier);
   });

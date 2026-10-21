@@ -1,4 +1,4 @@
-# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 29)
+# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 30)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -77,8 +77,12 @@ way in.
   **Increment 29 is built:** discoveries (`src/sim/discoveries.ts`): every technology names a deed
   that pays 40% of it once (an inspiration), and a first survey of what astronomers have observed
   (white dwarfs, discs, brown dwarfs, flare stars, planets, systems of three stars) gives research
-  with a line labelled *Observed*; state version 10. Until increment 30 deepens the tree, every
-  power finishes M2's 33 technologies before turn 100.
+  with a line labelled *Observed*; state version 10. **Increment 30 is built:** 21 new
+  technologies (54 in all) with tiers 4 and 5, each costing 7% more for every technology known;
+  the lane relay, the orbital habitat (an outpost becomes a colony in orbit) and the terraforming
+  station, with their pictures; the research screen as tabs on a phone and a grid with the queue
+  beside it and arrow keys on a desktop; state version 11. At turn 100 of the headless games the
+  Authority knows about 37 technologies, the Cooperative 23 and the Wake 22.
 - **Numbers:** 375 unit tests and about 209 browser journeys pass; the title loads 21.2 KB of its
   40 KB budget, a game's map about 319 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 658 KB of pictures at most (1 MB) and the diorama it opens
@@ -103,7 +107,7 @@ slow or too easy (§29.5); their answers decide M3's first changes.
 headless games showed two rivals stuck at 5 research a turn and the third through the whole tree by
 turn 90. D-44 to D-50 were answered *as recommended* on 21 October 2026. Build increments 28 to 32
 as its §12 sets out, each with a detailed design section first (§16 onwards) and its notes as
-built. Increments 28 and 29 are done.
+built. Increments 28 to 30 are done.
 
 **Then: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
 (goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md
@@ -111,8 +115,8 @@ before building: first contact and translation, treaties, borders and claims, tr
 each power did, and the first alien species (D-08's "alien species later"). Each increment's
 pictures are lettered sheets to the owner, recorded in DECISIONS.md with their cost.
 
-The art and music spend: about $23.15 of $35 (raised on 21 October 2026; about $11.85 left). M2b's
-13 pictures are planned at about $1.30. M3 will need more (alien species, their worlds and faces):
+The art and music spend: about $24.05 of $35 (raised on 21 October 2026; about $10.95 left). M2b's
+last 4 pictures (the great works) are planned at about $0.40. M3 will need more (alien species, their worlds and faces):
 ask the owner to raise D-27 again when its design is written.
 
 ## 3. Standing instructions from the owner
@@ -124,7 +128,7 @@ ask the owner to raise D-27 again when its design is written.
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$35 in all** may be spent without asking (raised on 21 October
-  2026); about **$23.15** is spent (after increments 18 to 25), so about **$11.85** is left. Nano
+  2026); about **$24.05** is spent (after increment 30), so about **$10.95** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.

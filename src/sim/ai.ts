@@ -3,20 +3,20 @@
 // the player's, refused for the same reasons. Its colonies are run by governors (`govern`); this
 // decides its ships, its shipyards, its lanes, its research and its taxes, in its power's character.
 
-import { EDICTS, type Priority } from '../content/edicts.ts';
+import type { Priority } from '../content/edicts.ts';
 import type { FactionId } from '../content/factions.ts';
 import type { QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { type FieldId, TECHS } from '../content/techs.ts';
+import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
-import { approvalOf, industryOf, settleable, treasuryOf } from './economy.ts';
+import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
 import { habitability } from './habitability.ts';
 import { laneTargets } from './lanes.ts';
 import { blindReachDeci, findRoute } from './movement.ts';
 import type { Order } from './orders.ts';
-import { canResearch, speciesFor } from './research.ts';
+import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
 import type { World } from './world.ts';
 
@@ -37,7 +37,8 @@ export interface Personality {
 export const PERSONALITIES: Record<FactionId, Personality> = {
   sta: {
     capital: 'research',
-    colonies: 'balance',
+    // Research-led (M2B_SCIENCE.md §18.4): its colonies run for research too.
+    colonies: 'research',
     settles: 'roomiest',
     fields: ['survey', 'propulsion'],
     taxes: 'standard',
@@ -77,6 +78,8 @@ const OVERDRIVE_AT: readonly (readonly [number, number])[] = [
   [100, 1],
 ];
 const OVERDRIVE_OFF = 60;
+/** With this much, and gaining, a rival's idle outpost may raise an orbital habitat (§18.4). */
+const HABITAT_TREASURY = 60;
 
 export function aiOrders(world: World, state: GameState, faction: FactionId): Order[] {
   const me = PERSONALITIES[faction];
@@ -178,21 +181,39 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     if (ship) orders.push({ type: 'queue', holding: h.id, item: ship });
   }
 
-  // Lanes: outposts (and the Authority's colonies) queue the nearest they can, when idle.
+  // Lanes: outposts (and the Authority's colonies) queue the nearest they can, when idle. An idle
+  // outpost with no lane to build raises an orbital habitat once its power knows how, one at a time,
+  // while the treasury can keep a colony (M2B_SCIENCE.md §18.4).
+  let habitats = mine.filter((h) =>
+    h.queue.some((q) => q.kind === 'project' && q.project === 'orbital-habitat'),
+  ).length;
   for (const h of mine) {
     if (h.queue.length > 0 || (h.kind === 'colony' && !me.laneBuilder)) continue;
     const lane = laneTargets(world, state, faction, h.system).find((t) => t.refusal === null);
-    if (lane) orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.quote.to } });
+    if (lane) {
+      orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.quote.to } });
+      continue;
+    }
+    const habitat: QueueItem = { kind: 'project', project: 'orbital-habitat' };
+    if (
+      h.kind === 'outpost' &&
+      habitats === 0 &&
+      power.treasury >= HABITAT_TREASURY &&
+      income > 0 &&
+      queueRefusal(world, state, h, habitat) === null
+    ) {
+      orders.push({ type: 'queue', holding: h.id, item: habitat });
+      habitats++;
+    }
   }
 
-  // Research: the cheapest it can, its own fields first.
+  // Research: the cheapest it can with what it needs, by base cost, its own fields at half the price
+  // (M2B_SCIENCE.md §18.4), so a deep tree in its own fields does not keep it from the first steps of
+  // the others.
   if (power.researchQueue.length === 0) {
-    const next = canResearch(power).sort(
-      (a, b) =>
-        Number(!me.fields.includes(TECHS[a].field)) - Number(!me.fields.includes(TECHS[b].field)) ||
-        TECHS[a].cost - TECHS[b].cost ||
-        (a < b ? -1 : 1),
-    )[0];
+    const price = (id: TechId) =>
+      withNeeds(power, id).reduce((n, x) => n + TECHS[x].cost * (me.fields.includes(TECHS[x].field) ? 1 : 2), 0);
+    const next = canResearch(power).sort((a, b) => price(a) - price(b) || (a < b ? -1 : 1))[0];
     if (next) orders.push({ type: 'research', tech: next });
   }
 
@@ -230,7 +251,7 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     return level === 'unrest' || level === 'revolt';
   });
   const has = (e: string) => power.edicts.some((x) => x.edict === e);
-  if (restless && !has('festival') && power.attention >= EDICTS.festival.cost)
+  if (restless && !has('festival') && power.attention >= edictCost(state, faction, 'festival'))
     orders.push({ type: 'edict', edict: 'festival', holding: restless.id });
   else if (power.attention >= RULES.attention.most && !has(me.edict)) {
     const least = [...colonies].sort((a, b) => approval(a) - approval(b) || a.id - b.id)[0];

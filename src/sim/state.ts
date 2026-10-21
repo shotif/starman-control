@@ -17,7 +17,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 10;
+export const STATE_VERSION = 11;
 
 export interface Stockpile {
   metals: number;
@@ -160,6 +160,8 @@ export interface Holding {
   governor: Priority | null;
   /** District slots the player zoned or cleared, which no governor touches. */
   locked: number[];
+  /** Turns its terraforming station has worked (M2B_SCIENCE.md §18.3); 0 without one. */
+  terraform: number;
 }
 
 export interface GameState {
@@ -215,7 +217,16 @@ export function makeHolding(
   state: GameState,
   h: Omit<
     Holding,
-    'id' | 'projects' | 'queue' | 'industry' | 'districts' | 'hungry' | 'overdrive' | 'governor' | 'locked'
+    | 'id'
+    | 'projects'
+    | 'queue'
+    | 'industry'
+    | 'districts'
+    | 'hungry'
+    | 'overdrive'
+    | 'governor'
+    | 'locked'
+    | 'terraform'
   > &
     Partial<Pick<Holding, 'projects' | 'districts' | 'governor'>>,
 ): Holding {
@@ -229,6 +240,7 @@ export function makeHolding(
     overdrive: 0,
     governor: null,
     locked: [],
+    terraform: 0,
     ...h,
   };
   state.nextHoldingId++;
@@ -253,6 +265,7 @@ export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
     overdrive: 0,
     governor: null,
     locked: [],
+    terraform: 0,
   };
 }
 
@@ -312,10 +325,15 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
   return state;
 }
 
-/** Beacon slots at a system (§3): five where a holding there has a lane station, else three. */
+/**
+ * Beacon slots at a system (§3): five where a holding there has a lane station, else three; and two
+ * more for each lane relay there (M2B_SCIENCE.md §18.3).
+ */
 export function beaconSlots(state: GameState, system: SystemId): number {
-  const station = state.holdings.some((h) => h.system === system && h.projects.includes('lane-station'));
-  return station ? RULES.beacons.slotsWithStation : RULES.beacons.slots;
+  const here = state.holdings.filter((h) => h.system === system);
+  const station = here.some((h) => h.projects.includes('lane-station'));
+  const relays = here.filter((h) => h.projects.includes('lane-relay')).length;
+  return (station ? RULES.beacons.slotsWithStation : RULES.beacons.slots) + relays * RULES.projects.relaySlots;
 }
 
 /** The holding on a body, if any power holds it. */

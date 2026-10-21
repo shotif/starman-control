@@ -154,7 +154,7 @@
 .research-overlay {
   position: relative;
   z-index: 5;
-  grid-column: 2 / 4;
+  grid-column: 1 / -1;
   grid-row: 2;
   overflow-y: auto;
   padding: 0.75rem 1.25rem 1.5rem;
@@ -167,4 +167,81 @@
   top: 0;
   z-index: 3;
   float: right;
+}
+
+.tech-needs.is-unmet {
+  color: var(--warm);
+}
+
+/* The queue's own line: progress, turns, and a way out of it */
+.queue-item {
+  position: relative;
+}
+
+.queue-remove {
+  font-size: 0.8rem;
+}
+
+.research-done {
+  margin-top: 0.4rem;
+}
+
+/* The phone's fields as tabs (M2B_SCIENCE.md §18.5) */
+.field-tabs {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.2rem;
+  scrollbar-width: thin;
+}
+
+.field-tab {
+  flex: none;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--panel-border);
+  background: rgba(7, 12, 23, 0.9);
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.field-tab[aria-selected="true"] {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(92, 200, 255, 0.14);
+}
+
+/* The desktop's tree with the queue beside it */
+.research-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.research-side {
+  position: sticky;
+  top: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--panel-border);
+  background: rgba(7, 12, 23, 0.96);
+  max-height: calc(100vh - 9rem);
+  overflow-y: auto;
+}
+
+.research-side h3 {
+  margin-top: 0.2rem;
+}
+
+.research-keys {
+  margin-top: 0;
+  font-size: 0.82rem;
+}
+
+.tech-grid .tech:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
