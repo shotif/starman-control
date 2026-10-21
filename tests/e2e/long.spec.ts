@@ -11,11 +11,14 @@ const press = (target: Locator, project: string) => (isDesktop(project) ? target
 
 interface GameHook {
   __game: () => { turn: number } | null;
-  /** The game's own measure of its last turn: from the press to the new quarter drawn. */
+  /** The game's own measure of its last turn: from the press to the new quarter in the game. */
   __lastTurnMs: () => number;
 }
 
-/** Ends a turn; returns how long the game took, from the press that ended it to the new quarter drawn. */
+/**
+ * Ends a turn; returns how long the game took from the press that ended it to the new quarter in
+ * the game. The test browser draws with software (SwiftShader), so the drawing is not timed.
+ */
 async function endTurn(page: Page, project: string): Promise<number> {
   // The last turn is saved before the next can end: End turn waits, disabled, until then.
   await expect(page.getByRole('button', { name: /End turn/ }).first()).toBeEnabled();

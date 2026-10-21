@@ -1171,7 +1171,7 @@ events it met and how it answered. The test asks that every power settle at leas
 A browser test plays 100 turns on the phone and the desktop with rivals and events: it answers each
 event that waits, ends each turn, and at the end checks that the game saved, the report reads, the
 save is under 200 KB and no turn took longer than 2 seconds from the press to the next quarter
-(the worker's turn and the screen's). It runs in CI with the other journeys.
+in the game (the worker's turn; the test browser draws with software, so its drawing is not timed). It runs in CI with the other journeys.
 
 ### 29.4 The budgets
 

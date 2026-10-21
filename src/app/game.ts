@@ -18,7 +18,7 @@ import { world } from './world.ts';
 export { world };
 
 export const game = signal<GameState | null>(null);
-/** How long the last turn took, from the press to the new quarter on the screen, in milliseconds. */
+/** How long the last turn took, from the press to the new quarter in the game (the worker's turn), in milliseconds. */
 let lastTurnMs = 0;
 
 // The browser tests read the game as it stands (its size, its turn) and how long its last turn took.
@@ -113,11 +113,7 @@ export async function endTheTurn(): Promise<void> {
     const { state } = await endTurn(world, g);
     game.value = state;
     freshReport.value = true;
-    // The new quarter is drawn on the next frame.
-    if (typeof requestAnimationFrame !== 'undefined')
-      requestAnimationFrame(() => {
-        lastTurnMs = Math.round(performance.now() - t0);
-      });
+    lastTurnMs = Math.max(1, Math.round(performance.now() - t0));
     if (pendingSave) {
       clearTimeout(pendingSave);
       pendingSave = null;
