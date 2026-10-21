@@ -1184,3 +1184,34 @@ measured in `npm run check` or the unit tests.
 The report of this increment asks the owner to play a game of 50 turns or more on a phone and on a
 desktop, and to say what was dull, unclear, slow or too easy; their answers decide the first
 changes of M3.
+
+### Increment 27: the proof (21 October 2026)
+
+- **Rivals that spend** (§29.1, `src/sim/ai.ts`): overdrive at their colonies with something queued,
+  one step from 100 credits, two from 250, three from 500, none below 60; a festival where a
+  colony is restless, and with attention at its most their own edict (the Authority's crash
+  programme, the Cooperative's festival at its least content colony, the Wake's labour drive at its
+  busiest). The Hollow Wake now ends 100 turns with 215 to 337 credits, not over 1,000, and with 10
+  to 16 colonies, not 9 or 10.
+- **The headless games** (`npm run balance`, [M2_BALANCE.md](M2_BALANCE.md)): on eight seeds, at
+  turn 100, the Authority averages 8.8 colonies, 11.3 outposts, 43 million people and 30 of the 33
+  technologies; the Cooperative 11.8, 7.1, 76 million and 11; the Wake 12.4, 9.8, 71 million and
+  11. No power falls into debt and no colony goes hungry. The unit test asks for every power at
+  least 3 colonies and 3 outposts, twice its people, 8 technologies, no hunger or debt over 5 turns
+  and no treasury over 600; turn 100 is timed three times and the fastest kept, so the machine's
+  other work does not fail it.
+- **For the owner** (not changed: the player's numbers are theirs to decide): a power that runs its
+  capital for research finishes the whole tree by turn 100 while the others reach a third of it; M3
+  should deepen the tree, or research should cost more as it goes. The Cooperative's low taxes keep
+  its treasury near 30 to 40 all game.
+- **A hundred turns in the browser** (`long.spec.ts`, the phone and the desktop, with the Frontier
+  Co-op on seed 2176): ten events answered in each; the slowest turn 119 ms on the phone and 235
+  ms on the desktop (51 and 65 ms on average), timed by the game from the press to the next quarter
+  in the game; the test waits for each turn to be saved before the next, as *End turn* does. The
+  test browser draws the map with software, so its drawing is not timed: a first try that timed
+  Playwright's own taps and the software frames measured up to 5 seconds, none of it the game's.
+- **The budgets** hold: the title 21.2 KB of 40 KB; the map in a game 319.3 KB of 900 KB; opening a
+  colony 9.5 KB of code; a colony's still on a phone 658 KB of 1 MB and its diorama 1.62 MB of
+  2 MB; the slowest turn of the eight headless games 79 ms (200 ms allowed); the largest save at
+  turn 100 30.3 KB (200 KB allowed).
+- **The owner's try** (§29.5) is asked for in this increment's report.

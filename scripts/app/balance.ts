@@ -88,14 +88,17 @@ const avg = (turn: number, f: FactionId) => {
   return `| ${turn} | ${FACTIONS[f].shortName} | ${a(t.colonies)} | ${a(t.outposts)} | ${(t.people / t.n / 10).toFixed(1)} | ${a(t.techs)} | ${Math.round(t.treasury / t.n)} |`;
 };
 
+/** "No power fell into debt." or "The longest time in debt was 3 turns in a row." */
+const streak = (turns: number, what: string, never: string) =>
+  turns === 0 ? `${never}.` : `The longest time ${what} was ${turns} turn${turns === 1 ? '' : 's'} in a row.`;
+
 const out = `# M2's headless games
 
 *Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2): three rivals, ${SEEDS.length} seeds,
 100 turns each. Regenerate it after any change to the rules or the rivals.*
 
 The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
-was ${(biggest / 1024).toFixed(1)} KB. No power was in debt for more than ${longestDebt} turn${longestDebt === 1 ? '' : 's'} in a
-row; no colony was hungry for more than ${longestHunger} turn${longestHunger === 1 ? '' : 's'} in a row.
+was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
 
 ## On average
 

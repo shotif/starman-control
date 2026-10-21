@@ -69,9 +69,9 @@ way in.
   treasuries on overdrive and their attention on edicts; `npm run balance` writes the headless
   games to [M2_BALANCE.md](design/M2_BALANCE.md); a browser journey plays 100 turns on a phone and a
   desktop. **M2 is complete** and waits for the owner's try.
-- **Numbers:** 373 unit tests and about 205 browser journeys pass; the title loads 20.9 KB of its
-  40 KB budget, a game's map about 310 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
-  a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
+- **Numbers:** 375 unit tests and about 209 browser journeys pass; the title loads 21.2 KB of its
+  40 KB budget, a game's map about 319 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
+  a colony's still on a phone loads 658 KB of pictures at most (1 MB) and the diorama it opens
   1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;
   state version 9.
 

@@ -3,9 +3,8 @@
 *Written by `npm run balance` (scripts/app/balance.ts, M2_WORLDS.md §29.2): three rivals, 8 seeds,
 100 turns each. Regenerate it after any change to the rules or the rivals.*
 
-The slowest turn took 158 ms on the machine that wrote this; the largest save at turn 100
-was 30.3 KB. No power was in debt for more than 0 turns in a
-row; no colony was hungry for more than 0 turns in a row.
+The slowest turn took 79 ms on the machine that wrote this; the largest save at turn 100
+was 30.3 KB. No power fell into debt. No colony went hungry.
 
 ## On average
 
