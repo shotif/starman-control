@@ -18,6 +18,9 @@ import { world } from './world.ts';
 export { world };
 
 export const game = signal<GameState | null>(null);
+// The browser tests read the game as it stands (its size, its turn).
+if (typeof location !== 'undefined' && new URLSearchParams(location.search).has('test'))
+  (globalThis as unknown as { __game: () => GameState | null }).__game = () => game.value;
 /** True while a turn is being worked out. */
 export const resolving = signal(false);
 /** The report of the turn that just ended, until it is read. */

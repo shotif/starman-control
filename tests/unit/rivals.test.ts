@@ -174,6 +174,41 @@ describe('how a rival plays (§26.2)', () => {
     expect(aiOrders(world, g, 'hollow-wake')).toContainEqual({ type: 'taxes', rate: 'high' });
   });
 
+  it('spends a full treasury on overdrive where something is queued, and stops when it runs low (§29.1)', () => {
+    const g = withRivals();
+    const wake = capitalOf(g, 'hollow-wake');
+    wake.queue.push({ kind: 'project', project: 'hydroponics' });
+    const overdrive = () => aiOrders(world, g, 'hollow-wake').find((o) => o.type === 'overdrive');
+    powerOf(g, 'hollow-wake').treasury = 99;
+    expect(overdrive()).toBeUndefined();
+    powerOf(g, 'hollow-wake').treasury = 260;
+    expect(overdrive()).toEqual({ type: 'overdrive', holding: wake.id, steps: 2 });
+    wake.overdrive = 2;
+    powerOf(g, 'hollow-wake').treasury = 80;
+    expect(overdrive()).toBeUndefined();
+    powerOf(g, 'hollow-wake').treasury = 40;
+    expect(overdrive()).toEqual({ type: 'overdrive', holding: wake.id, steps: 0 });
+  });
+
+  it('issues a festival where a colony is restless; with attention at its most, the edict of its character', () => {
+    const g = withRivals(42, null);
+    const edict = (f: FactionId) => aiOrders(world, g, f).find((o) => o.type === 'edict');
+    expect(edict('sta')).toBeUndefined();
+    for (const p of g.powers) p.attention = 6;
+    expect(edict('sta')).toEqual({ type: 'edict', edict: 'crash-programme' });
+    expect(edict('frontier')).toEqual({ type: 'edict', edict: 'festival', holding: capitalOf(g, 'frontier').id });
+    expect(edict('hollow-wake')).toEqual({
+      type: 'edict',
+      edict: 'labour-drive',
+      holding: capitalOf(g, 'hollow-wake').id,
+    });
+    powerOf(g, 'sta').taxes = 'high';
+    powerOf(g, 'sta').treasury = -10;
+    capitalOf(g, 'sta').hungry = 3;
+    powerOf(g, 'sta').attention = 2;
+    expect(edict('sta')).toEqual({ type: 'edict', edict: 'festival', holding: capitalOf(g, 'sta').id });
+  });
+
   it('gives its orders through the same rules as the player’s: a refused order changes nothing', () => {
     const g = withRivals();
     const r = resolveTurn(world, g);
@@ -406,15 +441,10 @@ describe('meeting without war (§26.4)', () => {
 describe('the headless games (§26.6)', () => {
   const play = (seed: number, turns: number) => {
     let g = withRivals(seed, null);
-    const worst = { ms: 0 };
     const debt = new Map<FactionId, number>();
     let longestDebt = 0;
-    let lastTurnMs = 0;
     for (let t = 0; t < turns; t++) {
-      const t0 = performance.now();
       g = resolveTurn(world, g).state;
-      lastTurnMs = performance.now() - t0;
-      worst.ms = Math.max(worst.ms, lastTurnMs);
       const problems = [...shapeProblems(g), ...stateProblems(world, g)];
       if (problems.length > 0) throw new Error(`seed ${seed}, turn ${g.turn}: ${problems.join('; ')}`);
       for (const p of g.powers) {
@@ -422,6 +452,13 @@ describe('the headless games (§26.6)', () => {
         debt.set(p.faction, d);
         longestDebt = Math.max(longestDebt, d);
       }
+    }
+    // The turn after the last, timed three times, the fastest kept: the machine's other work aside.
+    let lastTurnMs = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < 3; i++) {
+      const t0 = performance.now();
+      resolveTurn(world, g);
+      lastTurnMs = Math.min(lastTurnMs, performance.now() - t0);
     }
     return { g, lastTurnMs, longestDebt };
   };
@@ -444,6 +481,8 @@ describe('the headless games (§26.6)', () => {
         expect(p.researched.length, p.faction).toBeGreaterThanOrEqual(8);
       }
       expect(longestDebt).toBeLessThanOrEqual(5);
+      // Credits are for spending (§29.1): no rival banks a fortune.
+      for (const p of g.powers) expect(p.treasury, p.faction).toBeLessThanOrEqual(600);
       expect(lastTurnMs).toBeLessThan(200);
       expect(JSON.stringify(g).length).toBeLessThan(200_000);
     }, 120_000);

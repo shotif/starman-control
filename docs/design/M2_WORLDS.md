@@ -51,6 +51,7 @@ that asks you to choose; and a first game teaches itself. All of it on a phone a
 26. [Increment 24 in detail](#26-increment-24-in-detail-rivals-that-play-written-before-building-it)
 27. [Increment 25 in detail](#27-increment-25-in-detail-events-and-stories-written-before-building-it)
 28. [Increment 26 in detail](#28-increment-26-in-detail-the-guided-opening-written-before-building-it)
+29. [Increment 27 in detail](#29-increment-27-in-detail-the-proof-written-before-building-it)
 
 ## 1. What playing M2 feels like
 
@@ -1133,3 +1134,53 @@ the tablet and the desktop; *Skip* and *Stop guiding*; off in a second game; on 
   Watch's and the governor's conditions, playing alone, when it guides) and `guide.spec.ts` (the
   first steps done by doing them, *Skip*, *Stop guiding* and *Guide me*; a second game not guided)
   on the phone, tablet and desktop.
+
+## 29. Increment 27 in detail: the proof (written before building it)
+
+**Goals.** M2 ends as a game worth playing for 100 turns on a phone and a desktop: the rivals spend
+what they earn, every power grows by its own character, the budgets hold with three powers and
+events, and the owner can try it.
+
+**Out of scope.** New rules, projects, technologies, events or pictures; difficulty levels; any
+change to the player's numbers that the owner has not seen (balance changes to the player's own
+economy are proposed to the owner, not made).
+
+### 29.1 Rivals that spend (as §26 left open)
+
+The headless games show the Hollow Wake banking over 1,000 credits it has nothing to spend on. With
+the player's own tools and no others (D-37):
+
+- **Overdrive:** a rival buys industry at its colonies with something queued while its treasury
+  holds 100 or more and gains credits each turn: one step at 100, two at 250, three at 500; none
+  below 60. Overdrive stops by itself when the treasury cannot pay, as the player's does.
+- **Edicts:** a festival at a colony in unrest when attention allows; otherwise, with attention at
+  its most, the edict of its character: the Authority's crash programme, the Cooperative's festival
+  at its least content colony, the Wake's labour drive at its colony that makes the most industry.
+
+### 29.2 The headless games
+
+Eight seeds, 100 turns, three rivals, as a unit test (`rivals.test.ts`) and a report written to
+`docs/design/M2_BALANCE.md` by `npm run balance` (not part of `npm run check`): for each power its
+colonies, outposts, people, technologies, treasury, hunger and debt at turns 25, 50 and 100, the
+events it met and how it answered. The test asks that every power settle at least 3 colonies and
+3 outposts, double its people, research 8 technologies, never stay hungry or in debt for more than
+5 turns, and that no power's treasury end above 600: credits are for spending.
+
+### 29.3 A hundred turns in the browser
+
+A browser test plays 100 turns on the phone and the desktop with rivals and events: it answers each
+event that waits, ends each turn, and at the end checks that the game saved, the report reads, the
+save is under 200 KB and no turn took longer than 2 seconds from the press to the next quarter
+(the worker's turn and the screen's). It runs in CI with the other journeys.
+
+### 29.4 The budgets
+
+As §19: a turn at turn 100 within 200 ms on the build machine (with three powers and events), the
+save within 200 KB, the map's first load within 900 KB, the colony budgets as they are. All are
+measured in `npm run check` or the unit tests.
+
+### 29.5 The owner's try
+
+The report of this increment asks the owner to play a game of 50 turns or more on a phone and on a
+desktop, and to say what was dull, unclear, slow or too easy; their answers decide the first
+changes of M3.

@@ -65,7 +65,10 @@ way in.
   who speaks of it, or by their first choice after three turns; rivals answer theirs; the flare
   shield and Magnetics; state version 9. **Increment 26 is built:** the guided opening, eleven
   steps led by the advisors and done by doing them (`src/app/guide.ts`), on for a first game, with
-  *Menu → Guide me* and a setting.
+  *Menu → Guide me* and a setting. **Increment 27, the proof, is built:** rivals spend their
+  treasuries on overdrive and their attention on edicts; `npm run balance` writes the headless
+  games to [M2_BALANCE.md](design/M2_BALANCE.md); a browser journey plays 100 turns on a phone and a
+  desktop. **M2 is complete** and waits for the owner's try.
 - **Numbers:** 373 unit tests and about 205 browser journeys pass; the title loads 20.9 KB of its
   40 KB budget, a game's map about 310 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
@@ -82,16 +85,18 @@ increment 20's district buildings; apply any overrule they send (`npm run music:
 **The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
 its §18. Increments 20 (districts, food, credits and approval, built as one), 21 (projects and
 research), 22 (advisors and the report), 23 (governors and edicts), 24 (rivals that play), 25
-(events) and 26 (the guided opening) are done; next is the proof (27): balance from the headless
-games, whether rivals use overdrive and edicts (the Hollow Wake banks credits it cannot spend), a
-100-turn game on a phone and a desktop, the budgets and the owner's try. Its detailed design comes
-first, as §23 to §28's did. Build each as designed; put any
-new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
-and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
-DECISIONS.md with their cost.
+(events), 26 (the guided opening) and 27 (the proof) are done: **M2 is complete.** The owner was
+asked to play a game of 50 turns or more on a phone and a desktop and say what was dull, unclear,
+slow or too easy (§29.5); their answers decide M3's first changes.
 
-The art and music spend: about $23.15 of $25 (about $1.85 left); M2 plans no more pictures. The
-guided opening uses the advisors' faces it already has.
+**Next: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
+(goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md
+before building: first contact and translation, treaties, borders and claims, trade, memory of what
+each power did, and the first alien species (D-08's "alien species later"). Each increment's
+pictures are lettered sheets to the owner, recorded in DECISIONS.md with their cost.
+
+The art and music spend: about $23.15 of $25 (about $1.85 left). M3 will need more than that
+(alien species, their worlds and faces): ask the owner to raise D-27 when its design is written.
 
 ## 3. Standing instructions from the owner
 
@@ -102,7 +107,7 @@ guided opening uses the advisors' faces it already has.
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$21.35** is spent (after increments 18 to 22), so about **$3.65** is left. Nano
+  2026); about **$23.15** is spent (after increments 18 to 25), so about **$1.85** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.

@@ -12,6 +12,7 @@
     "dev:host": "vite --host",
     "build": "vite build",
     "budgets": "node scripts/app/budgets.ts",
+    "balance": "node scripts/app/balance.ts",
     "icons": "node scripts/app/icons.ts",
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",

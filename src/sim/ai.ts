@@ -3,13 +3,14 @@
 // the player's, refused for the same reasons. Its colonies are run by governors (`govern`); this
 // decides its ships, its shipyards, its lanes, its research and its taxes, in its power's character.
 
-import type { Priority } from '../content/edicts.ts';
+import { EDICTS, type Priority } from '../content/edicts.ts';
 import type { FactionId } from '../content/factions.ts';
 import type { QueueItem } from '../content/projects.ts';
+import { RULES } from '../content/rules.ts';
 import { type FieldId, TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
-import { approvalOf, settleable, treasuryOf } from './economy.ts';
+import { approvalOf, industryOf, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
 import { habitability } from './habitability.ts';
 import { laneTargets } from './lanes.ts';
@@ -29,6 +30,8 @@ export interface Personality {
   taxes: TaxRate;
   /** Its colonies queue lanes too, not only its outposts. */
   laneBuilder: boolean;
+  /** The edict it issues when its attention is at its most (M2_WORLDS.md §29.1). */
+  edict: 'crash-programme' | 'festival' | 'labour-drive';
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -39,6 +42,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     fields: ['survey', 'propulsion'],
     taxes: 'standard',
     laneBuilder: true,
+    edict: 'crash-programme',
   },
   frontier: {
     capital: 'grow',
@@ -47,6 +51,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     fields: ['life-sciences', 'society'],
     taxes: 'low',
     laneBuilder: false,
+    edict: 'festival',
   },
   'hollow-wake': {
     capital: 'produce',
@@ -55,6 +60,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     fields: ['construction', 'propulsion'],
     taxes: 'high',
     laneBuilder: false,
+    edict: 'labour-drive',
   },
 };
 
@@ -64,6 +70,13 @@ const SHIP_TREASURY = 20;
 const LOW_TREASURY = 30;
 /** With this much, a rival lowers its taxes while a colony is in unrest. */
 const RICH_TREASURY = 100;
+/** Overdrive (§29.1): steps bought at colonies with a queue from these treasuries; none below the last. */
+const OVERDRIVE_AT: readonly (readonly [number, number])[] = [
+  [500, 3],
+  [250, 2],
+  [100, 1],
+];
+const OVERDRIVE_OFF = 60;
 
 export function aiOrders(world: World, state: GameState, faction: FactionId): Order[] {
   const me = PERSONALITIES[faction];
@@ -200,6 +213,34 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
           ? me.taxes
           : power.taxes;
   if (power.taxes !== taxes) orders.push({ type: 'taxes', rate: taxes });
+
+  // Overdrive (§29.1): credits turned into industry while the treasury is full, stopped when it runs low.
+  const steps = OVERDRIVE_AT.find(([at]) => power.treasury >= at)?.[1] ?? (power.treasury < OVERDRIVE_OFF ? 0 : null);
+  for (const h of mine) {
+    if (h.kind !== 'colony') continue;
+    const want = h.queue.length === 0 ? 0 : (steps ?? h.overdrive);
+    if (want !== h.overdrive) orders.push({ type: 'overdrive', holding: h.id, steps: want });
+  }
+
+  // Edicts (§29.1): a festival where a colony is restless; else, with attention at its most, its own.
+  const colonies = mine.filter((h) => h.kind === 'colony');
+  const approval = (h: Holding) => approvalOf(world, state, h).total;
+  const restless = colonies.find((h) => {
+    const level = approvalOf(world, state, h).level;
+    return level === 'unrest' || level === 'revolt';
+  });
+  const has = (e: string) => power.edicts.some((x) => x.edict === e);
+  if (restless && !has('festival') && power.attention >= EDICTS.festival.cost)
+    orders.push({ type: 'edict', edict: 'festival', holding: restless.id });
+  else if (power.attention >= RULES.attention.most && !has(me.edict)) {
+    const least = [...colonies].sort((a, b) => approval(a) - approval(b) || a.id - b.id)[0];
+    const busiest = [...colonies].sort(
+      (a, b) => industryOf(world, state, b).total - industryOf(world, state, a).total || a.id - b.id,
+    )[0];
+    if (me.edict === 'crash-programme') orders.push({ type: 'edict', edict: 'crash-programme' });
+    else if (me.edict === 'festival' && least) orders.push({ type: 'edict', edict: 'festival', holding: least.id });
+    else if (busiest) orders.push({ type: 'edict', edict: 'labour-drive', holding: busiest.id });
+  }
 
   // Its event (§27.4): the first choice when it can pay and keep 20 credits, else the second.
   if (power.event && power.event.answer === null) orders.push({ type: 'answer', choice: rivalChoice(state, faction) });
