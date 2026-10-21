@@ -1,6 +1,551 @@
 {
   "images": [
     {
+      "briefId": "advisor-frontier-colonies",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A settlement leader of the Frontier Cooperative, in practical blue work clothes with a small round pin: a woman in her fifties of Portuguese and Cape Verdean descent with laugh lines and grey-streaked curls; warm, motherly, firm.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:06:12.154Z",
+      "note": "Here is the painted science-fiction portrait of the Frontier Cooperative leader:",
+      "id": "advisor-frontier-colonies",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:38.608Z",
+      "candidate": "art/out/advisor-frontier-colonies/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-colonies-128.webp",
+          "bytes": 4818
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-colonies-384.webp",
+          "bytes": 26912
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-colonies-768.webp",
+          "bytes": 84846
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-frontier-science",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The head of the learning table of the Frontier Cooperative, in practical blue work clothes with a small round pin: a South Indian woman in her twenties with long dark hair in a braid and an ink stain on her fingers; eager, sharp.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:08:30.396Z",
+      "id": "advisor-frontier-science",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:40.649Z",
+      "candidate": "art/out/advisor-frontier-science/20261021-070552-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-science-128.webp",
+          "bytes": 3830
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-science-384.webp",
+          "bytes": 19708
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-science-768.webp",
+          "bytes": 52700
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-frontier-survey",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A pathfinder of the Frontier Cooperative, in practical blue work clothes with a small round pin, goggles round the neck: a Ghanaian man in his forties with a weathered face and a ready grin; restless, brave.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:08:49.191Z",
+      "id": "advisor-frontier-survey",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:41.352Z",
+      "candidate": "art/out/advisor-frontier-survey/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-survey-128.webp",
+          "bytes": 4616
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-survey-384.webp",
+          "bytes": 27002
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-survey-768.webp",
+          "bytes": 87706
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-frontier-treasury",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The keeper of the common purse of the Frontier Cooperative, in practical blue work clothes with a small round pin: a Chinese man in his seventies with a thin white beard and small round spectacles; shrewd, kindly.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:07:49.080Z",
+      "id": "advisor-frontier-treasury",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:39.948Z",
+      "candidate": "art/out/advisor-frontier-treasury/20261021-070552-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-treasury-128.webp",
+          "bytes": 3754
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-treasury-384.webp",
+          "bytes": 20354
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-treasury-768.webp",
+          "bytes": 61870
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-frontier-watch",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A lookout of the Frontier Cooperative, in practical blue work clothes with a small round pin, a scarf round the neck: a Polish woman in her forties with short fair hair and pale eyes; quiet, cautious.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:09:25.111Z",
+      "note": "Here is a painted science-fiction character portrait of a lookout for a strategy game, capturing the quiet, cautious, and observant mood you requested with grounded, practical details and atmospheric lighting.",
+      "id": "advisor-frontier-watch",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:42.099Z",
+      "candidate": "art/out/advisor-frontier-watch/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-watch-128.webp",
+          "bytes": 4076
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-watch-384.webp",
+          "bytes": 22416
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-watch-768.webp",
+          "bytes": 70828
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-frontier-works",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A master builder of the Frontier Cooperative, in practical blue work clothes with a small round pin, a tool belt over one shoulder: a tall Kenyan man in his thirties with a close beard and dust on his sleeves; cheerful, strong.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:06:49.365Z",
+      "id": "advisor-frontier-works",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:39.256Z",
+      "candidate": "art/out/advisor-frontier-works/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-works-128.webp",
+          "bytes": 4628
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-works-384.webp",
+          "bytes": 25488
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-works-768.webp",
+          "bytes": 80878
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-colonies",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Commissioner for Colonies of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a woman in her fifties of West African descent with short greying hair and reading glasses pushed up; steady and caring, a little stern.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:06:11.599Z",
+      "id": "advisor-sta-colonies",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:34.445Z",
+      "candidate": "art/out/advisor-sta-colonies/20261021-070553-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-colonies-128.webp",
+          "bytes": 3564
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-colonies-384.webp",
+          "bytes": 18398
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-colonies-768.webp",
+          "bytes": 50854
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-science",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The chief scientist of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia, a lab coat over it: a slight man in his fifties of Japanese and German descent with untidy dark hair; curious, absorbed.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:07:58.055Z",
+      "id": "advisor-sta-science",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:36.419Z",
+      "candidate": "art/out/advisor-sta-science/20261021-070553-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-science-128.webp",
+          "bytes": 4420
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-science-384.webp",
+          "bytes": 23018
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-science-768.webp",
+          "bytes": 62960
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-survey",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Commander of the survey service of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia with a pilot's collar: a Brazilian woman in her thirties with dark curly hair tied back; alert, confident.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:08:31.910Z",
+      "id": "advisor-sta-survey",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:37.219Z",
+      "candidate": "art/out/advisor-sta-survey/20261021-070553-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-survey-128.webp",
+          "bytes": 4086
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-survey-384.webp",
+          "bytes": 21974
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-survey-768.webp",
+          "bytes": 60430
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-treasury",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Comptroller of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a South Asian woman in her sixties with silver hair in a neat bun and a precise gaze; exacting, dry.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:07:21.400Z",
+      "id": "advisor-sta-treasury",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:35.732Z",
+      "candidate": "art/out/advisor-sta-treasury/20261021-070553-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-treasury-128.webp",
+          "bytes": 3920
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-treasury-384.webp",
+          "bytes": 20800
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-treasury-768.webp",
+          "bytes": 63970
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-watch",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Inspector of the Watch of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a lean man in his fifties with a shaved head and a short grey moustache; watchful, unreadable.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:09:08.191Z",
+      "note": "Here is a painted character portrait of the Inspector of the Watch for your strategy game, capturing his watchful, experienced presence within the specific visual guidelines you requested.",
+      "id": "advisor-sta-watch",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:37.923Z",
+      "candidate": "art/out/advisor-sta-watch/20261021-070553-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-watch-128.webp",
+          "bytes": 3218
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-watch-384.webp",
+          "bytes": 16656
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-watch-768.webp",
+          "bytes": 48480
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-works",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Chief Engineer of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia, sleeves rolled: a broad man in his forties with a fair beard and a pencil behind his ear; practical, unhurried.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:06:45.788Z",
+      "note": "Here is the painted sci-fi character portrait for your strategy game:",
+      "id": "advisor-sta-works",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:35.088Z",
+      "candidate": "art/out/advisor-sta-works/20261021-070553-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-works-128.webp",
+          "bytes": 3476
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-works-384.webp",
+          "bytes": 18158
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-works-768.webp",
+          "bytes": 53080
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-colonies",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raider who keeps the holds of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a heavy-set older woman with cropped white hair and strong forearms; gruff, protective.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:06:13.587Z",
+      "id": "advisor-wake-colonies",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:42.857Z",
+      "candidate": "art/out/advisor-wake-colonies/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-colonies-128.webp",
+          "bytes": 4862
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-colonies-384.webp",
+          "bytes": 26294
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-colonies-768.webp",
+          "bytes": 75888
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-science",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raiders' doctor and scientist of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels, a magnifying loupe on a strap: a gaunt woman in her sixties with wild grey hair; eccentric, brilliant.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:08:08.507Z",
+      "note": "Here is a painted sci-fi strategy game portrait of the \"Hollow Wake\" raiders' eccentric doctor and scientist, matching your aesthetic, character, and environmental specifications.",
+      "id": "advisor-wake-science",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:45.019Z",
+      "candidate": "art/out/advisor-wake-science/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-science-128.webp",
+          "bytes": 5074
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-science-384.webp",
+          "bytes": 29352
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-science-768.webp",
+          "bytes": 77736
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-survey",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raiders' best navigator of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a young woman in her twenties with a shaved side of the head and a star chart tattoo on her neck; daring, amused.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:08:45.790Z",
+      "id": "advisor-wake-survey",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:45.728Z",
+      "candidate": "art/out/advisor-wake-survey/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-survey-128.webp",
+          "bytes": 3864
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-survey-384.webp",
+          "bytes": 21308
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-survey-768.webp",
+          "bytes": 57838
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-treasury",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raider who counts the takings of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a thin man in his fifties with slicked-back hair, a gold tooth and many small rings; sly, calculating.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:07:29.737Z",
+      "id": "advisor-wake-treasury",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:44.204Z",
+      "candidate": "art/out/advisor-wake-treasury/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-treasury-128.webp",
+          "bytes": 4606
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-treasury-384.webp",
+          "bytes": 26920
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-treasury-768.webp",
+          "bytes": 72918
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-watch",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raider who keeps watch of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels, a hood half up: a tall man in his forties with a long black beard and one clouded eye; silent, wary.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:09:25.361Z",
+      "id": "advisor-wake-watch",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:46.389Z",
+      "candidate": "art/out/advisor-wake-watch/20261021-070552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-watch-128.webp",
+          "bytes": 4386
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-watch-384.webp",
+          "bytes": 24976
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-watch-768.webp",
+          "bytes": 73086
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-works",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The chief welder of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels, welding goggles pushed up on his forehead: a wiry man in his twenties with a smudge of soot on one cheek and a crooked grin; quick, cocky.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-21T07:10:10.804Z",
+      "id": "advisor-wake-works",
+      "series": "portrait",
+      "approvedAt": "2026-10-21T07:10:43.533Z",
+      "candidate": "art/out/advisor-wake-works/20261021-070951-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-works-128.webp",
+          "bytes": 4478
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-works-384.webp",
+          "bytes": 25380
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-works-768.webp",
+          "bytes": 69580
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-arcology",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -5470,6 +6015,11 @@
       "candidate": "art/out/power-frontier-leader/20261019-212532-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 128,
+          "path": "art/portrait/power-frontier-leader-128.webp",
+          "bytes": 4614
+        },
+        {
           "width": 384,
           "path": "art/portrait/power-frontier-leader-384.webp",
           "bytes": 26910
@@ -5521,6 +6071,11 @@
       "candidate": "art/out/power-sta-leader/20261019-212452-gemini-nano-banana-2.1-1.jpg",
       "files": [
         {
+          "width": 128,
+          "path": "art/portrait/power-sta-leader-128.webp",
+          "bytes": 3836
+        },
+        {
           "width": 384,
           "path": "art/portrait/power-sta-leader-384.webp",
           "bytes": 21378
@@ -5571,6 +6126,11 @@
       "approvedAt": "2026-10-19T21:27:17.869Z",
       "candidate": "art/out/power-wake-leader/20261019-212609-gemini-nano-banana-2.1-2.jpg",
       "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/power-wake-leader-128.webp",
+          "bytes": 3702
+        },
         {
           "width": 384,
           "path": "art/portrait/power-wake-leader-384.webp",

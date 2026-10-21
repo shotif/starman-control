@@ -61,6 +61,7 @@ import {
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
+import { AdvisorBy } from './advisor.tsx';
 import { ColonyStill } from './ColonyStill.tsx';
 import { give, type Play } from './play.tsx';
 import { lanePreview, queueHover } from './state.ts';
@@ -889,6 +890,7 @@ function Treasury({ world, game, faction, play }: { world: World; game: GameStat
   );
   return (
     <section class="treasury" aria-label="Treasury and food">
+      <AdvisorBy faction={faction} department="treasury" />
       <p class="figure">
         <b>
           Treasury {power.treasury} credits{power.treasury < 0 ? ' (in debt)' : ''}

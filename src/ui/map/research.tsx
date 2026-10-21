@@ -10,6 +10,7 @@ import { researchOf } from '../../sim/economy.ts';
 import { researchTurns } from '../../sim/research.ts';
 import { type GameState, powerOf } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
+import { AdvisorBy } from './advisor.tsx';
 import { give, type Play } from './play.tsx';
 import './research.css';
 
@@ -140,6 +141,7 @@ export function ResearchView({
   return (
     <section class="research" aria-label="Research">
       <h2 class="sheet-heading">Research</h2>
+      <AdvisorBy faction={faction} department="science" />
       <p class="figure">
         <b>Research {rate.total} a turn</b>{' '}
         {rate.parts.length > 0 && (

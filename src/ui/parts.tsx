@@ -1,6 +1,7 @@
 // Small pieces shared by every screen: badges for where a fact comes from, and faction marks that
 // pair a colour with a shape and a word (colour is never the only cue).
 
+import type { Advisor } from '../content/advisors.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 
 export type BadgeKind = 'observed' | 'estimated' | 'fiction' | 'disputed';
@@ -85,5 +86,19 @@ export function Emblem({ faction, size = 40 }: { faction: FactionId; size?: numb
         )}
       </g>
     </svg>
+  );
+}
+
+/** An advisor's face beside their words (M2_WORLDS.md §24.3): a small portrait, cropped to the head. */
+export function AdvisorFace({ advisor, size = 48 }: { advisor: Advisor; size?: number }) {
+  return (
+    <img
+      class="advisor-face"
+      src={`${import.meta.env.BASE_URL}art/portrait/${advisor.portrait}-128.webp`}
+      width={size}
+      height={size}
+      alt=""
+      decoding="async"
+    />
   );
 }

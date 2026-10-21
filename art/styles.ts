@@ -29,7 +29,8 @@ const AVOID_ALWAYS =
 export const SERIES: Record<SeriesId, SeriesStyle> = {
   portrait: {
     aspect: '2:3',
-    widths: [384, 768],
+    // 128 for the advisors' faces beside their words (M2_WORLDS.md §24.3).
+    widths: [128, 384, 768],
     style: [
       'A painted science-fiction character portrait for a strategy game.',
       'Head and shoulders, three-quarter view, looking just past the viewer.',

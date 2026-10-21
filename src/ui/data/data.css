@@ -428,3 +428,24 @@
 .codex-methods li {
   margin: 0.5rem 0;
 }
+
+/* Each power's advisors (M2_WORLDS.md §24.3), fiction like the power. */
+.web-advisors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.4rem 0.75rem;
+  margin: 0.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.web-advisors li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.web-advisors li > span {
+  display: grid;
+}

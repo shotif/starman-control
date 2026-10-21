@@ -50,9 +50,11 @@ way in.
   civic centre, recreation dome, research institute, fusion plant, refinery, arcology, medical
   centre), each a building in each power's architecture (27 pictures), and the research tree grown
   to 32 technologies; every building is published at 256 px too, and the phone's picture budgets
-  measure what a phone loads.
-- **Numbers:** 309 unit tests and about 170 browser journeys pass; the title loads 20.8 KB of its
-  40 KB budget, a game's map about 300 KB of 900 KB, opening a colony 9.6 KB of code more (40 KB);
+  measure what a phone loads. **Increment 22 is built:** six advisors for each power, named, with
+  faces and voices, speak up to three lines in each turn's report (a setting quietens them); the
+  Treasury and Science stand beside their numbers; the codex lists them.
+- **Numbers:** 316 unit tests and about 180 browser journeys pass; the title loads 20.8 KB of its
+  40 KB budget, a game's map about 303 KB of 900 KB, opening a colony 9.6 KB of code more (40 KB);
   a colony's still on a phone loads 618 KB of pictures at most (1 MB) and the diorama it opens
   1.62 MB (2 MB), both measured over the game's own scenes with the game's own choice of widths;
   state version 7.
@@ -65,16 +67,17 @@ increment 20's district buildings; apply any overrule they send (`npm run music:
 `music/out/` and `art/out/`, so a pick from a lost session means new candidates).
 
 **The main track is M2 "Worlds"** ([design/M2_WORLDS.md](design/M2_WORLDS.md)), in the order of
-its §18. Increments 20 (districts, food, credits and approval, built as one) and 21 (projects and
-research) are done; next are advisors and the report (22), governors and edicts (23), rivals that
-play (24, with the deep-space scanner), events (25, with the flare shield), the guided opening
-(26), the proof (27). Build each as designed; put any
+its §18. Increments 20 (districts, food, credits and approval, built as one), 21 (projects and
+research) and 22 (advisors and the report) are done; next are governors and edicts (23), rivals
+that play (24, with the deep-space scanner and the Watch's lines), events (25, with the flare
+shield), the guided opening (26), the proof (27). Each has a detailed design section in
+M2_WORLDS.md written before it is built (§23, §24 so far). Build each as designed; put any
 new rule that shapes the game and is not settled in §21 to the owner before building it (as D-42
 and D-43 were). Each increment's pictures are lettered sheets to the owner, recorded in
 DECISIONS.md with their cost.
 
-The art and music spend: about $19.55 of $25; M2's remaining pictures (6 project buildings, 18
-advisors' faces, 12 events) are planned at about $3.60.
+The art and music spend: about $21.35 of $25; M2's remaining pictures (6 project buildings and 12
+events) are planned at about $1.80.
 
 ## 3. Standing instructions from the owner
 
@@ -85,7 +88,7 @@ advisors' faces, 12 events) are planned at about $3.60.
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$19.55** is spent (after increments 18 to 21), so about **$5.45** is left. Nano
+  2026); about **$21.35** is spent (after increments 18 to 22), so about **$3.65** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
@@ -190,8 +193,8 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
-- The owner's choice of music by ear (every candidate was sent, lettered), and of increments 20's
-  and 21's buildings (the sheets were sent).
+- The owner's choice of music by ear (every candidate was sent, lettered), of increments 20's and
+  21's buildings and of increment 22's faces (the sheets were sent).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),
   and any of the colony view's (COLONY_VIEW.md §8).
 - CI on `main` failed once on increment 15 (a phone journey waited 10 s for a scaffold that a

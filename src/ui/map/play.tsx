@@ -3,6 +3,8 @@
 // layouts; the map screen places them as sheets on a phone and as panels on a desktop.
 
 import { useState } from 'preact/hooks';
+import { settings } from '../../app/settings.ts';
+import { DEPARTMENT_NAMES } from '../../content/advisors.ts';
 import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { ZONE_DEFS } from '../../content/districts.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
@@ -10,18 +12,19 @@ import { itemName, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import type { SystemId } from '../../data/types.ts';
+import { adviceFor } from '../../sim/advice.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, previewMove } from '../../sim/movement.ts';
-import type { Need } from '../../sim/needs.ts';
+import { type Need, needsOf } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import { type GameState, playerPower, type ShipState } from '../../sim/state.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
-import { Badge, FactionMark } from '../parts.tsx';
+import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
 import { Founding, holdingName, needText } from './colony.tsx';
 import { say, targeting } from './state.ts';
 
@@ -438,10 +441,38 @@ export function ReportView({
 }) {
   const r = game.reports.find((x) => x.faction === faction);
   const picture = r ? dispatchPicture(r.events) : null;
+  const advice = r
+    ? adviceFor(world, game, faction, r.events, needsOf(world, game, faction), settings.value.advisors)
+    : [];
   return (
     <section class="report" aria-label="Report">
       {picture && <DispatchArt key={`${r?.turn}-${picture}`} picture={picture} />}
       <h2 class="report-title">{r ? `${formatDate(r.turn)}: what happened` : 'Report'}</h2>
+      {advice.length > 0 && (
+        <ul class="advice" aria-label="Your advisors">
+          {advice.map((a) => (
+            <li key={a.department} class={`advice-line${a.priority <= 2 ? ' is-pressing' : ''}`}>
+              <AdvisorFace advisor={a.advisor} />
+              <div>
+                <p class="advice-who">
+                  <b>{a.advisor.name}</b> <span class="dim">· {DEPARTMENT_NAMES[a.department]}</span>
+                </p>
+                {a.holding !== undefined || a.system !== undefined ? (
+                  <button
+                    type="button"
+                    class="link advice-text"
+                    onClick={() => (a.holding !== undefined ? onHolding(a.holding) : a.system && onGo(a.system))}
+                  >
+                    {a.text}
+                  </button>
+                ) : (
+                  <p class="advice-text">{a.text}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
       {!r && <p class="dim">The first report comes when you end the first turn.</p>}
       {r && r.events.length === 0 && <p class="dim">A quiet quarter: nothing to report.</p>}
       {r && r.events.length > 0 && (

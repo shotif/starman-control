@@ -117,6 +117,23 @@ export default function SettingsScreen() {
           onPick={(music) => updateSettings({ music })}
         />
       </section>
+      <section class="page-section" aria-labelledby="set-advisors">
+        <h2 id="set-advisors">Advisors</h2>
+        <p>
+          Your power’s advisors speak in each turn’s report: up to three lines, the most pressing first. Quiet, they
+          speak only when something needs you.
+        </p>
+        <Choice
+          label="Advisors"
+          value={s.advisors}
+          options={[
+            { value: 'speak', text: 'Speak' },
+            { value: 'quiet', text: 'Quiet' },
+            { value: 'off', text: 'Off' },
+          ]}
+          onPick={(advisors) => updateSettings({ advisors })}
+        />
+      </section>
     </main>
   );
 }

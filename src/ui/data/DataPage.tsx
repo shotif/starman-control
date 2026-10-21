@@ -5,6 +5,7 @@
 
 import { signal } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
+import { ADVISORS, DEPARTMENT_NAMES, DEPARTMENTS } from '../../content/advisors.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import type { SystemId } from '../../data/types.ts';
 import { formatDate } from '../../sim/calendar.ts';
@@ -13,7 +14,7 @@ import { DWARF_SOURCE } from '../../sim/starLight.ts';
 import type { GameState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { layout } from '../layout.ts';
-import { Badge, FactionMark, FactionTag } from '../parts.tsx';
+import { AdvisorFace, Badge, FactionMark, FactionTag } from '../parts.tsx';
 import { SystemPanel } from '../system/SystemPanel.tsx';
 import { filterRows, type SortKey, type SystemRow, sortRows, systemRows } from './model.ts';
 import '../sheet.css';
@@ -224,6 +225,20 @@ function WebCard({ faction, world, game }: { faction: (typeof FACTION_IDS)[numbe
         <Badge kind="fiction" />
       </p>
       <p class="web-traits">{f.traits.map((t) => t.text).join(' ')}</p>
+      <ul class="web-advisors" aria-label={`The ${f.name}’s advisors`}>
+        {DEPARTMENTS.map((d) => {
+          const a = ADVISORS[faction].people[d];
+          return (
+            <li key={d}>
+              <AdvisorFace advisor={a} size={40} />
+              <span>
+                <b>{a.name}</b>
+                <span class="dim">{DEPARTMENT_NAMES[d]}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
       <button
         type="button"
         class="link"

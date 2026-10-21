@@ -1,8 +1,10 @@
 // Settings (M1_PROOF.md §1), kept on the device as Starman Reborn keeps them (src/app/settings.ts
-// at ba4ef73, D-10, in spirit): text size, reduced motion, quality, sound (CONSOLE.md §5) and music (MUSIC.md). They are read at start-up,
+// at ba4ef73, D-10, in spirit): text size, reduced motion, quality, sound (CONSOLE.md §5), music (MUSIC.md) and the
+// advisors (M2_WORLDS.md §24). They are read at start-up,
 // before anything is drawn, so they live in localStorage rather than the save store.
 
 import { signal } from '@preact/signals';
+import type { AdvisorSetting } from '../content/advisors.ts';
 
 export const TEXT_SCALES = [1, 1.15, 1.3, 1.5] as const;
 export type TextScale = (typeof TEXT_SCALES)[number];
@@ -17,10 +19,18 @@ export interface Settings {
   quality: QualitySetting;
   sound: SoundSetting;
   music: SoundSetting;
+  advisors: AdvisorSetting;
 }
 
 const KEY = 'starman-control:settings';
-export const DEFAULT_SETTINGS: Settings = { textScale: 1, motion: 'system', quality: 'auto', sound: 'on', music: 'on' };
+export const DEFAULT_SETTINGS: Settings = {
+  textScale: 1,
+  motion: 'system',
+  quality: 'auto',
+  sound: 'on',
+  music: 'on',
+  advisors: 'speak',
+};
 
 /** Reads stored settings, keeping only values the game knows. */
 export function parseSettings(raw: unknown): Settings {
@@ -33,6 +43,7 @@ export function parseSettings(raw: unknown): Settings {
     s.quality = r.quality;
   if (r.sound === 'on' || r.sound === 'off') s.sound = r.sound;
   if (r.music === 'on' || r.music === 'off') s.music = r.music;
+  if (r.advisors === 'speak' || r.advisors === 'quiet' || r.advisors === 'off') s.advisors = r.advisors;
   return s;
 }
 

@@ -512,7 +512,14 @@ const FIRST: ArtBrief[] = [
 
 // The colony view, increment 18 (COLONY_VIEW.md §9): two more versions of every home, so neighbours
 // differ, and small props between the buildings.
-export const BRIEFS: ArtBrief[] = [...FIRST, ...homeVersions(FIRST), ...props(), ...districts(), ...projects()];
+export const BRIEFS: ArtBrief[] = [
+  ...FIRST,
+  ...homeVersions(FIRST),
+  ...props(),
+  ...districts(),
+  ...projects(),
+  ...advisors(),
+];
 
 /** Each home's second and third versions: the same kind of home told another way. */
 function homeVersions(first: ArtBrief[]): ArtBrief[] {
@@ -824,4 +831,109 @@ function projects(): ArtBrief[] {
       purpose: `Colony view: the ${kind.replace('-', ' ')}, in the ${names[a]}'s architecture (M2).`,
     })),
   );
+}
+
+/** Increment 22's advisors (M2_WORLDS.md §24.1): six faces for each power, all fiction. */
+function advisors(): ArtBrief[] {
+  const sta = 'of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia';
+  const coop = 'of the Frontier Cooperative, in practical blue work clothes with a small round pin';
+  const wake = 'of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels';
+  const people: [string, string, string][] = [
+    [
+      'sta-colonies',
+      `The Commissioner for Colonies ${sta}: a woman in her fifties of West African descent with short greying hair and reading glasses pushed up; steady and caring, a little stern.`,
+      'the Authority’s Colonies',
+    ],
+    [
+      'sta-works',
+      `The Chief Engineer ${sta}, sleeves rolled: a broad man in his forties with a fair beard and a pencil behind his ear; practical, unhurried.`,
+      'the Authority’s Works',
+    ],
+    [
+      'sta-treasury',
+      `The Comptroller ${sta}: a South Asian woman in her sixties with silver hair in a neat bun and a precise gaze; exacting, dry.`,
+      'the Authority’s Treasury',
+    ],
+    [
+      'sta-science',
+      `The chief scientist ${sta}, a lab coat over it: a slight man in his fifties of Japanese and German descent with untidy dark hair; curious, absorbed.`,
+      'the Authority’s Science',
+    ],
+    [
+      'sta-survey',
+      `The Commander of the survey service ${sta} with a pilot's collar: a Brazilian woman in her thirties with dark curly hair tied back; alert, confident.`,
+      'the Authority’s Survey',
+    ],
+    [
+      'sta-watch',
+      `The Inspector of the Watch ${sta}: a lean man in his fifties with a shaved head and a short grey moustache; watchful, unreadable.`,
+      'the Authority’s Watch',
+    ],
+    [
+      'frontier-colonies',
+      `A settlement leader ${coop}: a woman in her fifties of Portuguese and Cape Verdean descent with laugh lines and grey-streaked curls; warm, motherly, firm.`,
+      'the Cooperative’s Colonies',
+    ],
+    [
+      'frontier-works',
+      `A master builder ${coop}, a tool belt over one shoulder: a tall Kenyan man in his thirties with a close beard and dust on his sleeves; cheerful, strong.`,
+      'the Cooperative’s Works',
+    ],
+    [
+      'frontier-treasury',
+      `The keeper of the common purse ${coop}: a Chinese man in his seventies with a thin white beard and small round spectacles; shrewd, kindly.`,
+      'the Cooperative’s Treasury',
+    ],
+    [
+      'frontier-science',
+      `The head of the learning table ${coop}: a South Indian woman in her twenties with long dark hair in a braid and an ink stain on her fingers; eager, sharp.`,
+      'the Cooperative’s Science',
+    ],
+    [
+      'frontier-survey',
+      `A pathfinder ${coop}, goggles round the neck: a Ghanaian man in his forties with a weathered face and a ready grin; restless, brave.`,
+      'the Cooperative’s Survey',
+    ],
+    [
+      'frontier-watch',
+      `A lookout ${coop}, a scarf round the neck: a Polish woman in her forties with short fair hair and pale eyes; quiet, cautious.`,
+      'the Cooperative’s Watch',
+    ],
+    [
+      'wake-colonies',
+      `The raider who keeps the holds ${wake}: a heavy-set older woman with cropped white hair and strong forearms; gruff, protective.`,
+      'the Wake’s Colonies',
+    ],
+    [
+      'wake-works',
+      `The chief welder ${wake}, welding goggles pushed up on his forehead: a wiry man in his twenties with a smudge of soot on one cheek and a crooked grin; quick, cocky.`,
+      'the Wake’s Works',
+    ],
+    [
+      'wake-treasury',
+      `The raider who counts the takings ${wake}: a thin man in his fifties with slicked-back hair, a gold tooth and many small rings; sly, calculating.`,
+      'the Wake’s Treasury',
+    ],
+    [
+      'wake-science',
+      `The raiders' doctor and scientist ${wake}, a magnifying loupe on a strap: a gaunt woman in her sixties with wild grey hair; eccentric, brilliant.`,
+      'the Wake’s Science',
+    ],
+    [
+      'wake-survey',
+      `The raiders' best navigator ${wake}: a young woman in her twenties with a shaved side of the head and a star chart tattoo on her neck; daring, amused.`,
+      'the Wake’s Survey',
+    ],
+    [
+      'wake-watch',
+      `The raider who keeps watch ${wake}, a hood half up: a tall man in his forties with a long black beard and one clouded eye; silent, wary.`,
+      'the Wake’s Watch',
+    ],
+  ];
+  return people.map(([id, subject, who]) => ({
+    id: `advisor-${id}`,
+    series: 'portrait' as const,
+    subject,
+    purpose: `Advisors: ${who} (M2, fiction).`,
+  }));
 }

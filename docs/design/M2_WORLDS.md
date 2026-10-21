@@ -634,3 +634,91 @@ and queued, on phone, tablet and desktop; the budgets.
   best-of, the fusion plant without fuel, the refinery, the new technologies), the tree's shape
   and cost, and `projects.spec.ts` (queueing a project and one that waits for research; the tree's
   new technologies) on the phone, tablet and desktop.
+
+## 24. Increment 22 in detail: advisors and the report (written before building it)
+
+**Goals.** §9's six advisors for each power, named, with faces and voices, speaking in the report:
+up to three lines a turn, the most important first, with advice where something needs you. A
+setting to quieten them. Their faces beside their numbers: the Treasury's by the treasury, Science's
+by the research rate.
+
+**Out of scope.** The Watch has nothing to say until there are rivals (increment 24): it is named,
+has its face and stands in the codex, but speaks from then. The advisors' part in the opening is
+increment 26's. Traits, experience, loyalty and hiring are M5's (SCOPE.md §4.14).
+
+### 24.1 Who they are (all fiction)
+
+| Department | The Authority (formal) | The Cooperative (warm) | The Wake (blunt) |
+| --- | --- | --- | --- |
+| **Colonies** | Commissioner Adaeze Morrow | Ines Barros, of the Settlement table | Grist, who keeps the holds |
+| **Works** | Chief Engineer Pavel Lindqvist | Tobias Mwangi, of the Builders' table | Weld |
+| **Treasury** | Comptroller Sunita Rao | Lin Feng, keeper of the Common Purse | Tally |
+| **Science** | Dr Kenji Albrecht | Priya Nandakumar, of the Learning table | Doc Marrow |
+| **Survey** | Commander Lucia Ferreira | Sefa Owusu, of the Pathfinders | Farcast |
+| **The Watch** | Inspector Owen Hale | Mara Kowal, of the Lookouts | Lantern |
+
+Each face is a portrait in the style of the powers' leaders (18 pictures, about $1.80): the
+Authority's in its dark green civil-service uniform, the Cooperative's in blue work clothes, the
+Wake's in patched flight jackets.
+
+### 24.2 What they say
+
+Each turn the report gathers what each department would say, from the turn's events and from what
+needs you, and shows **at most three lines, one a department**, the most important first:
+
+| Priority | Department | When |
+| --- | --- | --- |
+| 1, needs you | Colonies | a network is hungry, or will be within two turns; a colony is in revolt |
+| 1, needs you | Treasury | the treasury is in debt, or will be within two turns |
+| 2, needs you | Colonies | a colony is in unrest |
+| 2, needs you | Science | nothing is being researched |
+| 2, needs you | Treasury | an overdrive stopped for want of credits |
+| 2, needs you | Works | a fusion plant has no fuel |
+| 3, news | Science | a technology was researched (and what it opens) |
+| 3, news | Works | a project was built, or a district zoned |
+| 3, news | Survey | an anomaly was investigated, a lane opened, or a system surveyed |
+| 3, news | Colonies | a colony was founded |
+| 4, a nudge | Works | a shipyard builds nothing |
+| 4, a nudge | Survey | a ship is idle |
+
+Each line is a sentence with blanks in the game's data, in three voices; it names the place and
+says what to do ("Control, the colonies on our lanes go hungry when this turn ends: zone farms,
+or build hydroponics"). Ties go to the department first in the table's order.
+
+**The setting:** *Advisors* speak (every line, the default), are *quiet* (only lines that need
+you) or *off*.
+
+### 24.3 On the screen
+
+- **The report:** the advisors' lines first, each with the face (48 px), the name and the
+  department, then the turn's events as now. On a phone the faces sit to the left of each line.
+- **Beside their numbers:** the Treasury's face and name by the empire's treasury, Science's by the
+  research rate.
+- **The codex** lists each power's advisors with their faces, labelled fiction.
+
+### 24.4 Tests
+
+Unit: which lines a turn gives, their order and the limit of three, one a department; quiet and
+off; every line's blanks filled in all three voices. Browser: the report's lines and faces on the
+phone, tablet and desktop; the setting.
+
+### Increment 22: advisors and the report (21 October 2026)
+
+- **Who they are** (`src/content/advisors.ts`): §24.1's eighteen advisors, each with a name, a
+  role, a voice and a face; all fiction, and the codex lists them with their faces under each
+  power's home web.
+- **What they say** (`src/sim/advice.ts`): §24.2's lines, from the turn's events and what needs
+  you, one a department, at most three, the most pressing first; each in its power's voice (the
+  Authority's formal, the Cooperative's warm, the Wake's blunt), with blanks filled from the state.
+  A line about one place is a link to it. *What needs you* is edged in warm.
+- **The setting:** *Advisors* speak, are quiet or off, in *Settings*.
+- **Beside their numbers:** the Treasury's face and name head the empire's treasury, and Science's
+  the research screen.
+- **The faces:** 18 portraits, 36 candidates, about $1.80 (the image model's filter refused one
+  brief, the Wake's welder with burn scars, which was reworded); picks in DECISIONS.md. Portraits
+  are now published at 128 px too (4 KB a face), for their small places.
+- **The Watch** is named and has its face; it speaks from increment 24, with rivals to watch.
+- **Tests:** `advisors.test.ts` (who they are, every line in every voice with every blank filled,
+  what a turn gives and in what order, quiet and off), `settings.test.ts`, and `advisors.spec.ts`
+  (the report's lines and faces; quiet and off; the Treasury and Science beside their numbers) on
+  the phone, tablet and desktop.

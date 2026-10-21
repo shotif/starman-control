@@ -735,6 +735,65 @@
   color: var(--text-muted);
 }
 
+/* The advisors (M2_WORLDS.md §24): a face, a name and a line; what needs you edged in warm. */
+.advice {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.advice-line {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: start;
+  gap: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border-left: 3px solid rgba(92, 200, 255, 0.45);
+  background: rgba(92, 200, 255, 0.06);
+}
+
+.advice-line.is-pressing {
+  border-left-color: var(--warm);
+  background: rgba(255, 178, 89, 0.08);
+}
+
+.advice-who {
+  margin: 0 0 0.15rem;
+  font-size: 0.85rem;
+}
+
+.advice-text {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.advice .link.advice-text {
+  padding: 0;
+  color: var(--text);
+  text-align: left;
+  text-decoration-color: rgba(92, 200, 255, 0.5);
+}
+
+.advisor-face {
+  display: block;
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 18%;
+  background: #0b1424;
+  box-shadow: 0 0 0 1px rgba(143, 220, 255, 0.35);
+}
+
+.advisor-by {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+}
+
 .report-popover {
   top: 12px;
   right: auto;
