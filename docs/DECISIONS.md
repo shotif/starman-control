@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-20 | **about $25 in all** (raised from $5, then $15); about $23.15 spent by 21 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-21 | **about $35 in all** (raised from $5, then $15, then $25); about $23.15 spent by 21 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
@@ -40,13 +40,13 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-15, D-32 – D-41 | The M2 design: governors and edicts, districts, food, credits, approval, projects, rivals, events, advisors, the opening, the art | Decided 2026-10-21 | **as recommended**; see [Round 4](#round-4-the-m2-design-decided-21-october-2026) and [M2_WORLDS.md §21](design/M2_WORLDS.md#21-decisions-for-the-owner) |
 | D-42 | How a new colony starts, now that only districts make industry | Decided 2026-10-21 | **A, the founders' kit**: farms and works zoned, and 2 industry of its own; see [D-42](#d-42--how-a-new-colony-starts--decided) |
 | D-43 | Idle people and approval | Decided 2026-10-21 (owner's choice) | **C, no penalty**: idle people make nothing, and that is all; see [D-43](#d-43--idle-people-and-approval--decided) |
-| D-44 | Where research comes from ([M2B §4](design/M2B_SCIENCE.md#4-where-research-comes-from-d-44)) | **Open** | recommended: C, scholars and a lab for every governor |
-| D-45 | Discoveries ([M2B §5](design/M2B_SCIENCE.md#5-discoveries-d-45)) | **Open** | recommended: C, inspirations and observations of the real sky |
-| D-46 | A deeper tree ([M2B §6](design/M2B_SCIENCE.md#6-a-deeper-tree-d-46)) | **Open** | recommended: C, rising costs and tiers 4 and 5 |
-| D-47 | Forks ([M2B §7](design/M2B_SCIENCE.md#7-forks-d-47)) | **Open** | recommended: B, three doctrine pairs |
-| D-48 | Rivals' science ([M2B §8](design/M2B_SCIENCE.md#8-knowledge-spreads-and-rivals-science-is-felt-d-48)) | **Open** | recommended: spreading knowledge, the Watch's rumours and science in the standings |
-| D-49 | Great works ([M2B §9](design/M2B_SCIENCE.md#9-great-works-d-49)) | **Open** | recommended: yes, the four drafted |
-| D-50 | A score ([M2B §10](design/M2B_SCIENCE.md#10-a-score-d-50)) | **Open** | recommended: yes, no victory yet |
+| D-44 | Where research comes from ([M2B §4](design/M2B_SCIENCE.md#4-where-research-comes-from-d-44)) | Decided 2026-10-21 | **C, scholars and a lab for every governor**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
+| D-45 | Discoveries ([M2B §5](design/M2B_SCIENCE.md#5-discoveries-d-45)) | Decided 2026-10-21 | **C, inspirations and observations of the real sky**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
+| D-46 | A deeper tree ([M2B §6](design/M2B_SCIENCE.md#6-a-deeper-tree-d-46)) | Decided 2026-10-21 | **C, rising costs and tiers 4 and 5**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
+| D-47 | Forks ([M2B §7](design/M2B_SCIENCE.md#7-forks-d-47)) | Decided 2026-10-21 | **B, three doctrine pairs**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
+| D-48 | Rivals' science ([M2B §8](design/M2B_SCIENCE.md#8-knowledge-spreads-and-rivals-science-is-felt-d-48)) | Decided 2026-10-21 | **all three**: spreading knowledge, the Watch's rumours and science in the standings, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
+| D-49 | Great works ([M2B §9](design/M2B_SCIENCE.md#9-great-works-d-49)) | Decided 2026-10-21 | **yes, the four drafted**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
+| D-50 | A score ([M2B §10](design/M2B_SCIENCE.md#10-a-score-d-50)) | Decided 2026-10-21 | **yes, with no victory yet**, as recommended; see [Round 5](#round-5-science-and-rivalry-decided-21-october-2026) |
 | D-12 – D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -353,6 +353,10 @@ advisors' faces, **about $21.35** in all; then about $0.30 on increment 24's dee
 scanners, **about $21.65** in all; then about $1.50 on increment 25's events and flare shields,
 **about $23.15** in all, leaving about **$1.85**.
 
+**Raised again on 21 October 2026:** "Your art budget is increased to $35." **About $35 in all**
+may now be spent without asking; about $23.15 was spent, so about **$11.85** is left. M2b's 13
+pictures are planned at about $1.30 (M2B_SCIENCE.md §14).
+
 ### D-28 · The colony view — **Decided**
 
 On 20 October 2026 the owner asked for the colony screen "to have nice illustrations, so I can
@@ -521,14 +525,28 @@ people pay taxes and eat but make nothing; approval does not count them. Built i
 | D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art |
 | D-18 | Free or paid, open source or not, Steam or web only | M5 | develop in the open on GitHub Pages; decide at M5 |
 
-## Round 5: science and rivalry, proposed 21 October 2026
+## Round 5: science and rivalry, decided 21 October 2026
 
 M2's headless games showed two powers making 5 research a turn for 100 turns while the third
 finished the whole tree by turn 90 ([M2B_SCIENCE.md §1](design/M2B_SCIENCE.md#1-what-m2s-games-showed)).
 The proposals, each with its options and recommendation, are in
 [M2B_SCIENCE.md §15](design/M2B_SCIENCE.md#15-decisions-for-the-owner): **D-44** where research comes
 from, **D-45** discoveries, **D-46** a deeper tree, **D-47** forks, **D-48** rivals' science,
-**D-49** great works and **D-50** a score. Nothing in them is built until the owner answers.
+**D-49** great works and **D-50** a score.
+
+**Decided on 21 October 2026: every one as recommended** (the owner: "MY ANSWERS to D-44 to D-50:
+as recommended", with no exception named). So M2b is built as M2B_SCIENCE.md §12 sets out,
+increments 28 to 32, each with its detailed design written first:
+
+| ID | Answer | Why it was recommended |
+| --- | --- | --- |
+| **D-44** | **C:** scholars (research from every colony's people) and a lab for every governor | research then grows with every empire, whatever its governors run for, and the rivals follow without rules of their own |
+| **D-45** | **C:** inspirations (a deed for every technology) and observations of the real sky (labelled *Observed*) | discoveries reward play and make the real sky worth looking at |
+| **D-46** | **C:** rising costs and tiers 4 and 5 | the tree lasts the 150 to 250 turns of D-16, and its new tiers change how the game is played |
+| **D-47** | **B:** three doctrine pairs | a few choices that close another path, without a fork in every field |
+| **D-48** | spreading knowledge, the Watch's rumours and science in the standings | rivals' science is felt, and whoever is behind can catch up |
+| **D-49** | **yes:** the four great works drafted | a race anyone can win |
+| **D-50** | **yes:** a score, with no victory yet | every power's progress in one number, and a measure for the headless games |
 
 ## Made without waiting
 
@@ -536,6 +554,7 @@ Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
+| 2026-10-21 | Increment 28 as M2B_SCIENCE.md §16 (D-44 as recommended): scholars kept at approval as districts' yields are; a colony in revolt makes no research, the capital's own 3 included (M2 still counted them); a governor's lab is due when the colony would have fewer labs than one for every five districts, counting the one it zones, and only where its people could work it; its report line gives its own reason; the colony's panel shows its research | the smallest reading of §4 that every priority and power follows; each has a unit test |
 | 2026-10-21 | Increment 27's proof as M2_WORLDS.md §29: rivals use the player's own overdrive and edicts (D-37: the same tools, no bonuses), from thresholds of their treasury and attention; the headless unit test also fails a rival that ends with more than 600 credits; the 100-turn browser journey times each turn from the press to the next quarter in the game, not the test browser's software drawing; the player's own numbers are left as they are, with what the headless games suggest put to the owner | the rivals spend what they earn; the owner decides the player's economy |
 | 2026-10-21 | Increment 26's guided opening as M2_WORLDS.md §28 (D-40 as recommended): eleven steps, each done by doing it and passed over when already done; the governor's waits for a second colony and the Watch's for its first news (either may come first); a new game is guided until a guide has been finished or stopped on the device; *Menu → Guide me* and a *Guide* setting; the card sits under the top bar on a phone, beneath any sheet, so it never covers a sheet's buttons | the smallest reading of §12 that never blocks the player |
 | 2026-10-21 | Increment 25's pictures (M2_WORLDS.md §27.8): 30 candidates, about **$1.50**, so about **$23.15** of the owner's $25 spent in all; the events chosen: flare A, comet A (B read as an asteroid), harvest A, blight B, strike A, epidemic B, derelict A, lane drift A, petition A, defectors A (B had black bars), smugglers B, Founders' Day A; the flare shields: the Authority's B, the Cooperative's A, the Wake's B | within D-27 and D-41; the lettered sheets went to the owner to overrule |

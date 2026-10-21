@@ -21,6 +21,7 @@ import {
   bodyOf,
   buildOptions,
   capacityOf,
+  colonyResearchOf,
   costOf,
   creditsOf,
   districtAt,
@@ -518,7 +519,7 @@ function GovernorChoice({ h, play }: { h: Holding; play: Play }) {
       </fieldset>
       <p class="dim">
         {h.governor
-          ? `${PRIORITY_DEFS[h.governor].does} It never builds ships or lanes, changes taxes or buys industry, and says why it does what it does in the report. What you zone or queue yourself stays yours.`
+          ? `${PRIORITY_DEFS[h.governor].does} Every governor keeps a lab, one district in five. It never builds ships or lanes, changes taxes or buys industry, and says why it does what it does in the report. What you zone or queue yourself stays yours.`
           : 'A governor zones the land, chooses the work and builds projects for a priority, as each turn ends.'}
       </p>
     </section>
@@ -762,6 +763,7 @@ export function HoldingPanel({
             </dd>
           </dl>
           <FigureLine label="Industry" {...industryOf(world, game, h)} />
+          <FigureLine label="Research" {...colonyResearchOf(world, game, h)} />
           <FigureLine label="Credits" {...creditsOf(world, game, h)} />
         </>
       ) : (

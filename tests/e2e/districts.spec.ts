@@ -58,6 +58,8 @@ test('the capital’s districts: rezone one, and the report says when it is done
 
   let panel = await openEarth(page, project);
   await expect(panel).toContainText('Industry 12 = 9 from 3 works + 2 from the capital + 1 from Administration (+10%)');
+  // Its research, with its scholars: 1 for every 4 million (M2B_SCIENCE.md §16).
+  await expect(panel).toContainText('Research 7 = 2 from 1 lab + 2 from 2 scholars + 3 from the capital');
   await expect(panel).toContainText('70 · Content');
   const districts = panel.getByRole('region', { name: 'Districts' });
   await expect(districts).toContainText('10 of 10 zoned');

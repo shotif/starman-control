@@ -63,7 +63,8 @@ export type ReportEvent =
   | { kind: 'debt' }
   /**
    * What a governor did, and why (M2_WORLDS.md §25.1): zoned or rezoned a district, put one first to
-   * be worked, or queued a project; for food it says how short the network is.
+   * be worked, or queued a project; for food it says how short the network is; `lab` is the lab every
+   * governor keeps (D-44).
    */
   | {
       kind: 'governed';
@@ -72,7 +73,7 @@ export type ReportEvent =
       zone?: Zone;
       slot?: number;
       project?: ProjectId;
-      reason: 'food' | 'full' | 'priority' | 'calm';
+      reason: 'food' | 'full' | 'priority' | 'calm' | 'lab';
       short?: number;
     }
   /** An edict ran its course (M2_WORLDS.md §25.2). */

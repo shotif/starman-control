@@ -1,4 +1,4 @@
-# Handover: Starman Control, 21 October 2026 (updated with M2's increment 20)
+# Handover: Starman Control, 21 October 2026 (updated with M2b's increment 28)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -69,6 +69,11 @@ way in.
   treasuries on overdrive and their attention on edicts; `npm run balance` writes the headless
   games to [M2_BALANCE.md](design/M2_BALANCE.md); a browser journey plays 100 turns on a phone and a
   desktop. **M2 is complete** and waits for the owner's try.
+- **M2b, *Science and rivalry*, is under way** ([M2B_SCIENCE.md](design/M2B_SCIENCE.md); D-44 to
+  D-50 decided as recommended on 21 October 2026). **Increment 28 is built:** research from every
+  colony's scholars (1 for every 4 million, kept at approval) and a lab as every fifth district for
+  every governor, so every power's science grows with its empire; the colony's panel shows its
+  research; `npm run balance` reports research a turn and when the tree is finished.
 - **Numbers:** 375 unit tests and about 209 browser journeys pass; the title loads 21.2 KB of its
   40 KB budget, a game's map about 319 KB of 900 KB, opening a colony 9.5 KB of code more (40 KB);
   a colony's still on a phone loads 658 KB of pictures at most (1 MB) and the diorama it opens
@@ -89,10 +94,11 @@ research), 22 (advisors and the report), 23 (governors and edicts), 24 (rivals t
 asked to play a game of 50 turns or more on a phone and a desktop and say what was dull, unclear,
 slow or too easy (§29.5); their answers decide M3's first changes.
 
-**Next: M2b, *Science and rivalry*** ([design/M2B_SCIENCE.md](design/M2B_SCIENCE.md)), proposed
-after M2's headless games showed two rivals stuck at 5 research a turn and the third through the
-whole tree by turn 90. Its decisions D-44 to D-50 wait for the owner; once answered, build
-increments 28 to 32 as its §12 sets out, each with a detailed design section first.
+**Now: M2b, *Science and rivalry*** ([design/M2B_SCIENCE.md](design/M2B_SCIENCE.md)), after M2's
+headless games showed two rivals stuck at 5 research a turn and the third through the whole tree by
+turn 90. D-44 to D-50 were answered *as recommended* on 21 October 2026. Build increments 28 to 32
+as its §12 sets out, each with a detailed design section first (§16 onwards) and its notes as
+built. Increment 28 is done.
 
 **Then: M3 "Neighbours"** (SCOPE.md §5): documentation first. Write `docs/design/M3_NEIGHBOURS.md`
 (goals, out of scope, increments) and put its game-shaping questions to the owner in DECISIONS.md
@@ -100,8 +106,9 @@ before building: first contact and translation, treaties, borders and claims, tr
 each power did, and the first alien species (D-08's "alien species later"). Each increment's
 pictures are lettered sheets to the owner, recorded in DECISIONS.md with their cost.
 
-The art and music spend: about $23.15 of $25 (about $1.85 left). M3 will need more than that
-(alien species, their worlds and faces): ask the owner to raise D-27 when its design is written.
+The art and music spend: about $23.15 of $35 (raised on 21 October 2026; about $11.85 left). M2b's
+13 pictures are planned at about $1.30. M3 will need more (alien species, their worlds and faces):
+ask the owner to raise D-27 again when its design is written.
 
 ## 3. Standing instructions from the owner
 
@@ -111,8 +118,8 @@ The art and music spend: about $23.15 of $25 (about $1.85 left). M3 will need mo
 - **The Gemini key** is in the environment as `GEMINI_API_KEY`. **Never print, log, commit or echo
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
-- **Art spend (D-27):** about **$25 in all** may be spent without asking (raised on 20 October
-  2026); about **$23.15** is spent (after increments 18 to 25), so about **$1.85** is left. Nano
+- **Art spend (D-27):** about **$35 in all** may be spent without asking (raised on 21 October
+  2026); about **$23.15** is spent (after increments 18 to 25), so about **$11.85** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.

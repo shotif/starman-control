@@ -89,6 +89,34 @@ describe('governors (§25.1)', () => {
     expect(govern(world, g, busy).some((e) => e.did === 'zone')).toBe(false);
   });
 
+  it('keep a lab as every fifth district, whatever their priority (D-44)', () => {
+    for (const [priority, reason] of [
+      ['grow', 'lab'],
+      ['produce', 'lab'],
+      ['trade', 'lab'],
+      ['balance', 'priority'],
+      ['research', 'priority'],
+    ] as const) {
+      const g = start();
+      // Fed, with a million idle, and four districts zoned: the fifth is a lab.
+      const c = colony(g, 50, ['farms', 'farms', 'works', 'works']);
+      c.governor = priority;
+      expect(
+        govern(world, g, c).find((e) => e.did === 'zone'),
+        priority,
+      ).toMatchObject({
+        zone: 'labs',
+        slot: 5,
+        reason,
+      });
+    }
+    // With a lab already among the first five, the sixth is the priority's own.
+    const g = start();
+    const c = colony(g, 60, ['farms', 'farms', 'labs', 'works', 'works']);
+    c.governor = 'produce';
+    expect(govern(world, g, c).find((e) => e.did === 'zone')).toMatchObject({ zone: 'mines', reason: 'priority' });
+  });
+
   it('never touch what the player zoned, cleared or queued', () => {
     let g = start();
     const c = colony(g, 30, ['farms', 'farms']);

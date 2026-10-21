@@ -1,8 +1,9 @@
 # M2b · Science and rivalry
 
-*Proposed 21 October 2026, after M2's headless games. **Waiting for the owner's answers to D-44 to
-D-50** ([DECISIONS.md](../DECISIONS.md)); nothing here is built until they are given. Each
-increment gets a detailed design section, written before it is built, as M2's did.*
+*Proposed 21 October 2026, after M2's headless games. **Decided the same day: D-44 to D-50 all as
+recommended** ([DECISIONS.md, Round 5](../DECISIONS.md#round-5-science-and-rivalry-decided-21-october-2026)).
+Each increment gets a detailed design section, written before it is built, as M2's did, and its
+notes as built.*
 
 ## Contents
 
@@ -21,6 +22,7 @@ increment gets a detailed design section, written before it is built, as M2's di
 13. [Tests and budgets](#13-tests-and-budgets)
 14. [Art and its cost](#14-art-and-its-cost)
 15. [Decisions for the owner](#15-decisions-for-the-owner)
+16. [Increment 28 in detail: where research comes from](#16-increment-28-in-detail-where-research-comes-from-written-before-building-it)
 
 ## 1. What M2's games showed
 
@@ -233,3 +235,94 @@ Answer *as recommended* to take every recommendation, or name what to change.
 | **D-48** | Rivals' science (§8) | A spreading knowledge · B the Watch's rumours · C science in the standings | **all three** |
 | **D-49** | Great works (§9) | yes · no | **yes**, the four drafted |
 | **D-50** | A score (§10) | yes · no | **yes**, no victory yet |
+
+## 16. Increment 28 in detail: where research comes from (written before building it)
+
+**Goals.** D-44 as decided (C): research grows with every power's people, and every governor
+keeps a lab, so no power is stuck at 5 research a turn; the rivals follow, since they govern their
+colonies with the same code; `npm run balance` measures it.
+
+**Out of scope.** The tree itself: increment 30 deepens it and makes each technology cost more
+than the last, which is what keeps a research-led power from finishing early. Public schooling's
+1 scholar for every 3 million (increment 30). Discoveries (increment 29).
+
+### 16.1 Scholars
+
+- Every colony, the capital included, has **1 scholar for each whole 4 million people**
+  (`RULES.research.scholarsPer`, 40 tenths), and each makes 1 research a turn.
+- Scholars are kept at the colony's approval as its districts' yields are (content all, uneasy
+  90%, unrest 70%), rounded to the nearest.
+- **A colony in revolt makes no research at all:** its labs and scholars are counted as lost, and
+  the capital's own 3 stop too (M2 still counted them in revolt, against M2_WORLDS.md §5's
+  "a colony in revolt makes nothing").
+- At the start every capital holds 10 million, so 2 scholars: research 7 a turn instead of 5.
+
+### 16.2 A lab for every governor
+
+- Every governor, whatever its priority, zones a lab as **every fifth district** of its colony:
+  when it zones open land and the colony would have fewer labs than one for every five districts
+  (counting the one it is zoning), that district is a lab, if its people could work it as for
+  any worked district (`RULES.governors.labEvery`). *Balance* (a lab in five) and *research* (all
+  labs) already did so; *grow*, *produce* and *trade* now do.
+- Its line in the report gives the reason: "Proxima Cen b's governor zoned district 5 for labs:
+  every governor keeps a lab, one district in five."
+- How a governor orders the work does not change: farms first, then its priority's zones, then
+  the rest, a lab among them, so a lab is worked once there are people for it.
+- A capital's ten districts are zoned from the start, one of them a lab, so its governor zones
+  none.
+
+### 16.3 On the screen
+
+- **The research screen's figure:** "Research 7 a turn = 2 from labs + 2 from 2 scholars + 3 from
+  the capital", with what unhappiness takes as "lost to unhappiness".
+- **The colony's panel** gains a research line, as industry and credits have: "Research 7 = 2
+  from 1 lab + 2 from 2 scholars + 3 from the capital". The same component on the phone and the
+  desktop.
+- **The governor's note** in the colony's panel adds "Every governor keeps a lab, one district in
+  five."
+
+### 16.4 The state
+
+No change. Scholars are worked out from people and the governors' rule from districts, so the
+state stays version 9 and an old save gains its scholars when it is loaded.
+
+### 16.5 What to expect
+
+Estimated at turn 100 of the headless games: the Cooperative and the Wake 20 to 30 research a
+turn instead of 5, the Authority about 75. With the 33 technologies of M2 still the whole tree,
+the Authority finishes it a little sooner than before and the others reach 20 to 30 technologies;
+increment 30's rising costs and new tiers bring them to §2's targets. `npm run balance` now writes
+each power's research a turn and the turn any power finished the tree.
+
+### 16.6 Tests
+
+Unit: scholars at the capital and a colony, kept at approval, none in revolt; the research figure's
+parts; the lab as the fifth district for every priority, with its reason, and the sixth the
+priority's own; the headless games' floor raised from 8 technologies to 15 for every power at turn
+100. Browser: the research figure on the research screen and the capital's panel, and the turns a
+technology takes, on the phone, tablet and desktop.
+
+### Increment 28: where research comes from (21 October 2026)
+
+- **Scholars** (`scholarsOf`, `colonyResearchOf` and `researchOf` in `src/sim/economy.ts`), as
+  §16.1: 1 for every whole 4 million at every colony, kept at its approval; a colony in revolt makes
+  no research, the capital's own 3 included. Every capital starts at 7 research a turn.
+- **A lab for every governor** (`nextZone` in `src/sim/governor.ts`), as §16.2: the fifth district,
+  the tenth and so on is a lab for every priority, with its own reason in the report (`lab`). The
+  rivals' governors follow; `ai.ts` is unchanged.
+- **On the screen:** the research screen's figure names the scholars, and the colony's panel has a
+  research line between industry and credits, on the phone and the desktop alike.
+- **Measured** (`npm run balance`, eight seeds, [M2_BALANCE.md](M2_BALANCE.md), which now has
+  research a turn and when the tree was finished): research a turn at turns 25, 50 and 100 is about
+  17, 22 and 70 for the Authority, 9, 18 and 41 for the Cooperative and 8, 13 and 31 for the Wake
+  (M2: 5 a turn for the Cooperative and the Wake throughout). At turn 100 the Cooperative knows
+  about 29 of the 33 technologies and the Wake 22 (M2: 11 each); the Authority finishes the tree
+  between turns 78 and 98 (M2: about 90). The Cooperative makes more than §16.5 estimated, for it
+  has the most people: about 82 million at turn 100. Increment 30's deeper tree is what brings the
+  totals to §2's targets.
+- **Tests:** `research.test.ts` (scholars at the capital and a colony, kept at approval, none in
+  revolt; the figure's parts), `governors.test.ts` (the lab as the fifth district for every
+  priority, the sixth the priority's own), `rivals.test.ts` (every power at least 15 technologies
+  at turn 100); the research screen's figure and times in `game.spec.ts` and `projects.spec.ts`,
+  the capital's research line in `districts.spec.ts`, on the phone, tablet and desktop.
+

@@ -1,8 +1,9 @@
 // Governors (M2_WORLDS.md §8, §25.1, D-15): a colony run for a priority, as each turn ends. A
-// governor mends shortages first, zones open land its people can work, puts the right districts to
-// work, and queues a project when the queue is empty; it never touches what the player locked or
-// queued, never builds ships or lanes, never changes taxes or buys industry. Every action is a
-// report line with its reason. The rivals run their colonies with this same code (increment 24).
+// governor mends shortages first, zones open land its people can work (a lab as every fifth
+// district, whatever its priority, D-44), puts the right districts to work, and queues a project
+// when the queue is empty; it never touches what the player locked or queued, never builds ships or
+// lanes, never changes taxes or buys industry. Every action is a report line with its reason. The
+// rivals run their colonies with this same code (increment 24).
 
 import { ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { CALMING, PRIORITY_DEFS, type Priority } from '../content/edicts.ts';
@@ -58,11 +59,17 @@ function canWorkMore(h: Holding): boolean {
   return h.people >= jobs * RULES.districts.workers + RULES.districts.workers / 2;
 }
 
-/** The zone a priority gives the next open district: the one it has fewest of, for how often it wants it. */
+/**
+ * The zone a priority gives the next open district: a lab as every fifth district, whatever the
+ * priority (D-44), else the one it has fewest of, for how often it wants it.
+ */
 function nextZone(world: World, state: GameState, h: Holding, priority: Priority, slot: number): Zone | null {
   const want = PRIORITY_DEFS[priority].zones;
   const counts = new Map<Zone, number>();
   for (const d of h.districts) counts.set(d.zone, (counts.get(d.zone) ?? 0) + 1);
+  const labsDue = Math.floor((h.districts.length + 1) / RULES.governors.labEvery);
+  if ((counts.get('labs') ?? 0) < labsDue && zoneRefusal(world, state, h, 'labs', slot) === null && canWorkMore(h))
+    return 'labs';
   const nearlyFull = h.people + RULES.districts.workers >= capacityOf(world, state, h);
   const zones = [...new Set(want)].filter(
     (z) =>
@@ -123,7 +130,12 @@ export function govern(world: World, state: GameState, h: Holding): Governed[] {
       const z = lean ? 'farms' : nextZone(world, state, h, priority, slot);
       if (z) {
         zone(h, z, slot);
-        out.push({ kind: 'governed', holding: h.id, did: 'zone', zone: z, slot, reason: lean ? 'food' : 'priority' });
+        const reason = lean
+          ? 'food'
+          : z === 'labs' && !PRIORITY_DEFS[priority].zones.includes('labs')
+            ? 'lab'
+            : 'priority';
+        out.push({ kind: 'governed', holding: h.id, did: 'zone', zone: z, slot, reason });
       }
     }
   }

@@ -417,23 +417,62 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
   return { total: sum(parts), parts };
 }
 
-/** Research a turn (M2_WORLDS.md §7): the labs of every colony and the capital's own. */
+/** A colony's scholars (M2B_SCIENCE.md §16, D-44): 1 for every 4 million of its people. */
+export function scholarsOf(h: Holding): number {
+  return h.kind === 'colony' ? Math.floor(h.people / RULES.research.scholarsPer) : 0;
+}
+
+/** What a colony's scholars make, kept at its approval as a district's yield is. */
+function scholarParts(world: World, state: GameState, h: Holding): { parts: Part[]; value: number } {
+  const n = scholarsOf(h);
+  if (n === 0) return { parts: [], value: 0 };
+  const keeps = keepsOf(world, state, h);
+  const kept = Math.floor((n * keeps + 50) / 100);
+  const parts: Part[] = [{ label: `from ${n} scholar${n === 1 ? '' : 's'}`, value: n }];
+  if (kept < n) parts.push({ label: `${approvalOf(world, state, h).level} (${keeps}%)`, value: kept - n });
+  return { parts, value: kept };
+}
+
+/**
+ * A colony's research a turn (M2B_SCIENCE.md §16): its labs and its scholars, kept at its approval,
+ * its research institute and, at the capital, the capital's own.
+ */
+export function colonyResearchOf(world: World, state: GameState, h: Holding): Figure {
+  if (h.kind !== 'colony') return { total: 0, parts: [] };
+  if (stopped(world, state, h)) return { total: 0, parts: [{ label: 'in revolt', value: 0 }] };
+  const parts: Part[] = [...districtParts(world, state, h, 'labs').parts, ...scholarParts(world, state, h).parts];
+  if (h.projects.includes('research-institute'))
+    parts.push({ label: 'from the research institute', value: RULES.projects.instituteResearch });
+  if (h.capital) parts.push({ label: 'from the capital', value: RULES.capital.research });
+  return { total: sum(parts), parts };
+}
+
+/**
+ * Research a turn (M2_WORLDS.md §7, M2B_SCIENCE.md §16): the labs and scholars of every colony, what
+ * unhappiness takes off them, research institutes and the capital's own.
+ */
 export function researchOf(world: World, state: GameState, faction: FactionId): Figure {
   let labs = 0;
+  let scholars = 0;
   let lost = 0;
   let capital = 0;
   let institutes = 0;
   for (const h of state.holdings) {
     if (h.owner !== faction || h.kind !== 'colony') continue;
+    // Labs and scholars are kept at the colony's approval: none in revolt, which stops the rest too.
     const r = districtParts(world, state, h, 'labs');
     labs += sum(r.parts.slice(0, 1));
     lost += r.value - sum(r.parts.slice(0, 1));
+    const sp = scholarParts(world, state, h);
+    scholars += sum(sp.parts.slice(0, 1));
+    lost += sp.value - sum(sp.parts.slice(0, 1));
+    if (stopped(world, state, h)) continue;
     if (h.capital) capital += RULES.capital.research;
-    if (h.projects.includes('research-institute') && !stopped(world, state, h))
-      institutes += RULES.projects.instituteResearch;
+    if (h.projects.includes('research-institute')) institutes += RULES.projects.instituteResearch;
   }
   const parts: Part[] = [];
   if (labs > 0) parts.push({ label: 'from labs', value: labs });
+  if (scholars > 0) parts.push({ label: `from ${scholars} scholar${scholars === 1 ? '' : 's'}`, value: scholars });
   if (lost < 0) parts.push({ label: 'lost to unhappiness', value: lost });
   if (institutes > 0) parts.push({ label: 'from research institutes', value: institutes });
   if (capital > 0) parts.push({ label: 'from the capital', value: capital });

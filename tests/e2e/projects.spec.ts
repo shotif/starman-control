@@ -60,5 +60,5 @@ test('the research tree has M2’s technologies, each with its exact effect', as
   await expect(screen).toContainText('opens the research institute');
   await press(screen.getByRole('button', { name: 'Queue Soil science', exact: true }), project);
   await expect(screen.locator('.research-queue')).toContainText('Soil science');
-  await expect(screen.locator('.research-queue li').first()).toContainText('done in about 6 turns');
+  await expect(screen.locator('.research-queue li').first()).toContainText('done in about 5 turns');
 });

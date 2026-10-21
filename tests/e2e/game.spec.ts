@@ -276,7 +276,7 @@ test.describe('research', () => {
     if (isDesktop(project)) await page.keyboard.press('t');
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
     const screen = page.getByRole('dialog', { name: 'Research' });
-    await expect(screen).toContainText('Research 5 a turn = 2 from labs + 3 from the capital');
+    await expect(screen).toContainText('Research 7 a turn = 2 from labs + 2 from 2 scholars + 3 from the capital');
     await expect(screen).toContainText('Nothing is being researched');
     await expect(page.locator('.needs-count-badge').first()).toHaveText('6');
     // Lane engineering II brings Lane engineering I with it.
@@ -285,10 +285,10 @@ test.describe('research', () => {
     await expect(screen.locator('.research-queue')).toContainText('Lane engineering II');
     await press(screen.getByRole('button', { name: 'Research Deep survey now' }), project);
     await expect(screen.locator('.research-queue li').first()).toContainText('Deep survey');
-    await expect(screen.locator('.research-queue li').first()).toContainText('done in about 6 turns');
+    await expect(screen.locator('.research-queue li').first()).toContainText('done in about 5 turns');
     await expect(page.locator('.needs-count-badge').first()).toHaveText('5');
     if (!isDesktop(project)) await page.getByRole('button', { name: 'Close' }).first().tap();
-    for (let i = 0; i < 6; i++) await endTurn(page, project);
+    for (let i = 0; i < 5; i++) await endTurn(page, project);
     await expect(page.getByRole('dialog', { name: 'Report' })).toContainText(
       'Researched Deep survey: Investigating an anomaly takes one turn less',
     );
@@ -365,10 +365,10 @@ test.describe('the M1 journey', () => {
     // Settle: an outpost on Mars.
     await chooseShip(page, 'Redoubt', project);
     await press(selection(page, project, 'Redoubt').getByRole('button', { name: /^Mars / }), project);
-    // Research: Deep survey.
+    // Research: Long-baseline arrays, with Deep survey first.
     if (isDesktop(project)) await page.keyboard.press('t');
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
-    await press(page.getByRole('button', { name: 'Research Deep survey now' }), project);
+    await press(page.getByRole('button', { name: 'Research Long-baseline arrays now' }), project);
     if (isDesktop(project)) await page.keyboard.press('Escape');
     else await page.getByRole('button', { name: 'Close' }).first().tap();
     for (let i = 0; i < 5; i++) await endTurn(page, project);
@@ -390,10 +390,11 @@ test.describe('the M1 journey', () => {
     else await page.getByRole('button', { name: 'Close' }).first().tap();
     if (isDesktop(project)) await page.keyboard.press('t');
     else await page.getByRole('button', { name: 'Research', exact: true }).tap();
+    // Five turns at 7 a turn: Deep survey's 30, and 5 into Long-baseline arrays.
     await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText(
-      'Deep survey',
+      'Long-baseline arrays',
     );
-    await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText('25 of 30');
+    await expect(page.getByRole('dialog', { name: 'Research' }).locator('.research-queue')).toContainText('5 of 60');
   });
 
   test('keeps the settings, and the text grows with them', async ({ page }, info) => {

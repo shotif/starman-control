@@ -1,11 +1,14 @@
-// The headless games (M2_WORLDS.md §29.2): three rivals play 100 turns on eight seeds, and what
-// each power made of it is written to docs/design/M2_BALANCE.md, to read when balancing. Not part
-// of `npm run check` (the unit tests check the limits); run it with `npm run balance`.
+// The headless games (M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): three rivals play 100 turns on eight
+// seeds, and what each power made of it is written to docs/design/M2_BALANCE.md, to read when
+// balancing. Not part of `npm run check` (the unit tests check the limits); run it with
+// `npm run balance`.
 
 import { writeFileSync } from 'node:fs';
 import { EVENTS, type EventId } from '../../src/content/events.ts';
 import { FACTIONS, type FactionId } from '../../src/content/factions.ts';
+import { TECH_IDS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
+import { researchOf } from '../../src/sim/economy.ts';
 import { newGame } from '../../src/sim/state.ts';
 import { resolveTurn } from '../../src/sim/turn.ts';
 import { buildWorld } from '../../src/sim/world.ts';
@@ -19,6 +22,7 @@ interface Line {
   outposts: number;
   people: number;
   techs: number;
+  research: number;
   treasury: number;
 }
 
@@ -30,10 +34,13 @@ let longestDebt = 0;
 let longestHunger = 0;
 let slowest = 0;
 let biggest = 0;
+/** The turn each power finished the whole tree, in each game. */
+const finished: string[] = [];
 
 for (const seed of SEEDS) {
   let g = newGame(world, { seed, powers: FACTION_ORDER.map((faction) => ({ faction, controller: 'ai' as const })) });
   const debt = new Map<FactionId, number>();
+  const done = new Set<FactionId>();
   for (let turn = 1; turn <= 100; turn++) {
     const t0 = performance.now();
     const r = resolveTurn(world, g);
@@ -52,6 +59,11 @@ for (const seed of SEEDS) {
       longestDebt = Math.max(longestDebt, d);
     }
     longestHunger = Math.max(longestHunger, ...g.holdings.map((h) => h.hungry));
+    for (const p of g.powers)
+      if (!done.has(p.faction) && p.researched.length === TECH_IDS.length) {
+        done.add(p.faction);
+        finished.push(`${FACTIONS[p.faction].shortName} on turn ${turn} (seed ${seed})`);
+      }
     if (!AT.includes(turn)) continue;
     for (const p of g.powers) {
       const held = g.holdings.filter((h) => h.owner === p.faction);
@@ -60,21 +72,23 @@ for (const seed of SEEDS) {
         outposts: held.filter((h) => h.kind === 'outpost').length,
         people: held.reduce((n, h) => n + h.people, 0),
         techs: p.researched.length,
+        research: researchOf(world, g, p.faction).total,
         treasury: p.treasury,
       };
       const key = `${turn}:${p.faction}`;
-      const t = totals.get(key) ?? { colonies: 0, outposts: 0, people: 0, techs: 0, treasury: 0, n: 0 };
+      const t = totals.get(key) ?? { colonies: 0, outposts: 0, people: 0, techs: 0, research: 0, treasury: 0, n: 0 };
       totals.set(key, {
         colonies: t.colonies + line.colonies,
         outposts: t.outposts + line.outposts,
         people: t.people + line.people,
         techs: t.techs + line.techs,
+        research: t.research + line.research,
         treasury: t.treasury + line.treasury,
         n: t.n + 1,
       });
       if (turn === 100)
         rows.push(
-          `| ${seed} | ${FACTIONS[p.faction].shortName} | ${line.colonies} | ${line.outposts} | ${(line.people / 10).toFixed(1)} | ${line.techs} | ${line.treasury} |`,
+          `| ${seed} | ${FACTIONS[p.faction].shortName} | ${line.colonies} | ${line.outposts} | ${(line.people / 10).toFixed(1)} | ${line.techs} | ${line.research} | ${line.treasury} |`,
         );
     }
   }
@@ -85,31 +99,33 @@ const avg = (turn: number, f: FactionId) => {
   const t = totals.get(`${turn}:${f}`);
   if (!t) return '';
   const a = (n: number) => (n / t.n).toFixed(1);
-  return `| ${turn} | ${FACTIONS[f].shortName} | ${a(t.colonies)} | ${a(t.outposts)} | ${(t.people / t.n / 10).toFixed(1)} | ${a(t.techs)} | ${Math.round(t.treasury / t.n)} |`;
+  return `| ${turn} | ${FACTIONS[f].shortName} | ${a(t.colonies)} | ${a(t.outposts)} | ${(t.people / t.n / 10).toFixed(1)} | ${a(t.techs)} | ${a(t.research)} | ${Math.round(t.treasury / t.n)} |`;
 };
 
 /** "No power fell into debt." or "The longest time in debt was 3 turns in a row." */
 const streak = (turns: number, what: string, never: string) =>
   turns === 0 ? `${never}.` : `The longest time ${what} was ${turns} turn${turns === 1 ? '' : 's'} in a row.`;
 
-const out = `# M2's headless games
+const out = `# The headless games
 
-*Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2): three rivals, ${SEEDS.length} seeds,
-100 turns each. Regenerate it after any change to the rules or the rivals.*
+*Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): three
+rivals, ${SEEDS.length} seeds, 100 turns each. Regenerate it after any change to the rules or the rivals.*
 
 The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
 was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
 
+The tree has ${TECH_IDS.length} technologies. ${finished.length === 0 ? 'No power finished it in 100 turns.' : `Finished by: ${finished.join('; ')}.`}
+
 ## On average
 
-| Turn | Power | Colonies | Outposts | People (millions) | Technologies | Treasury |
-| --- | --- | --- | --- | --- | --- | --- |
+| Turn | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Treasury |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${AT.flatMap((t) => FACTION_ORDER.map((f) => avg(t, f))).join('\n')}
 
 ## Each game at turn 100
 
-| Seed | Power | Colonies | Outposts | People (millions) | Technologies | Treasury |
-| --- | --- | --- | --- | --- | --- | --- |
+| Seed | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Treasury |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join('\n')}
 
 ## Events, and how the rivals answered them

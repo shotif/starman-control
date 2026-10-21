@@ -342,7 +342,9 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
             ? 'it is full'
             : e.reason === 'calm'
               ? 'its people are unhappy'
-              : `its priority is ${h?.governor ? PRIORITY_DEFS[h.governor].name.toLowerCase() : 'balance'}`;
+              : e.reason === 'lab'
+                ? 'every governor keeps a lab, one district in five'
+                : `its priority is ${h?.governor ? PRIORITY_DEFS[h.governor].name.toLowerCase() : 'balance'}`;
       return `${holding(e.holding)}’s governor ${did}: ${why}.`;
     }
     case 'edict-ended':

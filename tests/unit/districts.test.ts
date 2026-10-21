@@ -85,7 +85,8 @@ describe('districts (§2)', () => {
         made: { total: 6, parts: [{ label: 'from 2 farms', value: 6 }] },
         eaten: 5,
       });
-      expect(researchOf(world, g, f).total).toBe(5);
+      // 2 from its lab, 2 from its 2 scholars and 3 of its own (M2B_SCIENCE.md §16).
+      expect(researchOf(world, g, f).total).toBe(7);
       expect(creditsOf(world, g, c)).toEqual({
         total: 8,
         parts: [

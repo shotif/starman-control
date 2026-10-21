@@ -4,7 +4,16 @@ import { SPECIES } from '../../src/content/species.ts';
 import { TECH_IDS, TECHS, type TechId } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
-import { capacityOf, costOf, growthOf, researchOf, settleRefusal, yieldsOf } from '../../src/sim/economy.ts';
+import {
+  capacityOf,
+  colonyResearchOf,
+  costOf,
+  growthOf,
+  researchOf,
+  scholarsOf,
+  settleRefusal,
+  yieldsOf,
+} from '../../src/sim/economy.ts';
 import { habitability } from '../../src/sim/habitability.ts';
 import { laneQuote, laneReachDeci } from '../../src/sim/lanes.ts';
 import { blindReachDeci, jumpPoints } from '../../src/sim/movement.ts';
@@ -35,17 +44,20 @@ const knowing = (...techs: TechId[]) => {
 const capital = (g: GameState) => g.holdings[0] as Holding;
 
 describe('research points', () => {
-  it('come from the labs of every colony, less what unhappiness takes, and the capital’s own', () => {
+  it('come from the labs and scholars of every colony, less what unhappiness takes, and the capital’s own', () => {
     const g = start();
+    // 10 million at the capital are 2 scholars, 1 for every whole 4 million (M2B_SCIENCE.md §16).
     expect(researchOf(world, g, 'sta')).toEqual({
-      total: 5,
+      total: 7,
       parts: [
         { label: 'from labs', value: 2 },
+        { label: 'from 2 scholars', value: 2 },
         { label: 'from the capital', value: 3 },
       ],
     });
-    // A lab district on Mars, worked by its first million. Under domes, hungry and at high taxes, it
-    // is in unrest and keeps 70% of its 2: 1.4, so 1. The capital, uneasy, keeps 1.8 of its 2: 2.
+    // A lab district on Mars, worked by its first million (too few for a scholar). Under domes,
+    // hungry and at high taxes, it is in unrest and keeps 70% of its 2: 1.4, so 1. The capital,
+    // uneasy, keeps 1.8 of its 2 labs' and of its 2 scholars': 2 each.
     powerOf(g, 'sta').taxes = 'high';
     const mars = makeHolding(g, {
       owner: 'sta',
@@ -58,20 +70,61 @@ describe('research points', () => {
     });
     mars.hungry = 1;
     expect(researchOf(world, g, 'sta')).toEqual({
-      total: 6,
+      total: 8,
       parts: [
         { label: 'from labs', value: 4 },
+        { label: 'from 2 scholars', value: 2 },
         { label: 'lost to unhappiness', value: -1 },
         { label: 'from the capital', value: 3 },
       ],
     });
   });
 
+  it('come from each colony’s scholars, 1 for every whole 4 million, kept at its approval (M2B_SCIENCE.md §16)', () => {
+    const g = start();
+    expect(colonyResearchOf(world, g, capital(g))).toEqual({
+      total: 7,
+      parts: [
+        { label: 'from 1 lab', value: 2 },
+        { label: 'from 2 scholars', value: 2 },
+        { label: 'from the capital', value: 3 },
+      ],
+    });
+    // 8.5 million on Mars are 2 scholars; uneasy under domes, they keep 90%: 1.8, so 2.
+    const mars = makeHolding(g, {
+      owner: 'sta',
+      kind: 'colony',
+      system: 'sol',
+      body: 'mars',
+      capital: false,
+      people: 85,
+      districts: [],
+    });
+    expect(scholarsOf(mars)).toBe(2);
+    expect(colonyResearchOf(world, g, mars).total).toBe(2);
+    powerOf(g, 'sta').taxes = 'high';
+    mars.hungry = 1;
+    // In unrest (high taxes, hungry) it keeps 70%: 1.4, so 1.
+    expect(colonyResearchOf(world, g, mars)).toEqual({
+      total: 1,
+      parts: [
+        { label: 'from 2 scholars', value: 2 },
+        { label: 'unrest (70%)', value: -1 },
+      ],
+    });
+    // In revolt it makes nothing, and the power's figure counts what it lost.
+    mars.hungry = 0;
+    powerOf(g, 'sta').treasury = -10;
+    powerOf(g, 'sta').lasting.push({ event: 'strike', kind: 'approval', holding: mars.id, amount: -30, left: 2 });
+    expect(colonyResearchOf(world, g, mars)).toEqual({ total: 0, parts: [{ label: 'in revolt', value: 0 }] });
+    expect(scholarsOf({ ...mars, kind: 'outpost', people: 0 })).toBe(0);
+  });
+
   it('go into the first technology queued, then the next with what is left', () => {
     let g = research(start(), 'lane-engineering-1');
-    expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([6]);
-    for (let i = 0; i < 5; i++) g = turn(g).state;
-    expect(powerOf(g, 'sta').techProgress['lane-engineering-1']).toBe(25);
+    expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([5]);
+    for (let i = 0; i < 4; i++) g = turn(g).state;
+    expect(powerOf(g, 'sta').techProgress['lane-engineering-1']).toBe(28);
     const r = turn(g);
     expect(powerOf(r.state, 'sta').researched).toEqual(['lane-engineering-1']);
     expect(powerOf(r.state, 'sta').techProgress).toEqual({});
@@ -97,9 +150,9 @@ describe('research points', () => {
     let g = research(start(), 'adaptation-1');
     g = turn(turn(g).state).state;
     g = order(g, { type: 'unresearch', tech: 'adaptation-1' });
-    expect(powerOf(g, 'sta').techProgress['adaptation-1']).toBe(10);
+    expect(powerOf(g, 'sta').techProgress['adaptation-1']).toBe(14);
     g = research(g, 'adaptation-1');
-    expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([4]);
+    expect(researchTurns(g, 'sta', researchOf(world, g, 'sta').total)).toEqual([3]);
   });
 });
 

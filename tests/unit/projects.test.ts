@@ -111,9 +111,10 @@ describe('the projects (§23.1)', () => {
     capital(g).projects.push('research-institute');
     expect(zoneYield(world, g, capital(g), 'labs')).toBe(3);
     expect(researchOf(world, g, 'sta')).toEqual({
-      total: 3 + 3 + 3,
+      total: 3 + 2 + 3 + 3,
       parts: [
         { label: 'from labs', value: 3 },
+        { label: 'from 2 scholars', value: 2 },
         { label: 'from research institutes', value: 3 },
         { label: 'from the capital', value: 3 },
       ],

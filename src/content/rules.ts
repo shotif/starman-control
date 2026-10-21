@@ -125,6 +125,15 @@ export const RULES = {
     levels: { content: 60, uneasy: 40, unrest: 20 },
     keeps: { content: 100, uneasy: 90, unrest: 70, revolt: 0 },
   },
+  /** Where research comes from besides labs (M2B_SCIENCE.md §4, §16, D-44). */
+  research: {
+    /** A colony's people make 1 research for every so many tenths of them (4 million): its scholars. */
+    scholarsPer: 40,
+  },
+  governors: {
+    /** Every governor zones a lab as every so many districts, whatever its priority (D-44). */
+    labEvery: 5,
+  },
   /** Attention, which pays for edicts (M2_WORLDS.md §8, §25.2). */
   attention: { start: 2, perTurn: 2, most: 6 },
   /** What the edicts do (src/content/edicts.ts names them). */
