@@ -76,13 +76,19 @@ export function buildWorld(sky: SkyDataset): World {
     if (!s) throw new RangeError(`No system ${id}`);
     return s;
   };
-  const distances = new Map<string, number>();
+  // Distances worked out once each, in a table by the systems' places in the list (−1 not yet).
+  const index = new Map(systems.map((s, i) => [s.id, i]));
+  const distances = new Int32Array(systems.length * systems.length).fill(-1);
   const distance = (a: SystemId, b: SystemId): number => {
-    const key = laneId(a, b);
-    let d = distances.get(key);
-    if (d === undefined) {
+    const i = index.get(a);
+    const j = index.get(b);
+    if (i === undefined || j === undefined) throw new RangeError(`No system ${i === undefined ? a : b}`);
+    const k = i * systems.length + j;
+    let d = distances[k] as number;
+    if (d < 0) {
       d = distanceDeci(system(a).positionLy, system(b).positionLy);
-      distances.set(key, d);
+      distances[k] = d;
+      distances[j * systems.length + i] = d;
     }
     return d;
   };

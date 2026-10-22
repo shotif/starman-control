@@ -40,11 +40,28 @@ export function hasTech(power: PowerState, id: TechId): boolean {
   return power.researched.includes(id);
 }
 
+/** Adapted species by their adaptations, so each is worked out once: a pure function of these. */
+const adapted = new Map<string, SpeciesDef>();
+/** A number for each adaptation (the technologies' own effects, never changed), for the key. */
+const effectIds = new WeakMap<object, number>();
+let nextEffectId = 0;
+
 /** The power's species as its research has adapted it (Adaptation I and II). */
 export function speciesFor(state: GameState, faction: FactionId): SpeciesDef {
   const base = SPECIES[FACTIONS[faction].species];
   const adapt = effects(state, faction, 'adaptation');
   if (adapt.length === 0) return base;
+  let key: string = FACTIONS[faction].species;
+  for (const a of adapt) {
+    let id = effectIds.get(a);
+    if (id === undefined) {
+      id = nextEffectId++;
+      effectIds.set(a, id);
+    }
+    key += `|${id}`;
+  }
+  const have = adapted.get(key);
+  if (have) return have;
   const costs = structuredClone(base.costs) as unknown as Record<string, Record<string, number | null>>;
   for (const a of adapt) {
     const table = costs[a.condition] as Record<string, number | null>;
@@ -53,7 +70,9 @@ export function speciesFor(state: GameState, faction: FactionId): SpeciesDef {
       if (c !== null && c !== undefined) table[v] = Math.max(0, c - a.by);
     }
   }
-  return { ...base, costs: costs as unknown as SpeciesDef['costs'] };
+  const out = { ...base, costs: costs as unknown as SpeciesDef['costs'] };
+  adapted.set(key, out);
+  return out;
 }
 
 /** The powers a power is in contact with that know a technology already (M3_NEIGHBOURS.md §19.2). */

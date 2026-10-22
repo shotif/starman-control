@@ -37,6 +37,25 @@ export interface Hop {
   lengthDeci: number;
 }
 
+/** Each lane's ends, length and cost, worked out once for a world: they never change. */
+const shapes = new WeakMap<World, Map<LaneId, { a: SystemId; b: SystemId; lengthDeci: number; cost: number }>>();
+
+function laneShape(world: World, id: LaneId): { a: SystemId; b: SystemId; lengthDeci: number; cost: number } {
+  let known = shapes.get(world);
+  if (!known) {
+    known = new Map();
+    shapes.set(world, known);
+  }
+  let shape = known.get(id);
+  if (!shape) {
+    const [a, b] = laneEnds(id);
+    const lengthDeci = world.catalogueLane(a, b)?.lengthDeci ?? world.distanceDeci(a, b);
+    shape = { a, b, lengthDeci, cost: laneCost(lengthDeci) };
+    known.set(id, shape);
+  }
+  return shape;
+}
+
 /** A power's open lanes, from each system; with `passage`, every lane its ships may use. */
 export function lanesFor(world: World, state: GameState, owner: FactionId, passage = false): Map<SystemId, Hop[]> {
   const out = new Map<SystemId, Hop[]>();
@@ -44,9 +63,7 @@ export function lanesFor(world: World, state: GameState, owner: FactionId, passa
   const open = new Set<FactionId>([owner, ...(passage ? passageWith(state, owner) : [])]);
   for (const l of state.lanes) {
     if (!open.has(l.owner) || l.status !== 'open') continue;
-    const [a, b] = laneEnds(l.id);
-    const lengthDeci = world.catalogueLane(a, b)?.lengthDeci ?? world.distanceDeci(a, b);
-    const cost = laneCost(lengthDeci);
+    const { a, b, lengthDeci, cost } = laneShape(world, l.id);
     for (const [from, to] of [
       [a, b],
       [b, a],
