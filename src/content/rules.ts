@@ -331,6 +331,13 @@ export const RULES = {
     /** A rival votes for a candidate it regards at least this well (warm). */
     warm: 10,
   },
+  /** Victory (M4_FLEETS.md §30): the turn limits a new game offers, and the default; the story's pace. */
+  victory: {
+    limits: [150, 200, 250] as const,
+    limit: 250,
+    /** Every power's score is kept every so many turns. */
+    historyEvery: 10,
+  },
   /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
   raid: {
     raided: -10,

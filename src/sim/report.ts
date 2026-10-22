@@ -12,7 +12,7 @@ import type { TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ObservationKind } from './discoveries.ts';
-import type { Amount, ResolutionKind } from './state.ts';
+import type { Amount, ResolutionKind, VictoryKind } from './state.ts';
 import type { LaneId } from './world.ts';
 
 export type ReportEvent =
@@ -235,7 +235,11 @@ export type ReportEvent =
       against?: number;
     }
   /** Sanctions laid on a member, or lifted. */
-  | { kind: 'sanctions'; faction: FactionId; laid: boolean };
+  | { kind: 'sanctions'; faction: FactionId; laid: boolean }
+  /** A power left the game, its last colony gone (M4_FLEETS.md §30.2). */
+  | { kind: 'power-left'; faction: FactionId }
+  /** The game decided (§30.1): who won, none when played alone, and how. */
+  | { kind: 'game-ended'; winner: FactionId | null; how: VictoryKind };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

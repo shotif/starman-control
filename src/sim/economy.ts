@@ -28,7 +28,7 @@ import { ceilDiv } from './geometry.ts';
 import { type Habitability, habitability } from './habitability.ts';
 import { blockadedBy } from './invasion.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
-import { findRoute, lanesFor } from './movement.ts';
+import { lanesFor, routeLength } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile, treatyOf } from './state.ts';
 import { soldParts, tributeOf } from './treaties.ts';
@@ -293,8 +293,7 @@ export type ApprovalLevel = 'content' | 'uneasy' | 'unrest' | 'revolt';
 export function jumpsFromCapital(world: World, state: GameState, h: Holding): number | null {
   const capital = powerOf(state, h.owner).capital;
   if (h.system === capital) return 0;
-  const route = findRoute(world, state, h.owner, capital, h.system);
-  return route ? route.length : null;
+  return routeLength(world, state, h.owner, capital, h.system);
 }
 
 /** A colony's approval, 0 to 100, its parts and its level (M2_WORLDS.md §5). */
@@ -371,8 +370,8 @@ export function civicOf(world: World, state: GameState, h: Holding): number {
   for (const o of state.holdings) {
     if (o === h || o.owner !== h.owner || !o.projects.includes('civic-centre')) continue;
     if (o.system === h.system) return p.civicNear;
-    const route = findRoute(world, state, h.owner, o.system, h.system);
-    if (route && route.length <= p.civicJumps) return p.civicNear;
+    const lanes = routeLength(world, state, h.owner, o.system, h.system);
+    if (lanes !== null && lanes <= p.civicJumps) return p.civicNear;
   }
   return 0;
 }

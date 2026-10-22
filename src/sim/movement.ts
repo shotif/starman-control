@@ -7,7 +7,7 @@ import { SHIPS } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { ceilDiv } from './geometry.ts';
 import { effects } from './research.ts';
-import type { GameState, ShipState } from './state.ts';
+import type { GameState, LaneState, ShipState } from './state.ts';
 import { passageWith } from './treaties.ts';
 import { type LaneId, laneEnds, type World } from './world.ts';
 
@@ -133,6 +133,93 @@ export function findRoute(
     at = via.from;
   }
   return path;
+}
+
+/**
+ * How many lanes the cheapest route between two systems takes over a power's lanes with passage, or
+ * null when none leads there: `findRoute(…).length`, the same route found the same way, worked out
+ * once from each system for as long as the lanes and the power's passage stay as they are. Approval
+ * asks it of every colony many times a turn (M2_WORLDS.md §5, §23.1).
+ */
+export function routeLength(world: World, state: GameState, owner: FactionId, from: SystemId, to: SystemId) {
+  if (from === to) return 0;
+  const passage = passageWith(state, owner).join();
+  let byState = routeCache.get(state);
+  if (!byState) {
+    byState = new Map();
+    routeCache.set(state, byState);
+  }
+  let cached = byState.get(owner);
+  if (!cached || cached.passage !== passage || !sameLanes(cached.lanes, state.lanes)) {
+    cached = { lanes: [...state.lanes], passage, graph: lanesFor(world, state, owner, true), from: new Map() };
+    byState.set(owner, cached);
+  }
+  let lanes = cached.from.get(from);
+  if (!lanes) {
+    lanes = routesFrom(cached.graph, from);
+    cached.from.set(from, lanes);
+  }
+  return lanes.get(to) ?? null;
+}
+
+const routeCache = new WeakMap<
+  GameState,
+  Map<
+    FactionId,
+    {
+      lanes: readonly LaneState[];
+      passage: string;
+      graph: Map<SystemId, Hop[]>;
+      from: Map<SystemId, Map<SystemId, number>>;
+    }
+  >
+>();
+
+/**
+ * Whether the lanes are those a route was worked out on. A lane is never changed in place, only
+ * replaced (its tuning counted down, a drift, a new lane), so the same objects are the same lanes.
+ */
+function sameLanes(a: readonly LaneState[], b: readonly LaneState[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+/**
+ * The lanes of the cheapest route from a system to every other it can reach: findRoute's search run
+ * to the end. A system's route is settled the moment it is taken, in the same order whatever the
+ * destination, so each is the route findRoute would find.
+ */
+function routesFrom(graph: Map<SystemId, Hop[]>, from: SystemId): Map<SystemId, number> {
+  type Best = { points: number; lanes: number; deci: number; via: Hop | null };
+  const best = new Map<SystemId, Best>([[from, { points: 0, lanes: 0, deci: 0, via: null }]]);
+  const done = new Set<SystemId>();
+  const better = (a: Best, b: Best) =>
+    a.points !== b.points ? a.points < b.points : a.lanes !== b.lanes ? a.lanes < b.lanes : a.deci < b.deci;
+  const out = new Map<SystemId, number>();
+  for (;;) {
+    let cur: SystemId | null = null;
+    for (const [id, b] of best) {
+      if (done.has(id)) continue;
+      const c = cur === null ? undefined : best.get(cur);
+      if (!c || better(b, c) || (!better(c, b) && id < (cur as SystemId))) cur = id;
+    }
+    if (cur === null) return out;
+    done.add(cur);
+    const here = best.get(cur) as Best;
+    out.set(cur, here.lanes);
+    for (const hop of graph.get(cur) ?? []) {
+      if (done.has(hop.to)) continue;
+      const next: Best = {
+        points: here.points + hop.cost,
+        lanes: here.lanes + 1,
+        deci: here.deci + hop.lengthDeci,
+        via: hop,
+      };
+      const old = best.get(hop.to);
+      if (!old || better(next, old) || (!better(old, next) && (old.via?.from ?? '') > hop.from)) best.set(hop.to, next);
+    }
+  }
 }
 
 export interface PlannedHop extends Hop {

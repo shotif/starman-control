@@ -261,6 +261,24 @@ const FIRST: ArtBrief[] = [
       'ring of light filling with two arcs of colour, cyan and amber, as the votes come in.',
     purpose: 'Report: the Assembly formed, or a vote taken (M4).',
   },
+  // The end of the game (M4_FLEETS.md §30.5): victory and defeat. Every person and power is fiction.
+  {
+    id: 'end-victory',
+    series: 'illustration',
+    subject:
+      'A crowded station concourse under a great curved window, people of many kinds of dress celebrating, ' +
+      'banners of plain colour hung from the galleries, and outside the window a line of ships passing slowly ' +
+      'in salute against a bright blue-white planet.',
+    purpose: 'The end of the game: a victory (M4).',
+  },
+  {
+    id: 'end-defeat',
+    series: 'illustration',
+    subject:
+      'An empty command room at night, its great holographic star map dark but for a few dim points, chairs ' +
+      'pushed back, one officer standing alone at the window looking out at the stars and a distant red sun.',
+    purpose: 'The end of the game: a defeat (M4).',
+  },
   // The colony view's style slice (COLONY_VIEW.md §6, increment 14): one landscape, the
   // Cooperative's buildings for its capital, the shared scaffold, and homes in the other two
   // architectures, so the owner sees all three before the rest is made.

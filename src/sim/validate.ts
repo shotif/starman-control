@@ -73,6 +73,25 @@ export function shapeProblems(raw: unknown): string[] {
     out.push('truces are not a list of truces');
   // The Assembly (M4_FLEETS.md §29.6), once it has formed.
   if (raw.assembly !== null && !assemblyShape(raw.assembly)) out.push('the Assembly is not an assembly');
+  // Victory (§30.6): the limit, how the game ended, and the history of scores.
+  if (raw.limit !== null && !isWhole(raw.limit, 1)) out.push('the turn limit is not a number of turns');
+  if (
+    raw.ended !== null &&
+    !(
+      isRecord(raw.ended) &&
+      (raw.ended.winner === null || isFactionId(raw.ended.winner)) &&
+      (raw.ended.how === 'conquest' || raw.ended.how === 'vote' || raw.ended.how === 'score') &&
+      isWhole(raw.ended.turn, 1)
+    )
+  )
+    out.push('the end of the game is not an ending');
+  if (
+    !Array.isArray(raw.history) ||
+    !raw.history.every(
+      (h) => isRecord(h) && isWhole(h.turn, 1) && Array.isArray(h.scores) && h.scores.every((x) => isWhole(x)),
+    )
+  )
+    out.push('the history is not a list of scores');
   // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
   if (
     !Array.isArray(raw.battles) ||
@@ -167,6 +186,10 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isWhole(p.weariness)) out.push(`power ${i} weariness is not a whole number`);
       if (p.subduedBy !== null && !isFactionId(p.subduedBy)) out.push(`power ${i} is subdued by no power`);
       if (!isWhole(p.mostColonies)) out.push(`power ${i}'s most colonies is not a whole number`);
+      // Leaving the game, and the story (M4_FLEETS.md §30.2, §30.3).
+      if (p.left !== null && !isWhole(p.left, 1)) out.push(`power ${i} left the game on no turn`);
+      if (!isRecord(p.story) || !isWhole(p.story.wars) || !isWhole(p.story.battles) || !isWhole(p.story.taken))
+        out.push(`power ${i}'s story is not its numbers`);
       // Designs (M4_FLEETS.md §21.3).
       if (
         !Array.isArray(p.designs) ||
@@ -434,6 +457,22 @@ export function stateProblems(world: World, state: GameState): string[] {
   }
   for (const t of state.truces)
     if (!(t.a < t.b) || !playing.has(t.a) || !playing.has(t.b)) out.push(`a truce is not between two powers in play`);
+  // A power that left the game (M4_FLEETS.md §30.2) holds nothing and deals with no one.
+  for (const p of state.powers) {
+    if (p.left === null) continue;
+    const f = p.faction;
+    if (state.holdings.some((h) => h.owner === f)) out.push(`${f} left the game, yet holds a colony or outpost`);
+    if (state.ships.some((s) => s.owner === f)) out.push(`${f} left the game, yet has ships`);
+    if (state.lanes.some((l) => l.owner === f)) out.push(`${f} left the game, yet tends lanes`);
+    if (state.wars.some((w) => w.a === f || w.b === f) || state.treaties.some((t) => t.a === f || t.b === f))
+      out.push(`${f} left the game, yet is at war or in a treaty`);
+    if (state.assembly?.members.includes(f)) out.push(`${f} left the game, yet sits in the Assembly`);
+    if (state.powers.some((q) => q.subduedBy === f)) out.push(`${f} left the game, yet holds a power subdued`);
+  }
+  if (state.ended?.winner && !playing.has(state.ended.winner)) out.push('the game was won by a power not in play');
+  if (state.ended && state.ended.turn > state.turn) out.push('the game ends after this turn');
+  for (const h of state.history)
+    if (h.scores.length !== state.powers.length) out.push(`the history of turn ${h.turn} does not score every power`);
   // The Assembly (M4_FLEETS.md §29): its members in play, once each; whom it names among them.
   const assembly = state.assembly;
   if (assembly) {

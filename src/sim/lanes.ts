@@ -129,6 +129,21 @@ export function laneTargets(
   faction: FactionId,
   from: SystemId,
 ): { quote: LaneQuote; refusal: string | null }[] {
+  return laneQuotes(world, state, faction, from).map((quote) => ({
+    quote,
+    refusal: laneRefusal(world, state, faction, from, quote.to),
+  }));
+}
+
+/** The nearest lane a power may queue from a system now (laneTargets' first with no refusal), or null. */
+export function nearestLane(world: World, state: GameState, faction: FactionId, from: SystemId): LaneQuote | null {
+  for (const quote of laneQuotes(world, state, faction, from))
+    if (laneRefusal(world, state, faction, from, quote.to) === null) return quote;
+  return null;
+}
+
+/** The quotes for every lane a power might queue from a system, nearest first. */
+function laneQuotes(world: World, state: GameState, faction: FactionId, from: SystemId): LaneQuote[] {
   const reach = laneReachDeci(state, faction);
   const open = new Set(state.lanes.map((l) => l.id));
   const ids = new Set<SystemId>();
@@ -136,9 +151,6 @@ export function laneTargets(
   for (const s of world.systems) if (s.id !== from && world.distanceDeci(from, s.id) <= reach) ids.add(s.id);
   return [...ids]
     .filter((to) => !open.has(laneId(from, to)))
-    .map((to) => ({
-      quote: laneQuote(world, state, faction, from, to),
-      refusal: laneRefusal(world, state, faction, from, to),
-    }))
-    .sort((a, b) => a.quote.lengthDeci - b.quote.lengthDeci || (a.quote.to < b.quote.to ? -1 : 1));
+    .map((to) => laneQuote(world, state, faction, from, to))
+    .sort((a, b) => a.lengthDeci - b.lengthDeci || (a.to < b.to ? -1 : 1));
 }

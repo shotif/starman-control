@@ -1,12 +1,13 @@
 # The headless games
 
-*Written by `npm run balance` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): 5
-rivals, 8 seeds, 100 turns each. Regenerate it after any change to the rules or the rivals.*
+*Written by `npm run balance` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2, M4_FLEETS.md §30.4):
+5 rivals, 8 seeds, 100 turns each for the tables, then on to the end of each game. Regenerate it
+after any change to the rules or the rivals.*
 
-The slowest turn took 81 ms on the machine that wrote this; the largest save at turn 100
-was 64.4 KB. The longest time in debt was 1 turn in a row. The longest time hungry was 1 turn in a row.
+The slowest of the first 100 turns took 75 ms on the machine that wrote this; the largest save at turn 100
+was 65.1 KB. The longest time in debt was 1 turn in a row. The longest time hungry was 1 turn in a row.
 
-In all 8 games: 52 turns of plunder by raids, 1 battle, 5 wars declared and 0 colonies or outposts taken by invasion (M4).
+In all 8 games, by turn 100: 52 turns of plunder by raids, 1 battle, 5 wars declared and 0 colonies or outposts taken by invasion (M4).
 The Assembly formed in 6 of them, on turn 50 at the earliest and 77 at the latest; it held 7 elections and passed 9 resolutions by turn 100.
 
 The tree has 83 technologies, of which a power can learn 80 (one of each pair of doctrines). No power learnt them all in 100 turns.
@@ -75,6 +76,24 @@ The tree has 83 technologies, of which a power can learn 80 (one of each pair of
 | 5 | Hollow Wake | 12 | 8 | 70.3 | 24 | 34 | 47 | 343 | 172 |
 | 5 | Dusk Concord | 12 | 5 | 85.2 | 22 | 41 | 34 | 339 | 28 |
 | 5 | Drift Moot | 5 | 2 | 83.4 | 18 | 34 | 27 | 244 | 92 |
+
+## To the end of each game (M4)
+
+Each game played on, after turn 100, until it was won or reached the default limit of 250 turns
+(M4_FLEETS.md §30.4). 6 games were won before the limit; 7 games saw a war by turn 150;
+0 powers left the game before turn 100. The slowest turn of all took 161 ms (turn 231); the
+largest save was 145.1 KB.
+
+| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | Frontier Co-op | the Assembly | 157 | — | 0 | 0 | 0 | 0 | — |
+| 7 | Dusk Concord | score | 250 | 90 | 5 | 3 | 5 | 0 | — |
+| 2176 | Frontier Co-op | the Assembly | 234 | 120 | 3 | 3 | 2 | 0 | — |
+| 1 | Dusk Concord | score | 250 | 125 | 2 | 2 | 0 | 0 | — |
+| 2 | Frontier Co-op | the Assembly | 172 | 85 | 2 | 1 | 1 | 0 | — |
+| 3 | Frontier Co-op | the Assembly | 168 | 85 | 2 | 1 | 3 | 0 | — |
+| 4 | Frontier Co-op | the Assembly | 187 | 85 | 3 | 2 | 3 | 0 | — |
+| 5 | Frontier Co-op | the Assembly | 230 | 85 | 3 | 1 | 4 | 0 | — |
 
 ## Events, and how the rivals answered them
 

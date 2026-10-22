@@ -209,9 +209,14 @@ their own terms, and surrender when beaten; any power may surrender and pay trib
 22. **Done: increment 49, the Assembly** (§29): it forms once three powers can each talk with the
 other two; votes by people; an election every 20 turns, two thirds choosing a leader; sanctions and
 calls for peace proposed and voted on, by the player and the rivals; its own screen (**G**), with
-its chamber's picture; state version 23.
+its chamber's picture; state version 23. **Done: increment 50, victory, defeat and the proof**
+(§30): conquest, the Assembly's choice and the highest score at a turn limit (150, 200, 250 or
+none; 250 by default); a power with no colony leaves the game; the end screen with its picture,
+the story in numbers and *Play on*; late turns made about twice as fast; the headless games played
+to their end (six of eight won by the Assembly's vote, all by the Cooperative: D-69 asks the
+owner); state version 24. **M4 is complete.** The owner is asked to try it, and to answer D-69.
 
-The art and music spend: about $27.35 of $50 (raised on 22 October 2026; about $22.65 left). M3's
+The art and music spend: about $27.55 of $50 (raised on 22 October 2026; about $22.45 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

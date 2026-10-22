@@ -38,6 +38,7 @@ import type { Need } from '../../sim/needs.ts';
 import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type Fleet, type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
+import { outcomeFor } from '../../sim/victory.ts';
 import { atWar } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
 import { Icon } from '../icons.tsx';
@@ -52,6 +53,7 @@ import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
 import { DesignsView } from './designs.tsx';
 import { DiplomacyView } from './diplomacy.tsx';
+import { decidedNow, EndView } from './end.tsx';
 import { EventCard } from './event.tsx';
 import { FleetPanel, fleetLine, fleetStatus, planForFleet } from './fleets.tsx';
 import { GuideCard } from './guide.tsx';
@@ -747,8 +749,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     targeting.value = null;
     panel.value = null;
     await p.endTurn();
-    panel.value = 'report';
+    // The end of the game, when this turn decided it, opens in the report's place.
+    if (panel.value !== 'end') panel.value = 'report';
   }, []);
+  // The game decided this turn (M4_FLEETS.md §30.3): its end opens over the map, once, in the report's place.
+  useEffect(() => {
+    if (play && decidedNow(game, play.faction)) panel.value = 'end';
+  }, [game.turn]);
   /** The phone's End turn: what needs you first, if anything does. */
   const askEndTurn = () => {
     if (play && play.needs.length > 0) panel.value = 'needs';
@@ -968,6 +975,16 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   );
   // The Assembly (M4_FLEETS.md §29.4).
   const assembly = play && others && <AssemblyView world={world} game={game} faction={play.faction} play={play} />;
+  // The end of the game (M4_FLEETS.md §30.3): play on, unless our power has left the game.
+  const outcome = play ? outcomeFor(game, play.faction) : null;
+  const end = play && outcome && (
+    <EndView
+      game={game}
+      faction={play.faction}
+      onPlayOn={outcome.result === 'defeat' && outcome.how === 'left' ? undefined : () => (panel.value = null)}
+      onLeave={() => void play.leave()}
+    />
+  );
   // The designs (M4_FLEETS.md §21.7).
   const designs = play && <DesignsView game={game} faction={play.faction} play={play} table={desktop} />;
   const empire = play && (
@@ -1135,6 +1152,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
             </button>
+          </div>
+        )}
+        {desktop && end && panel.value === 'end' && (
+          <div class="popover end-popover" role="dialog" aria-label="The end of the game" data-keep-clear>
+            {end}
           </div>
         )}
         {desktop && assembly && panel.value === 'assembly' && (
@@ -1522,6 +1544,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           if (play && panel.value === 'research') return sheet('Research', research, close, 'research');
           if (diplomacy && panel.value === 'diplomacy') return sheet('Diplomacy', diplomacy, close, 'diplomacy');
           if (assembly && panel.value === 'assembly') return sheet('The Assembly', assembly, close, 'assembly');
+          if (end && panel.value === 'end') return sheet('The end of the game', end, close, 'end');
           if (play && panel.value === 'designs') return sheet('Designs', designs, close, 'designs');
           if (play && panel.value === 'menu')
             return sheet(
@@ -1548,6 +1571,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 {others && (
                   <button type="button" class="button button-quiet" onClick={() => (panel.value = 'assembly')}>
                     The Assembly
+                  </button>
+                )}
+                {outcome && (
+                  <button type="button" class="button button-quiet" onClick={() => (panel.value = 'end')}>
+                    The end of the game
                   </button>
                 )}
                 <button type="button" class="button button-quiet" onClick={() => (panel.value = 'search')}>

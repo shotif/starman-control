@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-22 | **about $50 in all** (raised from $5, then $15, then $25, then $35, by D-57); about $27.15 spent by 22 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-22 | **about $50 in all** (raised from $5, then $15, then $25, then $35, by D-57); about $27.55 spent by 22 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
@@ -68,6 +68,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-14 | Victory and defeat ([M4 §13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | Decided 2026-10-22 | **A, conquest, the vote, a score at a turn limit** (250 turns by default), as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--open)) | **Open** | recommended: A, leave it, and look again after the owner's try |
 | D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -643,12 +644,34 @@ yet*; M4 goes ahead without it, and the try stays open.
 The art M4 needs is about 20 pictures, about $2 with candidates ([§19](design/M4_FLEETS.md#19-art-and-its-cost)),
 within the $24.45 of D-27 left; ships and battles are drawn in code.
 
+## Found while building M4
+
+### D-69 · Who wins by the Assembly's vote — **Open**
+
+In the headless games of increment 50 (M4_FLEETS.md §30, M2_BALANCE.md), six of eight games were won
+by the Assembly's choice between turns 157 and 234, and **every one by the Frontier Co-op**: it is
+the most populous power, and every other regards it warmly (kin to the other human powers, a
+peaceful neighbour to the aliens), so their votes go to it. With the player in the game, the player can vote against it,
+stand when among the two largest, and win by conquest or score first, but a rival Cooperative is
+the power to watch.
+
+- **A. Leave it (recommended).** The Cooperative's way to win is the vote, as befits it; the race
+  against it is part of the game. Look again after the owner has played.
+- **B. Rivals hand victory only to a power they love** (friendly, 40): built and measured in
+  increment 50, and no game was won before the limit.
+- **C. Members tire of a long-serving leader:** after two terms in a row, each further term costs
+  the leader 10 of every member's regard, so the vote turns to others in time. Vote victories
+  later, and by more than one power.
+
 ## Made without waiting
 
 Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
+| 2026-10-22 | Increment 50 as M4_FLEETS.md §30 (D-14): conquest, then the Assembly's choice, then the limit, checked as each turn ends; a tie in score goes to the earlier power in the order; played alone, the game simply ends at the limit; a power with no colony leaves the game, and no one hears from it again; *Play on* after a victory or a surrender, not once our power has left; a save from before gets the 250-turn limit, or none if past turn 250; **the rule that a rival votes a power into victory only if friendly with it, dropped** (with it no game was won before the limit) | the smallest reading of §13 that lets most games end before the limit; each has a unit test; overrule any |
+| 2026-10-22 | Increment 50's pictures (M4_FLEETS.md §30.5): 4 candidates, about **$0.20**, so about **$27.55** of the owner's $50 spent in all; chosen victory A and defeat A (defeat B had black bars) | lettered sheet sent; overrule either letter |
+| 2026-10-22 | Late turns made faster without changing any result: a power's routes searched once from each system while its lanes and passage stay the same, and a rival's lane chosen at the first it may build | a turn near turn 200 went from about 300 ms to about 130 ms; the same game to the byte after 150 turns |
 | 2026-10-22 | Increment 49 as M4_FLEETS.md §29 (D-67): the Assembly (fiction) forms when three powers can each talk with the other two; a vote for every million people, at least one; an election every 20 turns, the first 20 after it forms, between the two members with the most votes; a rival votes for the candidate it regards better if at least warm (10), never one it is at war with; two thirds of all the votes choose a leader (a victory from increment 50); one resolution at a time, one from each member every 10 turns; sanctions end trade and exchanges with the sanctioned, lifted when it is at war with no member; a call for peace gives 5 turns, then sanctions on each that has not offered peace without terms; the Wake does not heed a call; **each member's votes kept as a public roll** (the screens know only what the player sees); **G** for the Assembly on a desktop (*A* pans the map) | the smallest reading of §12 that gives the Assembly something to do between elections; each has a unit test; overrule any number or word |
 | 2026-10-22 | Increment 49's pictures (M4_FLEETS.md §29.5): 4 candidates, about **$0.20**, so about **$27.35** of the owner's $50 spent in all; chosen the Assembly's chamber B (its Duskfolk delegate as the brief has them) and the report's vote B | lettered sheet sent; overrule either letter |
 | 2026-10-22 | Increment 48 as M4_FLEETS.md §28 (D-64, D-68): the rivals look for a war every 5 turns with 3 warships, at most one at a time; the Authority answers a raid within 10 turns or a power it holds hostile (−40); the Wake a neighbour (a colony within 12 light-years: the design said 4 jumps) it is **not warm** to (the design said cold: it never was) when half again as strong, **from turn 80** (earlier, it went to war before any treaty); the Concord a power that settled in its claim twice; **30 turns after a peace before war on the same power again**; a rival with a grievance arms to be half again as strong; strikes of 4 warships within 6 jumps, with transports for the garrison and 2 more; peace by character (wait 5, 0, 5, 15, 0 turns; offer after 10, 5, 10, 20, 5; the Wake asks 50 credits, the Moot gives 30); a surrender's tribute a fifth of the taxes; **a buyer of the Wake's protection no longer counts its raids against it** (else it sold nothing) | the smallest reading of §12 and D-68 that keeps M3's treaties by turn 100; each has a unit test; overrule any number |

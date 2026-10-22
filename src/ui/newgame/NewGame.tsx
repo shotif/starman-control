@@ -116,6 +116,7 @@ export function NewGame() {
   const [seed, setSeed] = useState('');
   const [imperial, setImperial] = useState(false);
   const [alone, setAlone] = useState(false);
+  const [limit, setLimit] = useState<number | null>(RULES.victory.limit);
   const [starting, setStarting] = useState<FactionId | null>(null);
   const [shown, setShown] = useState(0);
   const track = useRef<HTMLDivElement>(null);
@@ -123,7 +124,7 @@ export function NewGame() {
 
   const start = async (f: FactionId) => {
     setStarting(f);
-    await startGame(f, seedNumber, imperial, alone);
+    await startGame(f, seedNumber, imperial, alone, limit);
     location.hash = '#/game';
   };
   // On a phone the cards are swiped; the dots follow the card in view, and take you to one.
@@ -220,6 +221,20 @@ export function NewGame() {
               <input type="radio" name="rivals" checked={alone} onChange={() => setAlone(true)} /> Play alone{' '}
               <span class="dim">: no other power in play</span>
             </label>
+          </fieldset>
+          <fieldset class="ng-start">
+            <legend>Turn limit</legend>
+            {[...RULES.victory.limits, null].map((n) => (
+              <label key={n ?? 'none'}>
+                <input type="radio" name="limit" checked={limit === n} onChange={() => setLimit(n)} />{' '}
+                {n === null ? 'None' : `${n} turns`}{' '}
+                <span class="dim">
+                  {n === null
+                    ? ': play until a power wins by conquest or the Assembly’s vote'
+                    : `: then the highest score wins, about ${Math.round(n / 4)} years`}
+                </span>
+              </label>
+            ))}
           </fieldset>
         </details>
         <p class="dim">

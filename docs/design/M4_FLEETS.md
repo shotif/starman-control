@@ -42,6 +42,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 27. [Increment 47 in detail: raids](#27-increment-47-in-detail-raids-written-before-building-it)
 28. [Increment 48 in detail: rivals at war](#28-increment-48-in-detail-rivals-at-war-written-before-building-it)
 29. [Increment 49 in detail: the Assembly](#29-increment-49-in-detail-the-assembly-written-before-building-it)
+30. [Increment 50 in detail: victory, defeat and the proof](#30-increment-50-in-detail-victory-defeat-and-the-proof-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -1564,3 +1565,126 @@ votes in an election and a leader is elected, and proposes sanctions on a power 
 - **Tests:** `assembly.test.ts` (14 tests). `assembly.spec.ts`, on the phone, tablet and desktop:
   the Assembly forms, the player votes in an election and a leader is elected, then proposes
   sanctions on the Wake at war, votes for them, and sees them passed.
+
+## 30. Increment 50 in detail: victory, defeat and the proof (written before building it)
+
+**Goals.** D-14 as decided (A): a game is won by **conquest**, by **the Assembly's choice**, or by
+**the highest score at a turn limit**; lost when the player's last colony falls, when it surrenders,
+or when another power wins. A power that loses its last colony leaves the game. A screen of victory
+or defeat tells the story of the game in numbers. Then the proof that M4 is done: games of 250
+turns played headless, the journeys, and the owner's try.
+
+**Out of scope.** The keys, the artefact hunt's victory (M5); several players in one game.
+
+### 30.1 Victory
+
+Checked as each turn ends, after the Assembly (step 10d), in this order; the first that holds
+decides the game.
+
+| Victory | When |
+| --- | --- |
+| **Conquest** | a power holds a colony, and every other power in the game has left it or is subdued by it |
+| **The Assembly's choice** | the Assembly chose it this turn, by two thirds of all the votes (§29.2) |
+| **The turn limit** | the last turn of the limit has ended: the power with the highest score (D-50) wins, the earlier in the powers' order on a tie |
+
+- **The turn limit** is a new-game setting under *More*: 150, 200 or 250 turns, or none; **250 by
+  default**, the long end of D-16's game.
+- **Playing alone** there is no conquest and no Assembly: at the limit the game ends with its score,
+  neither won nor lost.
+- **The deciding election.** A rival votes a candidate into victory only if it regards it as
+  **friendly** (40) or is its ally; short of that it abstains in that vote. (§29.2 had it vote for
+  any candidate it regards as warm. In the headless games of increment 49 that let the Cooperative,
+  warmly regarded by all, be chosen by turn 157. The Assembly should crown a power its members
+  love, not one they merely like.)
+
+### 30.2 Defeat, and a power leaving the game
+
+- **A power leaves the game** as the turn ends in which it holds no colony: its outposts are
+  abandoned, its ships lost, its lanes go dark; its wars, treaties, truces and offers end; it leaves
+  the Assembly; a power subdued by it is free. It stays listed, by name and colour, for the story.
+  Every power in contact with it is told.
+- **The player is defeated** when it leaves the game, when it surrenders (§28.5), or when another
+  power wins.
+
+### 30.3 The end
+
+- **The end screen** opens once, over the map, when the game is decided: victory or defeat, with
+  its picture; how (*Conquest: no power stands against us*, *Chosen by the Assembly*, *The highest
+  score at the turn limit*, or another's victory); the year; and **the story of the game in
+  numbers**: for each power its colonies (now and at most), people, technologies, wars declared,
+  battles fought, colonies taken and score, and a chart of every power's score every 10 turns. On a
+  phone a sheet, the chart above the table read as cards; on a desktop a wide panel.
+- **Play on** after a victory, or after a defeat while the player still holds a colony (a surrender,
+  or another's victory): the game goes on, decided. **Leave** to the title; the save is kept, marked
+  as ended.
+- **The report** says the game is won or lost, and a power leaving the game.
+
+### 30.4 The proof
+
+- **The headless games:** `npm run balance` plays the eight seeds with all five powers to turn 250
+  and adds what M4 asks (§18): wars, battles, colonies taken, surrenders, powers that left, and who
+  won, how and when. Targets: M3's still met at turn 100; most games see a war by turn 150; no power
+  leaves before turn 100; most games are won before the limit; turns within 200 ms and saves within
+  200 KB.
+- **Faster late turns.** A turn near turn 200 took about 440 ms in increment 48's games. The slow
+  parts are found by profiling and made faster without changing any result.
+- **Journeys:** a victory by the Assembly's vote and a defeat by the loss of the last colony, each
+  with its end screen, on the phone, tablet and desktop; the 100-turn journeys still pass.
+- **The owner's try:** the owner is asked to play.
+
+### 30.5 Art
+
+Two pictures (§19), each from two candidates, about $0.20: **victory** and **defeat**, for the end
+screen. Every person and power in them is fiction.
+
+### 30.6 State
+
+`GameState.limit` (a number of turns or none), `GameState.ended` (who won, how and on which turn,
+or none), `GameState.history` (every power's score every 10 turns), `PowerState.left` (the turn it
+left, or none); report events `power-left` and `game-ended`. **State version 24.**
+
+### 30.7 Tests
+
+`victory.test.ts`: conquest, the Assembly's choice and the turn limit, each deciding the game; the
+order among them; playing alone; the deciding election's friendly rule; a power leaving the game and
+everything of its going; the player's defeat each way; play on; the history; the migration.
+`victory.spec.ts`: a victory by the vote and a defeat, each end screen with its story, on the phone,
+tablet and desktop.
+
+### Increment 50: victory, defeat and the proof (22 October 2026)
+
+- **Victory as §30.1,** in `src/sim/victory.ts`, at step 10e of the turn, after the Assembly; a power
+  leaves the game as §30.2 just before it. The turn limit is under *More* on the new-game screen
+  (150, 200 or 250 turns, or none), 250 by default; a save from before reads with 250, or none if
+  it is already past turn 250.
+- **The deciding election, built and dropped.** With the rule of §30.1 (a rival votes a power into
+  victory only if friendly with it or its ally), all eight headless games went to the limit: no
+  rival is ever friendly with a candidate. Without it, as §29.2, six of the eight were won by the
+  Assembly's choice, between turns 157 and 234, which meets §18's target that most games are won
+  before the limit. All six went to the Cooperative, whom every power regards warmly: the owner is
+  asked whether that is right (D-69).
+- **A power leaving the game** also drops out of every other power's contacts, so none deals with it
+  again; the Assembly stands down if fewer than three members are left.
+- **The end screen as §30.3,** opening in the report's place on the turn the game is decided for us
+  (won, lost, our power gone, or our surrender), and from the menu after. Its scores come from the
+  history, which keeps a line every 10 turns and one more on the turn the game is decided, so every
+  power's is counted alike. *Battles* counts the battles a power fought, *Taken* the colonies and
+  outposts it took. On a phone the table becomes a card for each power.
+- **Pictures as §30.5:** 4 candidates, about $0.20. Chosen victory A and defeat A (defeat B had
+  black bars).
+- **Faster late turns.** Approval asked every colony's route to its capital and to the nearest civic
+  centre many times a turn, and each ask built the power's whole lane graph again. Now one search
+  from each system serves every ask until the lanes or the power's passage change
+  (`routeLength`), checked against `findRoute` on 45,513 routes, and a game of 150 turns ends the
+  same to the byte. A rival's choice of lane stops at the first it may build. A turn near turn 200
+  went from about 300 ms to about 130 ms.
+- **Numbers** (M2_BALANCE.md, *To the end of each game*): six of the eight games won before the
+  limit, all by the Assembly's choice; the other two by score at turn 250, both by the Concord; a
+  war by turn 150 in seven; no power left the game before turn 100, or at all. No rival took
+  another's last colony or surrendered, so conquest is for now the player's alone. The slowest turn
+  of all took 161 ms (turn 231); the largest save was 145.1 KB.
+- **Tests:** `victory.test.ts` (8 tests). `victory.spec.ts`, on the phone, tablet and desktop: a
+  victory by the Assembly's choice and playing on, and a defeat by the loss of the last colony.
+
+**M4 is complete** (22 October 2026): a full game can be won by the Assembly's vote, as six of the
+eight headless games were, or by conquest, which the player can now achieve.

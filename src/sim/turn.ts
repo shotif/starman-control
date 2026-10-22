@@ -60,6 +60,7 @@ import {
   type ShipState,
 } from './state.ts';
 import { payForSold, payTribute, resolveTreaties } from './treaties.ts';
+import { resolveLeaving, resolveVictory } from './victory.ts';
 import { watchNews } from './visibility.ts';
 import { interceptedBy, reportWars, resolveWeariness } from './war.ts';
 import { countColonies } from './warAi.ts';
@@ -149,7 +150,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 0. The rivals give their orders (M2_WORLDS.md §26.2), from the state as it stands, power by
   // power in the order they are listed, through the same orders as the player's.
   for (const p of state.powers)
-    if (p.controller === 'ai')
+    if (p.controller === 'ai' && p.left === null)
       for (const o of aiOrders(world, state, p.faction)) applyInPlace(world, state, p.faction, o);
 
   // 1. Movement. A ship founding a colony or outpost stays to do it. A fleet moves as one when its
@@ -560,6 +561,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   resolveWeariness(state);
   // 10d. The Assembly (M4_FLEETS.md §29): formed or joined, its election or resolution counted.
   resolveAssembly(state, events);
+  // 10e. A power with no colony left leaves the game; the stories and scores kept; the game decided
+  // if it is won (M4_FLEETS.md §30).
+  resolveLeaving(state, events);
+  resolveVictory(state, events);
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);

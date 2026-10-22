@@ -285,6 +285,15 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   },
   /** 22 → 23 (M4 increment 49): the Assembly, which forms as the next turn ends if it may. */
   22: (g) => ({ ...g, version: 23, assembly: null }),
+  /**
+   * 23 → 24 (M4 increment 50): victory. The default limit of 250 turns, or none for a game past it;
+   * not decided; no history before now; every power still in the game, its story begun now.
+   */
+  23: (g) => {
+    if (!Array.isArray(g.powers) || typeof g.turn !== 'number') throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, left: null, story: { wars: 0, battles: 0, taken: 0 } }));
+    return { ...g, version: 24, powers, limit: g.turn > 250 ? null : 250, ended: null, history: [] };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

@@ -39,6 +39,7 @@ import { assemblyText } from './assembly.tsx';
 import { BattleWhy, battleText } from './battle.tsx';
 import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
+import { endText } from './end.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
 import { bombardedText, invasionText, RadioTraffic, raidedText } from './invasion.tsx';
@@ -641,6 +642,10 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'resolution':
     case 'sanctions':
       return assemblyText(e, playerPower(game)?.faction) ?? '';
+    // The end of the game (M4_FLEETS.md §30.3).
+    case 'power-left':
+    case 'game-ended':
+      return endText(game, e, playerPower(game)?.faction) ?? '';
   }
 }
 
@@ -731,6 +736,9 @@ function eventPlace(
     case 'resolution':
     case 'sanctions':
       return { assembly: true };
+    case 'power-left':
+    case 'game-ended':
+      return { system: playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -814,6 +822,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   elected: { icon: 'diplomacy', tone: 'news' },
   resolution: { icon: 'diplomacy', tone: 'news' },
   sanctions: { icon: 'diplomacy', tone: 'needs' },
+  'power-left': { icon: 'diplomacy', tone: 'news' },
+  'game-ended': { icon: 'diplomacy', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

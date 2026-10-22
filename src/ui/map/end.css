@@ -1,0 +1,129 @@
+/* The end of the game (M4_FLEETS.md §30.3): its picture, title, chart and story. */
+.end {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.end p,
+.end h2,
+.end h3 {
+  margin: 0;
+}
+
+.end-art {
+  margin: 0;
+}
+
+.end-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+}
+
+.end-title {
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.end-victory {
+  color: var(--accent);
+}
+
+.end-defeat {
+  color: #ff7a6b;
+}
+
+.end-chart {
+  margin: 0;
+}
+
+.end-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: rgba(10, 18, 34, 0.6);
+  border: 1px solid rgba(126, 170, 255, 0.18);
+}
+
+.end-story {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.end-story th,
+.end-story td {
+  padding: 0.35rem 0.4rem;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.12);
+  text-align: right;
+}
+
+.end-story th[scope="row"],
+.end-story thead th:first-child {
+  text-align: left;
+}
+
+.end-story tr.end-us th[scope="row"] {
+  color: var(--accent);
+}
+
+.end-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.end-buttons .button {
+  min-height: 44px;
+}
+
+/* On a phone each power is a card: its name, then its numbers labelled. */
+@media (max-width: 640px) {
+  .end-story thead {
+    display: none;
+  }
+
+  .end-story tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.1rem 0.8rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(126, 170, 255, 0.18);
+  }
+
+  .end-story th[scope="row"] {
+    grid-column: 1 / -1;
+  }
+
+  .end-story th,
+  .end-story td {
+    border: 0;
+    padding: 0.1rem 0;
+  }
+
+  .end-story td {
+    display: flex;
+    justify-content: space-between;
+    text-align: right;
+  }
+
+  .end-story td::before {
+    content: attr(data-label);
+    color: var(--text-dim);
+    text-align: left;
+  }
+}
+
+.popover.end-popover {
+  top: 12px;
+  right: auto;
+  left: 12px;
+  width: min(760px, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}

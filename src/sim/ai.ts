@@ -19,7 +19,7 @@ import { rivalChoice } from './events.ts';
 import { fleetAt, fleetLanes, fleetShips } from './fleets.ts';
 import { habitability } from './habitability.ts';
 import { garrisonOf, holdsOrbit, missionRefusal, raidRefusal, troopsOf } from './invasion.ts';
-import { laneTargets } from './lanes.ts';
+import { nearestLane } from './lanes.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
@@ -400,9 +400,9 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   ).length;
   for (const h of mine) {
     if (h.queue.length > 0 || (h.kind === 'colony' && !me.laneBuilder)) continue;
-    const lane = laneTargets(world, state, faction, h.system).find((t) => t.refusal === null);
+    const lane = nearestLane(world, state, faction, h.system);
     if (lane) {
-      orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.quote.to } });
+      orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.to } });
       continue;
     }
     const habitat: QueueItem = { kind: 'project', project: 'orbital-habitat' };

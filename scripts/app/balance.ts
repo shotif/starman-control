@@ -1,5 +1,5 @@
-// The headless games (M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): every power plays 100 turns as a
-// rival (the alien powers too, M3_NEIGHBOURS.md §24.8) on eight seeds, and what each power made of it is written to docs/design/M2_BALANCE.md, to read when
+// The headless games (M2_WORLDS.md §29.2, M2B_SCIENCE.md §2, M4_FLEETS.md §30.4): every power plays
+// as a rival, 100 turns for M2's and M3's tables and on to the end of the game for M4's (the alien powers too, M3_NEIGHBOURS.md §24.8) on eight seeds, and what each power made of it is written to docs/design/M2_BALANCE.md, to read when
 // balancing. Not part of `npm run check` (the unit tests check the limits); run it with
 // `npm run balance`.
 
@@ -18,6 +18,8 @@ const SEEDS = [42, 7, 2176, 1, 2, 3, 4, 5];
 /** What a power can learn: every technology but one of each pair of doctrines (M2B_SCIENCE.md §19.1). */
 const LEARNABLE = TECH_IDS.length - TECH_IDS.filter((id) => TECHS[id].fork).length / 2;
 const AT = [25, 50, 100];
+/** Each game is played to its end (M4_FLEETS.md §30.4): won, or the default limit of 250 turns. */
+const TURNS = 250;
 const FACTION_ORDER: readonly FactionId[] = FACTION_IDS;
 
 interface Line {
@@ -50,16 +52,48 @@ let elections = 0;
 let passed = 0;
 /** The turn each power finished the whole tree, in each game. */
 const finished: string[] = [];
+/** M4's games to their end (§30.4): each game's ending, first war, and what happened in it. */
+const ends: string[] = [];
+let wonBefore = 0;
+let warBy150 = 0;
+let leftBefore100 = 0;
+let slowestAll = 0;
+let slowestTurn = 0;
+let biggestAll = 0;
 
 for (const seed of SEEDS) {
   let g = newGame(world, { seed, powers: FACTION_ORDER.map((faction) => ({ faction, controller: 'ai' as const })) });
   const debt = new Map<FactionId, number>();
   const done = new Set<FactionId>();
-  for (let turn = 1; turn <= 100; turn++) {
+  const game = { firstWar: 0, wars: 0, battles: 0, taken: 0, surrenders: 0, left: [] as string[] };
+  for (let turn = 1; turn <= TURNS; turn++) {
+    // Played on to turn 100 for the tables, and no further once decided.
+    if (turn > 100 && g.ended) break;
     const t0 = performance.now();
     const r = resolveTurn(world, g);
-    slowest = Math.max(slowest, performance.now() - t0);
+    const ms = performance.now() - t0;
+    if (turn <= 100) slowest = Math.max(slowest, ms);
+    if (ms > slowestAll) {
+      slowestAll = ms;
+      slowestTurn = turn;
+    }
     g = r.state;
+    if (turn % 25 === 0) biggestAll = Math.max(biggestAll, JSON.stringify(g).length);
+    game.battles += g.battles.length;
+    for (const rep of r.reports)
+      for (const e of rep.events) {
+        if (e.kind === 'war-declared' && e.by === rep.faction) {
+          game.wars++;
+          if (!game.firstWar) game.firstWar = turn;
+        }
+        if (e.kind === 'invasion' && e.won && e.by === rep.faction) game.taken++;
+        if (e.kind === 'subdued' && e.faction === rep.faction) game.surrenders++;
+        if (e.kind === 'power-left' && e.faction === rep.faction) {
+          game.left.push(`${FACTIONS[e.faction].shortName} (${turn})`);
+          if (turn < 100) leftBefore100++;
+        }
+      }
+    if (turn > 100) continue;
     for (const rep of r.reports)
       for (const e of rep.events) {
         if (e.kind === 'event-answered') {
@@ -72,6 +106,7 @@ for (const seed of SEEDS) {
         if (e.kind === 'war-declared' && e.by === rep.faction) wars++;
         if (e.kind === 'invasion' && e.won && e.by === rep.faction) taken++;
       }
+    if (turn === 100) biggest = Math.max(biggest, JSON.stringify(g).length);
     // The Assembly's events go to every member: each counted once.
     if (g.assembly && turn === 100) formedOn.push(g.assembly.formed);
     if (r.reports.some((rep) => rep.events.some((e) => e.kind === 'elected'))) elections++;
@@ -130,7 +165,14 @@ for (const seed of SEEDS) {
         );
     }
   }
-  biggest = Math.max(biggest, JSON.stringify(g).length);
+  biggestAll = Math.max(biggestAll, JSON.stringify(g).length);
+  const e = g.ended;
+  if (e && e.how !== 'score') wonBefore++;
+  if (game.firstWar && game.firstWar <= 150) warBy150++;
+  const how = !e ? 'undecided' : e.how === 'conquest' ? 'conquest' : e.how === 'vote' ? 'the Assembly' : 'score';
+  ends.push(
+    `| ${seed} | ${e?.winner ? FACTIONS[e.winner].shortName : '—'} | ${how} | ${e ? e.turn : '—'} | ${game.firstWar || '—'} | ${game.wars} | ${game.battles} | ${game.taken} | ${game.surrenders} | ${game.left.join(', ') || '—'} |`,
+  );
 }
 
 const avg = (turn: number, f: FactionId) => {
@@ -149,13 +191,14 @@ const many = (n: number, one: string, more: string) => `${n} ${n === 1 ? one : m
 
 const out = `# The headless games
 
-*Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): ${FACTION_ORDER.length}
-rivals, ${SEEDS.length} seeds, 100 turns each. Regenerate it after any change to the rules or the rivals.*
+*Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2, M4_FLEETS.md §30.4):
+${FACTION_ORDER.length} rivals, ${SEEDS.length} seeds, 100 turns each for the tables, then on to the end of each game. Regenerate it
+after any change to the rules or the rivals.*
 
-The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
+The slowest of the first 100 turns took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
 was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
 
-In all ${SEEDS.length} games: ${many(raids, 'turn', 'turns')} of plunder by raids, ${many(battles, 'battle', 'battles')}, ${many(wars, 'war', 'wars')} declared and ${many(taken, 'colony or outpost', 'colonies or outposts')} taken by invasion (M4).
+In all ${SEEDS.length} games, by turn 100: ${many(raids, 'turn', 'turns')} of plunder by raids, ${many(battles, 'battle', 'battles')}, ${many(wars, 'war', 'wars')} declared and ${many(taken, 'colony or outpost', 'colonies or outposts')} taken by invasion (M4).
 The Assembly formed in ${formedOn.length} of them${formedOn.length > 0 ? `, on turn ${Math.min(...formedOn)} at the earliest and ${Math.max(...formedOn)} at the latest` : ''}; it held ${many(elections, 'election', 'elections')} and passed ${many(passed, 'resolution', 'resolutions')} by turn 100.
 
 The tree has ${TECH_IDS.length} technologies, of which a power can learn ${LEARNABLE} (one of each pair of doctrines). ${finished.length === 0 ? 'No power learnt them all in 100 turns.' : `All learnt by: ${finished.join('; ')}.`}
@@ -171,6 +214,17 @@ ${AT.flatMap((t) => FACTION_ORDER.map((f) => avg(t, f))).join('\n')}
 | Seed | Power | Colonies | Outposts | People (millions) | Technologies | Research a turn | Inspirations | Score | Treasury |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join('\n')}
+
+## To the end of each game (M4)
+
+Each game played on, after turn 100, until it was won or reached the default limit of ${TURNS} turns
+(M4_FLEETS.md §30.4). ${many(wonBefore, 'game was', 'games were')} won before the limit; ${many(warBy150, 'game', 'games')} saw a war by turn 150;
+${many(leftBefore100, 'power', 'powers')} left the game before turn 100. The slowest turn of all took ${slowestAll.toFixed(0)} ms (turn ${slowestTurn}); the
+largest save was ${(biggestAll / 1024).toFixed(1)} KB.
+
+| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${ends.join('\n')}
 
 ## Events, and how the rivals answered them
 

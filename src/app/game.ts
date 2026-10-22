@@ -3,6 +3,7 @@
 
 import { computed, signal } from '@preact/signals';
 import { FACTION_IDS, type FactionId } from '../content/factions.ts';
+import { RULES } from '../content/rules.ts';
 import { needsOf } from '../sim/needs.ts';
 import { applyOrder, type Order } from '../sim/orders.ts';
 import { randomSeed } from '../sim/rng.ts';
@@ -71,9 +72,17 @@ function saveSoon(): void {
  * M3_NEIGHBOURS.md §24.8);
  * `governed` is the imperial start, with a governor for every colony (§25.1).
  */
-export async function startGame(faction: FactionId, seed?: number, governed = false, alone = false): Promise<void> {
+export async function startGame(
+  faction: FactionId,
+  seed?: number,
+  governed = false,
+  alone = false,
+  /** The turn limit (M4_FLEETS.md §30.1); 250 unless said, null for none. */
+  limit: number | null = RULES.victory.limit,
+): Promise<void> {
   const state = newGame(world, {
     seed: seed ?? randomSeed(),
+    limit,
     powers: FACTION_IDS.filter((f) => f === faction || !alone).map((f) =>
       f === faction ? { faction, controller: 'player', governed } : { faction: f, controller: 'ai' },
     ),

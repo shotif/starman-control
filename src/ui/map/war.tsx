@@ -164,7 +164,7 @@ export function WarAndPeace({
             </button>{' '}
             <span class="dim">
               The war ends, but we would be subdued: a fifth of our taxes to them as tribute (about {owed} credits a
-              turn), their wars ours, and no war of our own.
+              turn), their wars ours, and no war of our own. It counts as our defeat, though we may play on.
             </span>
           </p>
         )}

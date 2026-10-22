@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 23;
+export const STATE_VERSION = 24;
 
 export interface Stockpile {
   metals: number;
@@ -83,6 +83,10 @@ export interface PowerState {
   subduedBy: FactionId | null;
   /** The most colonies it has ever held, to tell when it is beaten (§28.5). */
   mostColonies: number;
+  /** The turn it left the game, its last colony gone (M4_FLEETS.md §30.2); null while it plays. */
+  left: number | null;
+  /** Its story in numbers, for the end (§30.3): wars it declared, battles it fought, holdings it took. */
+  story: { wars: number; battles: number; taken: number };
 }
 
 /** A war between two powers (M4_FLEETS.md §23.1): `a` before `b` in id order; `by` declared it. */
@@ -431,10 +435,21 @@ export interface GameState {
   battles: BattleLog[];
   /** The Assembly (M4_FLEETS.md §29), once it has formed. */
   assembly: Assembly | null;
+  /** The last turn before the highest score wins (M4_FLEETS.md §30.1), or null for no limit. */
+  limit: number | null;
+  /** How the game was decided, once it is (§30.1): who won (none when played alone), how, and on which turn. */
+  ended: { winner: FactionId | null; how: VictoryKind; turn: number } | null;
+  /** Every power's score every 10 turns, in the powers' order, for the story (§30.3). */
+  history: { turn: number; scores: number[] }[];
 }
+
+/** How a game is won (M4_FLEETS.md §30.1). */
+export type VictoryKind = 'conquest' | 'vote' | 'score';
 
 export interface NewGameSetup {
   seed: number;
+  /** The turn limit (M4_FLEETS.md §30.1): 250 unless said; null for none. */
+  limit?: number | null;
   /** The powers in play, in the order they are listed; `governed` for the imperial start. */
   powers: { faction: FactionId; controller: 'player' | 'ai'; governed?: boolean }[];
 }
@@ -581,6 +596,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       weariness: 0,
       subduedBy: null,
       mostColonies: 1,
+      left: null,
+      story: { wars: 0, battles: 0, taken: 0 },
     })),
     lanes,
     ships: [],
@@ -596,6 +613,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     truces: [],
     battles: [],
     assembly: null,
+    limit: setup.limit === undefined ? RULES.victory.limit : setup.limit,
+    ended: null,
+    history: [],
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

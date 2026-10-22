@@ -6629,6 +6629,57 @@
       "aiGenerated": true
     },
     {
+      "briefId": "end-defeat",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: An empty command room at night, its great holographic star map dark but for a few dim points, chairs pushed back, one officer standing alone at the window looking out at the stars and a distant red sun.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T16:30:21.419Z",
+      "id": "end-defeat",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T16:30:56.159Z",
+      "candidate": "art/out/end-defeat/20261022-162910-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/end-defeat-640.webp",
+          "bytes": 13430
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/end-defeat-1280.webp",
+          "bytes": 37296
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "end-victory",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A crowded station concourse under a great curved window, people of many kinds of dress celebrating, banners of plain colour hung from the galleries, and outside the window a line of ships passing slowly in salute against a bright blue-white planet.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T16:29:31.797Z",
+      "note": "Here is a cinematic, painted illustration of the grand salute seen from the station concourse. Let me know if this works for your event!",
+      "id": "end-victory",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T16:30:55.405Z",
+      "candidate": "art/out/end-victory/20261022-162910-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/end-victory-640.webp",
+          "bytes": 42170
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/end-victory-1280.webp",
+          "bytes": 110908
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "event-blight",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",

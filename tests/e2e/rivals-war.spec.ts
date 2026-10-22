@@ -32,20 +32,20 @@ interface GameHook {
   __setGame(g: unknown): void;
 }
 
-/** Ends the turn, past what needs you on a phone, and waits for the report. */
-async function endTurn(page: Page, project: string) {
+/** Ends the turn, past what needs you on a phone, and waits for the report (or what opens in its place). */
+async function endTurn(page: Page, project: string, opens = 'Report') {
   const date = await page.locator('.map-date').textContent();
   await expect(page.getByRole('button', { name: /End turn/ }).first()).toBeEnabled();
   if (isDesktop(project)) await page.keyboard.press('Enter');
   else {
     await page.getByRole('button', { name: /End turn/ }).tap();
     const needs = page.getByRole('dialog', { name: 'What needs you' });
-    const report = page.getByRole('dialog', { name: 'Report' });
+    const report = page.getByRole('dialog', { name: opens });
     await expect(needs.or(report)).toBeVisible();
     if (await needs.isVisible()) await needs.getByRole('button', { name: /End turn/ }).tap();
   }
   await expect(page.locator('.map-date')).not.toHaveText(date ?? '');
-  const report = page.getByRole('dialog', { name: 'Report' });
+  const report = page.getByRole('dialog', { name: opens });
   await expect(report).toBeVisible();
   return report;
 }
@@ -132,14 +132,18 @@ test('the Authority declares war on us for our raids, with its reason, and we su
   let war = await openDiplomacy(page, project);
   await expect(war).toContainText('declared by the Transit Authority: “you raided us”.');
   await expect(war).toContainText('a fifth of our taxes to them as tribute');
+  await expect(war).toContainText('It counts as our defeat, though we may play on.');
   await press(war.getByRole('button', { name: 'Surrender to the Transit Authority' }), project);
   await expect(war).toContainText('Our surrender reaches them as the turn ends.');
   await close(page, project);
-  const after = await endTurn(page, project);
+  // The end of the game opens in the report's place (M4_FLEETS.md §30.3): a defeat, and we play on.
+  const after = await endTurn(page, project, 'The end of the game');
+  await expect(after.getByRole('heading', { name: 'Defeat' })).toBeVisible();
   await expect(after).toContainText(
     'We have surrendered to the Transit Authority: we pay them tribute and fight their wars.',
   );
-  await close(page, project);
+  await press(after.getByRole('button', { name: 'Play on' }), project);
+  await expect(after).toBeHidden();
   war = await openDiplomacy(page, project);
   await expect(war).toContainText('We are subdued by the Transit Authority');
   expect(errors).toEqual([]);

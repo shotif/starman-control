@@ -120,7 +120,7 @@ export function heeds(f: FactionId): boolean {
 /** Why a member may not vote as it chooses now (§29.2, §29.3), or null. */
 export function voteRefusal(state: GameState, f: FactionId, choice: VoteChoice): string | null {
   const a = state.assembly;
-  if (!a || !a.members.includes(f)) return 'We are not a member of the Assembly.';
+  if (!a?.members.includes(f)) return 'We are not a member of the Assembly.';
   const victor = powerOf(state, f).subduedBy;
   if (victor) return `We are subdued by the ${FACTIONS[victor].shortName}: our votes go as theirs do.`;
   const floor = onTheFloor(state);
@@ -158,7 +158,7 @@ export function proposeRefusal(
   r: Pick<Resolution, 'kind' | 'on' | 'and'>,
 ): string | null {
   const a = state.assembly;
-  if (!a || !a.members.includes(f)) return 'We are not a member of the Assembly.';
+  if (!a?.members.includes(f)) return 'We are not a member of the Assembly.';
   if (a.resolution) return 'A resolution is before the Assembly already.';
   if (a.election === state.turn || a.election === state.turn + 1)
     return 'The Assembly holds its election: propose after it.';
