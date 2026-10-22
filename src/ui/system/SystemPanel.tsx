@@ -44,7 +44,7 @@ interface Props {
   fleets?: readonly { id: number; name: string; line: string; status: string }[];
   onFleet?: (id: number) => void;
   /** Other powers' ships the viewer can see here (M2_WORLDS.md §26.3): never given orders. */
-  others?: readonly { id: number; name: string; kind: string; owner: FactionId }[];
+  others?: readonly { id: number; name: string; kind: string; owner: FactionId; hostile?: boolean }[];
   /** An anomaly the viewer has found here: what the survey saw, or, once investigated, what was found. */
   anomaly?: { name: string; text: string; investigated: boolean };
   /** Colonies and outposts here, anyone's; the viewer's own open with `onHolding`. */
@@ -343,6 +343,7 @@ export function SystemPanel({
                   <b>{sh.name}</b>
                   <span class="ship-type">
                     <FactionTag faction={sh.owner} /> {sh.kind.toLowerCase()}
+                    {sh.hostile && <b class="at-war"> · at war with us</b>}
                   </span>
                 </div>
               </li>

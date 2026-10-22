@@ -903,3 +903,27 @@
   gap: 0.6rem;
   margin: 0.2rem 0 0.4rem;
 }
+
+/* War and peace (M4_FLEETS.md §23.5). */
+.at-war {
+  color: #ff7a7a;
+}
+
+.diplomacy-war {
+  margin: 0.4rem 0 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid rgba(255, 110, 110, 0.6);
+}
+
+.diplomacy-war h4 {
+  margin: 0 0 0.3rem;
+}
+
+.diplomacy-war p {
+  margin: 0.3rem 0;
+}
+
+.button-danger {
+  border-color: rgba(255, 110, 110, 0.7);
+  color: #ffb0b0;
+}

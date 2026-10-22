@@ -17,7 +17,7 @@ import { quality, reducedMotion, settings } from '../../app/settings.ts';
 import { play as sound } from '../../app/sound.ts';
 import { ANOMALIES } from '../../content/anomalies.ts';
 import { EVENTS } from '../../content/events.ts';
-import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId } from '../../content/factions.ts';
 import { moodFor } from '../../content/music.ts';
 import { isHull } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -37,6 +37,7 @@ import type { Need } from '../../sim/needs.ts';
 import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type Fleet, type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
+import { atWar } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
 import { Icon } from '../icons.tsx';
 import { layout, sideSheets } from '../layout.ts';
@@ -122,11 +123,13 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['B', 'Designs: the warships you can build'],
 ];
 
-function shipMarks(game: GameState): ShipMark[] {
+function shipMarks(game: GameState, viewer?: FactionId): ShipMark[] {
   return game.ships.map((s) => {
     const colour = FACTIONS[s.owner].colour;
-    // A fleet with warships is drawn as a wedge beside its power's chevron (M4_FLEETS.md §22.3).
-    if (s.at !== null || !s.blindJump) return { at: s.at, colour, armed: s.fleet !== null && isHull(s.type) };
+    // A fleet with warships is drawn as a wedge beside its power's chevron (M4_FLEETS.md §22.3),
+    // with a red edge when its power is at war with the viewer (§23.5).
+    const hostile = viewer !== undefined && atWar(game, viewer, s.owner);
+    if (s.at !== null || !s.blindJump) return { at: s.at, colour, armed: s.fleet !== null && isHull(s.type), hostile };
     const j = s.blindJump;
     return { at: null, from: j.from, to: j.to, progress: (j.turns - j.left + 0.5) / j.turns, colour };
   });
@@ -538,7 +541,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   ]);
   const queuesKey = JSON.stringify(game.holdings.map((h) => h.queue.filter((q) => q.kind === 'lane')));
   useEffect(() => {
-    view.current?.setShips(play ? shipMarks(latest.current.game) : []);
+    view.current?.setShips(play ? shipMarks(latest.current.game, latest.current.play?.faction) : []);
   }, [shipsKey, ready, play]);
   const t = targeting.value;
   const hoverId = hover.value?.id ?? null;
@@ -878,7 +881,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         play
           ? game.ships
               .filter((s) => s.owner !== play.faction && s.at === id)
-              .map((s) => ({ id: s.id, name: s.name, kind: shipKind(game, s), owner: s.owner }))
+              .map((s) => ({
+                id: s.id,
+                name: s.name,
+                kind: shipKind(game, s),
+                owner: s.owner,
+                hostile: atWar(game, play.faction, s.owner),
+              }))
           : undefined
       }
       holdings={game.holdings

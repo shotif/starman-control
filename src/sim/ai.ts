@@ -22,6 +22,7 @@ import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { type Amount, contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
+import { atWar } from './war.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -350,10 +351,24 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
   const power = powerOf(state, faction);
   const orders: Order[] = [];
   const index = state.powers.findIndex((p) => p.faction === faction);
+  // Peace (M4_FLEETS.md §23.2): every few turns, to each power a war with has lasted long enough.
+  const w = RULES.war;
+  for (const war of state.wars) {
+    if (war.a !== faction && war.b !== faction) continue;
+    const other = war.a === faction ? war.b : war.a;
+    const lasted = state.turn - war.since;
+    if (
+      lasted >= w.offerPeaceAfter &&
+      lasted % w.offerPeaceEvery === 0 &&
+      !offerRefusal(state, faction, other, 'peace')
+    )
+      orders.push({ type: 'offer', to: other, treaty: 'peace' });
+  }
   if ((state.turn + index) % t.offerEvery === 0) {
     let treasury = power.treasury;
     for (const other of state.powers) {
       if (other.faction === faction || contactWith(power, other.faction)?.stage !== 'talk') continue;
+      if (atWar(state, faction, other.faction)) continue;
       const theirs = attitudeOf(world, state, other.faction, faction).total;
       const lastGift = other.memories.some(
         (m) => m.faction === faction && m.kind === 'gift' && m.turn > state.turn - t.giftEvery,

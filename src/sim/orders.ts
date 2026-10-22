@@ -39,6 +39,7 @@ import {
   makeOffer,
   offerRefusal,
 } from './treaties.ts';
+import { declareRefusal, declareWar } from './war.ts';
 import type { World } from './world.ts';
 
 export type Order =
@@ -81,8 +82,10 @@ export type Order =
   /** A gift of credits to another power, sent as the turn ends; 0 takes it back (M3_NEIGHBOURS.md §20.2). */
   | { type: 'gift'; to: FactionId; credits: number }
   /** A treaty or an exchange offered, answered, ended with notice or broken (M3_NEIGHBOURS.md §21, §23). */
-  | { type: 'offer'; to: FactionId; treaty: TreatyKind | 'exchange'; give?: Amount; get?: Amount }
-  | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind | 'exchange'; accept: boolean }
+  | { type: 'offer'; to: FactionId; treaty: TreatyKind | 'exchange' | 'peace'; give?: Amount; get?: Amount }
+  | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind | 'exchange' | 'peace'; accept: boolean }
+  /** War declared on a power, at once (M4_FLEETS.md §23.1). */
+  | { type: 'declare-war'; on: FactionId }
   | { type: 'end-treaty'; with: FactionId; treaty: TreatyKind }
   | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind }
   /** A warship design of the power's own (M4_FLEETS.md §21.3), and one taken off the build lists. */
@@ -230,15 +233,17 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     order.type === 'break-treaty'
   ) {
     const exchange = order.treaty === 'exchange' && (order.type === 'offer' || order.type === 'answer-offer');
-    if (!exchange && !isTreatyKind(order.treaty)) return 'There is no such treaty.';
+    const peace = order.treaty === 'peace' && (order.type === 'offer' || order.type === 'answer-offer');
+    if (!exchange && !peace && !isTreatyKind(order.treaty)) return 'There is no such treaty.';
     if (order.type === 'offer') return offerRefusal(state, faction, order.to, order.treaty, order.give, order.get);
     if (order.type === 'answer-offer')
       return (
         answerRefusal(state, faction, order.from, order.treaty) ??
         (exchange && order.accept ? exchangeShort(state, faction, order.from) : null)
       );
-    return endRefusal(state, faction, order.with, order.treaty, order.type === 'break-treaty');
+    return endRefusal(state, faction, order.with, order.treaty as TreatyKind, order.type === 'break-treaty');
   }
+  if (order.type === 'declare-war') return declareRefusal(state, faction, order.on);
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -338,6 +343,10 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'end-treaty' || order.type === 'break-treaty') {
     endTreaty(next, faction, order.with, order.treaty, order.type === 'break-treaty');
+    return { ok: true, state: next };
+  }
+  if (order.type === 'declare-war') {
+    declareWar(next, faction, order.on);
     return { ok: true, state: next };
   }
   if (order.type === 'edict') {

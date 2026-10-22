@@ -25,6 +25,7 @@ import { designStats, queueName } from './designs.ts';
 import { listWords, observationShort } from './discoveries.ts';
 import { bodyOf, fusionRuns } from './economy.ts';
 import { eventWords } from './events.ts';
+import { fleetById } from './fleets.ts';
 import type { Need } from './needs.ts';
 import type { ReportEvent } from './report.ts';
 import { type GameState, powerOf } from './state.ts';
@@ -193,7 +194,7 @@ export function adviceFor(
     } else if (e.kind === 'rival-tech') {
       say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
     } else if (e.kind === 'offer-answered') {
-      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].words };
+      const values = { power: FACTIONS[e.faction].shortName, treaty: offerWords(e.treaty) };
       say('envoy', 2, e.accepted ? 'offer-accepted' : 'offer-refused', values);
     } else if (e.kind === 'treaty-begun') {
       say('envoy', 2, 'treaty-begun', {
@@ -245,6 +246,23 @@ export function adviceFor(
           { ship: ship.name, place: holdingName(e.holding), design: d.name },
           { holding: e.holding },
         );
+    } else if (e.kind === 'war-declared') {
+      // War and peace (M4_FLEETS.md §23.5): the Envoy speaks of them.
+      const power = FACTIONS[e.faction].shortName;
+      if (e.by === faction) say('envoy', 2, 'war-ours', { power });
+      else if (e.ally && e.ally !== faction) say('envoy', 1, 'war-ally', { power, ally: FACTIONS[e.ally].shortName });
+      else say('envoy', 1, 'war-theirs', { power });
+    } else if (e.kind === 'peace-made') {
+      say('envoy', 2, 'peace-made', { power: FACTIONS[e.faction].shortName });
+    } else if (e.kind === 'intercepted') {
+      const what = e.fleet !== undefined ? `the ${fleetById(state, e.fleet)?.name ?? 'fleet'}` : 'one of our ships';
+      say(
+        'admiral',
+        2,
+        'intercepted',
+        { what, place: world.system(e.system).name, power: FACTIONS[e.by].shortName },
+        { system: e.system },
+      );
     } else if (e.kind === 'founded') {
       const kind = state.holdings.find((h) => h.id === e.holding)?.kind === 'outpost' ? 'outpost' : 'colony';
       say('colonies', 3, 'founded', { place: holdingName(e.holding), what: `a new ${kind}` }, { holding: e.holding });

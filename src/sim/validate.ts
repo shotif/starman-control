@@ -50,6 +50,22 @@ export function shapeProblems(raw: unknown): string[] {
     )
   )
     out.push('fleets are not a list of fleets');
+  // Wars and truces (M4_FLEETS.md §23.6).
+  const pairOf = (x: unknown) => isRecord(x) && isFactionId(x.a) && isFactionId(x.b);
+  if (
+    !Array.isArray(raw.wars) ||
+    !raw.wars.every(
+      (w) =>
+        pairOf(w) &&
+        isRecord(w) &&
+        isWhole(w.since, 1) &&
+        isFactionId(w.by) &&
+        (w.via === undefined || isFactionId(w.via)),
+    )
+  )
+    out.push('wars are not a list of wars');
+  if (!Array.isArray(raw.truces) || !raw.truces.every((t) => pairOf(t) && isRecord(t) && isWhole(t.until, 1)))
+    out.push('truces are not a list of truces');
   if (!isWhole(raw.nextHoldingId, 1)) out.push('nextHoldingId is not a whole number from 1');
   // Treaties and offers (M3_NEIGHBOURS.md §21, §23).
   const isAmount = (a: unknown) =>
@@ -77,7 +93,7 @@ export function shapeProblems(raw: unknown): string[] {
     !raw.offers.every(
       (o) =>
         isRecord(o) &&
-        (o.kind === 'exchange' ? isAmount(o.give) && isAmount(o.get) : isTreatyKind(o.kind)) &&
+        (o.kind === 'exchange' ? isAmount(o.give) && isAmount(o.get) : o.kind === 'peace' || isTreatyKind(o.kind)) &&
         isFactionId(o.from) &&
         isFactionId(o.to) &&
         isWhole(o.turn, 1),
@@ -133,6 +149,7 @@ export function shapeProblems(raw: unknown): string[] {
       if (!Array.isArray(p.gifts) || !p.gifts.every((g) => isRecord(g) && isFactionId(g.to) && isWhole(g.credits, 1)))
         out.push(`power ${i} gifts are not a list of gifts`);
       if (!isWhole(p.fleetsMade)) out.push(`power ${i} fleets made is not a whole number`);
+      if (!isWhole(p.weariness)) out.push(`power ${i} weariness is not a whole number`);
       // Designs (M4_FLEETS.md §21.3).
       if (
         !Array.isArray(p.designs) ||
@@ -384,6 +401,20 @@ export function stateProblems(world: World, state: GameState): string[] {
       out.push(`treaty ${key} is not paid by its buyer`);
     if (!isSold(t.kind) && t.payer !== undefined) out.push(`treaty ${key} is shared, yet paid for`);
   }
+  // Wars (§23.1): between two powers in play, one at most between two, declared by one of them.
+  const seenWar = new Set<string>();
+  for (const w of state.wars) {
+    const key = `${w.a}~${w.b}`;
+    if (!(w.a < w.b) || !playing.has(w.a) || !playing.has(w.b))
+      out.push(`war ${key} is not between two powers in play`);
+    if (w.by !== w.a && w.by !== w.b) out.push(`war ${key} was declared by neither`);
+    if (seenWar.has(key)) out.push(`war ${key} is fought twice`);
+    seenWar.add(key);
+    if (w.since > state.turn) out.push(`war ${key} begins after this turn`);
+    if (state.treaties.some((t) => t.a === w.a && t.b === w.b)) out.push(`war ${key} has a treaty between its powers`);
+  }
+  for (const t of state.truces)
+    if (!(t.a < t.b) || !playing.has(t.a) || !playing.has(t.b)) out.push(`a truce is not between two powers in play`);
   for (const o of state.offers) {
     if (o.from === o.to || !playing.has(o.from) || !playing.has(o.to))
       out.push(`an offer of ${o.kind} is not between two powers in play`);

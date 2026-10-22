@@ -35,6 +35,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 20. [Decisions for the owner](#20-decisions-for-the-owner)
 21. [Increment 41 in detail: warships](#21-increment-41-in-detail-warships-written-before-building-it)
 22. [Increment 42 in detail: fleets](#22-increment-42-in-detail-fleets-written-before-building-it)
+23. [Increment 43 in detail: war and peace](#23-increment-43-in-detail-war-and-peace-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -657,3 +658,123 @@ and desktop.
 - **Tests:** `fleets.test.ts` (8 tests); 528 unit tests; `fleets.spec.ts` on the phone, tablet and
   desktop.
 
+## 23. Increment 43 in detail: war and peace (written before building it)
+
+**Goals.** D-64 as decided (A), its diplomacy: **war declared** with its price said first,
+remembered by everyone; **peace** offered and answered, with a truce after it; **non-aggression**
+and **alliance** as treaties; **forced passage** over an enemy's lanes, and **interception** where
+an enemy's warships wait; **war weariness**. Battles come with increment 44: until then powers at
+war only meet and pass. The same orders for the player and the rivals.
+
+**Out of scope.** Battles, losses and their weariness (44); capitulation (48, with the rivals that
+surrender); the rivals declaring war (48: until then they never declare one, but they answer
+peace, offer it, and keep their alliances).
+
+### 23.1 War
+
+- **Order `declare-war`:** on a power it is in contact with. Refused while a truce holds (*we made
+  peace on Q2 2181: no war before Q4 2183*), while a non-aggression pact or an alliance holds
+  (*break it first*), and on a power it is already at war with.
+- **It takes effect at once.** Every other treaty between the two ends, and every offer between
+  them is dropped. The other remembers it (**−30**, *Declared war on us*); every other power in
+  contact with the declarer hears of it (**−5**, or **−10** for a lawful power, *Declared war on
+  the Frontier Co-op*). While the war lasts the other counts **−20** in its regard (*At war with
+  us*).
+- **Allies:** every power with an alliance with the one attacked is at war with the declarer too,
+  at once (§23.3). The diplomacy screen says so before war is declared.
+- A war is between two powers; each of an alliance's wars is its own.
+
+### 23.2 Peace
+
+- **Offered** (order `offer`, kind `peace`) to a power we are at war with; answered as any offer
+  (a rival as the turn ends, the player in the next turn). Accepted: the war ends, each keeps what
+  it holds, and a **truce** of 10 turns follows, in which neither may declare war on the other.
+- **A rival makes peace** when the war has lasted 5 turns or more (increment 48 weighs its losses
+  and gains), and **offers peace** every 5 turns once the war has lasted 10.
+
+### 23.3 Non-aggression and alliance
+
+Two more treaties, offered, answered, ended with notice and broken as M3's are:
+
+| Treaty | What it does |
+| --- | --- |
+| **Non-aggression** | Neither may declare war on the other while it holds; breaking it is a breach (M3's −20, heard by all) |
+| **Alliance** | Open lanes between the two, and each is at war with whoever declares war on the other |
+
+What each asks (fiction, tuned with the headless games): the Authority 0 for non-aggression and 40
+for an alliance; the Cooperative −10 and 30; the Wake 10 and never; the Concord 10 and 50; the
+Moot −20 and 30.
+
+### 23.4 At war
+
+- **Forced passage:** a power's ships may use the open lanes of a power it is at war with.
+- **Interception:** a ship or fleet that enters a system where a power at war with it has an armed
+  warship stops there for the turn (its orders stand, and it goes on next turn). Ships that only
+  pass along a lane between two systems do not meet.
+- **War weariness:** each turn a power is at war it grows weary, by **1** (by its character: the
+  Cooperative 2, the Wake and the Concord 1, the Authority 1, the Moot 2); each turn at peace it
+  rests by **2**. Every colony counts **−1 approval for every 5** of it, at most **−15** (*war
+  weariness*). Losses add to it from increment 44.
+
+### 23.5 On the screen
+
+- **The diplomacy screen**, under each power: *War and peace*: at peace, *Declare war* with what it
+  will cost (the treaties that end, how they and the others will remember it, the allies that will
+  join, our weariness to come); at war, since when, our weariness, and *Offer peace* with how they
+  are likely to answer; in a truce, until when. Non-aggression and alliance among the treaties.
+- **The map:** a fleet of a power at war with us is drawn with a red edge; the system panel says
+  *at war with us* by its ships.
+- **The report:** war declared on us, by us and by an ally's call; peace made; a fleet intercepted;
+  the Envoy and the Admiral speak of them.
+- **The standings** say *at war* under a power's name.
+- **The approval breakdown** shows war weariness.
+
+### 23.6 State
+
+`GameState.wars` (the two powers, since when, and who declared it) and `GameState.truces` (the two
+powers and the turn it ends); `PowerState.weariness`; *peace* as a kind of offer; two treaty kinds;
+two memory kinds. **State version 18**; a save from before is at peace.
+
+### 23.7 Tests
+
+`war.test.ts`: declaring war (refusals, treaties ended, memories, allies called), peace offered and
+answered, the truce, non-aggression and alliance, forced passage and interception, weariness and
+its approval, the rivals' peace, the migration. `war.spec.ts`: war declared on the Cooperative from
+the diplomacy screen, a fleet crossing its lanes, and peace offered and accepted, on the phone,
+tablet and desktop.
+
+### Increment 43: war and peace (22 October 2026)
+
+- **War as §23.1** (`src/sim/war.ts`): `GameState.wars`, each with who declared it and, for a war an
+  alliance brought about, the ally (`via`); order `declare-war`, in effect at once: treaties and
+  offers between the two end, the attacked remembers it (−30), every other power in contact with
+  the declarer hears of it (−5, the lawful −10), and the attacked power's allies are at war with
+  the declarer too. Wars begun in a turn are told to both sides as it ends. While at war, a power
+  counts −20 in its regard (*At war with us*).
+- **Peace as §23.2:** *peace* is a kind of offer, refused unless at war; answered as any offer (a
+  rival yes once the war has lasted 5 turns; the player in the next turn); accepted, the war ends
+  and a truce of 10 turns follows (`GameState.truces`). A rival offers peace every 5 turns once a
+  war has lasted 10. At war, no other treaty or exchange may be offered.
+- **Non-aggression and alliance as §23.3:** two more treaty kinds with what each power asks. Built
+  as designed but for one change found with the headless games: **a non-aggression pact counts
+  nothing in regard** (a promise not to fight is not friendship), where every other treaty counts
+  +5. With +5, the Cooperative's extra regard took it to 26 technologies by turn 100 on three
+  seeds; now every power is back to M3's numbers on all eight. An alliance opens each other's
+  lanes as open lanes do.
+- **At war as §23.4:** forced passage over an enemy's open lanes; a ship or fleet entering a system
+  where an enemy has an armed warship stops there (*intercepted*); weariness by character (the
+  Cooperative and the Moot 2 a turn, the others 1), resting 2 a turn at peace, −1 approval for
+  every 5 (*war weariness*), at most −15.
+- **On the screen as §23.5:** the diplomacy screen's *War and peace* for each power (what war would
+  cost, said before it is declared; at war since when, our weariness, *Offer peace* with the likely
+  answer; *Make peace* or *Refuse* for theirs; a truce's end), *at war* beside the power, and no
+  treaties while at war; *at war* in the standings and by enemy ships in the system panel; a red
+  edge on an enemy fleet's wedge on the map; the report and the Envoy and the Admiral on war, peace
+  and interception.
+- **The rivals** never declare war yet (48), make peace and offer it as above, and offer
+  non-aggression and alliances by what they ask.
+- **State version 18**, as §23.6.
+- **Numbers:** `npm run balance` at turn 100: the Authority 37.6 technologies, the Cooperative 23.0,
+  the Wake 22.1, the Concord 19.9 and the Moot 19.8, as after M3; the slowest turn 173 ms.
+- **Tests:** `war.test.ts` (10 tests); 538 unit tests; `war.spec.ts` on the phone, tablet and
+  desktop.

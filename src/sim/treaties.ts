@@ -32,11 +32,22 @@ export function treatiesOf(state: GameState, f: FactionId): Treaty[] {
   return state.treaties.filter((t) => t.a === f || t.b === f);
 }
 
-/** The powers whose open lanes a power's ships may use (§21.1): its open lanes partners, and those it buys passage from (§23.2). */
+/**
+ * The powers whose open lanes a power's ships may use (§21.1): its open lanes partners and allies,
+ * those it buys passage from (§23.2), and those it is at war with (forced passage, M4_FLEETS.md §23.4).
+ */
 export function passageWith(state: GameState, f: FactionId): FactionId[] {
-  return treatiesOf(state, f)
-    .filter((t) => t.kind === 'open-lanes' || (t.kind === 'passage' && t.payer === f))
+  const out = treatiesOf(state, f)
+    .filter((t) => t.kind === 'open-lanes' || t.kind === 'alliance' || (t.kind === 'passage' && t.payer === f))
     .map((t) => partnerOf(t, f));
+  for (const w of state.wars) if (w.a === f || w.b === f) out.push(w.a === f ? w.b : w.a);
+  return out;
+}
+
+/** Whether two powers are at war (M4_FLEETS.md §23.1); src/sim/war.ts has the rest of war's rules. */
+function warring(state: GameState, x: FactionId, y: FactionId): boolean {
+  const [a, b] = pair(x, y);
+  return state.wars.some((w) => w.a === a && w.b === b);
 }
 
 /** Whether a treaty is sold (§23): passage and protection. */
@@ -82,14 +93,22 @@ export function offerRefusal(
   state: GameState,
   from: FactionId,
   to: FactionId,
-  kind: TreatyKind | 'exchange',
+  kind: TreatyKind | 'exchange' | 'peace',
   give?: Amount,
   get?: Amount,
 ): string | null {
   if (!state.powers.some((p) => p.faction === to) || to === from) return 'There is no such power.';
+  const name = FACTIONS[to]?.shortName ?? 'others';
+  // At war, only peace may be offered; peace only at war (M4_FLEETS.md §23.2).
+  if (kind === 'peace') {
+    if (!warring(state, from, to)) return `We are not at war with the ${name}.`;
+    if (state.offers.some((o) => o.kind === 'peace' && o.from === from && o.to === to))
+      return `Our offer of peace to the ${name} is on its way already.`;
+    return null;
+  }
+  if (warring(state, from, to)) return `We are at war with the ${name}: offer peace first.`;
   if (kind === 'exchange') return exchangeRefusal(state, from, to, give, get);
   if (!(kind in TREATIES)) return 'There is no such treaty.';
-  const name = FACTIONS[to].shortName;
   const treaty = TREATIES[kind].words;
   if (!contactWith(powerOf(state, from), to)) return `We have not heard the ${name}.`;
   if (isSold(kind) && !sellerOf(kind, from, to)) return `Neither of us sells ${treaty}.`;
@@ -110,8 +129,8 @@ export function amountWords(a: Amount): string {
 }
 
 /** What an offer is of, in a sentence ("the Wake offers us …"). */
-export function offerWords(kind: TreatyKind | 'exchange'): string {
-  return kind === 'exchange' ? 'an exchange' : TREATIES[kind].words;
+export function offerWords(kind: TreatyKind | 'exchange' | 'peace'): string {
+  return kind === 'exchange' ? 'an exchange' : kind === 'peace' ? 'peace' : TREATIES[kind].words;
 }
 
 /** What a power has of a resource or of credits. */
@@ -180,7 +199,7 @@ export function answerRefusal(
   state: GameState,
   me: FactionId,
   from: FactionId,
-  kind: TreatyKind | 'exchange',
+  kind: TreatyKind | 'exchange' | 'peace',
 ): string | null {
   const offer = state.offers.find((o) => o.to === me && o.from === from && o.kind === kind);
   if (!offer || offer.turn >= state.turn) return 'No such offer is waiting for an answer.';
@@ -230,7 +249,7 @@ export function makeOffer(
   state: GameState,
   from: FactionId,
   to: FactionId,
-  kind: TreatyKind | 'exchange',
+  kind: TreatyKind | 'exchange' | 'peace',
   give?: Amount,
   get?: Amount,
 ): void {
@@ -245,14 +264,31 @@ export function answerOffer(
   state: GameState,
   me: FactionId,
   from: FactionId,
-  kind: TreatyKind | 'exchange',
+  kind: TreatyKind | 'exchange' | 'peace',
   accept: boolean,
 ) {
   const offer = state.offers.find((o) => o.to === me && o.from === from && o.kind === kind);
   state.offers = state.offers.filter((o) => o !== offer);
   if (!accept || !offer) return;
   if (kind === 'exchange') exchange(state, offer);
+  else if (kind === 'peace') endWar(state, me, from);
   else begin(state, me, from, kind, state.turn);
+}
+
+/** Peace made (M4_FLEETS.md §23.2): the war ends, and a truce follows in which neither may declare war. */
+export function endWar(state: GameState, x: FactionId, y: FactionId): void {
+  const [a, b] = pair(x, y);
+  state.wars = state.wars.filter((w) => !(w.a === a && w.b === b));
+  state.truces = state.truces.filter((t) => !(t.a === a && t.b === b));
+  state.truces.push({ a, b, until: state.turn + RULES.war.truce });
+  state.truces.sort((p, q) => (`${p.a}~${p.b}` < `${q.a}~${q.b}` ? -1 : 1));
+}
+
+/** Whether a rival would make peace with a power it is at war with (§23.2): once the war has lasted a while. */
+export function wouldMakePeace(state: GameState, receiver: FactionId, from: FactionId): boolean {
+  const [a, b] = pair(receiver, from);
+  const war = state.wars.find((w) => w.a === a && w.b === b);
+  return war !== undefined && state.turn - war.since >= RULES.war.peaceAfter;
 }
 
 /**
@@ -338,6 +374,14 @@ export function misread(state: GameState, o: Offer): boolean {
 export function resolveTreaties(world: World, state: GameState, events: Map<FactionId, ReportEvent[]>): void {
   const say = (f: FactionId, e: ReportEvent) => events.get(f)?.push(e);
   const otherOf = (o: Offer, f: FactionId) => (o.from === f ? o.to : o.from);
+  // Peace the player made this turn, answering an offer (M4_FLEETS.md §23.2).
+  for (const t of state.truces)
+    if (t.until === state.turn + RULES.war.truce)
+      for (const [f, other] of [
+        [t.a, t.b],
+        [t.b, t.a],
+      ] as const)
+        say(f, { kind: 'peace-made', faction: other });
   // Treaties the player agreed this turn, answering an offer.
   for (const t of state.treaties)
     if (t.since === state.turn)
@@ -365,6 +409,24 @@ export function resolveTreaties(world: World, state: GameState, events: Map<Fact
   const keep: Offer[] = [];
   for (const o of state.offers) {
     const receiver = powerOf(state, o.to);
+    // Peace (M4_FLEETS.md §23.2): answered as any offer; accepted, the war ends and a truce follows.
+    if (o.kind === 'peace') {
+      if (!warring(state, o.from, o.to)) continue;
+      if (o.turn < state.turn) say(o.from, { kind: 'offer-answered', faction: o.to, treaty: 'peace', accepted: false });
+      else if (receiver.controller === 'player') {
+        keep.push(o);
+        say(o.to, { kind: 'offer-received', faction: o.from, treaty: 'peace' });
+      } else {
+        const yes = wouldMakePeace(state, o.to, o.from);
+        say(o.from, { kind: 'offer-answered', faction: o.to, treaty: 'peace', accepted: yes });
+        if (yes) {
+          endWar(state, o.from, o.to);
+          say(o.from, { kind: 'peace-made', faction: o.to });
+          say(o.to, { kind: 'peace-made', faction: o.from });
+        }
+      }
+      continue;
+    }
     if (o.kind === 'exchange') {
       if (o.turn < state.turn) say(o.from, { kind: 'exchange-refused', faction: o.to });
       else if (receiver.controller === 'player') {

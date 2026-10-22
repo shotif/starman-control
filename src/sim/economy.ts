@@ -31,6 +31,7 @@ import { findRoute, lanesFor } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile, treatyOf } from './state.ts';
 import { soldParts } from './treaties.ts';
+import { wearinessApproval } from './war.ts';
 import type { World } from './world.ts';
 
 export type Resource = keyof Stockpile;
@@ -342,6 +343,9 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   else if (jumps > near && !federation)
     parts.push({ label: `${jumps} jumps from the capital`, value: Math.max(a.farMost, (jumps - near) * a.far) });
   if (power.treasury < 0) parts.push({ label: 'the treasury in debt', value: a.debt });
+  // War weariness (M4_FLEETS.md §23.4).
+  const weary = wearinessApproval(state, h.owner);
+  if (weary < 0) parts.push({ label: 'war weariness', value: weary });
   const total = Math.max(0, Math.min(100, sum(parts)));
   const level: ApprovalLevel =
     total >= a.levels.content

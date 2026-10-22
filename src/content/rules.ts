@@ -208,6 +208,28 @@ export const RULES = {
     /** A broker (M3_NEIGHBOURS.md §25.6) offers so much of what it holds more than `surplus` of, for credits. */
     surplus: 150,
   },
+  /** War and peace (M4_FLEETS.md §23, D-64). */
+  war: {
+    /** Remembered by the power war is declared on; by every other power in contact with the declarer, more by the lawful. */
+    declared: -30,
+    heard: -5,
+    heardLawful: -10,
+    /** Counted in the regard of a power at war with another while it lasts. */
+    atWar: -20,
+    /** Turns of truce after peace, in which neither may declare war. */
+    truce: 10,
+    /** A rival makes peace once a war has lasted so many turns, and offers it every so many turns once it has lasted so many. */
+    peaceAfter: 5,
+    offerPeaceAfter: 10,
+    offerPeaceEvery: 5,
+    /** Weariness: each turn at peace rests so much; every so much costs a point of approval, at most so many. */
+    wearyRest: 2,
+    wearyPer: 5,
+    wearyMost: 15,
+    /** Weariness for each warship and each other ship lost (increment 44). */
+    wearyWarship: 2,
+    wearyShip: 1,
+  },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {
     /** Attitude is held between these. */

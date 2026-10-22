@@ -20,7 +20,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 17;
+export const STATE_VERSION = 18;
 
 export interface Stockpile {
   metals: number;
@@ -76,6 +76,25 @@ export interface PowerState {
   designs: Design[];
   /** Fleets it has ever formed, for naming the next (M4_FLEETS.md §22.1). */
   fleetsMade: number;
+  /** How weary its people are of war (M4_FLEETS.md §23.4): every 5 costs a point of approval. */
+  weariness: number;
+}
+
+/** A war between two powers (M4_FLEETS.md §23.1): `a` before `b` in id order; `by` declared it. */
+export interface War {
+  a: FactionId;
+  b: FactionId;
+  since: number;
+  by: FactionId;
+  /** The power whose alliance brought this war about, when it was declared on another. */
+  via?: FactionId;
+}
+
+/** A truce after peace (§23.2): neither may declare war on the other before turn `until`. */
+export interface Truce {
+  a: FactionId;
+  b: FactionId;
+  until: number;
 }
 
 /** How a fleet fights (M4_FLEETS.md §6, §22.1): the range it seeks. */
@@ -128,6 +147,9 @@ export const MEMORY_KINDS = [
   'treaty-broken-heard',
   'offer-misread',
   'claim-crossed',
+  // M4 (M4_FLEETS.md §23.1).
+  'war-declared',
+  'war-declared-heard',
 ] as const;
 export type MemoryKind = (typeof MEMORY_KINDS)[number];
 
@@ -143,7 +165,7 @@ export interface Memory {
   credits?: number;
   system?: SystemId;
   project?: ProjectId;
-  /** For a treaty ended, broken or misread: which; for a breach heard of, the power it was broken with. */
+  /** For a treaty ended, broken or misread: which; for a breach or a war heard of, the power it was against. */
   treaty?: TreatyKind;
   victim?: FactionId;
 }
@@ -177,7 +199,8 @@ export interface Amount {
  * then waiting for the player's answer.
  */
 export interface Offer {
-  kind: TreatyKind | 'exchange';
+  /** A treaty, an exchange, or peace to a power at war with the offerer (M4_FLEETS.md §23.2). */
+  kind: TreatyKind | 'exchange' | 'peace';
   from: FactionId;
   to: FactionId;
   turn: number;
@@ -325,6 +348,9 @@ export interface GameState {
   /** Treaties in force (M3_NEIGHBOURS.md §21), and offers on their way or waiting for an answer. */
   treaties: Treaty[];
   offers: Offer[];
+  /** Wars, and truces after peace (M4_FLEETS.md §23), each in id order of its powers. */
+  wars: War[];
+  truces: Truce[];
 }
 
 export interface NewGameSetup {
@@ -468,6 +494,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       lasting: [],
       designs: [],
       fleetsMade: 0,
+      weariness: 0,
     })),
     lanes,
     ships: [],
@@ -479,6 +506,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     reports: [],
     treaties: [],
     offers: [],
+    wars: [],
+    truces: [],
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

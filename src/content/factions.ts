@@ -64,6 +64,8 @@ export interface FactionDef {
   shipmakers: string[];
   /** The word it counts its fleets in, fiction (M4_FLEETS.md §22.1): "1st Squadron". */
   fleetWord: string;
+  /** How weary each turn of war makes its people (M4_FLEETS.md §23.4). */
+  weary: number;
   /**
    * How it regards others for their ways (M3_NEIGHBOURS.md §20.1), fiction: an amount, and the
    * reason as the other power reads it ("holds us for outlaws").
@@ -110,9 +112,19 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     ],
     shipmakers: ['Halden Orbital Works', 'Ares Foundry'],
     fleetWord: 'Squadron',
+    weary: 1,
     regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
     // Law: open lanes once warm, its research only with friends.
-    asks: { 'open-lanes': 10, 'shared-research': 40, border: 10, trade: 10, passage: 0, protection: null },
+    asks: {
+      'open-lanes': 10,
+      'shared-research': 40,
+      border: 10,
+      trade: 10,
+      passage: 0,
+      protection: null,
+      'non-aggression': 0,
+      alliance: 40,
+    },
     sells: [],
     lawful: true,
     giftCredits: 5,
@@ -140,10 +152,20 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     ],
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
     fleetWord: 'Flotilla',
+    weary: 2,
     regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
     // Trade and peace once warm; its research a little warmer (20, tuned in M3's proof: at 10 its
     // shared research with the Wake took it past 25 technologies by turn 100 on three seeds).
-    asks: { 'open-lanes': 10, 'shared-research': 20, border: 10, trade: 0, passage: -10, protection: 0 },
+    asks: {
+      'open-lanes': 10,
+      'shared-research': 20,
+      border: 10,
+      trade: 0,
+      passage: -10,
+      protection: 0,
+      'non-aggression': -10,
+      alliance: 30,
+    },
     sells: [],
     lawful: true,
     giftCredits: 5,
@@ -171,11 +193,21 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     ],
     shipmakers: ['Wake Salvage'],
     fleetWord: 'Pack',
+    weary: 1,
     regard: { sta: { amount: -10, reason: 'Sees in us the law it runs from' } },
     // Tolls and profit: it sells passage rather than opening its lanes (increment 37), and buys
     // its way into shared research.
     // It sells passage and protection to any power that regards it at −10 or more (§23.6), and takes bribes.
-    asks: { 'open-lanes': null, 'shared-research': 10, border: 20, trade: 15, passage: -10, protection: -10 },
+    asks: {
+      'open-lanes': null,
+      'shared-research': 10,
+      border: 20,
+      trade: 15,
+      passage: -10,
+      protection: -10,
+      'non-aggression': 10,
+      alliance: null,
+    },
     sells: ['passage', 'protection'],
     lawful: false,
     giftCredits: 3,
@@ -205,9 +237,19 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     ],
     shipmakers: ['the Long Hands'],
     fleetWord: 'Circle',
+    weary: 1,
     regard: { 'hollow-wake': { amount: -5, reason: 'Takes what is not given' } },
     // Slow to trust (§24.6): a clear border sooner than open lanes, and research only with friends.
-    asks: { 'open-lanes': 20, 'shared-research': 30, border: 0, trade: 10, passage: 10, protection: null },
+    asks: {
+      'open-lanes': 20,
+      'shared-research': 30,
+      border: 0,
+      trade: 10,
+      passage: 10,
+      protection: null,
+      'non-aggression': 10,
+      alliance: 50,
+    },
     sells: [],
     lawful: true,
     giftCredits: 8,
@@ -242,9 +284,19 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     ],
     shipmakers: ['the Slow Hands'],
     fleetWord: 'Drift',
+    weary: 2,
     regard: { 'hollow-wake': { amount: -10, reason: 'Sells the lanes that should be open' } },
     // Brokers (§25.6): trade with anyone, open lanes once known, and peace bought from those who sell it.
-    asks: { 'open-lanes': 0, 'shared-research': 20, border: 10, trade: -10, passage: 0, protection: -10 },
+    asks: {
+      'open-lanes': 0,
+      'shared-research': 20,
+      border: 10,
+      trade: -10,
+      passage: 0,
+      protection: -10,
+      'non-aggression': -20,
+      alliance: 30,
+    },
     sells: [],
     lawful: true,
     giftCredits: 5,

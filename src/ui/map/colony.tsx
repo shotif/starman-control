@@ -69,6 +69,7 @@ import {
 } from '../../sim/state.ts';
 import { offerWords } from '../../sim/treaties.ts';
 import { type Standing, standings } from '../../sim/visibility.ts';
+import { atWar } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
 import { Badge, FactionTag } from '../parts.tsx';
 import { HABITABILITY_WORD } from '../system/words.ts';
@@ -1283,7 +1284,12 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
               <th scope="row">
                 <FactionTag faction={r.faction} />
                 {r.faction === faction && <span class="dim"> · you</span>}
-                {r.faction !== faction && <span class="standing-contact">{contactWords(r)}</span>}
+                {r.faction !== faction && (
+                  <span class="standing-contact">
+                    {contactWords(r)}
+                    {atWar(game, faction, r.faction) && <b class="at-war"> · at war</b>}
+                  </span>
+                )}
               </th>
               <td>{r.colonies}</td>
               <td>{r.outposts}</td>

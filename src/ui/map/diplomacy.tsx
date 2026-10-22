@@ -22,10 +22,12 @@ import {
   wouldAccept,
   wouldExchange,
 } from '../../sim/treaties.ts';
+import { atWar } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
 import { AdvisorFace, FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
 import { give, type Play } from './play.tsx';
+import { WarAndPeace } from './war.tsx';
 
 const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');
 
@@ -359,8 +361,13 @@ export function DiplomacyView({
         ) : (
           <p class="dim">They have no reason yet to think anything of us.</p>
         )}
-        <Treaties world={world} game={game} faction={faction} other={other} play={play} regard={regard.total} />
-        {contactWith(me, other)?.stage === 'talk' && (
+        <WarAndPeace game={game} faction={faction} other={other} play={play} />
+        {atWar(game, faction, other) ? (
+          <p class="dim">No treaty while we are at war: peace first.</p>
+        ) : (
+          <Treaties world={world} game={game} faction={faction} other={other} play={play} regard={regard.total} />
+        )}
+        {contactWith(me, other)?.stage === 'talk' && !atWar(game, faction, other) && (
           <Exchange world={world} game={game} faction={faction} other={other} play={play} />
         )}
         <h4>A gift</h4>
@@ -430,6 +437,7 @@ export function DiplomacyView({
                     <span class={`regard-${regard.word}`}>
                       {regard.word} ({signed(regard.total)})
                     </span>
+                    {atWar(game, faction, f) && <b class="at-war">at war</b>}
                   </button>
                   {!table && pick === f && detail(f)}
                 </li>

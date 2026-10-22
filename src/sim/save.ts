@@ -251,6 +251,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
       }
     return game;
   },
+  /** 17 → 18 (M4 increment 43): war and peace. A save from before is at peace, and no one is weary. */
+  17: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, weariness: 0 }));
+    return { ...g, version: 18, powers, wars: [], truces: [] };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

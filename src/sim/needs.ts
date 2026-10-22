@@ -49,7 +49,7 @@ export type Need =
   /** Districts zoned with no one to work them. */
   | { kind: 'unworked'; holding: number; system: SystemId; districts: number }
   /** A treaty or an exchange offered, waiting for an answer before this turn ends (M3_NEIGHBOURS.md §21.2, §23.1). */
-  | { kind: 'offer'; from: FactionId; treaty: TreatyKind | 'exchange' };
+  | { kind: 'offer'; from: FactionId; treaty: TreatyKind | 'exchange' | 'peace' };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];

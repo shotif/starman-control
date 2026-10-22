@@ -3,13 +3,13 @@
 // moves along lanes at the pace of its slowest ship. Pure and in whole numbers.
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
-import { MODULES } from '../content/modules.ts';
 import { isHull } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { designStats, shipDesign } from './designs.ts';
 import { findRoute, type Hop, jumpPoints, type PlannedHop, planJourney } from './movement.ts';
 import type { ReportEvent } from './report.ts';
 import type { Fleet, GameState, RetreatPoint, ShipState, Stance, TargetPriority } from './state.ts';
+import { interceptedBy } from './war.ts';
 import type { World } from './world.ts';
 
 /** The longest name a fleet may have. */
@@ -134,6 +134,12 @@ export function moveFleet(world: World, state: GameState, fleet: Fleet, events: 
       fleet.destinations.shift();
       if (fleet.destinations.length === 0) arrived(dest);
     }
+    // Stopped where a power at war with it has warships (M4_FLEETS.md §23.4).
+    const by = interceptedBy(state, fleet.owner, at);
+    if (by) {
+      events.push({ kind: 'intercepted', fleet: fleet.id, system: at, by });
+      break;
+    }
   }
 }
 
@@ -177,11 +183,6 @@ export function fleetStats(
     structure += st.structure;
   }
   return { ships: ships.length, warships, attack, shields, structure };
-}
-
-/** Whether a ship carries any weapon. */
-export function armed(state: GameState, ship: ShipState): boolean {
-  return shipDesign(state, ship)?.modules.some((m) => MODULES[m].weapon !== undefined) ?? false;
 }
 
 // ---------------------------------------------------------------- orders

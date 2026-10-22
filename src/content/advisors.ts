@@ -160,7 +160,13 @@ export type LineKind =
   // The Admiral (M4_FLEETS.md §21.6).
   | 'warship-built'
   | 'design-new'
-  | 'refitted';
+  | 'refitted'
+  // War and peace (M4_FLEETS.md §23.5).
+  | 'war-ours'
+  | 'war-theirs'
+  | 'war-ally'
+  | 'peace-made'
+  | 'intercepted';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
   hungry: {
@@ -291,6 +297,31 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, the {ship} has been refitted at {place} to the {design}.',
     warm: 'Control, the {ship} is refitted at {place}: she’s a {design} now.',
     blunt: 'The {ship}: refitted at {place}. A {design} now.',
+  },
+  'war-ours': {
+    formal: 'Control, we are at war with the {power}, as you ordered. Every power that knows us has heard of it.',
+    warm: 'Control, it’s done: we’re at war with the {power}. Everyone will have heard, I’m afraid.',
+    blunt: 'We’re at war with the {power}. Everyone knows it.',
+  },
+  'war-theirs': {
+    formal: 'Control, the {power} has declared war on us. Our fleets should be told.',
+    warm: 'Control, the {power} has declared war on us! We need to look to our colonies.',
+    blunt: 'The {power} wants a fight. They’ve declared war.',
+  },
+  'war-ally': {
+    formal: 'Control, the {power} has declared war on the {ally}, our ally: by our alliance we are at war with it too.',
+    warm: 'Control, the {power} has attacked the {ally}, and our alliance means we’re at war with them too.',
+    blunt: 'The {power} went after the {ally}. Our alliance drags us in: we’re at war.',
+  },
+  'peace-made': {
+    formal: 'Control, peace is made with the {power}. Neither of us may declare war for ten turns.',
+    warm: 'Control, we have peace with the {power} at last. Ten turns of truce, at least.',
+    blunt: 'Peace with the {power}. Ten turns of quiet, by the treaty.',
+  },
+  intercepted: {
+    formal: 'Control, {what} was stopped at {place} by the {power}’s warships.',
+    warm: 'Control, the {power}’s warships stopped {what} at {place}.',
+    blunt: '{what} ran into the {power}’s guns at {place}. Stopped dead.',
   },
   'contact-talk': {
     formal: 'Control, we have made contact with the {power} at {place}. They share our tongue, so we may talk.',

@@ -57,6 +57,7 @@ import {
 } from './state.ts';
 import { payForSold, resolveTreaties } from './treaties.ts';
 import { watchNews } from './visibility.ts';
+import { interceptedBy, reportWars, resolveWeariness } from './war.ts';
 import { laneId, type World } from './world.ts';
 
 /** Whether a survey ship should stop to survey where it now is. */
@@ -105,6 +106,12 @@ function moveShip(world: World, state: GameState, ship: ShipState, events: Repor
     }
     // A survey ship stops in a system nobody of its power has surveyed, and surveys it (§4).
     if (wantsSurvey(state, ship)) break;
+    // Stopped where a power at war with it has warships (M4_FLEETS.md §23.4).
+    const by = interceptedBy(state, ship.owner, ship.at);
+    if (by) {
+      events.push({ kind: 'intercepted', ship: ship.id, system: ship.at, by });
+      break;
+    }
   }
 }
 
@@ -522,8 +529,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // learns the tongues it has words of.
   resolveContacts(world, state, events);
 
-  // 10c. Treaties (M3_NEIGHBOURS.md §21): ends that have come, and the turn's offers answered.
+  // 10c. Treaties (M3_NEIGHBOURS.md §21): ends that have come, and the turn's offers answered;
+  // wars declared this turn told to both sides, and war weariness (M4_FLEETS.md §23).
+  reportWars(state, events);
   resolveTreaties(world, state, events);
+  resolveWeariness(state);
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);

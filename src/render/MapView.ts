@@ -214,7 +214,9 @@ void main() {
   float edge = smoothstep(0.0, 0.12, d);
   // Lighter than the power's colour, so a ship stands out against its own rings and lanes.
   vec3 body = mix(vTint, vec3(1.0), 0.45);
-  gl_FragColor = vec4(mix(body, vec3(0.02, 0.03, 0.06), edge), 1.0);
+  // A fleet at war with the viewer has a red edge (M4_FLEETS.md §23.5).
+  vec3 rim = vShape > 1.5 ? vec3(1.0, 0.2, 0.2) : vec3(0.02, 0.03, 0.06);
+  gl_FragColor = vec4(mix(body, rim, edge), 1.0);
 }`;
 
 /** A ship in flight after a turn (IN_FLIGHT.md §1): a comet with a fading tail. */
@@ -256,6 +258,8 @@ export interface ShipMark {
   colour: string;
   /** A fleet with warships, drawn as a wedge beside its power's chevron (M4_FLEETS.md §22.3). */
   armed?: boolean;
+  /** Of a power at war with the viewer: the wedge has a red edge (§23.5). */
+  hostile?: boolean;
 }
 
 export interface MapRoute {
@@ -1552,7 +1556,12 @@ export class MapView {
         if (!rows.has(row)) rows.set(row, [...rows.keys()].filter((k) => k.startsWith(`${m.at}|`)).length);
         const n = rows.get(row) ?? 0;
         if (pos)
-          items.push({ pos, colour: m.colour, offset: [m.armed ? 35 : 19, 17 + n * 15], shape: m.armed ? 1 : 0 });
+          items.push({
+            pos,
+            colour: m.colour,
+            offset: [m.armed ? 35 : 19, 17 + n * 15],
+            shape: m.armed ? (m.hostile ? 2 : 1) : 0,
+          });
       } else {
         const a = at(m.from);
         const b = at(m.to);

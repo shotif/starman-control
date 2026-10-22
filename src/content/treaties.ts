@@ -1,7 +1,15 @@
 // The treaties (M3_NEIGHBOURS.md §8, §21, §22, D-53, D-54): what two powers in contact may agree.
 // Each power's own rules read these.
 
-export type TreatyKind = 'open-lanes' | 'shared-research' | 'border' | 'trade' | 'passage' | 'protection';
+export type TreatyKind =
+  | 'open-lanes'
+  | 'shared-research'
+  | 'border'
+  | 'trade'
+  | 'passage'
+  | 'protection'
+  | 'non-aggression'
+  | 'alliance';
 
 export const TREATY_KINDS: readonly TreatyKind[] = [
   'open-lanes',
@@ -10,6 +18,8 @@ export const TREATY_KINDS: readonly TreatyKind[] = [
   'trade',
   'passage',
   'protection',
+  'non-aggression',
+  'alliance',
 ];
 
 /** Treaties one side sells and the other buys (§23): the buyer pays every turn. */
@@ -57,6 +67,19 @@ export const TREATIES: Record<TreatyKind, { name: string; words: string; noun: s
     words: 'protection',
     noun: 'protection',
     does: 'The buyer pays 5 credits every turn; from M4 the seller’s ships leave the buyer’s systems alone.',
+  },
+  // M4 (M4_FLEETS.md §23.3).
+  'non-aggression': {
+    name: 'Non-aggression',
+    words: 'a non-aggression pact',
+    noun: 'non-aggression pact',
+    does: 'Neither may declare war on the other while it holds; breaking it is a breach every power hears of.',
+  },
+  alliance: {
+    name: 'Alliance',
+    words: 'an alliance',
+    noun: 'alliance',
+    does: 'Open lanes between us, and each is at war with whoever declares war on the other.',
   },
 };
 

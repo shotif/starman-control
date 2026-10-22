@@ -13,7 +13,7 @@ import type { World } from './world.ts';
 
 /** One part of an attitude, with its reason as the regarded power reads it. */
 export interface AttitudePart {
-  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | MemoryKind;
+  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | 'war' | MemoryKind;
   reason: string;
   amount: number;
 }
@@ -53,6 +53,10 @@ export function memoryReason(world: World, m: Memory): string {
       return `Misread our offer of ${treatyWords(m)}`;
     case 'claim-crossed':
       return `We settled in its claim at ${place}`;
+    case 'war-declared':
+      return 'We declared war on it';
+    case 'war-declared-heard':
+      return `We declared war on the ${m.victim ? FACTIONS[m.victim].shortName : 'others'}`;
   }
 }
 
@@ -75,8 +79,9 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
     if (regard) parts.push({ kind: 'character', reason: regard.reason, amount: regard.amount });
     // Each treaty in force between them (§21.1).
     const [a, b] = holder < toward ? [holder, toward] : [toward, holder];
+    // A non-aggression pact counts nothing: a promise not to fight is not friendship (M4_FLEETS.md §23.3).
     for (const t of state.treaties)
-      if (t.a === a && t.b === b)
+      if (t.a === a && t.b === b && t.kind !== 'non-aggression')
         parts.push({
           kind: 'treaty',
           reason: `Bound to us by ${TREATIES[t.kind].words}`,
@@ -94,6 +99,9 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
               amount: RULES.treaties.lawfulDeals,
             });
         }
+    // At war (M4_FLEETS.md §23.1).
+    if (state.wars.some((w) => (w.a === holder && w.b === toward) || (w.b === holder && w.a === toward)))
+      parts.push({ kind: 'war', reason: 'At war with us', amount: RULES.war.atWar });
     for (const m of power.memories)
       if (m.faction === toward) parts.push({ kind: m.kind, reason: memoryReason(world, m), amount: m.amount });
   }

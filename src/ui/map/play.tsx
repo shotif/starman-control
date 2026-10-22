@@ -12,6 +12,7 @@ import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import type { ModuleId } from '../../content/modules.ts';
 import { itemName, PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
+import { RULES } from '../../content/rules.ts';
 import { type HullId, SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import { TREATIES } from '../../content/treaties.ts';
@@ -30,7 +31,7 @@ import { type Need, needsOf } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import { type Fleet, type GameState, playerPower, type ShipState } from '../../sim/state.ts';
-import { amountWords } from '../../sim/treaties.ts';
+import { amountWords, offerWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
@@ -497,9 +498,9 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'gift-received':
       return `The ${FACTIONS[e.faction].shortName} sent us a gift of ${e.credits} credits.`;
     case 'offer-received':
-      return `The ${FACTIONS[e.faction].shortName} offers us ${TREATIES[e.treaty].words}: answer it in Diplomacy before this turn ends.`;
+      return `The ${FACTIONS[e.faction].shortName} offers us ${offerWords(e.treaty)}: answer it in Diplomacy before this turn ends.`;
     case 'offer-answered':
-      return `The ${FACTIONS[e.faction].shortName} ${e.accepted ? 'accepted' : 'refused'} our offer of ${TREATIES[e.treaty].words}.`;
+      return `The ${FACTIONS[e.faction].shortName} ${e.accepted ? 'accepted' : 'refused'} our offer of ${offerWords(e.treaty)}.`;
     case 'offer-misread':
       return e.ours
         ? `The ${FACTIONS[e.faction].shortName} misread our offer of ${TREATIES[e.treaty].words}, and took offence: the Envoy has not yet learnt their tongue.`
@@ -571,6 +572,21 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `The ${fleetName(e.fleet)} reached ${name(e.system)}.`;
     case 'fleet-blocked':
       return `The ${fleetName(e.fleet)} could not go on to ${name(e.to)}: no open lane leads there.`;
+    case 'war-declared': {
+      const power = FACTIONS[e.faction].shortName;
+      const me = playerPower(game)?.faction;
+      if (e.by === me)
+        return e.ally
+          ? `The ${power} is at war with us too: it is allied with the ${FACTIONS[e.ally].shortName}.`
+          : `We are at war with the ${power}: we declared it.`;
+      if (e.ally && e.ally !== me)
+        return `The ${power} declared war on the ${FACTIONS[e.ally].shortName}, our ally: by our alliance we are at war with it too.`;
+      return `The ${power} has declared war on us.`;
+    }
+    case 'peace-made':
+      return `We have made peace with the ${FACTIONS[e.faction].shortName}: neither of us may declare war for ${RULES.war.truce} turns.`;
+    case 'intercepted':
+      return `${e.fleet !== undefined ? `The ${fleetName(e.fleet)}` : shipOf(e.ship)} was stopped at ${name(e.system)} by the ${FACTIONS[e.by].shortName}’s warships.`;
   }
 }
 
@@ -642,6 +658,8 @@ function eventPlace(
     case 'exchange-made':
     case 'exchange-failed':
     case 'exchange-refused':
+    case 'war-declared':
+    case 'peace-made':
       return { system: playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
@@ -709,6 +727,9 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'refit-dropped': { icon: 'refused', tone: 'wrong' },
   'fleet-arrived': { icon: 'ship', tone: 'news' },
   'fleet-blocked': { icon: 'refused', tone: 'needs' },
+  'war-declared': { icon: 'diplomacy', tone: 'needs' },
+  'peace-made': { icon: 'diplomacy', tone: 'growth' },
+  intercepted: { icon: 'refused', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

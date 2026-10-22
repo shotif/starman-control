@@ -100,8 +100,8 @@ export type ReportEvent =
   | { kind: 'gift-sent'; faction: FactionId; credits: number }
   | { kind: 'gift-received'; faction: FactionId; credits: number }
   /** Treaties (M3_NEIGHBOURS.md §21): an offer waiting for this power's answer, or its own answered or misread. */
-  | { kind: 'offer-received'; faction: FactionId; treaty: TreatyKind }
-  | { kind: 'offer-answered'; faction: FactionId; treaty: TreatyKind; accepted: boolean }
+  | { kind: 'offer-received'; faction: FactionId; treaty: TreatyKind | 'peace' }
+  | { kind: 'offer-answered'; faction: FactionId; treaty: TreatyKind | 'peace'; accepted: boolean }
   | { kind: 'offer-misread'; faction: FactionId; treaty: TreatyKind; ours: boolean }
   /** A treaty agreed with `faction`; notice given by `by`, ending on turn `ends`; ended, or broken by `by`. */
   | { kind: 'treaty-begun'; faction: FactionId; treaty: TreatyKind }
@@ -147,7 +147,15 @@ export type ReportEvent =
   | { kind: 'refit-dropped'; holding: number; ship: number; reason: string }
   /** A fleet reached the last of its destinations, or could not go on (M4_FLEETS.md §22.1). */
   | { kind: 'fleet-arrived'; fleet: number; system: SystemId }
-  | { kind: 'fleet-blocked'; fleet: number; system: SystemId; to: SystemId };
+  | { kind: 'fleet-blocked'; fleet: number; system: SystemId; to: SystemId }
+  /**
+   * War (M4_FLEETS.md §23.1): declared between this power and `faction` by `by`; `ally` is the power
+   * whose alliance brought this war about. Peace made with `faction` (§23.2).
+   */
+  | { kind: 'war-declared'; faction: FactionId; by: FactionId; ally?: FactionId }
+  | { kind: 'peace-made'; faction: FactionId }
+  /** A ship or fleet stopped where a power at war with it has warships (§23.4). */
+  | { kind: 'intercepted'; ship?: number; fleet?: number; system: SystemId; by: FactionId };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {
