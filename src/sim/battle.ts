@@ -25,7 +25,7 @@ import {
   type Stance,
   type TargetPriority,
 } from './state.ts';
-import { atWar, wearyFrom } from './war.ts';
+import { anyRaid, hostileAt, wearyFrom } from './war.ts';
 import type { World } from './world.ts';
 
 /** Reborn's damage matrix, in percent: what a hit of each type does to each shield, and to a hull. */
@@ -191,14 +191,15 @@ export function hitChance(targeting: boolean, target: ShipType | 'battery', evad
  * ship of a power at war with it.
  */
 export function battleSystems(state: GameState): SystemId[] {
-  if (state.wars.length === 0) return [];
+  if (state.wars.length === 0 && !anyRaid(state)) return [];
   const out = new Set<SystemId>();
   for (const a of state.ships) {
-    if (a.at === null || !weaponsOf(state, a).length) continue;
-    if (state.ships.some((b) => b.at === a.at && atWar(state, a.owner, b.owner))) out.add(a.at);
+    const at = a.at;
+    if (at === null || !weaponsOf(state, a).length) continue;
+    if (state.ships.some((b) => b.at === at && hostileAt(state, a.owner, b.owner, at))) out.add(at);
   }
   for (const h of state.holdings)
-    if (hasBattery(h) && state.ships.some((b) => b.at === h.system && atWar(state, h.owner, b.owner)))
+    if (hasBattery(h) && state.ships.some((b) => b.at === h.system && hostileAt(state, h.owner, b.owner, h.system)))
       out.add(h.system);
   return [...out].sort();
 }
@@ -227,7 +228,7 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
   const here = state.ships.filter((s) => s.at === system);
   const forts = state.holdings.filter((h) => h.system === system && hasBattery(h));
   const present = [...new Set([...here.map((s) => s.owner), ...forts.map((h) => h.owner)])];
-  const powers = present.filter((p) => present.some((q) => q !== p && atWar(state, p, q))).sort();
+  const powers = present.filter((p) => present.some((q) => hostileAt(state, p, q, system))).sort();
   const ships = here.filter((s) => powers.includes(s.owner));
 
   // Task forces: each fleet, and each power's ships sailing alone.
@@ -334,7 +335,8 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
   const byType = new Map<string, { raw: number; dealt: number }>();
 
   const alive = (x: (typeof fighters)[number]) => x.structure > 0 && !gone.has(x.log.force);
-  const enemiesOf = (owner: FactionId) => fighters.filter((y) => alive(y) && atWar(state, owner, y.log.owner));
+  const enemiesOf = (owner: FactionId) =>
+    fighters.filter((y) => alive(y) && hostileAt(state, owner, y.log.owner, system));
   const anyFight = () => fighters.some((x) => alive(x) && x.weapons.length > 0 && enemiesOf(x.log.owner).length > 0);
 
   for (let r = 1; r <= b.rounds && anyFight(); r++) {
@@ -445,7 +447,7 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
     ships: fighters.map((x) => x.log),
     rounds,
     held,
-    why: whyOf(state, powers, fighters, fired, byType, leftForces, byForce),
+    why: whyOf(state, system, powers, fighters, fired, byType, leftForces, byForce),
   };
   return log;
 }
@@ -472,6 +474,7 @@ function choose<T extends { structure: number; weapons: unknown[]; log: BattleSh
 /** Up to three reasons the battle went as it did (§24.8), the weightiest first. */
 function whyOf(
   state: GameState,
+  system: SystemId,
   powers: FactionId[],
   fighters: { log: BattleShip; weapons: { damage: number }[] }[],
   fired: Map<FactionId, { best: number; ranged: number; shield: number; hull: number }>,
@@ -485,7 +488,7 @@ function whyOf(
     fighters.filter((x) => x.log.owner === p).reduce((n, x) => n + x.weapons.reduce((m, w) => m + w.damage, 0), 0);
   for (const a of powers)
     for (const b of powers) {
-      if (a >= b || !atWar(state, a, b)) continue;
+      if (a >= b || !hostileAt(state, a, b, system)) continue;
       const [sa, sb] = [attack(a), attack(b)];
       const [strong, weak, hi, lo] = sa >= sb ? [a, b, sa, sb] : [b, a, sb, sa];
       if (hi >= lo * 2 && hi > 0)

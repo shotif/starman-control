@@ -105,7 +105,30 @@ export function reportWars(state: GameState, events: Map<FactionId, ReportEvent[
   }
 }
 
-/** Adds to a power's war weariness. */
+/** Whether `raider` raids a holding of `victim`'s at a system now (M4_FLEETS.md §27.1). */
+export function raidingAt(state: GameState, raider: FactionId, victim: FactionId, system: SystemId): boolean {
+  for (const f of state.fleets) {
+    const m = f.mission;
+    if (f.owner !== raider || m?.kind !== 'raid') continue;
+    if (!state.holdings.some((h) => h.id === m.holding && h.owner === victim && h.system === system)) continue;
+    if (state.ships.some((s) => s.fleet === f.id && s.at === system)) return true;
+  }
+  return false;
+}
+
+/** Whether any raid goes on: when none does, only wars make enemies. */
+export function anyRaid(state: GameState): boolean {
+  return state.fleets.some((f) => f.mission?.kind === 'raid');
+}
+
+/** Whether two powers fight at a system (§27.1): at war, or one raiding the other there. */
+export function hostileAt(state: GameState, x: FactionId, y: FactionId, system: SystemId): boolean {
+  if (x === y) return false;
+  if (atWar(state, x, y)) return true;
+  return raidingAt(state, x, y, system) || raidingAt(state, y, x, system);
+}
+
+/** Adds to a power's war weariness. */ /** Adds to a power's war weariness. */
 export function wearyFrom(state: GameState, f: FactionId, amount: number): void {
   const p = state.powers.find((x) => x.faction === f);
   if (p) p.weariness += amount;

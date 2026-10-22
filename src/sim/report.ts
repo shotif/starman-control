@@ -186,6 +186,22 @@ export type ReportEvent =
     }
   /** A colony blockaded from this turn by `by`'s warships. */
   | { kind: 'blockaded'; holding: number; system: SystemId; by: FactionId }
+  /**
+   * A raid's plunder (M4_FLEETS.md §27.1): `by`'s fleet took a colony's credits of the turn, or an
+   * outpost's yields, from `from`.
+   */
+  | {
+      kind: 'raided';
+      holding: number;
+      system: SystemId;
+      by: FactionId;
+      from: FactionId;
+      fleet: number;
+      credits: number;
+      metals: number;
+      volatiles: number;
+      fuel: number;
+    }
   /** A power's capital moved to another colony, its old one taken. */
   | { kind: 'capital-moved'; faction: FactionId; holding: number; system: SystemId };
 

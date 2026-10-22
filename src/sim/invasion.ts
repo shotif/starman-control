@@ -7,6 +7,7 @@ import { MODULES, type ModuleId } from '../content/modules.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS } from '../content/ships.ts';
+import { TREATIES } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { knownModules } from './designs.ts';
 import { fleetAt, fleetShips } from './fleets.ts';
@@ -21,8 +22,9 @@ import {
   type Mission,
   type PowerState,
   powerOf,
+  treatyOf,
 } from './state.ts';
-import { atWar, isArmed, wearyFrom } from './war.ts';
+import { atWar, isArmed, truceUntil, wearyFrom } from './war.ts';
 
 export interface Part {
   label: string;
@@ -95,6 +97,12 @@ export function missionRefusal(state: GameState, fleet: Fleet, mission: Mission)
   const at = fleetAt(state, fleet);
   if (at !== h.system || fleet.destinations.length > 0) return `The ${fleet.name} must be in its system, not moving.`;
   if (h.owner === fleet.owner) return 'It is our own.';
+  if (mission.kind === 'raid') {
+    const why = raidRefusal(state, fleet.owner, h);
+    if (why) return why;
+    if (!fleetShips(state, fleet).some((s) => isArmed(state, s))) return `The ${fleet.name} has no armed ship.`;
+    return null;
+  }
   if (!atWar(state, fleet.owner, h.owner)) return `We are not at war with the ${FACTIONS[h.owner].shortName}.`;
   if (mission.kind === 'invade') {
     if (troopsOf(state, fleet) === 0) return `The ${fleet.name} carries no troops: add troop transports to it.`;
@@ -103,6 +111,43 @@ export function missionRefusal(state: GameState, fleet: Fleet, mission: Mission)
   if (h.kind !== 'colony') return 'Only a colony can be bombarded.';
   if (!fleetShips(state, fleet).some((s) => isArmed(state, s))) return `The ${fleet.name} has no armed ship.`;
   return null;
+}
+
+/**
+ * Why a power may not raid a holding (M4_FLEETS.md §27.1), wherever its fleets are, or null: only a
+ * power that is not lawful raids, a power it has met, not at war with it, not one that buys its
+ * protection, nor one it has a pact, an alliance or a truce with.
+ */
+export function raidRefusal(state: GameState, raider: FactionId, h: Holding): string | null {
+  if (h.owner === raider) return 'It is our own.';
+  return mayRaid(state, raider, h.owner);
+}
+
+/** Why a power may not raid another at all (§27.1), or null. */
+export function mayRaid(state: GameState, raider: FactionId, victim: FactionId): string | null {
+  const them = FACTIONS[victim].shortName;
+  if (victim === raider) return 'It is our own.';
+  if (FACTIONS[raider].lawful) return `The ${FACTIONS[raider].shortName} keeps the law: it does not raid.`;
+  if (!contactWith(powerOf(state, raider), victim)) return `We have not met the ${them}.`;
+  if (atWar(state, raider, victim)) return `We are at war with the ${them}: invade or bombard instead.`;
+  const protection = treatyOf(state, raider, victim, 'protection');
+  if (protection && protection.payer === victim) return `The ${them} pays us for protection.`;
+  for (const kind of ['non-aggression', 'alliance'] as const)
+    if (treatyOf(state, raider, victim, kind))
+      return `We have ${TREATIES[kind].words} with the ${them}: break it first.`;
+  const truce = truceUntil(state, raider, victim);
+  if (truce !== null) return `We made peace with the ${them}: the truce still holds.`;
+  return null;
+}
+
+/**
+ * The powers whose lanes an outlaw's armed fleet may use to reach a raid (§27.1): every power it may
+ * raid. None for a lawful power, or a fleet with no armed ship.
+ */
+export function raidLanes(state: GameState, fleet: Fleet): FactionId[] {
+  if (FACTIONS[fleet.owner].lawful) return [];
+  if (!fleetShips(state, fleet).some((s) => isArmed(state, s))) return [];
+  return state.powers.map((p) => p.faction).filter((f) => mayRaid(state, fleet.owner, f) === null);
 }
 
 /**
@@ -235,12 +280,12 @@ export function resolveBombardment(state: GameState, events: Map<FactionId, Repo
   }
 }
 
-/** A memory renewed rather than piled up: one for each bombardment, at its full weight while it goes on. */
-function keepMemory(
+/** A memory renewed rather than piled up: one for each bombardment or raid, at its full weight while it goes on. */
+export function keepMemory(
   state: GameState,
   holder: FactionId,
   about: FactionId,
-  kind: 'bombarded' | 'bombarded-heard',
+  kind: 'bombarded' | 'bombarded-heard' | 'raided' | 'raided-heard',
   amount: number,
   system: SystemId,
   victim?: FactionId,

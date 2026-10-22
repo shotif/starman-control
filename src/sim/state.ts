@@ -123,8 +123,9 @@ export interface Fleet {
   mission: Mission | null;
 }
 
+/** An invasion, a bombardment, or a raid (M4_FLEETS.md §27.1), of a holding. */
 export interface Mission {
-  kind: 'invade' | 'bombard';
+  kind: 'invade' | 'bombard' | 'raid';
   holding: number;
 }
 
@@ -162,6 +163,9 @@ export const MEMORY_KINDS = [
   'invaded',
   'bombarded',
   'bombarded-heard',
+  // M4 (M4_FLEETS.md §27.1).
+  'raided',
+  'raided-heard',
 ] as const;
 export type MemoryKind = (typeof MEMORY_KINDS)[number];
 

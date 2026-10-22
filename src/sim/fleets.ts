@@ -6,7 +6,8 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { isHull } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { designStats, shipDesign } from './designs.ts';
-import { findRoute, type Hop, jumpPoints, type PlannedHop, planJourney } from './movement.ts';
+import { raidLanes } from './invasion.ts';
+import { findRoute, type Hop, jumpPoints, lanesFor, type PlannedHop, planJourney } from './movement.ts';
 import type { ReportEvent } from './report.ts';
 import type { Fleet, GameState, RetreatPoint, ShipState, Stance, TargetPriority } from './state.ts';
 import { interceptedBy } from './war.ts';
@@ -120,7 +121,7 @@ export function moveFleet(world: World, state: GameState, fleet: Fleet, events: 
       if (fleet.destinations.length === 0) arrived(dest);
       continue;
     }
-    const path = findRoute(world, state, fleet.owner, at, dest);
+    const path = findRoute(world, state, fleet.owner, at, dest, fleetLanes(world, state, fleet));
     if (!path || path.length === 0) {
       events.push({ kind: 'fleet-blocked', fleet: fleet.id, system: at, to: dest });
       fleet.destinations = [];
@@ -144,6 +145,11 @@ export function moveFleet(world: World, state: GameState, fleet: Fleet, events: 
   }
 }
 
+/** The lanes a fleet may use: its power's, with passage, and an outlaw's raiders' (M4_FLEETS.md §27.1). */
+export function fleetLanes(world: World, state: GameState, fleet: Fleet): Map<SystemId, Hop[]> {
+  return lanesFor(world, state, fleet.owner, true, raidLanes(state, fleet));
+}
+
 /** The route and turns a fleet would take to a destination (and on through any after it). */
 export function previewFleetMove(
   world: World,
@@ -155,7 +161,7 @@ export function previewFleetMove(
   if (at === null) return null;
   const path: Hop[] = [];
   for (const d of destinations) {
-    const leg = findRoute(world, state, fleet.owner, at, d);
+    const leg = findRoute(world, state, fleet.owner, at, d, fleetLanes(world, state, fleet));
     if (!leg) return null;
     path.push(...leg);
     at = d;

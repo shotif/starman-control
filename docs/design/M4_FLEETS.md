@@ -39,6 +39,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 24. [Increment 44 in detail: battles](#24-increment-44-in-detail-battles-written-before-building-it)
 25. [Increment 45 in detail: the replay](#25-increment-45-in-detail-the-replay-written-before-building-it)
 26. [Increment 46 in detail: defences and invasion](#26-increment-46-in-detail-defences-and-invasion-written-before-building-it)
+27. [Increment 47 in detail: raids](#27-increment-47-in-detail-raids-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -1220,3 +1221,87 @@ report tells it with radio traffic, on the phone, tablet and desktop.
   the five-power game takes about 48 ms under Node, from about 105.
 - **Tests:** `invasion.test.ts` (16 tests); 578 unit tests; `invasion.spec.ts` on the phone, tablet
   and desktop.
+
+## 27. Increment 47 in detail: raids (written before building it)
+
+**Goals.** D-66 as decided (A): the outlaw **raids** without war. A power that is not lawful (the
+Hollow Wake) may send a fleet to raid a colony or outpost of a power it is not at war with: it
+fights that power's armed ships and batteries there, and while it holds the orbit it takes
+**plunder** each turn. A raid is remembered, but it is not war: no invasion, no bombardment.
+**Protection is kept** (M3_NEIGHBOURS.md §23.4): a power that sells protection never raids its
+buyers. As a rival, the Wake raids those near it who do not pay.
+
+**Out of scope.** The other rivals going to war (48); the Assembly's sanctions (49).
+
+### 27.1 The raid
+
+- **The order:** *Raid* a colony or outpost, a fleet's mission (as §26.4), on a fleet with an armed
+  ship in the target's system, of a power that is not lawful. Refused against a power at war with
+  it (then invade or bombard), one that buys protection from it, one it has an alliance or a
+  non-aggression pact with (break it first), and one it has a truce with.
+- **Hostile where it raids:** the raiding power and the raided are hostile in that system as if at
+  war, for as long as the raid lasts: their ships there fight (§24), and the raided power's
+  batteries there fire on the raiders. Elsewhere they are at peace: neither stops the other's
+  ships, and neither may land troops or bombard.
+- **Plunder:** as the turn ends, after the battles, while the raided power does not hold the orbit
+  (§26.4): from a colony, **its credits of the turn** (taxes and markets) are taken from its
+  power's treasury and go to the raider's; from an outpost, **its yields of the turn** (metals,
+  volatiles, fuel) go from its power's stockpile to the raider's. Both read of it.
+- **Remembered:** −10 by the raided, renewed while the raid goes on rather than piled up; −5 by every
+  lawful power in contact with the raider that hears of it.
+- **The raid ends** when its fleet moves or is given another mission, or when it would now be
+  refused (protection bought, war declared, a pact made).
+
+### 27.2 Protection kept
+
+Protection bought from the Wake (5 credits a turn, M3) now does what M3 promised: the Wake cannot
+raid its buyers. The treaty's words say so.
+
+### 27.3 The Wake as a rival
+
+- It keeps a **raiding squadron** of two warships of its yard's newest design, built at its yards
+  as the treasury allows (and more at war, as §24.9).
+- Every turn, an idle armed fleet of its (no mission, not moving, at least two warships) picks the
+  nearest colony or outpost, by lanes and within four jumps, of a power in contact that it may raid
+  (§27.1), the least defended first (no armed ship or battery there), and makes for it; there, it
+  raids. When the raid ends it goes home, as other fleets do.
+
+### 27.4 On the screen
+
+- **A fleet's panel** (a power that is not lawful): *Raid* for each colony and outpost in its
+  system that it may raid, saying what it would take each turn; the mission in the fleet's line.
+- **The report:** the plunder taken or lost (*the Hollow Wake's 1st Pack raided Proxima Centauri b
+  and took 12 credits*), and the battles a raid brings, with *Watch*.
+- **The diplomacy screen:** protection's words: *the Wake's ships will not raid you*.
+
+### 27.5 State
+
+`Mission.kind` gains `raid`; memories `raided` and `raided-heard`; the report event `raided`. No
+field changes shape, so the state's version stays 21.
+
+### 27.6 Tests
+
+`raids.test.ts`: who may raid and whom (refusals); a raid's battle without war; plunder from a
+colony and an outpost; no plunder while the raided holds the orbit; the memories; protection
+bought ends a raid; the Wake's squadron and its choice of target. `raids.spec.ts`: playing the
+Wake, a fleet raids a Cooperative outpost, and the report tells the plunder, on the phone, tablet
+and desktop.
+
+### Increment 47: raids (22 October 2026)
+
+- **The raid as §27.1:** a fleet's mission (`raid`) for a power that is not lawful, refused as
+  designed (`raidRefusal`, `mayRaid` in `src/sim/invasion.ts`). Raider and raided are hostile in that
+  system only (`hostileAt` in `src/sim/war.ts`), so battles and batteries there treat them as at war;
+  plunder at step 1c of the turn (`src/sim/raids.ts`). One change found while testing: in the
+  headless games no raid ever happened, as the Wake's ships could sail only its own lanes. So, as
+  forced passage at war, **an outlaw's armed fleet may sail the lanes of every power it may raid**
+  (`fleetLanes`); a power that buys its protection or has a pact with it keeps its lanes closed.
+- **The report:** the plunder taken or lost, and a battle's line now names those that fought,
+  whether at war or not.
+- **The Wake as §27.3,** with two changes found in the headless games: it builds its squadron only
+  **from turn 30 and with four colonies** (built at once, it cost the Wake two or three colonies by
+  turn 100), and picks targets by one search of the lanes, not a route to each.
+- **Numbers:** at turn 100 every power within M3's targets (the Authority 37.5 technologies, the
+  others 19.8 to 23.5); in the eight games 76 turns of plunder and 4 battles. `npm run balance`
+  now counts raids, battles, wars and colonies taken.
+- **Tests:** `raids.test.ts` (7 tests); `raids.spec.ts` on the phone, tablet and desktop.

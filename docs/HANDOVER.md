@@ -201,7 +201,9 @@ watched (30 KB); state version 20. **Done: increment 46, defences and invasion**
 battery, planetary shield and barracks, a garrison from each colony's people, troop transports,
 invasion as a fleet's mission with the commanders' radio traffic, bombardment, blockade, colonies
 and capitals changing hands, rivals building batteries at war; turns made about twice as fast;
-state version 21.
+state version 21. **Done: increment 47, raids** (§27): the Wake's fleets raid without war and take
+plunder, protection bought keeps them off, and an outlaw's raiders may sail the lanes of those they
+may raid.
 
 The art and music spend: about $27.15 of $50 (raised on 22 October 2026; about $22.85 left). M3's
 art is about 65 pictures (about $6.50).

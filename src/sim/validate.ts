@@ -50,7 +50,7 @@ export function shapeProblems(raw: unknown): string[] {
         // An invasion or a bombardment, or none (M4_FLEETS.md §26.12).
         (f.mission === null ||
           (isRecord(f.mission) &&
-            (f.mission.kind === 'invade' || f.mission.kind === 'bombard') &&
+            (f.mission.kind === 'invade' || f.mission.kind === 'bombard' || f.mission.kind === 'raid') &&
             isWhole(f.mission.holding, 1))),
     )
   )

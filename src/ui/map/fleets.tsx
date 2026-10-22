@@ -51,7 +51,7 @@ export function fleetStatus(world: World, game: GameState, fleet: Fleet): string
   const m = fleet.mission;
   const target = m ? game.holdings.find((h) => h.id === m.holding) : undefined;
   if (m && target)
-    return `${m.kind === 'invade' ? 'Invading' : 'Bombarding'} ${holdingName(world, game, target)} at ${here}`;
+    return `${m.kind === 'invade' ? 'Invading' : m.kind === 'raid' ? 'Raiding' : 'Bombarding'} ${holdingName(world, game, target)} at ${here}`;
   if (fleet.hold) return `Holding at ${here}`;
   const dest = fleet.destinations.at(-1);
   if (!dest) return `At ${here}`;

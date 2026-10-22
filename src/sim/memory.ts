@@ -63,6 +63,10 @@ export function memoryReason(world: World, m: Memory): string {
       return `We bombarded its colony at ${place}`;
     case 'bombarded-heard':
       return `We bombarded the ${m.victim ? FACTIONS[m.victim].shortName : 'others'} at ${place}`;
+    case 'raided':
+      return `We raided its holding at ${place}`;
+    case 'raided-heard':
+      return `We raided the ${m.victim ? FACTIONS[m.victim].shortName : 'others'} at ${place}`;
   }
 }
 

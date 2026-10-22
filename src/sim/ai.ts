@@ -15,8 +15,9 @@ import { investigateRefusal } from './anomalies.ts';
 import { buildable } from './designs.ts';
 import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
-import { fleetAt } from './fleets.ts';
+import { fleetAt, fleetLanes } from './fleets.ts';
 import { habitability } from './habitability.ts';
+import { holdsOrbit, missionRefusal, raidRefusal } from './invasion.ts';
 import { laneTargets } from './lanes.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
@@ -24,7 +25,7 @@ import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { type Amount, contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
-import { atWar, enemiesOf } from './war.ts';
+import { atWar, enemiesOf, isArmed } from './war.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -219,7 +220,12 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const atWarNow = enemiesOf(state, faction).length > 0;
   const warships = state.ships.filter((s) => s.owner === faction && isHull(s.type)).length;
   const yardDesign = [...buildable(power)].reverse()[0];
-  let arming = atWarNow && yardDesign !== undefined && warships < mine.filter((h) => h.kind === 'colony').length + 2;
+  // An outlaw keeps a raiding squadron in peace too (M4_FLEETS.md §27.3).
+  const raider = !FACTIONS[faction].lawful;
+  const colonyCount = mine.filter((h) => h.kind === 'colony').length;
+  const raiding = raider && state.turn >= RULES.raid.from && colonyCount >= RULES.raid.colonies;
+  const wanted = atWarNow ? colonyCount + 2 : raiding ? RULES.raid.squadron : 0;
+  let arming = yardDesign !== undefined && warships < wanted;
   for (const h of mine) {
     if (!h.projects.includes('shipyard') || h.queue.some((q) => q.kind === 'ship')) continue;
     if (power.treasury < SHIP_TREASURY || income <= 0) continue;
@@ -229,7 +235,7 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
         holding: h.id,
         item: { kind: 'ship', ship: yardDesign.hull, design: yardDesign.id },
       });
-      arming = warships + 1 < mine.filter((x) => x.kind === 'colony').length + 2;
+      arming = warships + 1 < wanted;
       continue;
     }
     const ship: QueueItem | null =
@@ -252,12 +258,70 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
         orders.push({ type: 'queue', holding: h.id, item: battery });
   }
 
+  // The outlaw's raids (§27.3): a raid begun every so many turns, lasting so many; an idle armed
+  // fleet makes for the nearest holding it may raid, the least defended first, and raids it there.
+  const sent = new Set<number>();
+  if (raider) {
+    const window = state.turn % RULES.raid.every;
+    for (const f of state.fleets) {
+      if (f.owner !== faction || f.destinations.length > 0 || f.hold) continue;
+      const at = fleetAt(state, f);
+      if (at === null) continue;
+      if (f.mission?.kind === 'raid') {
+        if (window >= RULES.raid.lasts) orders.push({ type: 'fleet-mission', fleet: f.id, mission: null });
+        else sent.add(f.id);
+        continue;
+      }
+      if (f.mission || window >= RULES.raid.lasts) continue;
+      const armed = state.ships.filter((s) => s.fleet === f.id && isArmed(state, s)).length;
+      if (armed < RULES.raid.squadron) continue;
+      const defended = (h: Holding) => (holdsOrbit(state, h.owner, h.system) ? 1 : 0);
+      const here = state.holdings
+        .filter((h) => h.system === at && missionRefusal(state, f, { kind: 'raid', holding: h.id }) === null)
+        .sort((a, b) => defended(a) - defended(b) || a.id - b.id)[0];
+      if (here) {
+        orders.push({ type: 'fleet-mission', fleet: f.id, mission: { kind: 'raid', holding: here.id } });
+        sent.add(f.id);
+        continue;
+      }
+      if (window !== 0) continue;
+      let best: { h: Holding; jumps: number } | null = null;
+      // Jumps to every system within reach, by one search over the lanes it may use.
+      const graph = fleetLanes(world, state, f);
+      const jumps = new Map<SystemId, number>([[at, 0]]);
+      let ring: SystemId[] = [at];
+      for (let d = 1; d <= RULES.raid.jumps && ring.length > 0; d++) {
+        const next: SystemId[] = [];
+        for (const from of ring)
+          for (const hop of graph.get(from) ?? [])
+            if (!jumps.has(hop.to)) {
+              jumps.set(hop.to, d);
+              next.push(hop.to);
+            }
+        ring = next;
+      }
+      for (const h of state.holdings) {
+        const j = jumps.get(h.system);
+        if (j === undefined || raidRefusal(state, faction, h) !== null) continue;
+        const better =
+          !best ||
+          defended(h) - defended(best.h) < 0 ||
+          (defended(h) === defended(best.h) && (j < best.jumps || (j === best.jumps && h.id < best.h.id)));
+        if (better) best = { h, jumps: j };
+      }
+      if (best) {
+        orders.push({ type: 'fleet-move', fleet: f.id, to: best.h.system });
+        sent.add(f.id);
+      }
+    }
+  }
+
   // Fleets wait at the capital, ready to defend it (§24.9).
   const home = power.capital;
   for (const f of state.fleets) {
-    if (f.owner !== faction || f.destinations.length > 0 || f.hold) continue;
+    if (f.owner !== faction || f.destinations.length > 0 || f.hold || f.mission || sent.has(f.id)) continue;
     const at = fleetAt(state, f);
-    if (at !== null && at !== home && findRoute(world, state, faction, at, home, lanes))
+    if (at !== null && at !== home && findRoute(world, state, faction, at, home, fleetLanes(world, state, f)))
       orders.push({ type: 'fleet-move', fleet: f.id, to: home });
   }
 

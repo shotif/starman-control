@@ -6,6 +6,7 @@ import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { PROJECTS } from '../../content/projects.ts';
 import { RADIO, type RadioStage, radioLine } from '../../content/radio.ts';
 import { RULES } from '../../content/rules.ts';
+import { creditsOf } from '../../sim/economy.ts';
 import { blockadedBy, garrisonOf, hasBattery, missionRefusal, silenced, troopsOf } from '../../sim/invasion.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import type { Fleet, GameState, Holding } from '../../sim/state.ts';
@@ -15,6 +16,8 @@ import { holdingName, millions } from './colony.tsx';
 import { give, type Play } from './play.tsx';
 
 type Invasion = Extract<ReportEvent, { kind: 'invasion' }>;
+
+const MISSION_WORDS = { invade: 'Invading', bombard: 'Bombarding', raid: 'Raiding' } as const;
 type Bombarded = Extract<ReportEvent, { kind: 'bombarded' }>;
 
 const placeOf = (world: World, game: GameState, id: number, system: string): string => {
@@ -50,6 +53,26 @@ export function bombardedText(world: World, game: GameState, e: Bombarded, me: F
   return e.shielded
     ? `The ${enemy} bombarded ${place}: its planetary shield held.`
     : `The ${enemy} bombarded ${place}: ${millions(e.people)} million of our people are dead${wrecked}.`;
+}
+
+type Raided = Extract<ReportEvent, { kind: 'raided' }>;
+
+/** What a raid took, in words: "12 credits", "2 metals and 1 fuel", or "nothing". */
+function plunderWords(e: Raided): string {
+  const parts: string[] = [];
+  if (e.credits > 0) parts.push(`${e.credits} credit${e.credits === 1 ? '' : 's'}`);
+  for (const k of ['metals', 'volatiles', 'fuel'] as const) if (e[k] > 0) parts.push(`${e[k]} ${k}`);
+  if (parts.length === 0) return 'nothing';
+  return parts.length === 1 ? (parts[0] as string) : `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`;
+}
+
+/** A raid's plunder in the report, from the viewer's side (M4_FLEETS.md §27.4). */
+export function raidedText(world: World, game: GameState, e: Raided, me: FactionId): string {
+  const place = placeOf(world, game, e.holding, e.system);
+  const fleet = game.fleets.find((f) => f.id === e.fleet)?.name;
+  if (e.by === me)
+    return `${fleet ? `The ${fleet}` : 'Our raiders'} raided the ${FACTIONS[e.from].shortName}’s ${place} and took ${plunderWords(e)}.`;
+  return `The ${FACTIONS[e.by].shortName} raided ${place} and took ${plunderWords(e)}: drive them off with warships, or buy their protection.`;
 }
 
 /** The commanders' words to Control as the troops land, from the viewer's side (§26.4). */
@@ -142,8 +165,12 @@ export function FleetMissions({
   play: Play;
   at: string;
 }) {
+  const raidOf = (h: Holding) => ({ kind: 'raid' as const, holding: h.id });
   const targets = game.holdings.filter(
-    (h) => h.system === at && h.owner !== fleet.owner && atWar(game, fleet.owner, h.owner),
+    (h) =>
+      h.system === at &&
+      h.owner !== fleet.owner &&
+      (atWar(game, fleet.owner, h.owner) || missionRefusal(game, fleet, raidOf(h)) === null),
   );
   const m = fleet.mission;
   if (targets.length === 0 && !m) return null;
@@ -153,8 +180,12 @@ export function FleetMissions({
       <h3>Missions</h3>
       {m && (
         <p>
-          {m.kind === 'invade' ? 'Invading' : 'Bombarding'} {placeOf(world, game, m.holding, at)}
-          {m.kind === 'invade' ? ' as the turn ends, once the orbit is ours.' : ' each turn while the orbit is ours.'}{' '}
+          {MISSION_WORDS[m.kind]} {placeOf(world, game, m.holding, at)}
+          {m.kind === 'invade'
+            ? ' as the turn ends, once the orbit is ours.'
+            : m.kind === 'raid'
+              ? ': its plunder each turn while the orbit is ours.'
+              : ' each turn while the orbit is ours.'}{' '}
           <button
             type="button"
             class="button button-quiet button-small"
@@ -171,6 +202,7 @@ export function FleetMissions({
           const bombard = { kind: 'bombard' as const, holding: h.id };
           const canInvade = missionRefusal(game, fleet, invade) === null;
           const canBombard = missionRefusal(game, fleet, bombard) === null;
+          const canRaid = missionRefusal(game, fleet, raidOf(h)) === null;
           const g = garrisonOf(h).total;
           return (
             <li key={h.id}>
@@ -189,6 +221,15 @@ export function FleetMissions({
                     Invade {name}
                   </button>
                 )}
+                {canRaid && !(m?.kind === 'raid' && m.holding === h.id) && (
+                  <button
+                    type="button"
+                    class="button button-small"
+                    onClick={() => give(play, { type: 'fleet-mission', fleet: fleet.id, mission: raidOf(h) })}
+                  >
+                    Raid {name}
+                  </button>
+                )}
                 {canBombard && !(m?.kind === 'bombard' && m.holding === h.id) && (
                   <button
                     type="button"
@@ -202,6 +243,15 @@ export function FleetMissions({
               {canInvade && (
                 <span class="dim fleet-odds">
                   Our {troops} troops against {h.kind === 'colony' ? `a garrison of ${g}` : 'none'}.
+                </span>
+              )}
+              {canRaid && (
+                <span class="dim fleet-odds">
+                  A raid takes{' '}
+                  {h.kind === 'colony'
+                    ? `its credits each turn, about ${Math.max(0, creditsOf(world, game, h).total)}`
+                    : 'its yields each turn'}
+                  ; the {FACTIONS[h.owner].shortName} will remember it, and so will the lawful.
                 </span>
               )}
             </li>

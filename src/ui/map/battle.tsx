@@ -63,7 +63,17 @@ export function whyText(why: Why, me: FactionId): string {
 
 /** The battle's line in the report: where, against whom, the losses, and who held the system. */
 export function battleText(world: World, game: GameState, log: BattleLog, me: FactionId): string {
-  const enemies = log.powers.filter((p) => p !== me && atWar(game, me, p));
+  // Those it fought: at war, or raiding or raided without war (M4_FLEETS.md §27.1).
+  const owner = new Map(log.ships.map((s) => [s.id, s.owner]));
+  const fought = new Set<FactionId>();
+  for (const r of log.rounds)
+    for (const [from, to] of r.shots) {
+      const a = owner.get(from);
+      const b = owner.get(to);
+      if (a === me && b) fought.add(b);
+      if (b === me && a) fought.add(a);
+    }
+  const enemies = log.powers.filter((p) => p !== me && (fought.has(p) || atWar(game, me, p)));
   // Batteries are told apart from ships: silenced, not lost (M4_FLEETS.md §26.7).
   const ships = log.ships.filter((s) => s.type !== 'battery');
   const mine = ships.filter((s) => s.owner === me);

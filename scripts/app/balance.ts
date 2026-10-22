@@ -39,6 +39,11 @@ let longestDebt = 0;
 let longestHunger = 0;
 let slowest = 0;
 let biggest = 0;
+/** M4 (M4_FLEETS.md §18): raids' plunder, battles, wars begun and colonies taken, in all the games. */
+let raids = 0;
+let battles = 0;
+let wars = 0;
+let taken = 0;
 /** The turn each power finished the whole tree, in each game. */
 const finished: string[] = [];
 
@@ -52,12 +57,18 @@ for (const seed of SEEDS) {
     slowest = Math.max(slowest, performance.now() - t0);
     g = r.state;
     for (const rep of r.reports)
-      for (const e of rep.events)
+      for (const e of rep.events) {
         if (e.kind === 'event-answered') {
           const a = answered.get(e.event) ?? [0, 0];
           a[e.choice]++;
           answered.set(e.event, a);
         }
+        // Each told to both sides: counted once, by the side that did it.
+        if (e.kind === 'raided' && e.by === rep.faction) raids++;
+        if (e.kind === 'war-declared' && e.by === rep.faction) wars++;
+        if (e.kind === 'invasion' && e.won && e.by === rep.faction) taken++;
+      }
+    battles += g.battles.length;
     for (const p of g.powers) {
       const d = p.treasury < 0 ? (debt.get(p.faction) ?? 0) + 1 : 0;
       debt.set(p.faction, d);
@@ -132,6 +143,8 @@ rivals, ${SEEDS.length} seeds, 100 turns each. Regenerate it after any change to
 
 The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
 was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
+
+In all ${SEEDS.length} games: ${raids} turns of plunder by raids, ${battles} battles, ${wars} wars declared and ${taken} colonies or outposts taken by invasion (M4).
 
 The tree has ${TECH_IDS.length} technologies, of which a power can learn ${LEARNABLE} (one of each pair of doctrines). ${finished.length === 0 ? 'No power learnt them all in 100 turns.' : `All learnt by: ${finished.join('; ')}.`}
 

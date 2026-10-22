@@ -45,6 +45,7 @@ import { laneQuote, laneRefusal } from './lanes.ts';
 import { deliverGifts, fadeMemories, remember } from './memory.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import { applyInPlace } from './orders.ts';
+import { resolveRaids } from './raids.ts';
 import type { ReportEvent } from './report.ts';
 import { effects, grantResearch, speciesFor, spendResearch } from './research.ts';
 import {
@@ -171,6 +172,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // each orbit; then the blockades begun this turn (§26.6).
   resolveLandings(state, events);
   resolveBombardment(state, events);
+  // Raids' plunder (M4_FLEETS.md §27.1).
+  resolveRaids(world, state, events);
   reportBlockades(state, blockadedNow(before), events);
 
   // 2. Arrivals: surveys (one per system and power, by the first ship there), survey stations,

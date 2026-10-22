@@ -15,7 +15,16 @@ import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.t
 import { designRefusal, makeDesign, retireRefusal } from './designs.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
 import { choiceRefusal } from './events.ts';
-import { fleetAt, fleetById, fleetRefusal, formFleet, formRefusal, pruneFleets, splitOff } from './fleets.ts';
+import {
+  fleetAt,
+  fleetById,
+  fleetLanes,
+  fleetRefusal,
+  formFleet,
+  formRefusal,
+  pruneFleets,
+  splitOff,
+} from './fleets.ts';
 import { formatLy } from './geometry.ts';
 import { missionRefusal } from './invasion.ts';
 import { giftRefusal, giveGift } from './memory.ts';
@@ -222,7 +231,12 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     if (!f || f.owner !== faction) return 'There is no such fleet of yours.';
     if (order.mission === null) return f.mission ? null : `The ${f.name} has no mission.`;
     const m = order.mission as Partial<Mission> | null;
-    if (!m || typeof m !== 'object' || (m.kind !== 'invade' && m.kind !== 'bombard') || typeof m.holding !== 'number')
+    if (
+      !m ||
+      typeof m !== 'object' ||
+      (m.kind !== 'invade' && m.kind !== 'bombard' && m.kind !== 'raid') ||
+      typeof m.holding !== 'number'
+    )
       return 'There is no such mission.';
     return missionRefusal(state, f, order.mission);
   }
@@ -234,7 +248,7 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     if (!world.hasSystem(order.to)) return 'There is no such system.';
     const from = order.append ? (f.destinations.at(-1) ?? at) : at;
     if (from === order.to) return `The ${f.name} is already there.`;
-    if (!findRoute(world, state, faction, from, order.to))
+    if (!findRoute(world, state, faction, from, order.to, fleetLanes(world, state, f)))
       return `No open lane leads to ${world.system(order.to).name}.`;
     return null;
   }

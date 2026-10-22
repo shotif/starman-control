@@ -289,6 +289,19 @@ export const RULES = {
   },
   /** A blockaded colony's credits, in percent. */
   blockadeCreditsPercent: 50,
+  /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
+  raid: {
+    raided: -10,
+    heard: -5,
+    /** Warships a raiding rival keeps in peace, the most jumps it goes to raid, and its pace: a raid begun every so many turns, lasting so many. */
+    squadron: 2,
+    /** Not before this turn, nor before it holds this many colonies: it settles first. */
+    from: 30,
+    colonies: 4,
+    jumps: 4,
+    every: 10,
+    lasts: 5,
+  },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {
     /** Attitude is held between these. */

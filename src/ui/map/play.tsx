@@ -40,7 +40,7 @@ import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
-import { bombardedText, invasionText, RadioTraffic } from './invasion.tsx';
+import { bombardedText, invasionText, RadioTraffic, raidedText } from './invasion.tsx';
 import { panel, say, targeting } from './state.ts';
 
 export interface Play {
@@ -613,6 +613,10 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `${holding(e.holding)} is blockaded by the ${FACTIONS[e.by].shortName}’s warships: cut off from our supply, its credits halved.`;
     case 'capital-moved':
       return `Our capital has moved to ${holding(e.holding)}.`;
+    case 'raided': {
+      const me = playerPower(game)?.faction ?? e.by;
+      return raidedText(world, game, e, me);
+    }
   }
 }
 
@@ -761,6 +765,7 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   bombarded: { icon: 'refused', tone: 'wrong' },
   blockaded: { icon: 'refused', tone: 'needs' },
   'capital-moved': { icon: 'colony', tone: 'wrong' },
+  raided: { icon: 'refused', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

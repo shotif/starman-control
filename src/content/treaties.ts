@@ -66,7 +66,7 @@ export const TREATIES: Record<TreatyKind, { name: string; words: string; noun: s
     name: 'Protection',
     words: 'protection',
     noun: 'protection',
-    does: 'The buyer pays 5 credits every turn; from M4 the seller’s ships leave the buyer’s systems alone.',
+    does: 'The buyer pays 5 credits every turn, and the seller’s ships will not raid it.',
   },
   // M4 (M4_FLEETS.md §23.3).
   'non-aggression': {

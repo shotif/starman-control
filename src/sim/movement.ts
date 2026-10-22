@@ -56,11 +56,18 @@ function laneShape(world: World, id: LaneId): { a: SystemId; b: SystemId; length
   return shape;
 }
 
-/** A power's open lanes, from each system; with `passage`, every lane its ships may use. */
-export function lanesFor(world: World, state: GameState, owner: FactionId, passage = false): Map<SystemId, Hop[]> {
+/** A power's open lanes, from each system; with `passage`, every lane its ships may use; and those of `also`. */
+export function lanesFor(
+  world: World,
+  state: GameState,
+  owner: FactionId,
+  passage = false,
+  /** Other powers whose lanes it may use too: an outlaw's raiders (M4_FLEETS.md §27.1). */
+  also: readonly FactionId[] = [],
+): Map<SystemId, Hop[]> {
   const out = new Map<SystemId, Hop[]>();
   // With `passage`, the lanes of powers it has open lanes with too (M3_NEIGHBOURS.md §21.1).
-  const open = new Set<FactionId>([owner, ...(passage ? passageWith(state, owner) : [])]);
+  const open = new Set<FactionId>([owner, ...(passage ? passageWith(state, owner) : []), ...also]);
   for (const l of state.lanes) {
     if (!open.has(l.owner) || l.status !== 'open') continue;
     const { a, b, lengthDeci, cost } = laneShape(world, l.id);
