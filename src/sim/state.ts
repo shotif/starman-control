@@ -81,6 +81,7 @@ export const MEMORY_KINDS = [
   'treaty-broken',
   'treaty-broken-heard',
   'offer-misread',
+  'claim-crossed',
 ] as const;
 export type MemoryKind = (typeof MEMORY_KINDS)[number];
 

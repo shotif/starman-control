@@ -281,17 +281,17 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     blunt: 'The {power} said no to {treaty}. They don’t like us enough. Yet.',
   },
   'treaty-begun': {
-    formal: 'Control, our treaty of {treaty} with the {power} is in force.',
+    formal: 'Control, we now have {treaty} with the {power}.',
     warm: 'Control, we have {treaty} with the {power} now. A good day.',
-    blunt: '{treaty} with the {power}: done.',
+    blunt: 'Done: {treaty} with the {power}.',
   },
   'treaty-ending': {
-    formal: 'Control, our treaty of {treaty} with the {power} is coming to an end.',
+    formal: 'Control, our {treaty} with the {power} is coming to an end.',
     warm: 'Control, our {treaty} with the {power} is ending. A pity.',
     blunt: 'Our {treaty} with the {power} is finished.',
   },
   'treaty-broken': {
-    formal: 'Control, the {power} has broken our treaty of {treaty}. It will not be forgotten.',
+    formal: 'Control, the {power} has broken our {treaty}. It will not be forgotten.',
     warm: 'Control, the {power} broke our {treaty}! After everything.',
     blunt: 'The {power} broke the {treaty}. Remember that.',
   },

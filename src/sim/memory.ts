@@ -30,7 +30,8 @@ export function attitudeWord(total: number): string {
   return RULES.memory.words.find((w) => total >= w.least)?.word ?? 'hostile';
 }
 
-const treatyWords = (m: Memory) => (m.treaty ? TREATIES[m.treaty].name.toLowerCase() : 'a');
+const treatyNoun = (m: Memory) => (m.treaty ? TREATIES[m.treaty].noun : 'treaty');
+const treatyWords = (m: Memory) => (m.treaty ? TREATIES[m.treaty].words : 'a treaty');
 
 /** A memory's reason, as the power remembered reads it. */
 export function memoryReason(world: World, m: Memory): string {
@@ -43,13 +44,15 @@ export function memoryReason(world: World, m: Memory): string {
     case 'settled-beside':
       return `We settled beside it at ${place}`;
     case 'treaty-ended':
-      return `We ended the ${treatyWords(m)} treaty`;
+      return `We ended the ${treatyNoun(m)}`;
     case 'treaty-broken':
-      return `We broke the ${treatyWords(m)} treaty`;
+      return `We broke the ${treatyNoun(m)}`;
     case 'treaty-broken-heard':
       return `We broke a treaty with the ${m.victim ? FACTIONS[m.victim].shortName : 'others'}`;
     case 'offer-misread':
       return `Misread our offer of ${treatyWords(m)}`;
+    case 'claim-crossed':
+      return `We settled in its claim at ${place}`;
   }
 }
 
@@ -76,7 +79,7 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
       if (t.a === a && t.b === b)
         parts.push({
           kind: 'treaty',
-          reason: `Bound to us by ${TREATIES[t.kind].name.toLowerCase()}`,
+          reason: `Bound to us by ${TREATIES[t.kind].words}`,
           amount: r.treaty,
         });
     for (const m of power.memories)

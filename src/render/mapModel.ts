@@ -4,6 +4,7 @@
 
 import { FACTIONS, type FactionId, type FactionMark } from '../content/factions.ts';
 import type { SystemId } from '../data/types.ts';
+import { claimsOf } from '../sim/borders.ts';
 import { type StarClass, starClass } from '../sim/stars.ts';
 import type { GameState } from '../sim/state.ts';
 import { type LaneId, laneEnds, type World } from '../sim/world.ts';
@@ -43,10 +44,19 @@ export interface MapHolding {
   people: number;
 }
 
+/** A system a power claims but does not hold (M3_NEIGHBOURS.md §22.1): a fainter field; several where contested. */
+export interface MapClaim {
+  system: SystemId;
+  faction: FactionId;
+  colour: string;
+  contested: boolean;
+}
+
 export interface MapContent {
   systems: MapSystem[];
   lanes: MapLane[];
   holdings: MapHolding[];
+  claims: MapClaim[];
 }
 
 /** Glyph size by spectral class: brighter kinds draw larger (illustrative). */
@@ -114,7 +124,15 @@ export function mapContent(world: World, state: GameState): MapContent {
     const m = held.get(system);
     if (m) m.people = Math.floor(tenths / 10);
   }
-  return { systems, lanes, holdings: [...held.values()] };
+  // Claims round the holdings (§22.1): a field for the claimant, or for each where contested.
+  const claims: MapClaim[] = [];
+  for (const [system, c] of claimsOf(world, state)) {
+    // A held system has its field already, unless it is contested: then every claimant's shows.
+    if (held.has(system) && c.owner !== null) continue;
+    const who = c.owner ? [c.owner] : c.claimants;
+    for (const f of who) claims.push({ system, faction: f, colour: FACTIONS[f].colour, contested: c.owner === null });
+  }
+  return { systems, lanes, holdings: [...held.values()], claims };
 }
 
 export interface LabelContext {

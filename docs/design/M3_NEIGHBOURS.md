@@ -33,6 +33,7 @@ them, and the first aliens, powers you deal with.
 19. [Increment 34 in detail: contact](#19-increment-34-in-detail-contact-written-before-building-it)
 20. [Increment 35 in detail: memory and the diplomacy screen](#20-increment-35-in-detail-memory-and-the-diplomacy-screen-written-before-building-it)
 21. [Increment 36 in detail: treaties](#21-increment-36-in-detail-treaties-written-before-building-it)
+22. [Increment 37 in detail: borders and trade](#22-increment-37-in-detail-borders-and-trade-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -635,3 +636,88 @@ routed over its lanes, and the treaty ended with notice, on the phone, tablet an
   headless turn is 125 ms.
 - **Tests:** `treaties.test.ts` as §21.7; 465 unit tests; `treaties.spec.ts` on the phone, tablet
   and desktop (a ship routed over a partner's lanes is tested in the unit tests).
+
+## 22. Increment 37 in detail: borders and trade (written before building it)
+
+**Goals.** D-54 as decided (A) and §10: every power **claims** the systems round its holdings, drawn
+on the map; a system claimed by two is **contested**; settling in another's claim is allowed but
+remembered; a **border treaty** settles the contested systems between two powers, and a **trade
+agreement** brings both credits every turn. The same orders for the player and the rivals.
+
+**Out of scope.** One-off exchanges of resources and the Hollow Wake's tolls, bribes and protection
+(increment 37b, next). War over borders (M4).
+
+### 22.1 Claims
+
+- A **colony** claims its own system and every system **one lane away** along the old lanes and any
+  lane built since (open, being tuned or dark); an **outpost** claims its own system only.
+- A system where a power holds a colony or outpost is **its own**, and stays so; a system claimed
+  by two or more powers, held by none or by more than one, is **contested**.
+- Claims are worked out from the holdings and lanes, never stored, so they follow every new colony.
+- A claim gives nothing of its own (D-54).
+
+### 22.2 Settling in another's claim
+
+Founding a colony or outpost in a system another power claims, but does not hold, is allowed and
+remembered by that power (−3, *Settled in our claim at Ross 128*), as settling beside it already is
+(−5, §20.1). Neither is remembered of a power with a border treaty, which cannot do it at all.
+
+### 22.3 The border treaty
+
+- **Border** (a third treaty, offered and answered as §21): every system contested between the two
+  goes to one of them, for as long as it holds: to the one holding something there; else to the one
+  whose nearest colony is nearer; at an equal distance, to the one first in the list of powers.
+- While it holds, neither may found a colony or outpost in a system the other claims (refused: *the
+  Frontier Co-op's by our border treaty*), and the systems it settled are not contested between them.
+- The Authority asks a regard of 10 for it (law), the Cooperative 10, the Wake 20.
+
+### 22.4 The trade agreement
+
+- **Trade** (a fourth treaty): each side gains credits every turn, **1 for every 4 colonies of the
+  smaller side** (at least 1), **and 1 for each open lane that joins a system of one to a system of
+  the other**, at most **10**, from the turn after it is agreed, in the treasury line *Trade with
+  the Frontier Co-op*.
+- The Authority asks 10 for it, the Cooperative 0 (trade with anyone it can talk with), the Wake 15.
+
+### 22.5 On the screen
+
+- **The map:** each power's claimed systems carry its field, fainter than a held system's; a
+  contested system shows both colours and the word *contested* in its card and panel.
+- **The system panel:** *Claimed by the Transit Authority* or *Contested: the Transit Authority and
+  the Frontier Co-op*, and *Settled by our border treaty* where one holds.
+- **The diplomacy screen:** the two new treaties with what they do, and for trade what it would
+  bring now.
+- **The treasury:** trade as a line of its own.
+
+### 22.6 State
+
+No new state: claims are worked out, and the two treaties are new kinds of treaty. **Version 14**
+still; a save from before reads as it is.
+
+### 22.7 Tests
+
+`borders.test.ts`: claims from colonies and outposts along any lane; own and contested systems;
+settling in a claim remembered; the border treaty's share of contested systems, its refusal to
+settle, and its end; trade's credits from colonies and lanes, at most 10; the rivals' offers of
+both. `borders.spec.ts`: a contested system's panel, a border treaty agreed, and the trade line in
+the treasury, on the phone, tablet and desktop.
+
+### Increment 37: borders and trade (22 October 2026)
+
+- **Claims as §22.1** (`src/sim/borders.ts`): `claimOf` and `claimsOf`, worked out from the holdings
+  and lanes; a colony's claim reaches along the old lanes and any lane built since.
+- **Settling in a claim** is remembered as §22.2 (`claim-crossed`, −3), and refused across a border
+  treaty (*Barnard's Star is the Transit Authority's by our border treaty*).
+- **The border treaty and the trade agreement** as §22.3 and §22.4: two more kinds of treaty, so
+  they are offered, answered, ended and broken as §21; trade is paid before upkeep, and shows in the
+  treasury as *trade with the Frontier Co-op*.
+- **Treaties in sentences:** each treaty now has its words (*a border treaty*, *open lanes*) and its
+  noun (*our trade agreement*), so the report, the Envoy and the reasons read as English.
+- **On the screen as §22.5**: a fainter field for each claimed system, one in each claimant's
+  colour where contested (also at a home lane's end); the system panel's *Claimed by*, *by a border
+  treaty* or *Contested*; the diplomacy screen says what trade would bring now.
+- **Numbers:** `npm run balance` at turn 100 as in increment 36 (the Authority 37.5, the Cooperative
+  23.1, the Wake 22.0 technologies; the Cooperative 26 on seed 4); one rival was a turn in debt once.
+  The slowest headless turn 127 ms.
+- **Tests:** `borders.test.ts` as §22.7; 471 unit tests; `borders.spec.ts` on the phone, tablet and
+  desktop.

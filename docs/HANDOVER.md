@@ -104,6 +104,8 @@ way in.
   **Increment 36 is built:** treaties of open lanes and shared research, offered and answered by
   the player and the rivals alike, ended with notice or broken (and remembered); the rivals offer,
   send gifts and give notice by their character and regard; state version 14.
+  **Increment 37 is built:** claims (a colony's system and every system one lane away), contested
+  systems, the border treaty and the trade agreement; claims on the map and in the system panel.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
   the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
   loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
@@ -148,9 +150,10 @@ and saved games unchanged. **Done: increment 34, contact** (§19): signal, words
 powers, the Envoy (a seventh advisor), Translation; state version 12. **Done: increment 35,
 memory** (§20): attitudes with their reasons, gifts, and the diplomacy screen; state version 13.
 **Done: increment 36, treaties** (§21): open lanes and shared research, offered, answered, ended
-with notice or broken, and the rivals dealing by character; state version 14. **Next: increment
-37, borders and trade** (claims, contested systems, border and trade treaties), then 37b
-(exchanges and the Wake's dealings).
+with notice or broken, and the rivals dealing by character; state version 14. **Done: increment
+37, borders and trade** (§22): claims round every holding on the map, contested systems, the
+border treaty and the trade agreement. **Next: increment 37b**, exchanges of resources and the
+Hollow Wake's tolls, bribes and protection (D-56), then the two species (38, 39) and the proof (40).
 
 The art and music spend: about $24.75 of $50 (raised on 22 October 2026; about $25.25 left). M3's
 art is about 65 pictures (about $6.50).

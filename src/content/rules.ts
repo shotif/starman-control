@@ -171,6 +171,10 @@ export const RULES = {
     gift: 50,
     giftEvery: 10,
     giftWithin: 10,
+    /** Trade (§22.4): 1 credit for every so many colonies of the smaller side, and so many for each open lane joining them, at most so many. */
+    tradeColonies: 4,
+    tradeLane: 1,
+    tradeMost: 10,
   },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {
@@ -199,6 +203,8 @@ export const RULES = {
     treatyBrokenHeard: -5,
     /** An offer misread before talk. */
     offerMisread: -5,
+    /** A colony or outpost founded in a system it claims but does not hold (§22.2). */
+    claimCrossed: -3,
     /** The attitude's words: each the least it takes, the first that fits. */
     words: [
       { word: 'friendly', least: 40 },

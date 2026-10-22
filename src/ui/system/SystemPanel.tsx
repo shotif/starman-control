@@ -7,6 +7,7 @@ import type { FactionId } from '../../content/factions.ts';
 import { SPECIES, type SpeciesDef } from '../../content/species.ts';
 import type { Measured, SkyPlanet, SkyStar, SystemId } from '../../data/types.ts';
 import { type Body, bodiesOf } from '../../sim/bodies.ts';
+import { claimOf } from '../../sim/borders.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { habitability } from '../../sim/habitability.ts';
 import { estimateStar } from '../../sim/starLight.ts';
@@ -203,6 +204,8 @@ export function SystemPanel({
   const capitalOf = game.holdings.find((h) => h.capital && h.system === id)?.owner;
   const heldBy = capitalOf ?? holdings[0]?.owner ?? lanes.map((l) => owners.get(l.id)).find((o) => o !== undefined);
   const heldBody = new Map(holdings.map((h) => [h.body, h]));
+  // Claims round the holdings (M3_NEIGHBOURS.md §22.5), as far as they are seen.
+  const claim = claimOf(world, game, id);
   // Charted only: astronomers' worlds (known planets, observed belts, all of Sol's), not the rest.
   const bodies = realOnly ? [] : bodiesOf(world, game.seed, id).filter((b) => surveyed || b.origin !== 'generated');
 
@@ -215,6 +218,27 @@ export function SystemPanel({
           <p class="held">
             <FactionTag faction={heldBy} /> ·{' '}
             {capitalOf ? 'its capital' : holdings.some((h) => h.owner === heldBy) ? 'settled' : 'in its home web'}{' '}
+            <Badge kind="fiction" />
+          </p>
+        )}
+        {claim.claimants.length > 0 && !holdings.length && (
+          <p class="claim">
+            {claim.owner ? (
+              <>
+                Claimed by <FactionTag faction={claim.owner} />
+                {claim.settled && ' · by a border treaty'}
+              </>
+            ) : (
+              <>
+                Contested:{' '}
+                {claim.claimants.map((f, i) => (
+                  <span key={f}>
+                    {i > 0 && (i === claim.claimants.length - 1 ? ' and ' : ', ')}
+                    <FactionTag faction={f} />
+                  </span>
+                ))}
+              </>
+            )}{' '}
             <Badge kind="fiction" />
           </p>
         )}

@@ -6,6 +6,7 @@ import { useSignal } from '@preact/signals';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
 import { TREATIES, TREATY_KINDS } from '../../content/treaties.ts';
+import { tradeOf } from '../../sim/borders.ts';
 import { attitudeOf, giftRefusal } from '../../sim/memory.ts';
 import { contactWith, type GameState, inContact, powerOf, treatyOf } from '../../sim/state.ts';
 import { offerRefusal } from '../../sim/treaties.ts';
@@ -54,6 +55,9 @@ function Treaties({
           return (
             <li key={kind}>
               <b>{t.name}</b> <span class="dim">{t.does}</span>
+              {kind === 'trade' && (
+                <span class="dim"> Now it would bring {tradeOf(game, faction, other)} credits a turn each.</span>
+              )}
               {held ? (
                 held.ends !== null ? (
                   <p>In force; it ends in {Math.max(0, held.ends - game.turn)} turns.</p>
@@ -103,7 +107,7 @@ function Treaties({
                   <button
                     type="button"
                     class="button button-small"
-                    aria-label={`Offer the ${name} ${t.name.toLowerCase()}`}
+                    aria-label={`Offer the ${name} ${t.words}`}
                     disabled={offerRefusal(game, faction, other, kind) !== null}
                     onClick={() => give(play, { type: 'offer', to: other, treaty: kind })}
                   >

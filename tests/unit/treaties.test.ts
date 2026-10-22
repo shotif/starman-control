@@ -312,9 +312,13 @@ describe('the rivals deal (§21.4)', () => {
     g.turn = 4; // the Authority's turn to deal: (4 + 0) is not a multiple of 5, the Cooperative's (4 + 1) is.
     expect(dealings(world, g, 'sta').filter((o) => o.type === 'offer')).toEqual([]);
     g.turn = 5;
-    // The Authority wants open lanes with the Cooperative (its regard 10), and the Cooperative's
-    // regard for it is enough (10); it wants no treaty with the Wake (10 − 15 = −5).
-    expect(dealings(world, g, 'sta')).toEqual([{ type: 'offer', to: 'frontier', treaty: 'open-lanes' }]);
+    // The Authority wants open lanes, a border and trade with the Cooperative (its regard 10), and
+    // the Cooperative's regard for it is enough (10); it wants no treaty with the Wake (10 − 15 = −5).
+    expect(dealings(world, g, 'sta')).toEqual([
+      { type: 'offer', to: 'frontier', treaty: 'open-lanes' },
+      { type: 'offer', to: 'frontier', treaty: 'border' },
+      { type: 'offer', to: 'frontier', treaty: 'trade' },
+    ]);
     // The Wake wants shared research with the Cooperative (its regard 10, as it asks), whose regard
     // for it (5) falls short of the 10 it asks: with the credits, a gift of 50.
     g.turn = 3;

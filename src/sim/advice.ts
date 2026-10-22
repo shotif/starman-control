@@ -106,7 +106,7 @@ export function adviceFor(
     else if (n.kind === 'offer')
       say('envoy', 1, 'offer-waiting', {
         power: FACTIONS[n.from].shortName,
-        treaty: TREATIES[n.treaty].name.toLowerCase(),
+        treaty: TREATIES[n.treaty].words,
       });
     else if (n.kind === 'event') {
       const ev = powerOf(state, faction).event;
@@ -194,15 +194,15 @@ export function adviceFor(
     } else if (e.kind === 'rival-tech') {
       say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
     } else if (e.kind === 'offer-answered') {
-      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].name.toLowerCase() };
+      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].words };
       say('envoy', 2, e.accepted ? 'offer-accepted' : 'offer-refused', values);
     } else if (e.kind === 'treaty-begun') {
       say('envoy', 2, 'treaty-begun', {
         power: FACTIONS[e.faction].shortName,
-        treaty: TREATIES[e.treaty].name.toLowerCase(),
+        treaty: TREATIES[e.treaty].words,
       });
     } else if (e.kind === 'treaty-notice' || e.kind === 'treaty-ended') {
-      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].name.toLowerCase() };
+      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].noun };
       const broken = e.kind === 'treaty-ended' && e.broken && e.by === e.faction;
       say('envoy', broken ? 1 : 3, broken ? 'treaty-broken' : 'treaty-ending', values);
     } else if (e.kind === 'gift-sent' || e.kind === 'gift-received') {

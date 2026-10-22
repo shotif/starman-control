@@ -48,7 +48,7 @@ export function offerRefusal(state: GameState, from: FactionId, to: FactionId, k
   if (!state.powers.some((p) => p.faction === to) || to === from) return 'There is no such power.';
   if (!(kind in TREATIES)) return 'There is no such treaty.';
   const name = FACTIONS[to].shortName;
-  const treaty = TREATIES[kind].name.toLowerCase();
+  const treaty = TREATIES[kind].words;
   if (!contactWith(powerOf(state, from), to)) return `We have not heard the ${name}.`;
   if (treatyBetween(state, from, to, kind)) return `We have ${treaty} with the ${name} already.`;
   if (
@@ -68,8 +68,8 @@ export function answerRefusal(state: GameState, me: FactionId, from: FactionId, 
 /** Why a treaty cannot be ended or broken (§21.3), or null if it can. */
 export function endRefusal(state: GameState, me: FactionId, other: FactionId, kind: TreatyKind, broken: boolean) {
   const t = treatyBetween(state, me, other, kind);
-  const treaty = TREATIES[kind]?.name.toLowerCase() ?? 'that treaty';
-  if (!t) return `We have no ${treaty} treaty with the ${FACTIONS[other]?.shortName ?? 'others'}.`;
+  const treaty = TREATIES[kind]?.noun ?? 'such treaty';
+  if (!t) return `We have no ${treaty} with the ${FACTIONS[other]?.shortName ?? 'others'}.`;
   if (t.broken) return 'It is broken already.';
   if (t.ends !== null && !broken) return `Notice is given already: it ends in ${t.ends - state.turn} turns.`;
   return null;

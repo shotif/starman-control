@@ -8,12 +8,15 @@
 }
 
 .system-kind,
-.held {
+.held,
+.claim {
   margin: 0.15rem 0;
   color: var(--text-muted);
 }
 
-.held {
+/* A claim (M3_NEIGHBOURS.md §22.5): who claims it, or who contests it. */
+.held,
+.claim {
   display: flex;
   flex-wrap: wrap;
   align-items: center;

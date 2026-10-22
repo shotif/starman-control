@@ -21,13 +21,14 @@ import { SHIPS, type ShipType } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
+import { claimOf, tradeIncome } from './borders.ts';
 import { lastingLabel, lastingOn } from './events.ts';
 import { ceilDiv } from './geometry.ts';
 import { type Habitability, habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
-import { type GameState, type Holding, holdingOn, powerOf, type Stockpile } from './state.ts';
+import { type GameState, type Holding, holdingOn, powerOf, type Stockpile, treatyOf } from './state.ts';
 import type { World } from './world.ts';
 
 export type Resource = keyof Stockpile;
@@ -707,6 +708,9 @@ export function treasuryOf(world: World, state: GameState, faction: FactionId): 
     if (h.overdrive > 0) overdrive += overdriveCost(world, state, h);
   }
   const parts: Part[] = [{ label: 'taxes and markets', value: income }];
+  // Trade agreements (M3_NEIGHBOURS.md §22.4).
+  for (const t of tradeIncome(state, faction))
+    parts.push({ label: `trade with the ${FACTIONS[t.faction].shortName}`, value: t.credits });
   const upkeep = upkeepOf(state, faction).total;
   if (upkeep > 0) parts.push({ label: 'upkeep', value: -upkeep });
   if (overdrive > 0) parts.push({ label: 'overdrive', value: -overdrive });
@@ -803,6 +807,10 @@ export function settleRefusal(
     return `${body.name} already has ${held.owner === faction ? 'your' : `a ${FACTIONS[held.owner].shortName}`} ${held.kind} on it.`;
   if (state.ships.some((s) => s.founding?.body === bodyId && s.owner === faction))
     return `Another ship is already founding on ${body.name}.`;
+  // A border treaty keeps each out of the other's claim (M3_NEIGHBOURS.md §22.3).
+  const owner = claimOf(world, state, system).owner;
+  if (owner && owner !== faction && treatyOf(state, faction, owner, 'border'))
+    return `${world.system(system).name} is the ${FACTIONS[owner].shortName}’s by our border treaty.`;
   if (kind === 'outpost') return null;
   const h = habitability(body, speciesFor(state, faction));
   if (h.level === 'uninhabitable') return `Your people cannot live on ${body.name}.`;

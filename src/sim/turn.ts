@@ -11,6 +11,7 @@ import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
+import { claimantsAt, tradeIncome } from './borders.ts';
 import { resolveContacts } from './contact.ts';
 import { observationPoints, observationsAt, resolveInspirations } from './discoveries.ts';
 import {
@@ -203,6 +204,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       log(ship).push({ kind: 'not-founded', ship: ship.id, system: ship.at, body: f.body, reason });
       continue;
     }
+    // Who claims the system before it is settled (M3_NEIGHBOURS.md §22.2).
+    const claimants = claimantsAt(world, state, ship.at);
     const h = makeHolding(state, {
       owner: ship.owner,
       kind: f.kind,
@@ -221,11 +224,15 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     if (h.kind === 'colony' && powerOf(state, h.owner).governNew) h.governor = 'balance';
     usedUp.add(ship.id);
     log(ship).push({ kind: 'founded', holding: h.id, shipName: ship.name, system: ship.at, body: f.body });
-    // Settling beside another power is remembered (M3_NEIGHBOURS.md §20.1).
+    // Settling beside another power, or in its claim, is remembered (M3_NEIGHBOURS.md §20.1, §22.2).
     const at = ship.at;
-    for (const p of state.powers)
-      if (p.faction !== h.owner && state.holdings.some((o) => o.owner === p.faction && o.system === at))
+    for (const p of state.powers) {
+      if (p.faction === h.owner) continue;
+      if (state.holdings.some((o) => o.owner === p.faction && o.system === at))
         remember(state, p.faction, h.owner, { kind: 'settled-beside', amount: RULES.memory.settledBeside, system: at });
+      else if (claimants.includes(p.faction))
+        remember(state, p.faction, h.owner, { kind: 'claim-crossed', amount: RULES.memory.claimCrossed, system: at });
+    }
   }
   state.ships = state.ships.filter((s) => !usedUp.has(s.id));
 
@@ -431,6 +438,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     power.stockpile.fuel += y.fuel;
     power.treasury += income.get(h.id) ?? 0;
   }
+  // Trade agreements (M3_NEIGHBOURS.md §22.4).
+  for (const p of state.powers) for (const t of tradeIncome(state, p.faction)) p.treasury += t.credits;
+
   for (const p of state.powers) {
     const before = p.treasury;
     p.treasury -= upkeepOf(state, p.faction).total;

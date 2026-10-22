@@ -31,7 +31,7 @@ import {
   type Vec3,
   worldPerPixel,
 } from './mapMath.ts';
-import { labelPriority, type MapContent, type MapHolding } from './mapModel.ts';
+import { labelPriority, type MapClaim, type MapContent, type MapHolding } from './mapModel.ts';
 import {
   type BackgroundStars,
   type BakedSky,
@@ -647,7 +647,7 @@ export class MapView {
       this.own(new THREE.LineBasicMaterial({ color: COLOURS.grid, transparent: true, opacity: 0.07 })),
     );
 
-    this.fields = this.buildFields(holdings, systems);
+    this.fields = this.buildFields(holdings, systems, this.content.claims);
     this.sparks = this.buildSparks(lanes, holdings, systems);
 
     this.scene.add(
@@ -666,8 +666,19 @@ export class MapView {
     this.updateHighlight();
   }
 
-  /** A soft field of its power's colour round each system a power holds, larger at a capital. */
-  private buildFields(holdings: readonly MapHolding[], systems: MapContent['systems']): THREE.Mesh {
+  /**
+   * A soft field of its power's colour round each system a power holds, larger at a capital, and a
+   * smaller one round each it only claims (M3_NEIGHBOURS.md §22.5), one for each claimant where contested.
+   */
+  private buildFields(
+    held: readonly MapHolding[],
+    systems: MapContent['systems'],
+    claims: readonly MapClaim[] = [],
+  ): THREE.Mesh {
+    const holdings = [
+      ...held.map((h) => ({ system: h.system, colour: h.colour, radius: h.capital ? 4.4 : 3.2 })),
+      ...claims.map((c) => ({ system: c.system, colour: c.colour, radius: 2.2 })),
+    ];
     const geometry = new THREE.InstancedBufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0], 3));
     geometry.setIndex([0, 1, 2, 0, 2, 3]);
@@ -679,7 +690,7 @@ export class MapView {
     holdings.forEach((h, i) => {
       centre.set(systems[this.index.get(h.system) ?? 0]?.pos ?? [0, 0, 0], i * 3);
       colour.set(h.colour).toArray(tint, i * 3);
-      radius[i] = h.capital ? 4.4 : 3.2;
+      radius[i] = h.radius;
     });
     geometry.setAttribute('centre', new THREE.InstancedBufferAttribute(centre, 3));
     geometry.setAttribute('tint', new THREE.InstancedBufferAttribute(tint, 3));

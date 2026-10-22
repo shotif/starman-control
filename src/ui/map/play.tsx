@@ -379,27 +379,27 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'gift-received':
       return `The ${FACTIONS[e.faction].shortName} sent us a gift of ${e.credits} credits.`;
     case 'offer-received':
-      return `The ${FACTIONS[e.faction].shortName} offers us ${TREATIES[e.treaty].name.toLowerCase()}: answer it in Diplomacy before this turn ends.`;
+      return `The ${FACTIONS[e.faction].shortName} offers us ${TREATIES[e.treaty].words}: answer it in Diplomacy before this turn ends.`;
     case 'offer-answered':
-      return `The ${FACTIONS[e.faction].shortName} ${e.accepted ? 'accepted' : 'refused'} our offer of ${TREATIES[e.treaty].name.toLowerCase()}.`;
+      return `The ${FACTIONS[e.faction].shortName} ${e.accepted ? 'accepted' : 'refused'} our offer of ${TREATIES[e.treaty].words}.`;
     case 'offer-misread':
       return e.ours
-        ? `The ${FACTIONS[e.faction].shortName} misread our offer of ${TREATIES[e.treaty].name.toLowerCase()}, and took offence: the Envoy has not yet learnt their tongue.`
+        ? `The ${FACTIONS[e.faction].shortName} misread our offer of ${TREATIES[e.treaty].words}, and took offence: the Envoy has not yet learnt their tongue.`
         : `The ${FACTIONS[e.faction].shortName} offered us something we could not make out, and it did not sound friendly.`;
     case 'treaty-begun':
-      return `We have ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.faction].shortName} now: ${TREATIES[e.treaty].does}`;
+      return `We have ${TREATIES[e.treaty].words} with the ${FACTIONS[e.faction].shortName} now: ${TREATIES[e.treaty].does}`;
     case 'treaty-notice':
       return e.by === e.faction
-        ? `The ${FACTIONS[e.faction].shortName} has given notice: our ${TREATIES[e.treaty].name.toLowerCase()} ends in ${e.ends - game.turn + 1} turns.`
-        : `We have given the ${FACTIONS[e.faction].shortName} notice: our ${TREATIES[e.treaty].name.toLowerCase()} ends in ${e.ends - game.turn + 1} turns.`;
+        ? `The ${FACTIONS[e.faction].shortName} has given notice: our ${TREATIES[e.treaty].noun} ends in ${e.ends - game.turn + 1} turns.`
+        : `We have given the ${FACTIONS[e.faction].shortName} notice: our ${TREATIES[e.treaty].noun} ends in ${e.ends - game.turn + 1} turns.`;
     case 'treaty-ended':
       return e.broken
         ? e.by === e.faction
-          ? `The ${FACTIONS[e.faction].shortName} broke our ${TREATIES[e.treaty].name.toLowerCase()}.`
-          : `We broke our ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.faction].shortName}; every power that knows us will remember it.`
-        : `Our ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.faction].shortName} has ended.`;
+          ? `The ${FACTIONS[e.faction].shortName} broke our ${TREATIES[e.treaty].noun}.`
+          : `We broke our ${TREATIES[e.treaty].noun} with the ${FACTIONS[e.faction].shortName}; every power that knows us will remember it.`
+        : `Our ${TREATIES[e.treaty].noun} with the ${FACTIONS[e.faction].shortName} has ended.`;
     case 'treaty-broken-heard':
-      return `The ${FACTIONS[e.faction].shortName} broke its ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.victim].shortName}.`;
+      return `The ${FACTIONS[e.faction].shortName} broke its ${TREATIES[e.treaty].noun} with the ${FACTIONS[e.victim].shortName}.`;
     case 'contact':
       if (!e.first)
         return `The Envoy has learnt the ${FACTIONS[e.faction].shortName}’s tongue: we can talk with them now.`;

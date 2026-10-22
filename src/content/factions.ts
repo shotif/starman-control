@@ -86,7 +86,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Halden Orbital Works', 'Ares Foundry'],
     regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
     // Law: open lanes once warm, its research only with friends.
-    asks: { 'open-lanes': 10, 'shared-research': 40 },
+    asks: { 'open-lanes': 10, 'shared-research': 40, border: 10, trade: 10 },
   },
   frontier: {
     id: 'frontier',
@@ -110,7 +110,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
     regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
     // Trade and peace: both once warm.
-    asks: { 'open-lanes': 10, 'shared-research': 10 },
+    asks: { 'open-lanes': 10, 'shared-research': 10, border: 10, trade: 0 },
   },
   'hollow-wake': {
     id: 'hollow-wake',
@@ -135,7 +135,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     regard: { sta: { amount: -10, reason: 'Sees in us the law it runs from' } },
     // Tolls and profit: it sells passage rather than opening its lanes (increment 37), and buys
     // its way into shared research.
-    asks: { 'open-lanes': null, 'shared-research': 10 },
+    asks: { 'open-lanes': null, 'shared-research': 10, border: 20, trade: 15 },
   },
 };
 
