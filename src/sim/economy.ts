@@ -26,6 +26,7 @@ import { buildable, designCost, designOf, refitCost, refitRefusal } from './desi
 import { lastingLabel, lastingOn } from './events.ts';
 import { ceilDiv } from './geometry.ts';
 import { type Habitability, habitability } from './habitability.ts';
+import { blockadedBy } from './invasion.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
@@ -343,9 +344,10 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   else if (jumps > near && !federation)
     parts.push({ label: `${jumps} jumps from the capital`, value: Math.max(a.farMost, (jumps - near) * a.far) });
   if (power.treasury < 0) parts.push({ label: 'the treasury in debt', value: a.debt });
-  // War weariness (M4_FLEETS.md §23.4).
+  // War weariness (M4_FLEETS.md §23.4), and a colony newly taken (§26.4).
   const weary = wearinessApproval(state, h.owner);
   if (weary < 0) parts.push({ label: 'war weariness', value: weary });
+  if (h.taken > 0) parts.push({ label: 'newly taken', value: RULES.invasion.takenApproval });
   const total = Math.max(0, Math.min(100, sum(parts)));
   const level: ApprovalLevel =
     total >= a.levels.content
@@ -608,7 +610,10 @@ export function networksOf(
   state: GameState,
   faction: FactionId,
 ): { home: boolean; colonies: Holding[] }[] {
-  const colonies = state.holdings.filter((h) => h.owner === faction && h.kind === 'colony');
+  // A blockaded colony is cut off: a network of its own (M4_FLEETS.md §26.6).
+  const all = state.holdings.filter((h) => h.owner === faction && h.kind === 'colony');
+  const cut = all.filter((h) => blockadedBy(state, h) !== null);
+  const colonies = all.filter((h) => !cut.includes(h));
   const graph = lanesFor(world, state, faction);
   const capital = powerOf(state, faction).capital;
   const component = new Map<SystemId, number>();
@@ -633,6 +638,7 @@ export function networksOf(
     const members = colonies.filter((h) => component.get(h.system) === id);
     if (members.length > 0 || id === 0) out.push({ home: id === 0, colonies: members });
   }
+  for (const h of cut) out.push({ home: false, colonies: [h] });
   return out;
 }
 
@@ -687,6 +693,11 @@ export function creditsOf(world: World, state: GameState, h: Holding): Figure {
   parts.push(...districtParts(world, state, h, 'market').parts);
   if (h.projects.includes('trade-exchange') && !stopped(world, state, h))
     parts.push({ label: 'the trade exchange', value: RULES.projects.exchangeCredits + worked(h, 'market') });
+  // A blockade halves it (M4_FLEETS.md §26.6).
+  if (blockadedBy(state, h)) {
+    const made = sum(parts);
+    parts.push({ label: 'the blockade', value: -(made - Math.floor((made * RULES.blockadeCreditsPercent) / 100)) });
+  }
   return { total: sum(parts), parts };
 }
 
@@ -891,7 +902,16 @@ export function queueRefusal(world: World, state: GameState, h: Holding, item: Q
   if (item.kind === 'ship') {
     if (!h.projects.includes('shipyard')) return 'Ships need a shipyard.';
     // A warship is built to a design (M4_FLEETS.md §21.3); a civil ship to none.
-    if (!isHull(item.ship)) return item.design === undefined ? null : 'Only warships have designs.';
+    if (!isHull(item.ship)) {
+      if (item.design !== undefined) return 'Only warships have designs.';
+      const def = SHIPS[item.ship];
+      if (def.needs && !powerOf(state, h.owner).researched.includes(def.needs))
+        return `Needs ${TECHS[def.needs].name}.`;
+      // A transport's troops are raised from the colony's people (§26.3).
+      if (def.troops !== undefined && h.people < RULES.invasion.transportLeast)
+        return 'Troops are raised only at a colony of a million people or more.';
+      return null;
+    }
     const design = designOf(powerOf(state, h.owner), item.design);
     if (!design || design.hull !== item.ship) return 'Choose a design to build.';
     if (design.retired) return `${design.name} is retired.`;

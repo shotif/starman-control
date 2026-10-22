@@ -46,7 +46,12 @@ export function shapeProblems(raw: unknown): string[] {
         typeof f.hold === 'boolean' &&
         STANCES.includes(f.stance as never) &&
         TARGETS.includes(f.target as never) &&
-        RETREATS.includes(f.retreat as never),
+        RETREATS.includes(f.retreat as never) &&
+        // An invasion or a bombardment, or none (M4_FLEETS.md §26.12).
+        (f.mission === null ||
+          (isRecord(f.mission) &&
+            (f.mission.kind === 'invade' || f.mission.kind === 'bombard') &&
+            isWhole(f.mission.holding, 1))),
     )
   )
     out.push('fleets are not a list of fleets');
@@ -304,6 +309,7 @@ export function shapeProblems(raw: unknown): string[] {
       if (!Array.isArray(h.locked) || !h.locked.every((s) => isWhole(s, 1)))
         out.push(`holding ${i} has locks it cannot have`);
       if (!isWhole(h.terraform)) out.push(`holding ${i} terraforming is not a whole number`);
+      if (!isWhole(h.taken)) out.push(`holding ${i} unrest since it was taken is not a whole number`);
     }
   if (!Array.isArray(raw.reports)) out.push('reports is not a list');
   return out;
@@ -524,6 +530,8 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (new Set(ships.map((s) => s.at)).size > 1) out.push(`fleet ${f.name}'s ships are not at one place`);
     for (const d of f.destinations)
       if (!world.hasSystem(d)) out.push(`fleet ${f.name} is bound for ${d}, which is not a system`);
+    const m = f.mission;
+    if (m && !state.holdings.some((h) => h.id === m.holding)) out.push(`fleet ${f.name}'s mission is to no holding`);
   }
   return out;
 }

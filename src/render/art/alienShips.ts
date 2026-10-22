@@ -5,13 +5,14 @@
 //   live in the ring of dusk on a world locked to its red sun.
 // - The Drift Moot: clustered pods like the floaters themselves, banded with violet light, a
 //   gondola slung beneath.
-// Each is about 14 units long and faces −Z, as Reborn's ships do.
+// Each is about 14 units long and faces −Z, as Reborn's ships do. And a colony's defence platform.
 
 import * as THREE from 'three';
 import { Kit, latheZ, loft, mirrored, rod, slab, type V3 } from './kit.ts';
+import { standardSet } from './shipMaterials.ts';
 import { assembleShip, type ShipArt } from './ships.ts';
 import type { ArtContext } from './types.ts';
-import { byQuality } from './util.ts';
+import { byQuality, disposeObject } from './util.ts';
 
 const DUSK = {
   hull: '#6a5e6c',
@@ -275,4 +276,56 @@ export function createDriftShip(ctx: ArtContext): ShipArt {
     },
     ctx,
   );
+}
+
+/**
+ * A colony's defence battery in the replay (M4_FLEETS.md §26.7): a gun platform in orbit over its
+ * world, its power's colour round its rim. Faces −Z as the ships do; it never moves.
+ */
+export function createDefencePlatform(ctx: ArtContext, colour: THREE.ColorRepresentation): ShipArt {
+  const kit = new Kit(3);
+  const seg = byQuality(ctx.quality, 6, 6, 6);
+  const base = new THREE.CylinderGeometry(6, 7, 1.6, seg);
+  kit.add('hull', base, { color: '#6d7480' });
+  kit.add('dark', new THREE.CylinderGeometry(4.6, 5.6, 0.6, seg), { position: [0, 1.1, 0], color: '#3a3f47' });
+  // Three turrets, each with a pair of barrels pointing out over the rim.
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2 + Math.PI;
+    const x = Math.sin(a) * 3.4;
+    const z = Math.cos(a) * 3.4;
+    kit.add('metal', new THREE.BoxGeometry(1.8, 1.1, 1.8), {
+      position: [x, 1.8, z],
+      rotation: [0, a, 0],
+      color: '#575d66',
+    });
+    for (const s of [-0.35, 0.35]) {
+      const bx = x + Math.cos(a) * s;
+      const bz = z - Math.sin(a) * s;
+      rod(kit, 'metal', [bx, 1.9, bz], [bx + Math.sin(a) * 3.2, 2.2, bz + Math.cos(a) * 3.2], 0.16, '#4a4f57', 6);
+    }
+  }
+  kit.add('glass', new THREE.SphereGeometry(1.8, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), {
+    position: [0, 1.4, 0],
+    color: '#9fc4e8',
+  });
+  // Its power's colour round the rim.
+  kit.add('emissive', new THREE.TorusGeometry(6.6, 0.12, 4, 36), {
+    rotation: [Math.PI / 2, 0, 0],
+    position: [0, 0.2, 0],
+    color: colour,
+    intensity: 1.6,
+  });
+  const group = new THREE.Group();
+  group.name = 'defence-platform';
+  kit.build(group, standardSet(ctx.quality));
+  return {
+    object: group,
+    radius: 7,
+    muzzles: [new THREE.Vector3(0, 2.2, -6.6)],
+    setThrottle() {},
+    setBoost() {},
+    setCruise() {},
+    flashShield() {},
+    dispose: () => disposeObject(group),
+  };
 }

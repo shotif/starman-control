@@ -239,7 +239,10 @@ export const RULES = {
     toHit: 70,
     targeting: 15,
     evading: 15,
-    sizeToHit: { corvette: -10, frigate: -5, destroyer: 0, cruiser: 5, capital: 10 } as Record<string, number>,
+    sizeToHit: { corvette: -10, frigate: -5, destroyer: 0, cruiser: 5, capital: 10, battery: 10 } as Record<
+      string,
+      number
+    >,
     /** An evading task force leaves after this round. */
     evadeAfter: 2,
     /** Shields recover this share of their capacity after each round, in percent. */
@@ -251,6 +254,41 @@ export const RULES = {
     repairColonyPercent: 10,
     repairBayPercent: 10,
   },
+  /** Defences, invasion, bombardment and blockade (M4_FLEETS.md §26). */
+  invasion: {
+    /** A colony's garrison: a base, one a million people, more at the capital and with barracks. */
+    garrisonBase: 2,
+    garrisonCapital: 5,
+    garrisonBarracks: 10,
+    /** People a transport takes from its colony (tenths of a million), and the fewest a colony needs to build one. */
+    transportPeople: 1,
+    transportLeast: 10,
+    /** In each exchange of a landing, the garrison wins this many in a hundred. */
+    defenderWins: 55,
+    /** A colony taken is unhappy for this many turns, by this much. */
+    takenTurns: 10,
+    takenApproval: -20,
+    /** What a colony lost adds to its old power's war weariness, and what being invaded is remembered at. */
+    wearyColony: 5,
+    invaded: -10,
+  },
+  defence: {
+    /** A battery: its weapons (of its power's best), its structure, and the planetary shield's shields. */
+    batteryWeapons: 3,
+    batteryStructure: 60,
+    planetaryShield: 30,
+  },
+  bombardment: {
+    /** People lost a turn, in percent (at least a tenth of a million); a building wrecked one turn in this many. */
+    peoplePercent: 5,
+    wreckEvery: 3,
+    /** Remembered by the bombed, by others in contact, and by the lawful. */
+    bombed: -15,
+    heard: -5,
+    heardLawful: -10,
+  },
+  /** A blockaded colony's credits, in percent. */
+  blockadeCreditsPercent: 50,
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {
     /** Attitude is held between these. */

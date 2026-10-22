@@ -207,6 +207,40 @@ const FIRST: ArtBrief[] = [
       'distant star, two crew in suits watching from a work platform at its base.',
     purpose: 'Report: a lane opened.',
   },
+  // M4's report pictures (M4_FLEETS.md §19, §26.10): war, peace, a battle and an invasion. Every
+  // ship, world and person is fiction.
+  {
+    id: 'dispatch-battle',
+    series: 'illustration',
+    subject:
+      'Two small fleets of angular warships exchanging fire in deep space, bright blue-white bolts and orange ' +
+      'tracers crossing between them, a translucent shield bubble flaring round one ship, a dim red sun far off.',
+    purpose: 'Report: a battle fought (M4).',
+  },
+  {
+    id: 'dispatch-invasion',
+    series: 'illustration',
+    subject:
+      'Troop landers descending through a hazy evening sky towards a colony of domes and towers, their landing ' +
+      'lights blazing, a defence gun on the ground firing upwards, smoke drifting across the domes.',
+    purpose: 'Report: a colony invaded (M4).',
+  },
+  {
+    id: 'dispatch-war',
+    series: 'illustration',
+    subject:
+      'A darkened command room where officers stand round a table-sized holographic star map with one border ' +
+      'glowing red, a large screen behind them showing warships leaving a station, tense faces lit from below.',
+    purpose: 'Report: war declared (M4).',
+  },
+  {
+    id: 'dispatch-peace',
+    series: 'illustration',
+    subject:
+      'Two small delegations in different dress meeting across a long table in a bright conference room aboard ' +
+      'a station, a great window onto a calm blue planet, a signed document on the table between them.',
+    purpose: 'Report: peace made (M4).',
+  },
   // The colony view's style slice (COLONY_VIEW.md §6, increment 14): one landscape, the
   // Cooperative's buildings for its capital, the shared scaffold, and homes in the other two
   // architectures, so the owner sees all three before the rest is made.
@@ -829,6 +863,28 @@ function districts(): ArtBrief[] {
       cooperative:
         'A market district: a lively covered market of rounded earth stalls under white fabric awnings, crates of produce, a shared kitchen with a chimney, strings of soft blue lights.',
       wake: 'A market district: a black market in stacked cargo containers opened up as stalls, scrap awnings, hanging lamps, crates and barrels, a watchtower with a red light.',
+    },
+    // M4's defences (M4_FLEETS.md §26.1, §26.10).
+    'defence-battery': {
+      authority:
+        'A defence battery: a squat armoured gun emplacement of thick grey prefabricated panels behind a sloped berm, a turret of three long gun barrels angled at the sky, a radar mast and an ammunition bunker, green lights.',
+      cooperative:
+        'A defence battery: a rounded earth-built bunker half sunk into a mound, a domed turret with three gun barrels angled at the sky, a woven-mesh radar dish beside it, soft blue lights.',
+      wake: 'A defence battery: three salvaged warship guns welded onto a turret ring on a blockhouse of hull plates and sandbags, aimed at the sky, a crooked radar mast, red lights.',
+    },
+    'planetary-shield': {
+      authority:
+        'A planetary shield generator: a tall cylindrical tower of white prefabricated panels crowned by a ring of emitters casting a faint translucent dome of light up into the sky, thick cables to a power building, green lights.',
+      cooperative:
+        'A planetary shield generator: a rounded earth-built hall with three copper-wound emitter towers round a central spire, a faint blue translucent dome of light rising from them into the sky, soft blue lights.',
+      wake: 'A planetary shield generator: a warship’s shield projector salvaged and mounted on a tower of welded girders, throwing a faint flickering violet dome of light into the sky, cables and coolant pipes, red lights.',
+    },
+    barracks: {
+      authority:
+        'Barracks: orderly rows of prefabricated two-storey buildings round a parade ground, a flagpole, a watchtower and a vehicle shed with armoured rovers, green lights.',
+      cooperative:
+        'Barracks: rounded earth-built bunkhouses round a training yard with a climbing frame, a domed mess hall and solar sails, soft blue lights.',
+      wake: 'Barracks: a camp of stacked cargo containers and a grounded troop ship turned into bunk rooms, a sparring ring and armoured buggies, red lights.',
     },
   };
   const names: Record<Painted, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };

@@ -282,6 +282,16 @@ export const STRUCTURES: Record<string, StructureArt> = Object.fromEntries(
       ['authority-terraforming-station', 1789 / 1536, 46],
       ['cooperative-terraforming-station', 1876 / 1619, 46],
       ['wake-terraforming-station', 1982 / 1905, 46],
+      // M4's defences (M4_FLEETS.md §26.1).
+      ['authority-defence-battery', 1818 / 1630, 36],
+      ['cooperative-defence-battery', 1881 / 1476, 36],
+      ['wake-defence-battery', 1782 / 1720, 36],
+      ['authority-planetary-shield', 1827 / 1836, 40],
+      ['cooperative-planetary-shield', 1730 / 1612, 40],
+      ['wake-planetary-shield', 1728 / 1733, 40],
+      ['authority-barracks', 1888 / 1256, 44],
+      ['cooperative-barracks', 1925 / 1530, 44],
+      ['wake-barracks', 1909 / 1394, 44],
       // M2b's great works (M2B_SCIENCE.md §20.2): one each, in no power's architecture.
       ['long-array', 1881 / 1767, 64],
       ['lapse-archive', 1856 / 1868, 60],

@@ -80,6 +80,7 @@ test('two fleets at the capital merged, given a stance and sent to Alpha Centaur
         stance: 'defend',
         target: 'warships',
         retreat: 50,
+        mission: null,
       });
       g.ships.push({
         id: g.nextShipId++,

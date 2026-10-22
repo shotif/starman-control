@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { DamageType, ShieldKind } from '../content/modules.ts';
-import { createDriftShip, createDuskShip } from './art/alienShips.ts';
+import { createDefencePlatform, createDriftShip, createDuskShip } from './art/alienShips.ts';
 import { createHaulerShip, createPirateShip, createPlayerShip, type ShipArt } from './art/ships.ts';
 import { createStar, type StarArt } from './art/stars.ts';
 import type { ArtContext } from './art/types.ts';
@@ -164,7 +164,7 @@ export class BattleScene {
   private readonly camera = new THREE.PerspectiveCamera(FOV, 1, 1, 20_000);
   private readonly gestures: GestureTracker;
   private readonly labelLayer: HTMLDivElement;
-  private readonly templates = new Map<FactionId, { art: ShipArt; native: number }>();
+  private readonly templates = new Map<string, { art: ShipArt; native: number }>();
   private readonly ships = new Map<number, ShipThing>();
   private readonly labels: ForceLabel[] = [];
   private readonly star: StarArt | null = null;
@@ -332,10 +332,12 @@ export class BattleScene {
   }
 
   /** One model a power, built once; its ships are copies that share its geometry and materials. */
-  private template(owner: FactionId): { art: ShipArt; native: number } {
-    const have = this.templates.get(owner);
+  private template(owner: FactionId, battery = false): { art: ShipArt; native: number } {
+    const key = battery ? `battery-${owner}` : owner;
+    const have = this.templates.get(key);
     if (have) return have;
-    const art = BUILDERS[owner](this.ctx);
+    // A colony's battery is a gun platform in its power's colour (M4_FLEETS.md §26.7).
+    const art = battery ? createDefencePlatform(this.ctx, FACTIONS[owner].colour) : BUILDERS[owner](this.ctx);
     art.setThrottle(0.55);
     const box = new THREE.Box3();
     art.object.updateMatrixWorld(true);
@@ -347,14 +349,14 @@ export class BattleScene {
     });
     const size = box.getSize(new THREE.Vector3());
     const t = { art, native: Math.max(1, size.z, size.x) };
-    this.templates.set(owner, t);
+    this.templates.set(key, t);
     return t;
   }
 
   private buildShips(): void {
     for (const s of this.model.ships) {
       const owner = s.ship.owner;
-      const t = this.template(owner);
+      const t = this.template(owner, s.ship.type === 'battery');
       const body = t.art.object.clone(true);
       body.getObjectByName('shield')?.removeFromParent();
       const scale = s.length / t.native;

@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 20;
+export const STATE_VERSION = 21;
 
 export interface Stockpile {
   metals: number;
@@ -119,6 +119,13 @@ export interface Fleet {
   stance: Stance;
   target: TargetPriority;
   retreat: RetreatPoint;
+  /** An invasion or a bombardment of a holding in its system, until carried out or changed (M4_FLEETS.md §26). */
+  mission: Mission | null;
+}
+
+export interface Mission {
+  kind: 'invade' | 'bombard';
+  holding: number;
 }
 
 /**
@@ -151,6 +158,10 @@ export const MEMORY_KINDS = [
   // M4 (M4_FLEETS.md §23.1).
   'war-declared',
   'war-declared-heard',
+  // M4 (M4_FLEETS.md §26.4, §26.5).
+  'invaded',
+  'bombarded',
+  'bombarded-heard',
 ] as const;
 export type MemoryKind = (typeof MEMORY_KINDS)[number];
 
@@ -326,6 +337,8 @@ export interface Holding {
   locked: number[];
   /** Turns its terraforming station has worked (M2B_SCIENCE.md §18.3); 0 without one. */
   terraform: number;
+  /** Turns of unrest left since it changed hands (M4_FLEETS.md §26.4); 0 for most. */
+  taken: number;
 }
 
 export interface GameState {
@@ -411,6 +424,7 @@ export function makeHolding(
     | 'governor'
     | 'locked'
     | 'terraform'
+    | 'taken'
   > &
     Partial<Pick<Holding, 'projects' | 'districts' | 'governor'>>,
 ): Holding {
@@ -425,6 +439,7 @@ export function makeHolding(
     governor: null,
     locked: [],
     terraform: 0,
+    taken: 0,
     ...h,
   };
   state.nextHoldingId++;
@@ -450,6 +465,7 @@ export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
     governor: null,
     locked: [],
     terraform: 0,
+    taken: 0,
   };
 }
 

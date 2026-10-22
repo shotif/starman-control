@@ -19,6 +19,7 @@ import {
   unworkedDistricts,
 } from './economy.ts';
 import { fleetById } from './fleets.ts';
+import { blockadedBy } from './invasion.ts';
 import { canResearch } from './research.ts';
 import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
@@ -46,6 +47,8 @@ export type Need =
   | { kind: 'unrest'; holding: number; system: SystemId; revolt: boolean }
   /** The treasury will fall into debt within `turns` (0: it is in debt) (M2_WORLDS.md §4). */
   | { kind: 'debt'; turns: number }
+  /** A colony blockaded by a power at war with us (M4_FLEETS.md §26.6). */
+  | { kind: 'blockaded'; holding: number; system: SystemId; by: FactionId }
   /** Districts zoned with no one to work them. */
   | { kind: 'unworked'; holding: number; system: SystemId; districts: number }
   /** A treaty or an exchange offered, waiting for an answer before this turn ends (M3_NEIGHBOURS.md §21.2, §23.1). */
@@ -119,6 +122,8 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
     const level = approvalOf(world, state, h).level;
     if (level === 'unrest' || level === 'revolt')
       out.push({ kind: 'unrest', holding: h.id, system: h.system, revolt: level === 'revolt' });
+    const by = blockadedBy(state, h);
+    if (by) out.push({ kind: 'blockaded', holding: h.id, system: h.system, by });
     // Districts no one works matter once the colony is full; until then its people grow into them.
     const n = unworkedDistricts(h);
     if (n > 0 && h.people >= capacityOf(world, state, h))

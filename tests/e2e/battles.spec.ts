@@ -67,6 +67,7 @@ test('our squadron meets the Cooperative’s at war, and the report tells the ba
         stance: owner === 'sta' ? 'engage' : 'defend',
         target: 'warships',
         retreat: 100,
+        mission: null,
       });
       for (const name of names)
         g.ships.push({

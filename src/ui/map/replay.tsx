@@ -143,7 +143,9 @@ export function ReplayView({
         )}
         {forces.map((f) => (
           <div key={f.key} class="replay-force">
-            <p class="replay-force-name">{f.fleet === null ? 'Ships sailing alone' : f.name}</p>
+            <p class="replay-force-name">
+              {f.fleet === null && f.defences === undefined ? 'Ships sailing alone' : f.name}
+            </p>
             <ul>
               {log.ships
                 .filter((s) => s.force === f.key)
@@ -175,7 +177,13 @@ export function ReplayView({
                         <span style={{ width: `${Math.round((100 * left) / Math.max(1, s.structureMax))}%` }} />
                       </span>
                       <span class="dim">
-                        {state === 'destroyed' ? 'destroyed' : state === 'gone' ? 'left' : `${units(left)}`}
+                        {state === 'destroyed'
+                          ? s.type === 'battery'
+                            ? 'silenced'
+                            : 'destroyed'
+                          : state === 'gone'
+                            ? 'left'
+                            : `${units(left)}`}
                       </span>
                     </li>
                   );
@@ -237,13 +245,15 @@ export function ReplayView({
           <p>
             <FactionMark faction={chosen.owner} size={12} /> <b>{chosen.name}</b>{' '}
             <span class="dim">
-              {chosen.design ?? SHIPS[chosen.type].name}, {FACTIONS[chosen.owner].shortName}
+              {chosen.design ?? (chosen.type === 'battery' ? 'Defence battery' : SHIPS[chosen.type].name)},{' '}
+              {FACTIONS[chosen.owner].shortName}
             </span>
           </p>
           <p class="dim">
             {(() => {
               const sf = shipFrame(chosen.id);
-              if (sf?.status === 'breaking' || (sf?.status === 'gone' && sf.structure <= 0)) return 'Destroyed.';
+              if (sf?.status === 'breaking' || (sf?.status === 'gone' && sf.structure <= 0))
+                return chosen.type === 'battery' ? 'Silenced: it fires again next turn.' : 'Destroyed.';
               if (sf?.status === 'leaving' || sf?.status === 'gone') return 'Left the battle.';
               const shields =
                 chosen.shieldMax > 0 ? `, shields ${units(sf?.shield ?? 0)} of ${units(chosen.shieldMax)}` : '';

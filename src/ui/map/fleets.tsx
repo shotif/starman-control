@@ -20,6 +20,8 @@ import {
 import type { Fleet, GameState, RetreatPoint, Stance, TargetPriority } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { FactionMark } from '../parts.tsx';
+import { holdingName } from './colony.tsx';
+import { FleetMissions } from './invasion.tsx';
 import { give, type Play } from './play.tsx';
 import { targeting } from './state.ts';
 import './fleets.css';
@@ -45,6 +47,11 @@ export function retreatWords(r: RetreatPoint): string {
 export function fleetStatus(world: World, game: GameState, fleet: Fleet): string {
   const at = fleetAt(game, fleet);
   const here = at ? world.system(at).name : 'nowhere';
+  // Its mission (M4_FLEETS.md §26.9).
+  const m = fleet.mission;
+  const target = m ? game.holdings.find((h) => h.id === m.holding) : undefined;
+  if (m && target)
+    return `${m.kind === 'invade' ? 'Invading' : 'Bombarding'} ${holdingName(world, game, target)} at ${here}`;
   if (fleet.hold) return `Holding at ${here}`;
   const dest = fleet.destinations.at(-1);
   if (!dest) return `At ${here}`;
@@ -56,8 +63,10 @@ export function fleetStatus(world: World, game: GameState, fleet: Fleet): string
 /** "3 warships, 1 colony ship". */
 export function fleetLine(game: GameState, fleet: Fleet): string {
   const st = fleetStats(game, fleet);
-  const civil = st.ships - st.warships;
-  const parts = [`${st.warships} warship${st.warships === 1 ? '' : 's'}`];
+  const transports = fleetShips(game, fleet).filter((s) => s.type === 'transport').length;
+  const civil = st.ships - st.warships - transports;
+  const parts = st.warships > 0 || st.ships === 0 ? [`${st.warships} warship${st.warships === 1 ? '' : 's'}`] : [];
+  if (transports > 0) parts.push(`${transports} transport${transports === 1 ? '' : 's'}`);
   if (civil > 0) parts.push(`${civil} other ship${civil === 1 ? '' : 's'}`);
   return parts.join(', ');
 }
@@ -232,6 +241,8 @@ export function FleetPanel({
           {fleet.hold ? 'Stop holding' : 'Hold here'}
         </button>
       </div>
+
+      {at && <FleetMissions world={world} game={game} fleet={fleet} play={play} at={at} />}
 
       <section class="fleet-battle" aria-label="In battle">
         <h3>In battle</h3>

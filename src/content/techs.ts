@@ -108,7 +108,11 @@ export type TechId =
   | 'particle-beams'
   | 'layered-shields'
   // Increment 44 (M4_FLEETS.md §24.6).
-  | 'field-repairs';
+  | 'field-repairs'
+  // M4's defences and invasion (M4_FLEETS.md §26.8).
+  | 'planetary-defence'
+  | 'ground-forces'
+  | 'planetary-shields';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -1214,6 +1218,40 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'opens' },
     text: 'Opens the repair bay: every ship of its fleet is repaired a tenth of its structure a turn, anywhere.',
     inspiration: { deed: { kind: 'battles', n: 1 }, text: 'a battle fought' },
+  },
+  // Defences and invasion (M4_FLEETS.md §26.8).
+  'planetary-defence': {
+    id: 'planetary-defence',
+    name: 'Planetary defence',
+    field: 'weapons',
+    tier: 1,
+    cost: 30,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens the defence battery: guns at a colony that fight in any battle there.',
+    inspiration: { deed: { kind: 'battles', n: 1 }, text: 'a battle fought' },
+  },
+  'ground-forces': {
+    id: 'ground-forces',
+    name: 'Ground forces',
+    field: 'weapons',
+    tier: 1,
+    cost: 30,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens barracks (ten more troops in a garrison) and the troop transport, to invade a colony.',
+    inspiration: { deed: { kind: 'warships', n: 4 }, text: 'holding four warships' },
+  },
+  'planetary-shields': {
+    id: 'planetary-shields',
+    name: 'Planetary shields',
+    field: 'weapons',
+    tier: 3,
+    cost: 100,
+    needs: ['planetary-defence', 'deflector-fields'],
+    effect: { kind: 'opens' },
+    text: 'Opens the planetary shield: it stops bombardment and shields a colony’s battery.',
+    inspiration: { deed: { kind: 'battles', n: 3 }, text: 'three battles fought' },
   },
 };
 

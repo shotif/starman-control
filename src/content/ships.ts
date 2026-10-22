@@ -7,7 +7,7 @@ import type { TechId } from './techs.ts';
 /** A warship's hull (M4_FLEETS.md §21.1): its modules come from its design. */
 export type HullId = 'corvette' | 'frigate' | 'destroyer' | 'cruiser' | 'capital';
 
-export type ShipType = 'survey' | 'outpost' | 'colony' | HullId;
+export type ShipType = 'survey' | 'outpost' | 'colony' | 'transport' | HullId;
 
 export interface ShipDef {
   type: ShipType;
@@ -20,6 +20,10 @@ export interface ShipDef {
   upkeep: number;
   /** A warship's hull: places for modules, its own structure, and the technology it needs. */
   hull?: { places: number; structure: number; needs?: TechId };
+  /** A civil ship's technology, if it needs one. */
+  needs?: TechId;
+  /** Troops it carries, raised from the people of the colony that builds it (M4_FLEETS.md §26.3). */
+  troops?: number;
 }
 
 export const SHIPS: Record<ShipType, ShipDef> = {
@@ -46,6 +50,17 @@ export const SHIPS: Record<ShipType, ShipDef> = {
     cost: { industry: 80, metals: 20, volatiles: 10 },
     blindJumps: false,
     upkeep: 1,
+  },
+  // M4's troop transport (M4_FLEETS.md §26.3).
+  transport: {
+    type: 'transport',
+    name: 'Troop transport',
+    does: 'Carries 5 troops, raised from its colony’s people, to invade a colony.',
+    cost: { industry: 30, metals: 5, volatiles: 0 },
+    blindJumps: false,
+    upkeep: 1,
+    needs: 'ground-forces',
+    troops: 5,
   },
   // The warships' hulls (M4_FLEETS.md §21.1, D-59).
   corvette: {
@@ -99,7 +114,7 @@ export const SHIPS: Record<ShipType, ShipDef> = {
 export const HULLS: readonly HullId[] = ['corvette', 'frigate', 'destroyer', 'cruiser', 'capital'];
 
 /** The ships that are not warships: built for what they do, with no design. */
-export const CIVIL: readonly ShipType[] = ['survey', 'outpost', 'colony'];
+export const CIVIL: readonly ShipType[] = ['survey', 'outpost', 'colony', 'transport'];
 
 export function isHull(type: ShipType): type is HullId {
   return SHIPS[type].hull !== undefined;

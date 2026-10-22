@@ -76,6 +76,7 @@ import { HABITABILITY_WORD } from '../system/words.ts';
 import { AdvisorBy } from './advisor.tsx';
 import { ColonyStill } from './ColonyStill.tsx';
 import { eventTitle } from './event.tsx';
+import { Defences } from './invasion.tsx';
 import { designLine, give, type Play } from './play.tsx';
 import { lanePreview, panel, queueHover } from './state.ts';
 import './colony.css';
@@ -801,6 +802,7 @@ export function HoldingPanel({
           <FigureLine label="Industry" {...industryOf(world, game, h)} />
           <FigureLine label="Research" {...colonyResearchOf(world, game, h)} />
           <FigureLine label="Credits" {...creditsOf(world, game, h)} />
+          <Defences game={game} holding={h} />
         </>
       ) : (
         <p class="dim">Outposts have no people; they gather their world’s riches, and can build lanes.</p>
@@ -953,6 +955,8 @@ export function needText(world: World, game: GameState, need: Need): string {
     return need.revolt
       ? `${name} is in revolt: it makes and builds nothing until its approval rises.`
       : `${name} is in unrest: it makes less and does not grow.`;
+  if (need.kind === 'blockaded')
+    return `${name} is blockaded by the ${FACTIONS[need.by].shortName}: cut off from supply, its credits halved. Send warships to break it.`;
   if (need.kind === 'unworked')
     return `${name} has ${need.districts} district${need.districts === 1 ? '' : 's'} with no one to work ${need.districts === 1 ? 'it' : 'them'}.`;
   const first = h.queue[0];

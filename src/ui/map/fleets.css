@@ -116,3 +116,57 @@
   grid-column: 2;
   justify-self: start;
 }
+
+/* A fleet's missions (M4_FLEETS.md §26.9): each enemy colony here, with what can be done to it. */
+.fleet-targets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fleet-targets li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  margin: 0.4rem 0;
+}
+
+.fleet-target-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.fleet-odds {
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+/* The commanders' words to Control under an invasion in the report (§26.4). */
+.report-items .radio-traffic {
+  grid-column: 2;
+  margin: 0.3rem 0 0.2rem;
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid var(--accent, #5cc8ff);
+  background: rgba(92, 200, 255, 0.06);
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.report-items .radio-traffic li {
+  display: block;
+  margin: 0.2rem 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.radio-who {
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

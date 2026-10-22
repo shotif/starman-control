@@ -197,9 +197,13 @@ rivals arming when at war; state version 19. **Done: increment 45, the replay** 
 each battle in the report opens it in 3D in the map's place, each power's ships from Reborn's kit
 (and two alien builders of our own), shots by kind, shields flaring, ships breaking up; play,
 pause, a round at a time, rewind, faster and skip; the account beside it; its code loads only when
-watched (30 KB); state version 20.
+watched (30 KB); state version 20. **Done: increment 46, defences and invasion** (§26): the defence
+battery, planetary shield and barracks, a garrison from each colony's people, troop transports,
+invasion as a fleet's mission with the commanders' radio traffic, bombardment, blockade, colonies
+and capitals changing hands, rivals building batteries at war; turns made about twice as fast;
+state version 21.
 
-The art and music spend: about $25.85 of $50 (raised on 22 October 2026; about $24.15 left). M3's
+The art and music spend: about $27.15 of $50 (raised on 22 October 2026; about $22.85 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner
@@ -210,8 +214,8 @@ art is about 65 pictures (about $6.50).
 - **The Gemini key** is in the environment as `GEMINI_API_KEY`. **Never print, log, commit or echo
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
-- **Art spend (D-27):** about **$35 in all** may be spent without asking (raised on 21 October
-  2026); about **$24.45** is spent (after M2b), so about **$10.55** is left. Nano
+- **Art spend (D-27):** about **$50 in all** may be spent without asking (raised on 22 October
+  2026); about **$27.15** is spent (after increment 46), so about **$22.85** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.

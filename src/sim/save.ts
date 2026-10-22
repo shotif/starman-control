@@ -265,6 +265,13 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   },
   /** 19 → 20 (M4 increment 45): the replay. A battle kept from before has no weapons' kinds, so none is kept. */
   19: (g) => ({ ...g, version: 20, battles: [] }),
+  /** 20 → 21 (M4 increment 46): defences and invasion. No fleet has a mission, and no colony was taken. */
+  20: (g) => {
+    if (!Array.isArray(g.fleets) || !Array.isArray(g.holdings)) throw new SaveError(DAMAGED);
+    const fleets = (g.fleets as Raw[]).map((f) => ({ ...f, mission: null }));
+    const holdings = (g.holdings as Raw[]).map((h) => ({ ...h, taken: 0 }));
+    return { ...g, version: 21, fleets, holdings };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

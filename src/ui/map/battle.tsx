@@ -64,11 +64,18 @@ export function whyText(why: Why, me: FactionId): string {
 /** The battle's line in the report: where, against whom, the losses, and who held the system. */
 export function battleText(world: World, game: GameState, log: BattleLog, me: FactionId): string {
   const enemies = log.powers.filter((p) => p !== me && atWar(game, me, p));
-  const mine = log.ships.filter((s) => s.owner === me);
-  const theirs = log.ships.filter((s) => enemies.includes(s.owner));
+  // Batteries are told apart from ships: silenced, not lost (M4_FLEETS.md §26.7).
+  const ships = log.ships.filter((s) => s.type !== 'battery');
+  const mine = ships.filter((s) => s.owner === me);
+  const theirs = ships.filter((s) => enemies.includes(s.owner));
   const lost = new Set(log.rounds.flatMap((r) => r.destroyed));
   const ours = mine.filter((s) => lost.has(s.id)).length;
   const them = theirs.filter((s) => lost.has(s.id)).length;
+  const silenced = log.ships.filter((s) => s.type === 'battery' && lost.has(s.id));
+  const quiet = [
+    silenced.some((s) => s.owner === me) ? ' Our battery was silenced.' : '',
+    silenced.some((s) => enemies.includes(s.owner)) ? ' Their battery was silenced.' : '',
+  ].join('');
   const held =
     log.held.includes(me) && !log.held.some((p) => enemies.includes(p))
       ? 'We hold the system.'
@@ -78,7 +85,7 @@ export function battleText(world: World, game: GameState, log: BattleLog, me: Fa
           ? 'Both sides hold their ground: the battle goes on next turn.'
           : 'Neither side holds the system.';
   const rounds = log.rounds.length;
-  return `A battle at ${world.system(log.system).name} against ${names(enemies)}, ${rounds} round${rounds === 1 ? '' : 's'}: we lost ${ours} of ${mine.length} ship${mine.length === 1 ? '' : 's'}, they lost ${them} of ${theirs.length}. ${held}`;
+  return `A battle at ${world.system(log.system).name} against ${names(enemies)}, ${rounds} round${rounds === 1 ? '' : 's'}: we lost ${ours} of ${mine.length} ship${mine.length === 1 ? '' : 's'}, they lost ${them} of ${theirs.length}.${quiet} ${held}`;
 }
 
 export function BattleWhy({ log, me }: { log: BattleLog; me: FactionId }) {

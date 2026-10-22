@@ -26,6 +26,10 @@ export type ProjectId =
   | 'lane-relay'
   | 'orbital-habitat'
   | 'terraforming-station'
+  // M4's defences (M4_FLEETS.md §26.1).
+  | 'defence-battery'
+  | 'planetary-shield'
+  | 'barracks'
   // M2b's great works (M2B_SCIENCE.md §20.2).
   | 'long-array'
   | 'lapse-archive'
@@ -197,6 +201,31 @@ export const PROJECTS: Record<ProjectId, ProjectDef> = {
     cost: { industry: 120, metals: 10, volatiles: 20, fuel: 0 },
     upkeep: 2,
     opens: 'terraforming',
+  },
+  // M4's defences (M4_FLEETS.md §26.1).
+  'defence-battery': {
+    id: 'defence-battery',
+    name: 'Defence battery',
+    does: 'Fights in any battle here with three of your best weapon; silenced when beaten, it fires again the next turn.',
+    cost: { industry: 60, metals: 15, volatiles: 0, fuel: 0 },
+    upkeep: 2,
+    opens: 'planetary-defence',
+  },
+  'planetary-shield': {
+    id: 'planetary-shield',
+    name: 'Planetary shield',
+    does: 'Stops bombardment, and gives the battery here 30 of balanced shields.',
+    cost: { industry: 120, metals: 20, volatiles: 10, fuel: 0 },
+    upkeep: 3,
+    opens: 'planetary-shields',
+  },
+  barracks: {
+    id: 'barracks',
+    name: 'Barracks',
+    does: 'Ten more troops in the garrison here.',
+    cost: { industry: 40, metals: 10, volatiles: 0, fuel: 0 },
+    upkeep: 1,
+    opens: 'ground-forces',
   },
   // M2b's great works (M2B_SCIENCE.md §20.2), all fiction: one of each in the whole neighbourhood.
   'long-array': {

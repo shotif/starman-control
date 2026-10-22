@@ -60,6 +60,7 @@ export function formFleet(state: GameState, owner: FactionId, ships: readonly Sh
     stance: 'defend',
     target: 'warships',
     retreat: 50,
+    mission: null,
   };
   state.nextFleetId++;
   state.fleets.push(fleet);

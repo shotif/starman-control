@@ -41,15 +41,17 @@ export const SHIELD_COLOURS: Record<ShieldKind, string> = {
 /** Distance from the centre of a task force at close, middle and long range, in scene units. */
 export const BAND_DISTANCE: readonly [number, number, number] = [55, 125, 200];
 /** A ship's length by its type, in scene units: a corvette smallest, a capital ship three times it. */
-export const SHIP_LENGTH: Record<ShipType, number> = {
+export const SHIP_LENGTH: Record<ShipType | 'battery', number> = {
   survey: 12,
   outpost: 15,
   colony: 18,
+  transport: 16,
   corvette: 15,
   frigate: 20,
   destroyer: 26,
   cruiser: 34,
   capital: 46,
+  battery: 34,
 };
 const SPACING = 40;
 const RANK_DEPTH = 48;

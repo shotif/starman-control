@@ -40,6 +40,7 @@ import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
+import { bombardedText, invasionText, RadioTraffic } from './invasion.tsx';
 import { panel, say, targeting } from './state.ts';
 
 export interface Play {
@@ -599,6 +600,19 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       const me = playerPower(game)?.faction;
       return log && me ? battleText(world, game, log, me) : `A battle at ${name(e.system)}.`;
     }
+    // M4's defences and invasion (M4_FLEETS.md §26.9).
+    case 'invasion': {
+      const me = playerPower(game)?.faction ?? e.by;
+      return invasionText(world, game, e, me);
+    }
+    case 'bombarded': {
+      const me = playerPower(game)?.faction ?? e.by;
+      return bombardedText(world, game, e, me);
+    }
+    case 'blockaded':
+      return `${holding(e.holding)} is blockaded by the ${FACTIONS[e.by].shortName}’s warships: cut off from our supply, its credits halved.`;
+    case 'capital-moved':
+      return `Our capital has moved to ${holding(e.holding)}.`;
   }
 }
 
@@ -743,11 +757,20 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'peace-made': { icon: 'diplomacy', tone: 'growth' },
   intercepted: { icon: 'refused', tone: 'news' },
   battle: { icon: 'ship', tone: 'needs' },
+  invasion: { icon: 'colony', tone: 'needs' },
+  bombarded: { icon: 'refused', tone: 'wrong' },
+  blockaded: { icon: 'refused', tone: 'needs' },
+  'capital-moved': { icon: 'colony', tone: 'wrong' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
 export function dispatchPicture(events: readonly ReportEvent[]): DispatchPicture | null {
   const has = (k: ReportEvent['kind']) => events.some((e) => e.kind === k);
+  // War first (M4_FLEETS.md §19): an invasion, a battle, war declared, peace made.
+  if (has('invasion')) return 'dispatch-invasion';
+  if (has('battle')) return 'dispatch-battle';
+  if (has('war-declared')) return 'dispatch-war';
+  if (has('peace-made')) return 'dispatch-peace';
   if (has('investigated') || events.some((e) => e.kind === 'surveyed' && e.anomaly)) return 'dispatch-anomaly';
   if (has('founded')) return 'dispatch-colony';
   if (has('researched')) return 'dispatch-research';
@@ -758,6 +781,10 @@ export function dispatchPicture(events: readonly ReportEvent[]): DispatchPicture
 }
 
 export type DispatchPicture =
+  | 'dispatch-invasion'
+  | 'dispatch-battle'
+  | 'dispatch-war'
+  | 'dispatch-peace'
   | 'dispatch-anomaly'
   | 'dispatch-colony'
   | 'dispatch-research'
@@ -767,6 +794,12 @@ export type DispatchPicture =
 
 /** What each picture shows, for those who cannot see it. */
 const PICTURE_TEXT: Record<DispatchPicture, string> = {
+  'dispatch-invasion':
+    'Troop landers descending through a hazy evening sky on a colony, a defence gun firing up at them.',
+  'dispatch-battle': 'Two small fleets of warships exchanging fire in deep space, a shield flaring round one ship.',
+  'dispatch-war':
+    'Officers round a holographic star map with one border glowing red, warships leaving a station behind them.',
+  'dispatch-peace': 'Two delegations meeting across a long table aboard a station, a signed document between them.',
   'dispatch-anomaly': 'An ancient ring of dark stone floating in deep space, a small survey ship approaching it.',
   'dispatch-colony': 'The first habitat domes set down on the rocky plain of an alien world at dusk.',
   'dispatch-research': 'Scientists round a glowing model of a lane beacon in a research station.',
@@ -892,6 +925,7 @@ export function ReportView({
                   const log = game.battles.find((b) => b.id === e.battle);
                   return log ? <BattleWhy log={log} me={faction} /> : null;
                 })()}
+              {e.kind === 'invasion' && <RadioTraffic world={world} game={game} e={e} me={faction} />}
               {e.kind === 'battle' && onWatch && game.battles.some((b) => b.id === e.battle) && (
                 <button
                   type="button"

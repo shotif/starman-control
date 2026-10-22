@@ -243,6 +243,15 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     if (ship) orders.push({ type: 'queue', holding: h.id, item: ship });
   }
 
+  // At war, a battery at the capital and at each colony with a shipyard, as the treasury allows
+  // (M4_FLEETS.md §26.11).
+  if (atWarNow && power.treasury >= SHIP_TREASURY && income > 0) {
+    const battery: QueueItem = { kind: 'project', project: 'defence-battery' };
+    for (const h of mine)
+      if ((h.capital || h.projects.includes('shipyard')) && queueRefusal(world, state, h, battery) === null)
+        orders.push({ type: 'queue', holding: h.id, item: battery });
+  }
+
   // Fleets wait at the capital, ready to defend it (§24.9).
   const home = power.capital;
   for (const f of state.fleets) {
@@ -305,9 +314,14 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       (!armed && withNeeds(power, id).some((x) => TECHS[x].field === 'weapons'))
         ? 1
         : 0;
-    const next = canResearch(power)
-      .filter((id) => withNeeds(power, id).every(own))
-      .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];
+    // At war, its batteries first (§26.11).
+    const defence: TechId = 'planetary-defence';
+    const next =
+      atWarNow && canResearch(power).includes(defence)
+        ? defence
+        : canResearch(power)
+            .filter((id) => withNeeds(power, id).every(own))
+            .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];
     if (next) orders.push({ type: 'research', tech: next });
   }
 

@@ -131,10 +131,19 @@ export function isArmed(state: GameState, ship: ShipState): boolean {
   return shipDesign(state, ship)?.modules.some((m) => MODULES[m].weapon !== undefined) ?? false;
 }
 
-/** The power at war with `owner` whose armed warship at a system stops it there (§23.4), if any. */
+/** The power at war with `owner` whose armed warship or battery at a system stops it there (§23.4, §26.7), if any. */
 export function interceptedBy(state: GameState, owner: FactionId, system: SystemId): FactionId | null {
   if (!state.wars.some((w) => w.a === owner || w.b === owner)) return null;
   for (const s of state.ships)
     if (s.at === system && s.owner !== owner && atWar(state, owner, s.owner) && isArmed(state, s)) return s.owner;
+  // A colony's battery stops them too (M4_FLEETS.md §26.7).
+  for (const h of state.holdings)
+    if (
+      h.system === system &&
+      h.kind === 'colony' &&
+      h.projects.includes('defence-battery') &&
+      atWar(state, owner, h.owner)
+    )
+      return h.owner;
   return null;
 }

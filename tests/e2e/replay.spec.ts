@@ -77,6 +77,7 @@ test('a battle watched from the report: played, paused, stepped, rewound, faster
         stance,
         target: 'warships',
         retreat: 100,
+        mission: null,
       });
       for (const name of names)
         g.ships.push({

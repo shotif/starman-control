@@ -38,6 +38,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 23. [Increment 43 in detail: war and peace](#23-increment-43-in-detail-war-and-peace-written-before-building-it)
 24. [Increment 44 in detail: battles](#24-increment-44-in-detail-battles-written-before-building-it)
 25. [Increment 45 in detail: the replay](#25-increment-45-in-detail-the-replay-written-before-building-it)
+26. [Increment 46 in detail: defences and invasion](#26-increment-46-in-detail-defences-and-invasion-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -1049,3 +1050,173 @@ report.
 - **State version 20**, as §25.5. **Budget:** the replay's code is 30 KB beyond the map's (of 60).
   A frame of the timeline for a battle of 40 ships takes 0.1 ms.
 - **Tests:** `replay.test.ts` (11 tests); `replay.spec.ts` on the phone, tablet and desktop.
+
+## 26. Increment 46 in detail: defences and invasion (written before building it)
+
+**Goals.** D-65 as decided (A): colonies can be **defended** (a defence battery, a planetary
+shield, barracks, and a garrison from their people), **invaded** by troops landed from transports,
+**bombarded** by a fleet holding their orbit, and **blockaded**; a colony taken changes hands with
+its people and buildings, and a capital taken moves its power's capital. Every landing is told as
+**radio traffic** from the commanders to Control, in each power's voice (D-17 A: written into the
+game).
+
+**Out of scope.** Raids (47); the rivals invading and bombarding (48: until then they defend);
+a power with no colony left leaving the game (50: until then it keeps its ships and outposts).
+
+### 26.1 Defences
+
+Three projects for a colony (not an outpost), opened by three new Weapons technologies (§26.8):
+
+| Project | Cost (industry, metals, volatiles) | Upkeep | Does |
+| --- | --- | --- | --- |
+| **Defence battery** | 60, 15, 0 | 2 | Fights in any battle at its system: three of its power's best weapon, a targeting computer, structure 60. Beaten, it is silenced for that battle and fires again the next turn. |
+| **Planetary shield** | 120, 20, 10 | 3 | Stops bombardment; gives the battery 30 of balanced shields. |
+| **Barracks** | 40, 10, 0 | 1 | Ten more troops in the garrison. |
+
+Each is a building in the colony view, in each human power's architecture (§26.10).
+
+### 26.2 The garrison
+
+Every colony has troops from its people: **2, and 1 for each million people**, 5 more at the
+capital, 10 more with barracks. An outpost has none. A colony's panel says its garrison; a rival's
+colony in sight says its garrison and defences too (the Watch sees them).
+
+### 26.3 Troop transports
+
+A sixth civil hull, the **troop transport** (cost 30 industry, 5 metals, 5 fuel; upkeep 1;
+structure 10), opened by *Ground forces*. It carries **5 troops**, raised from the people of the
+colony that builds it: a tenth of a million, so a colony of less than a million cannot build one.
+Like a warship, a transport built joins the fleet waiting at its yard or forms one; as a civil ship
+it fires at no one, and *transports first* targets it.
+
+### 26.4 Invasion
+
+- **The order:** *Invade* a colony or outpost, on a fleet with transports in a system where it is,
+  of a power at war with the fleet's. It stands until it is carried out, or the fleet moves or is
+  given another.
+- **As the turn ends,** after the battles: if the target's power has no armed ship and no battery
+  still fighting in the system, every transport of the fleet lands its troops. Troops and garrison
+  fight it out, one against one, from the seed: the garrison wins each exchange **55 in 100**,
+  until one side is gone. The transports are spent either way.
+- **Taken:** the colony is the invader's, with its people and its buildings (a great work too); its
+  queue, stored industry, governor and locks are cleared; its people are **unhappy for 10 turns**
+  (approval −20). A capital taken moves its power's capital to its largest colony left. An outpost
+  falls to any troops that land. The loser's war weariness rises by 5, and it remembers the
+  invasion (−10).
+- **Radio traffic:** both powers read of it in the report, with their commanders' words to Control
+  (the invader's officer as the troops land, fight and win or fall back; the garrison's as it sees
+  them come, holds and falls or stands), in each power's voice, with the numbers of the fight.
+
+### 26.5 Bombardment
+
+- **The order:** *Bombard* a colony, on a fleet with an armed ship in its system, of a power at war
+  with the fleet's; *Stop* ends it.
+- **Each turn's end,** while the fleet holds the orbit (as §26.4) and there is no planetary shield:
+  the colony loses **a twentieth of its people** (at least a tenth of a million), and one turn in
+  three its newest building is **wrecked** (never a great work). A planetary shield stops it all.
+- Both powers read of it every turn. It is remembered: −15 by the bombed, −5 by every other power
+  in contact with the bombarder, −10 by the lawful.
+
+### 26.6 Blockade
+
+A colony is **blockaded** while armed ships of a power at war with its own are in its system and
+none of its own power's armed ships or batteries is: then it is **cut off from its supply network**
+(it lives on its own food, without the store) and its **credits are halved**. Its panel says so, and
+the report tells its power when a blockade begins.
+
+### 26.7 Batteries in battle
+
+- A battle is fought (§24.1) wherever a power has a battery and a power at war with it has any ship;
+  and a battery stops ships at war with its power as a warship does (interception, §23.4).
+- A colony's battery fights as **a task force of its own** (*its colony's defences*), never moving or
+  leaving: the range between it and an enemy is the enemy's. It fires with three of its power's
+  best weapon (the strongest weapon module it can build), a targeting computer, structure 60, and
+  the planetary shield's 30 if one stands. It is hit as a capital ship is (+10).
+- It counts as armed for holding the system. Silenced, it is in the log among those lost, and fires
+  again the next turn: a battery is never destroyed.
+- In the replay, a battery is a fortress platform at its side, its power's colour beneath.
+
+### 26.8 The Weapons field
+
+Three technologies more (21 in the field, 83 in the tree):
+
+| Technology | Tier, cost | Needs | Opens | Inspired by |
+| --- | --- | --- | --- | --- |
+| **Planetary defence** | 1, 30 | | the defence battery | a battle fought |
+| **Ground forces** | 1, 30 | | barracks and the troop transport | holding four warships |
+| **Planetary shields** | 3, 100 | Planetary defence, Deflector fields | the planetary shield | three battles fought |
+
+### 26.9 On the screen
+
+- **A colony's panel:** *Defences*: the garrison (and why: people, the capital, barracks), the
+  battery and the shield if built; *Blockaded* and *Bombarded* as warnings when they apply. The
+  same on a rival's colony in sight.
+- **A fleet's panel:** with transports, *Invade* for each enemy colony and outpost in its system,
+  saying the troops against the garrison (*our 10 troops against a garrison of 7*); with an armed
+  ship, *Bombard* for each enemy colony, and *Stop*. The fleet's line says its mission.
+- **The report:** the invasion, with **Radio traffic** under it (the lines, in order); the
+  bombardment; the blockade; the capital moved. An invasion's report has its own picture.
+- **The shipyard's queue** offers the troop transport among the ships.
+
+### 26.10 Pictures
+
+The defence battery, planetary shield and barracks in each human power's architecture (9 pictures,
+18 candidates), and the report's pictures planned in §19 and not yet made: **a battle, an
+invasion, war declared and peace** (4 pictures, 8 candidates). 26 candidates, about $1.30, so about
+**$27.15** of D-27's $50 in all. The aliens' colonies show their own buildings as in M3.
+
+### 26.11 The rivals
+
+At war (only when attacked, until 48), a rival researches *Planetary defence* and builds a battery
+at its capital and at each colony with a shipyard, as its treasury allows. It never invades or
+bombards until 48.
+
+### 26.12 State
+
+`ShipType` gains `transport`; `Fleet.mission` (an invasion or a bombardment, or none);
+`Holding.taken` (turns of unrest left after a colony changes hands); memories `invaded`,
+`bombarded` and `bombarded-heard`; report events `invasion`, `bombarded`, `blockaded` and
+`capital-moved`. **State version 21**: no fleet has a mission and no colony was taken.
+
+### 26.13 Tests
+
+`invasion.test.ts`: the garrison; a transport raising troops and refused at a small colony; an
+invasion won and one lost, the same from the same seed; an outpost falling; a capital moving; no
+landing while the enemy has an armed ship or battery fighting; the battery in battle and stopping
+ships; the planetary shield; bombardment, its wrecking and its memory; the blockade's network and
+credits; a radio line for every power and stage; the rivals' batteries; the migration.
+`invasion.spec.ts`: a fleet of ours with transports invades a Cooperative colony at war, and the
+report tells it with radio traffic, on the phone, tablet and desktop.
+
+### Increment 46: defences and invasion (22 October 2026)
+
+- **Defences as §26.1** (`src/content/projects.ts`): the defence battery, planetary shield and
+  barracks, opened by **Planetary defence**, **Planetary shields** and **Ground forces** (21 Weapons
+  technologies, 83 in the tree). Each is a building in the colony view, in each human power's
+  architecture.
+- **The garrison as §26.2** (`src/sim/invasion.ts`), shown under *Defences* in a colony's panel with
+  why, and what weighs on it: newly taken, blockaded, under bombardment.
+- **Troop transports as §26.3:** 30 industry and 5 metals (no fuel: a ship's cost has none), 5
+  troops, a tenth of a million people from their colony; built, they join the fleet waiting at
+  their yard as warships do.
+- **Invasion as §26.4,** a fleet's *mission* (`fleet-mission` order): resolved at step 1c of the
+  turn, after the battles; the garrison wins each exchange 55 in 100. A colony taken keeps its
+  people and buildings and is unhappy for 10 turns (approval −20, *newly taken*); a capital taken
+  moves its power's capital. Radio traffic (`src/content/radio.ts`): a line for every power and
+  stage, in its own voice, all fiction, under each invasion in the report.
+- **Bombardment as §26.5,** one memory for each bombardment, renewed while it goes on rather than
+  piled up. **Blockade as §26.6:** a blockaded colony is a supply network of its own and its credits
+  are halved; it is among *what needs you*.
+- **Batteries in battle as §26.7:** a task force of their own (`TaskForce.defences`), interception,
+  silenced not destroyed; in the replay a gun platform in its power's colour. The report's battle
+  line tells a battery silenced apart from ships lost.
+- **The rivals as §26.11:** at war, *Planetary defence* first and batteries at the capital and the
+  yards. They never invade or bombard yet.
+- **Pictures as §26.10:** 26 candidates, about $1.30; the report shows an invasion's, a battle's,
+  war's and peace's pictures before any other.
+- **State version 21**, as §26.12.
+- **Faster turns:** found while checking the budgets (CI ran a turn at 207 ms of 200 on increment
+  42): distances, adapted species and lane lengths are now worked out once. A turn at turn 100 of
+  the five-power game takes about 48 ms under Node, from about 105.
+- **Tests:** `invasion.test.ts` (16 tests); 578 unit tests; `invasion.spec.ts` on the phone, tablet
+  and desktop.

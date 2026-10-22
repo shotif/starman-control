@@ -11,11 +11,20 @@ import { RULES } from '../content/rules.ts';
 import { SHIPS, type ShipType } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { shipDesign } from './designs.ts';
+import { bodyOf } from './economy.ts';
 import { fleetById, pruneFleets } from './fleets.ts';
+import { bestWeapon, hasBattery } from './invasion.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import type { ReportEvent } from './report.ts';
 import { rng } from './rng.ts';
-import type { GameState, RetreatPoint, ShipState, Stance, TargetPriority } from './state.ts';
+import {
+  type GameState,
+  powerOf,
+  type RetreatPoint,
+  type ShipState,
+  type Stance,
+  type TargetPriority,
+} from './state.ts';
 import { atWar, wearyFrom } from './war.ts';
 import type { World } from './world.ts';
 
@@ -43,14 +52,16 @@ export interface TaskForce {
   stance: Stance;
   target: TargetPriority;
   retreat: RetreatPoint;
+  /** For a colony's defences (M4_FLEETS.md §26.7): its holding. They never move or leave. */
+  defences?: number;
 }
 
-/** A ship as it entered a battle. */
+/** A ship as it entered a battle; or a colony's battery (§26.7), its id the holding's, negated. */
 export interface BattleShip {
   id: number;
   owner: FactionId;
   name: string;
-  type: ShipType;
+  type: ShipType | 'battery';
   /** Its design's name, for a warship. */
   design: string | null;
   force: string;
@@ -103,6 +114,16 @@ export interface BattleLog {
   /** Powers with armed ships still in the system at the end. */
   held: FactionId[];
   why: Why[];
+}
+
+/** A ship, or a colony's battery (with no ship), as it fights. */
+interface Fighter {
+  ship: ShipState | null;
+  log: BattleShip;
+  weapons: { damage: number; type: DamageType; best: Band }[];
+  targeting: boolean;
+  structure: number;
+  shield: number;
 }
 
 /** Whether a ship carries a weapon. */
@@ -159,13 +180,16 @@ export function hitDamage(
 }
 
 /** The chance in a hundred that a shot hits (§24.3). */
-export function hitChance(targeting: boolean, target: ShipType, evading: boolean): number {
+export function hitChance(targeting: boolean, target: ShipType | 'battery', evading: boolean): number {
   const b = RULES.battle;
   const size = b.sizeToHit[target] ?? 0;
   return Math.max(5, Math.min(95, b.toHit + (targeting ? b.targeting : 0) - (evading ? b.evading : 0) + size));
 }
 
-/** The systems where a battle is fought this turn: an armed ship and a ship of a power at war with it. */
+/**
+ * The systems where a battle is fought this turn: an armed ship, or a colony's battery (§26.7), and a
+ * ship of a power at war with it.
+ */
 export function battleSystems(state: GameState): SystemId[] {
   if (state.wars.length === 0) return [];
   const out = new Set<SystemId>();
@@ -173,6 +197,9 @@ export function battleSystems(state: GameState): SystemId[] {
     if (a.at === null || !weaponsOf(state, a).length) continue;
     if (state.ships.some((b) => b.at === a.at && atWar(state, a.owner, b.owner))) out.add(a.at);
   }
+  for (const h of state.holdings)
+    if (hasBattery(h) && state.ships.some((b) => b.at === h.system && atWar(state, h.owner, b.owner)))
+      out.add(h.system);
   return [...out].sort();
 }
 
@@ -198,9 +225,9 @@ function nearestHome(world: World, state: GameState, owner: FactionId, from: Sys
 export function fight(world: World, state: GameState, system: SystemId, id: number): BattleLog {
   const b = RULES.battle;
   const here = state.ships.filter((s) => s.at === system);
-  const powers = [...new Set(here.map((s) => s.owner))]
-    .filter((p) => here.some((s) => s.owner !== p && atWar(state, p, s.owner)))
-    .sort();
+  const forts = state.holdings.filter((h) => h.system === system && hasBattery(h));
+  const present = [...new Set([...here.map((s) => s.owner), ...forts.map((h) => h.owner)])];
+  const powers = present.filter((p) => present.some((q) => q !== p && atWar(state, p, q))).sort();
   const ships = here.filter((s) => powers.includes(s.owner));
 
   // Task forces: each fleet, and each power's ships sailing alone.
@@ -224,7 +251,7 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
       );
     return key;
   };
-  const fighters = ships.map((s) => {
+  const fighters: Fighter[] = ships.map((s) => {
     const sh = shieldsOf(state, s);
     const max = structureMaxOf(state, s);
     return {
@@ -249,6 +276,52 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
       shield: sh.max,
     };
   });
+  // Each colony's battery, a task force of its own that never moves or leaves (§26.7).
+  const d = RULES.defence;
+  for (const h of forts.filter((x) => powers.includes(x.owner))) {
+    const place = bodyOf(world, state, h)?.name ?? world.system(system).name;
+    const w = MODULES[bestWeapon(powerOf(state, h.owner))].weapon;
+    if (!w) continue;
+    const key = `d${h.id}`;
+    forces.push({
+      key,
+      owner: h.owner,
+      fleet: null,
+      name: `${place} defences`,
+      stance: 'defend',
+      target: 'warships',
+      retreat: 100,
+      defences: h.id,
+    });
+    const max = d.batteryStructure * 10;
+    const shield = h.projects.includes('planetary-shield') ? d.planetaryShield * 10 : 0;
+    const weapons = Array.from({ length: d.batteryWeapons }, () => ({
+      damage: w.damage * 10,
+      type: w.type,
+      best: BAND[w.range],
+    }));
+    fighters.push({
+      ship: null,
+      log: {
+        id: -h.id,
+        owner: h.owner,
+        name: `${place} battery`,
+        type: 'battery',
+        design: null,
+        force: key,
+        structureMax: max,
+        structure: max,
+        shieldMax: shield,
+        shieldKind: 'balanced',
+        armed: true,
+        weapons: weapons.map((x) => x.type),
+      },
+      weapons,
+      targeting: true,
+      structure: max,
+      shield,
+    });
+  }
   const byForce = new Map(forces.map((f) => [f.key, f]));
   const startStructure = new Map(forces.map((f) => [f.key, 0]));
   for (const x of fighters) startStructure.set(x.log.force, (startStructure.get(x.log.force) ?? 0) + x.structure);
@@ -269,7 +342,8 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
     for (const f of forces) {
       if (gone.has(f.key)) continue;
       const now = band.get(f.key) ?? 2;
-      const next = Math.max(SOUGHT[f.stance], now - 1) as Band;
+      // A colony's defences stay where they are: the range is the enemy's.
+      const next = f.defences !== undefined ? 2 : (Math.max(SOUGHT[f.stance], now - 1) as Band);
       band.set(f.key, next);
       round.bands[f.key] = next;
     }
@@ -335,8 +409,9 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
 
   // What stays: structure lost, ships destroyed, task forces that left sent home.
   const destroyed = new Set(fighters.filter((x) => x.structure <= 0).map((x) => x.log.id));
-  for (const x of fighters) if (x.structure > 0) x.ship.damage = x.log.structureMax - x.structure;
-  for (const x of fighters.filter((y) => destroyed.has(y.log.id)))
+  // A battery silenced is not destroyed: it fires again the next turn (§26.7).
+  for (const x of fighters) if (x.ship && x.structure > 0) x.ship.damage = x.log.structureMax - x.structure;
+  for (const x of fighters.filter((y) => y.ship && destroyed.has(y.log.id)))
     wearyFrom(state, x.log.owner, x.log.armed ? RULES.war.wearyWarship : RULES.war.wearyShip);
   state.ships = state.ships.filter((s) => !destroyed.has(s.id));
   pruneFleets(state);

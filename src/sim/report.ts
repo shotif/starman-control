@@ -157,7 +157,37 @@ export type ReportEvent =
   /** A ship or fleet stopped where a power at war with it has warships (§23.4). */
   | { kind: 'intercepted'; ship?: number; fleet?: number; system: SystemId; by: FactionId }
   /** A battle this power fought (M4_FLEETS.md §24): `battle` is its number among the turn's battles. */
-  | { kind: 'battle'; battle: number; system: SystemId };
+  | { kind: 'battle'; battle: number; system: SystemId }
+  // M4's defences and invasion (M4_FLEETS.md §26).
+  /**
+   * Troops landed on a colony or outpost: `by` invaded `from`'s; the troops and the garrison, and how
+   * many were left of the side that won.
+   */
+  | {
+      kind: 'invasion';
+      holding: number;
+      system: SystemId;
+      by: FactionId;
+      from: FactionId;
+      won: boolean;
+      troops: number;
+      garrison: number;
+      left: number;
+    }
+  /** A colony bombarded by `by`: people lost (tenths of a million) and a building wrecked, or the planetary shield held. */
+  | {
+      kind: 'bombarded';
+      holding: number;
+      system: SystemId;
+      by: FactionId;
+      people: number;
+      wrecked?: ProjectId;
+      shielded: boolean;
+    }
+  /** A colony blockaded from this turn by `by`'s warships. */
+  | { kind: 'blockaded'; holding: number; system: SystemId; by: FactionId }
+  /** A power's capital moved to another colony, its old one taken. */
+  | { kind: 'capital-moved'; faction: FactionId; holding: number; system: SystemId };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

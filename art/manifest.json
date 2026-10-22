@@ -842,6 +842,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-barracks",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. Barracks: orderly rows of prefabricated two-storey buildings round a parade ground, a flagpole, a watchtower and a vehicle shed with armoured rovers, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:04:49.352Z",
+      "id": "authority-barracks",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:18.688Z",
+      "candidate": "art/out/authority-barracks/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-barracks-256.webp",
+          "bytes": 12242
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-barracks-512.webp",
+          "bytes": 34182
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-barracks-1024.webp",
+          "bytes": 95850
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 90,
+        "top": 404,
+        "width": 1888,
+        "height": 1256
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-cargo",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -999,6 +1054,62 @@
         "top": 51,
         "width": 1573,
         "height": 1835
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "authority-defence-battery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A defence battery: a squat armoured gun emplacement of thick grey prefabricated panels behind a sloped berm, a turret of three long gun barrels angled at the sky, a radar mast and an ammunition bunker, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:00:44.137Z",
+      "note": "Here is the game asset for the Sol Transit Authority defence battery, illustrated in a grounded matte-painting style from the requested three-quarter, slightly elevated perspective, and cleanly isolated against a pure magenta background with no ground elements.",
+      "id": "authority-defence-battery",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:09.862Z",
+      "candidate": "art/out/authority-defence-battery/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-defence-battery-256.webp",
+          "bytes": 16890
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-defence-battery-512.webp",
+          "bytes": 49756
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-defence-battery-1024.webp",
+          "bytes": 146632
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 117,
+        "top": 127,
+        "width": 1818,
+        "height": 1630
       },
       "aiGenerated": true
     },
@@ -2759,6 +2870,62 @@
       "aiGenerated": true
     },
     {
+      "briefId": "authority-planetary-shield",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Sol Transit Authority: civic and orderly, standardised prefabricated modules on a strict grid, pale grey ceramic panels and brushed metal, flat roofs, neat rows of square windows, slim green guide lights along the edges; tidy and well kept. A planetary shield generator: a tall cylindrical tower of white prefabricated panels crowned by a ring of emitters casting a faint translucent dome of light up into the sky, thick cables to a power building, green lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:02:37.885Z",
+      "note": "Here is the artwork for your sci-fi planetary shield generator, illustrated in a grounded, matte-painting style with a clean cutout on a magenta background:",
+      "id": "authority-planetary-shield",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:14.059Z",
+      "candidate": "art/out/authority-planetary-shield/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/authority-planetary-shield-256.webp",
+          "bytes": 20462
+        },
+        {
+          "width": 512,
+          "path": "art/structure/authority-planetary-shield-512.webp",
+          "bytes": 60408
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/authority-planetary-shield-1024.webp",
+          "bytes": 178872
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 109,
+        "top": 75,
+        "width": 1827,
+        "height": 1836
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-recreation-dome",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -3474,6 +3641,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "cooperative-barracks",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. Barracks: rounded earth-built bunkhouses round a training yard with a climbing frame, a domed mess hall and solar sails, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:05:32.600Z",
+      "id": "cooperative-barracks",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:20.148Z",
+      "candidate": "art/out/cooperative-barracks/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-barracks-256.webp",
+          "bytes": 18758
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-barracks-512.webp",
+          "bytes": 50506
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-barracks-1024.webp",
+          "bytes": 135400
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 54,
+        "top": 181,
+        "width": 1925,
+        "height": 1530
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-cargo",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -3630,6 +3852,61 @@
         "top": 125,
         "width": 1852,
         "height": 1597
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "cooperative-defence-battery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A defence battery: a rounded earth-built bunker half sunk into a mound, a domed turret with three gun barrels angled at the sky, a woven-mesh radar dish beside it, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:01:25.525Z",
+      "id": "cooperative-defence-battery",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:11.171Z",
+      "candidate": "art/out/cooperative-defence-battery/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-defence-battery-256.webp",
+          "bytes": 19328
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-defence-battery-512.webp",
+          "bytes": 54808
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-defence-battery-1024.webp",
+          "bytes": 154234
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 77,
+        "top": 208,
+        "width": 1881,
+        "height": 1476
       },
       "aiGenerated": true
     },
@@ -5389,6 +5666,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "cooperative-planetary-shield",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Frontier Cooperative: rounded and hand-built, low curved buildings printed from the local soil in warm sand and terracotta tones, round windows, white fabric awnings and small solar sails, planters with greenery; communal and lived-in, with soft blue lights. A planetary shield generator: a rounded earth-built hall with three copper-wound emitter towers round a central spire, a faint blue translucent dome of light rising from them into the sky, soft blue lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:03:29.668Z",
+      "id": "cooperative-planetary-shield",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:15.830Z",
+      "candidate": "art/out/cooperative-planetary-shield/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/cooperative-planetary-shield-256.webp",
+          "bytes": 29332
+        },
+        {
+          "width": 512,
+          "path": "art/structure/cooperative-planetary-shield-512.webp",
+          "bytes": 80444
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/cooperative-planetary-shield-1024.webp",
+          "bytes": 229678
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 148,
+        "top": 170,
+        "width": 1730,
+        "height": 1612
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "cooperative-recreation-dome",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6018,6 +6350,31 @@
       "aiGenerated": true
     },
     {
+      "briefId": "dispatch-battle",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Two small fleets of angular warships exchanging fire in deep space, bright blue-white bolts and orange tracers crossing between them, a translucent shield bubble flaring round one ship, a dim red sun far off.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T14:57:43.766Z",
+      "id": "dispatch-battle",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T15:11:22.117Z",
+      "candidate": "art/out/dispatch-battle/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-battle-640.webp",
+          "bytes": 21872
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-battle-1280.webp",
+          "bytes": 63056
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "dispatch-colony",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6044,6 +6401,31 @@
       "aiGenerated": true
     },
     {
+      "briefId": "dispatch-invasion",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Troop landers descending through a hazy evening sky towards a colony of domes and towers, their landing lights blazing, a defence gun on the ground firing upwards, smoke drifting across the domes.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T14:58:29.093Z",
+      "id": "dispatch-invasion",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T15:11:22.718Z",
+      "candidate": "art/out/dispatch-invasion/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-invasion-640.webp",
+          "bytes": 13142
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-invasion-1280.webp",
+          "bytes": 34460
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "dispatch-lane",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6064,6 +6446,31 @@
           "width": 1280,
           "path": "art/illustration/dispatch-lane-1280.webp",
           "bytes": 58404
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-peace",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Two small delegations in different dress meeting across a long table in a bright conference room aboard a station, a great window onto a calm blue planet, a signed document on the table between them.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T15:00:03.361Z",
+      "id": "dispatch-peace",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T15:11:23.819Z",
+      "candidate": "art/out/dispatch-peace/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-peace-640.webp",
+          "bytes": 32958
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-peace-1280.webp",
+          "bytes": 90642
         }
       ],
       "aiGenerated": true
@@ -6140,6 +6547,32 @@
           "width": 1280,
           "path": "art/illustration/dispatch-survey-1280.webp",
           "bytes": 33668
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-war",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A darkened command room where officers stand round a table-sized holographic star map with one border glowing red, a large screen behind them showing warships leaving a station, tense faces lit from below.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T14:59:10.988Z",
+      "note": "Here is a cinematic, painted widescreen illustration capturing the tense, grounded sci-fi atmosphere of your strategical game event. Let me know if you would like any adjustments to this scene!",
+      "id": "dispatch-war",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T15:11:23.302Z",
+      "candidate": "art/out/dispatch-war/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-war-640.webp",
+          "bytes": 27238
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-war-1280.webp",
+          "bytes": 79218
         }
       ],
       "aiGenerated": true
@@ -8016,6 +8449,61 @@
       "aiGenerated": true
     },
     {
+      "briefId": "wake-barracks",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. Barracks: a camp of stacked cargo containers and a grounded troop ship turned into bunk rooms, a sparring ring and armoured buggies, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:06:40.997Z",
+      "id": "wake-barracks",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:21.549Z",
+      "candidate": "art/out/wake-barracks/20261022-145726-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-barracks-256.webp",
+          "bytes": 16554
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-barracks-512.webp",
+          "bytes": 50526
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-barracks-1024.webp",
+          "bytes": 154552
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 54,
+        "top": 349,
+        "width": 1909,
+        "height": 1394
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "wake-cargo",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -8173,6 +8661,61 @@
         "top": 110,
         "width": 1428,
         "height": 1626
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-defence-battery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A defence battery: three salvaged warship guns welded onto a turret ring on a blockhouse of hull plates and sandbags, aimed at the sky, a crooked radar mast, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:02:17.266Z",
+      "id": "wake-defence-battery",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:12.418Z",
+      "candidate": "art/out/wake-defence-battery/20261022-145726-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-defence-battery-256.webp",
+          "bytes": 19194
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-defence-battery-512.webp",
+          "bytes": 55574
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-defence-battery-1024.webp",
+          "bytes": 150522
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 133,
+        "top": 78,
+        "width": 1782,
+        "height": 1720
       },
       "aiGenerated": true
     },
@@ -9923,6 +10466,62 @@
         "top": 145,
         "width": 1778,
         "height": 1616
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "wake-planetary-shield",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into banked earth, triangular braces, small red lights; improvised and tough. A planetary shield generator: a warship’s shield projector salvaged and mounted on a tower of welded girders, throwing a faint flickering violet dome of light into the sky, cables and coolant pipes, red lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-22T15:04:09.906Z",
+      "note": "Here is the game-ready asset of the planetary shield generator:",
+      "id": "wake-planetary-shield",
+      "series": "structure",
+      "approvedAt": "2026-10-22T15:11:17.394Z",
+      "candidate": "art/out/wake-planetary-shield/20261022-145726-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/wake-planetary-shield-256.webp",
+          "bytes": 22678
+        },
+        {
+          "width": 512,
+          "path": "art/structure/wake-planetary-shield-512.webp",
+          "bytes": 69574
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/wake-planetary-shield-1024.webp",
+          "bytes": 200968
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 161,
+        "top": 71,
+        "width": 1728,
+        "height": 1733
       },
       "aiGenerated": true
     },

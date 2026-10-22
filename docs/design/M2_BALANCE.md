@@ -3,10 +3,10 @@
 *Written by `npm run balance` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): 5
 rivals, 8 seeds, 100 turns each. Regenerate it after any change to the rules or the rivals.*
 
-The slowest turn took 189 ms on the machine that wrote this; the largest save at turn 100
-was 63.8 KB. The longest time in debt was 2 turns in a row. No colony went hungry.
+The slowest turn took 79 ms on the machine that wrote this; the largest save at turn 100
+was 64.8 KB. The longest time in debt was 2 turns in a row. No colony went hungry.
 
-The tree has 80 technologies, of which a power can learn 77 (one of each pair of doctrines). No power learnt them all in 100 turns.
+The tree has 83 technologies, of which a power can learn 80 (one of each pair of doctrines). No power learnt them all in 100 turns.
 
 ## On average
 

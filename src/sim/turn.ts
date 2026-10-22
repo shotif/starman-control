@@ -7,7 +7,7 @@
 
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { isHull } from '../content/ships.ts';
+import { isHull, SHIPS } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
@@ -40,6 +40,7 @@ import { resolveEvents } from './events.ts';
 import { fleetById, moveFleet, placeBuilt, pruneFleets } from './fleets.ts';
 import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
+import { blockadedNow, reportBlockades, resolveBombardment, resolveLandings, settleTaken } from './invasion.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { deliverGifts, fadeMemories, remember } from './memory.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
@@ -165,6 +166,12 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 1b. Battles (M4_FLEETS.md §24): wherever armed ships of powers at war meet, kept for the replay.
   state.battles = resolveBattles(world, state, events);
+
+  // 1c. Landings and bombardment (M4_FLEETS.md §26.4, §26.5), once the battles have settled who holds
+  // each orbit; then the blockades begun this turn (§26.6).
+  resolveLandings(state, events);
+  resolveBombardment(state, events);
+  reportBlockades(state, blockadedNow(before), events);
 
   // 2. Arrivals: surveys (one per system and power, by the first ship there), survey stations,
   // then colonies and outposts founded.
@@ -371,8 +378,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       } else if (first.kind === 'ship') {
         const ship = makeShip(state, h.owner, first.ship, h.system, first.design ?? null);
         const { governor: _, ...item } = first;
-        // A warship joins the fleet waiting here, or forms one (M4_FLEETS.md §22.1).
-        const fleet = isHull(ship.type) ? placeBuilt(state, ship).id : undefined;
+        // A transport's troops are raised from the colony's people (M4_FLEETS.md §26.3).
+        const troops = SHIPS[ship.type].troops !== undefined;
+        if (troops) h.people = Math.max(1, h.people - RULES.invasion.transportPeople);
+        // A warship or transport joins the fleet waiting here, or forms one (M4_FLEETS.md §22.1).
+        const fleet = isHull(ship.type) || troops ? placeBuilt(state, ship).id : undefined;
         log.push({ kind: 'built', holding: h.id, item, ship: ship.id, ...(fleet === undefined ? {} : { fleet }) });
       } else if (first.kind === 'refit') {
         // Paid already (checked below, before paying): the ship takes its new design (§21.4).
@@ -550,8 +560,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   resolveInspirations(world, state, events);
   yards(state, events);
 
-  // 12b. Memories fade a point every few turns (M3_NEIGHBOURS.md §20.1).
+  // 12b. Memories fade a point every few turns (M3_NEIGHBOURS.md §20.1); a colony taken settles a turn (§26.4).
   fadeMemories(state);
+  settleTaken(state);
 
   // 13. Reports.
   const reports = state.powers.map((p) => ({

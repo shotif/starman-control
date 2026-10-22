@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ADVISORS, DEPARTMENTS } from '../../src/content/advisors.ts';
 import { FACTION_IDS, type FactionId } from '../../src/content/factions.ts';
 import { MODULE_IDS, MODULES } from '../../src/content/modules.ts';
+import { PROJECTS } from '../../src/content/projects.ts';
 import { HULLS, SHIPS } from '../../src/content/ships.ts';
 import { TECH_IDS, TECHS, type TechId } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
@@ -65,17 +66,20 @@ describe('the hulls and modules (§21.1, §21.2)', () => {
       const needs = MODULES[m].needs;
       if (needs) expect(TECHS[needs].field, m).toBe('weapons');
     }
-    // Every Weapons technology opens something.
+    // Every Weapons technology opens something: a module, a hull, a ship or a defence (§26.8).
     for (const id of TECH_IDS.filter((t) => TECHS[t].field === 'weapons'))
       expect(
-        MODULE_IDS.some((m) => MODULES[m].needs === id) || HULLS.some((h) => SHIPS[h].hull?.needs === id),
+        MODULE_IDS.some((m) => MODULES[m].needs === id) ||
+          HULLS.some((h) => SHIPS[h].hull?.needs === id) ||
+          Object.values(SHIPS).some((s) => s.needs === id) ||
+          Object.values(PROJECTS).some((p) => p.opens === id),
         id,
       ).toBe(true);
   });
 
-  it('the Weapons field is 18 technologies over five tiers, each with its inspiration', () => {
+  it('the Weapons field is 21 technologies over five tiers, each with its inspiration', () => {
     const weapons = TECH_IDS.filter((t) => TECHS[t].field === 'weapons');
-    expect(weapons).toHaveLength(18);
+    expect(weapons).toHaveLength(21);
     expect(new Set(weapons.map((t) => TECHS[t].tier))).toEqual(new Set([1, 2, 3, 4, 5]));
     for (const t of weapons) expect(TECHS[t].inspiration.text.length).toBeGreaterThan(0);
   });

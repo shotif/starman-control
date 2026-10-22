@@ -17,12 +17,14 @@ import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts
 import { choiceRefusal } from './events.ts';
 import { fleetAt, fleetById, fleetRefusal, formFleet, formRefusal, pruneFleets, splitOff } from './fleets.ts';
 import { formatLy } from './geometry.ts';
+import { missionRefusal } from './invasion.ts';
 import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
 import {
   type Amount,
   type GameState,
+  type Mission,
   powerOf,
   type RetreatPoint,
   type ShipState,
@@ -101,7 +103,9 @@ export type Order =
   | { type: 'fleet-stop'; fleet: number }
   | { type: 'fleet-hold'; fleet: number; hold: boolean }
   | { type: 'fleet-orders'; fleet: number; stance?: Stance; target?: TargetPriority; retreat?: RetreatPoint }
-  | { type: 'rename-fleet'; fleet: number; name: string };
+  | { type: 'rename-fleet'; fleet: number; name: string }
+  /** An invasion or a bombardment of a holding in the fleet's system, or none (M4_FLEETS.md §26.4, §26.5). */
+  | { type: 'fleet-mission'; fleet: number; mission: Mission | null };
 
 type FleetOrder = Extract<
   Order,
@@ -213,6 +217,15 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'design') return designRefusal(powerOf(state, faction), order.hull, order.name, order.modules);
   if (order.type === 'form-fleet') return formRefusal(state, faction, order.ships);
   if (isFleetOrder(order)) return fleetRefusal(state, faction, order);
+  if (order.type === 'fleet-mission') {
+    const f = fleetById(state, order.fleet);
+    if (!f || f.owner !== faction) return 'There is no such fleet of yours.';
+    if (order.mission === null) return f.mission ? null : `The ${f.name} has no mission.`;
+    const m = order.mission as Partial<Mission> | null;
+    if (!m || typeof m !== 'object' || (m.kind !== 'invade' && m.kind !== 'bombard') || typeof m.holding !== 'number')
+      return 'There is no such mission.';
+    return missionRefusal(state, f, order.mission);
+  }
   if (order.type === 'fleet-move') {
     const f = fleetById(state, order.fleet);
     if (!f || f.owner !== faction) return 'There is no such fleet of yours.';
@@ -331,6 +344,11 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'form-fleet' || isFleetOrder(order) || order.type === 'fleet-move') {
     applyFleetOrder(next, faction, order);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'fleet-mission') {
+    const f = fleetById(next, order.fleet);
+    if (f) f.mission = order.mission === null ? null : { kind: order.mission.kind, holding: order.mission.holding };
     return { ok: true, state: next };
   }
   if (order.type === 'offer') {
@@ -484,6 +502,8 @@ function applyFleetOrder(
     case 'fleet-move':
       f.destinations = order.append ? [...f.destinations, order.to] : [order.to];
       f.hold = false;
+      // Moving ends its mission (§26.4).
+      f.mission = null;
       break;
     case 'fleet-stop':
       f.destinations = [];
