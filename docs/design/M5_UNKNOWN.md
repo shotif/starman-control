@@ -33,6 +33,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 17. [Tests and budgets](#17-tests-and-budgets)
 18. [Art and its cost](#18-art-and-its-cost)
 19. [Decisions](#19-decisions)
+20. [Increment 52 in detail: relic sites](#20-increment-52-in-detail-relic-sites-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -120,9 +121,9 @@ more than they say.
 
 ## 5. Relic sites (D-70)
 
-- **Where.** Twelve sites in each game, placed by the seed: at least half at the white dwarfs, the
-  rest at brown dwarfs (*a star that never caught light*) and other systems far from every capital
-  (at least 8 light-years from each). Never at a capital. Each site is on a body of its system, or
+- **Where.** Twelve sites in each game, placed by the seed: many at the white dwarfs, the rest at
+  brown dwarfs (*a star that never caught light*) and other systems, each at least 8 light-years from
+  every capital but within reach of one. Never at a capital. Each site is on a body of its system, or
   in its belt, or in deep space.
 - **Found by survey.** A survey of the system finds the site and names its kind; nothing is known of
   what lies deeper. Six kinds, each with its own picture and three chapters: *a vault*, *a field of
@@ -261,7 +262,8 @@ Pyre is Reborn's one invented star (fiction): a red supergiant 33 light-years to
 died in Reborn's time and left a black hole, one lane from the real white dwarf GJ 915.
 
 - **A. Off the map, in the story (recommended for M5):** the second tone comes from Pyre's
-  direction, and the last revelations point there; GJ 915, on the map, is always one of the sites.
+  direction, and the last revelations point there; GJ 915, on the map, is one of the sites whenever
+  it has a world to hold.
 - **B. On the map, as in Reborn:** the one invented system, labelled so, with its black hole and
   one dark lane to GJ 915, and the deepest site at it. More pull to the edge, but a new kind of
   system to draw and to explain; best with M6's wider maps.
@@ -366,3 +368,188 @@ Assumed on the owner's standing leave of 22 October 2026, each as recommended, a
 **Left to the owner:** **D-18**, free or paid, open source or not, Steam or the web only. SCOPE
 makes it part of M5's *done*; nothing in M5 depends on it, so it waits for the owner. The
 recommendation stands from Round 2: develop in the open on GitHub Pages, and decide with 1.0.
+
+## 20. Increment 52 in detail: relic sites (written before building it)
+
+**Goals.** §5 and §4's mystery as far as they stand without keys: sites in every game, found by
+survey, excavated in chapters paid in research, each chapter ending in a choice and a revelation;
+three technologies of Xenology; the rivals digging by character. The keys, the Answer and the
+guardians come in increments 53 and 54.
+
+### 20.1 Where the sites are
+
+- **Twelve sites,** chosen from the seed when a game begins and never saved (as the anomalies are),
+  among the systems with at least one body, each at least 8 light-years from every capital and at
+  most 18 from the nearest (every faction's capital counts, in play or not, so the sites never
+  depend on who plays), and at least 3 light-years from one another.
+- **GJ 915 is one whenever it has a world to hold** (the white dwarf nearest Pyre, §13, just beyond
+  the band; its worlds are generated, and in some games it has none), a *quiet beacon*. Up to five
+  more are at white dwarfs (only four lie in the band: Sirius, Procyon, 40 Eridani and Stein 2051,
+  so most games have all four), three at brown dwarfs and the rest anywhere, drawn by the seed;
+  where a group runs out of systems, the next takes its place.
+- **Six kinds,** each twice: *a vault*, *a field of ordered dust*, *an array*, *a hollow moon*, *a
+  hall of charts* and *a quiet beacon*. Each has its own picture and three chapters of its own.
+  Every site is fiction, and labelled so; nothing is said of the real body or star it lies at.
+
+### 20.2 Finding them
+
+- **A survey finds the site** in the system surveyed, as it finds an anomaly: the report says so,
+  and the site is known from then on.
+- **Old charts** (§20.6): every site within 12 light-years of one of the power's holdings is known
+  too, surveyed or not.
+
+### 20.3 Excavating
+
+- **Who may excavate:** a power that has learnt *Relic studies* and holds a colony or an outpost in
+  the site's system, when no other power is excavating it and its third chapter is not done.
+  *Excavate* starts it; *Stop* stops it. A site keeps its chapters and its progress toward the next
+  whoever excavates it.
+- **Paid in research.** A power sets the share of its research that goes to its excavations: none,
+  a quarter (the default) or a half. While it has an excavation under way, that share of each turn's
+  research goes to its excavations, in equal parts (the odd point to the first by system), and the
+  rest to its current technology. With no excavation under way, all of it goes to the technology.
+- **A chapter needs** 150, 300 and 500 research points (a fifth less with *Field archaeology*).
+- **A chapter done waits for its choice** (§20.4); while it waits, that excavation takes no research.
+  Answered, its reward is given, and the next chapter begins. Unanswered after 3 turns, it takes the
+  first choice, as an event does.
+- **An excavation stops** when its power no longer holds anything in the system (lost, abandoned
+  or the power gone), keeping its progress; any power that holds there may take it up.
+
+### 20.4 The chapters and their choices
+
+Each chapter has a few lines of its own and two choices, each saying what it gives:
+
+| Choice | Chapter 1 | Chapter 2 | Chapter 3 |
+| --- | --- | --- | --- |
+| *Study it* (every chapter's first): research into the current technology | 100 | 200 | 350 |
+| The kind's own second choice | | | |
+| — vault and hollow moon: *take what can be moved*, metals | 40 | 80 | 120 |
+| — field of ordered dust: *gather it*, volatiles | 40 | 80 | 120 |
+| — array and quiet beacon: *salvage its power*, fusion fuel | 40 | 80 | 120 |
+| — hall of charts: *follow the charts*, the nearest systems not yet surveyed are surveyed | 3 | 5 | 8 |
+
+### 20.5 The revelations
+
+The mystery's twelve revelations (§4) come one with each chapter a power completes, at any site, in
+order; the twelfth stays the last however many more it digs. The report gives each as the chapter
+is done, and the journal keeps them. The Dusk Concord and the Drift Moot read some in their own
+words.
+
+### 20.6 Xenology
+
+| Technology | Tier | Cost | Needs | Effect |
+| --- | --- | --- | --- | --- |
+| Relic studies | 2 | 80 | — | Opens excavations of relic sites. |
+| Old charts | 3 | 140 | Relic studies | Every relic site within 12 light-years of a holding is known. |
+| Field archaeology | 4 | 260 | Old charts | Each chapter needs a fifth less research. |
+
+Its inspiration: Relic studies by investigating two of the mystery's anomalies; the others by
+chapters done (2 and 5).
+
+### 20.7 The rivals
+
+- They research Relic studies once they know a site, and the rest as their fields allow.
+- **Their share:** the Authority a half, the Co-op, the Concord and the Moot a quarter, the Wake none
+  (until the keys, increment 53).
+- A rival that digs sends its outpost ships to a known site with a free body before anywhere else,
+  and starts every excavation it may.
+- **Their choices:** the Authority and the Moot study; the Co-op and the Concord take what the kind
+  gives; the Wake has no excavations yet.
+
+### 20.8 On the screen
+
+- **The map** marks every known site with a small glyph, tinted for one under way or done.
+- **The system panel** has a *Relic site* section: its kind and picture (labelled fiction), its
+  chapters (done, under way with its progress, to come), who excavates it, and *Excavate* or *Stop*,
+  with the reason when it cannot.
+- **A new screen, *Relics*** (**J** on a desktop, from the menu on a phone): the chapters waiting
+  for a choice, each with its lines, its picture and its two choices; the share of research; the
+  known sites, nearest first, with their chapters; and the journal, *The Absent*, with every
+  revelation read so far.
+- **The research screen** shows the share and the research it takes this turn, under the current
+  technology, once Relic studies is known.
+- **The report:** a site found, a chapter done (with its revelation, and *Choose* opening Relics),
+  an excavation stopped. *What needs you* lists a chapter waiting for its choice.
+
+### 20.9 Art
+
+Six pictures, one for each kind, two candidates each (about $0.60), as wide stills like the events'
+pictures, in the game's painted style: an old, tidy, switched-off place, never a ruin, with no
+writing and no figures. The lettered sheet goes to the owner.
+
+### 20.10 State
+
+`GameState.digs`: one entry for every site an excavation has touched (its system, the power
+excavating it or none, the chapters done, the progress toward the next, and the turn a chapter
+began to wait for its choice, or none). Each power's `digShare` (0, 25 or 50) and `chapters` (how
+many it has completed, which says the next revelation). **State version 26**; an older save has no
+excavations, a quarter's share and no chapters.
+
+### 20.11 Tests
+
+- **Unit** (`relics.test.ts`): twelve sites from a seed, the same each time, GJ 915 among them,
+  spaced and never near a capital; found by survey and by Old charts; who may excavate and why
+  not; the share split and the rest to the technology; a chapter's cost with Field archaeology; the
+  wait, the answer and the first choice after 3 turns; each kind's reward; the revelations in
+  order; an excavation stopped when its holding is lost, and taken up by another; the rivals'
+  share, outposts and choices; the migration.
+- **The headless games:** most sites found by turn 150; M3's and M4's targets still met.
+- **Journey** (`relics.spec.ts`, phone, tablet and desktop): a site found, excavated, its chapter's
+  choice made, and the revelation in the journal.
+
+### Increment 52: relic sites (22 October 2026)
+
+- **Sites, finding, excavating, chapters and revelations as §20,** with one change found in the
+  building: **where the sites lie.** As first built (at least 8 light-years from every capital,
+  anywhere beyond), most sites were 21 to 37 light-years from any power's holdings, past the reach
+  of any lane, and only the Authority ever dug (one site, Sirius). Now every site is also within 18
+  light-years of the nearest capital (§20.1), and GJ 915, just beyond that, is a site whenever its
+  generated worlds give it one to hold (in two of the eight test seeds they do not).
+- **The rivals** learn Relic studies as soon as they know a site and dig; send outposts to known
+  sites first; and, when a known site is not on their lanes, queue a lane straight to it from the
+  nearest holding that can build one.
+- **Found on the way, and fixed: rivals sinking into debt.** In the 250-turn games of M4 the
+  Authority's treasury fell to about −1,000 credits by turn 200 in three games of four (colony
+  governors kept adding projects with upkeep after colonies were lost in war; debt costs approval,
+  so it never recovered). Two rules, each a few lines:
+  - **A governor starts no project with upkeep while its power's treasury is in debt or falling**
+    (`src/sim/governor.ts`). This is the player's governors too: they keep within the treasury.
+  - **A rival in debt runs every colony but its capital for trade,** until its treasury is back to
+    60 (`src/sim/ai.ts`).
+
+  The deepest any treasury fell is now −337 credits. One power still stayed in debt for 126 turns
+  (the Authority in seed 1, losing a long war with the Wake, its taxes down from 47 to 27 a turn):
+  left for M6's balance.
+- **On the screen as §20.8:** a pale gold diamond beside each known site on the map (hollow until
+  excavation begins); the *Relic site* section in a system's panel; the **Relics** screen (**J** on
+  a desktop, *Menu* on a phone) with the chapters waiting, the share, the known sites nearest first
+  and the journal; the share and what it takes on the research screen, whose estimates count only
+  what reaches the technology; the report's lines, each opening Relics; and *What needs you* lists
+  a chapter waiting for its choice.
+- **Pictures as §20.9:** 12 candidates, about $0.60. Chosen the vault B, the dust A (its star white,
+  as a white dwarf's is), the array A (B had a black bar), the hollow moon A, the hall of charts A
+  and the quiet beacon B.
+- **State version 26.**
+
+**Numbers** (M2_BALANCE.md, *To the end of each game*): by turn 150 some power knew 7 to 10 of the
+12 sites in each game; 3 to 15 chapters were done in each, the Authority the most in every game (3 to
+12), the others hardly any. The slowest turn took 147 ms (turn 247) and the largest save was
+131.1 KB. **The winners moved:** the Co-op seven games and the Wake one, all on score (increment 51:
+the Co-op five, the Concord two, the Wake one). Free of its debt, the Authority is second in several
+games, close behind the Co-op; the keys (increment 53) are its road, and D-69's target is measured
+again with them.
+
+**Reversing it.**
+
+| To undo | Set or remove |
+| --- | --- |
+| The rivals digging | each faction's `digs` to 0 in `PERSONALITIES` (`src/sim/ai.ts`) |
+| Where the sites lie | `RULES.relics`: `nearCapitalDeci`, `fromCapitalDeci`, `apartDeci`, `sites`, `whiteDwarfs`, `brownDwarfs` |
+| What a chapter costs and gives | `RULES.relics`: `chapterCost`, `research`, `resource`, `charts`, `fieldPercent`, `waits` |
+| The governors keeping within the treasury | the `affordable` check in `govern` (`src/sim/governor.ts`) |
+| Rivals in debt running for trade | the `broke` rule in `aiOrders` (`src/sim/ai.ts`) |
+| Relic sites altogether | the three Xenology technologies (`relic-studies`, `old-charts`, `field-archaeology`): without Relic studies no one excavates |
+
+- **Tests:** `relics.test.ts` (12 tests). `relics.spec.ts`, on the phone, tablet and desktop: a site
+  known and held, excavated, its first chapter done with its revelation, its choice made, the charts
+  followed, and the journal and the system's panel.

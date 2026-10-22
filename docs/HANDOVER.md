@@ -230,9 +230,13 @@ judgement without asking, as long as every major change is documented and revers
 D-70 to D-78 are **assumed as recommended** ([DECISIONS.md Round 8](DECISIONS.md#round-8-the-unknown-assumed-22-october-2026)),
 and the owner may overrule any. D-18 (Steam, money) stays the owner's. As before: write each
 increment's detailed design section (§20 onwards) before building it, note it as built, and say in
-it how to undo it.
+it how to undo it. **Done: increment 52, relic sites** (§20): twelve sites a game, within reach
+of the powers, found by survey or Old charts, excavated in chapters with a share of research, each
+chapter a choice and a revelation of the Absent, kept in the journal on the Relics screen (**J**);
+three Xenology technologies; the rivals digging by character; governors and rivals kept out of
+deep debt; state version 26.
 
-The art and music spend: about $27.55 of $50 (raised on 22 October 2026; about $22.45 left). M3's
+The art and music spend: about $28.15 of $50 (raised on 22 October 2026; about $21.85 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

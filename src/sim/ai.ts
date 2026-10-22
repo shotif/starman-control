@@ -23,10 +23,12 @@ import { nearestLane } from './lanes.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
+import { canExcavate, digAt, excavateRefusal, knownSites, laneToSite } from './relics.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
 import {
   type Amount,
   contactWith,
+  type DigShare,
   type GameState,
   type Holding,
   powerOf,
@@ -66,6 +68,9 @@ export interface Personality {
   greatWork: ProjectId;
   /** A broker offers its surplus of a resource for credits (M3_NEIGHBOURS.md §25.6). */
   broker?: boolean;
+  /** The share of its research it gives its excavations, and whether it studies a chapter rather than take (M5_UNKNOWN.md §20.7). */
+  digs: DigShare;
+  studies: boolean;
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -80,6 +85,8 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     edict: 'crash-programme',
     doctrines: ['strong-centre', 'lane-network', 'industrial-worlds'],
     greatWork: 'lapse-archive',
+    digs: 50,
+    studies: true,
   },
   frontier: {
     capital: 'grow',
@@ -91,6 +98,8 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     edict: 'festival',
     doctrines: ['open-frontier', 'deep-jumpers', 'garden-worlds'],
     greatWork: 'commons',
+    digs: 25,
+    studies: false,
   },
   'hollow-wake': {
     capital: 'produce',
@@ -102,6 +111,8 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     edict: 'labour-drive',
     doctrines: ['open-frontier', 'deep-jumpers', 'industrial-worlds'],
     greatWork: 'lanewright-foundry',
+    digs: 0,
+    studies: false,
   },
   // Patient expanders far from anyone's lanes (M3_NEIGHBOURS.md §24.7).
   'dusk-concord': {
@@ -114,6 +125,8 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     edict: 'festival',
     doctrines: ['open-frontier', 'lane-network', 'garden-worlds'],
     greatWork: 'commons',
+    digs: 25,
+    studies: false,
   },
   // Brokers of the giants' fuel (M3_NEIGHBOURS.md §25.7).
   'drift-moot': {
@@ -126,6 +139,8 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     edict: 'labour-drive',
     doctrines: ['open-frontier', 'lane-network', 'industrial-worlds'],
     greatWork: 'lanewright-foundry',
+    digs: 25,
+    studies: true,
     broker: true,
   },
 };
@@ -159,12 +174,32 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const byDistance = (from: SystemId) => (a: SystemId, b: SystemId) =>
     world.distanceDeci(from, a) - world.distanceDeci(from, b) || (a < b ? -1 : 1);
 
-  // Governors: every colony run for its power's priority.
+  // Governors: every colony run for its power's priority; in debt, all but the capital run for trade
+  // until the treasury is back to twice the low mark (M5_UNKNOWN.md §20, as built).
+  const trading = mine.some((h) => h.kind === 'colony' && !h.capital && h.governor === 'trade');
+  const broke = me.colonies !== 'trade' && (power.treasury < 0 || (trading && power.treasury < 2 * LOW_TREASURY));
   for (const h of mine) {
     if (h.kind !== 'colony') continue;
-    const want = h.capital ? me.capital : me.colonies;
+    const want = h.capital ? me.capital : broke ? 'trade' : me.colonies;
     if (h.governor !== want) orders.push({ type: 'governor', holding: h.id, priority: want });
   }
+
+  // The relic sites it would dig and does not yet hold, nearest its capital first (M5_UNKNOWN.md §20.7).
+  const digTargets =
+    me.digs > 0
+      ? knownSites(world, state, faction)
+          .map((x) => x.system)
+          .filter((id) => {
+            const d = digAt(state, id);
+            return (
+              (!d || (d.by === null && d.chapters < RULES.relics.chapterCost.length)) &&
+              !mine.some((h) => h.system === id) &&
+              !state.ships.some((x) => x.owner === faction && x.type === 'outpost' && x.destinations.at(-1) === id) &&
+              settleable(world, state, faction, id, 'outpost').length > 0
+            );
+          })
+          .sort(byDistance(power.capital))
+      : [];
 
   // Ships.
   for (const s of state.ships) {
@@ -208,8 +243,21 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
         (b) => !claimed.has(b.id) && (kind === 'colony' || b.riches.metals + b.riches.volatiles + b.riches.fuel > 0),
       );
     const systems = power.surveyed.filter((id) => reachable(at, id) && worth(id).length > 0).sort(byDistance(at));
-    const target = systems[0];
+    // A power that digs sends its outposts to a known relic site first (M5_UNKNOWN.md §20.7).
+    const site = kind === 'outpost' && me.digs > 0 ? digTargets.find((id) => reachable(at, id)) : undefined;
+    const target = site ?? systems[0];
     if (!target) continue;
+    if (target === site) {
+      if (target !== at) {
+        orders.push({ type: 'move', ship: s.id, to: target });
+        continue;
+      }
+      const body = settleable(world, state, faction, at, 'outpost').find((b) => !claimed.has(b.id));
+      if (!body) continue;
+      claimed.add(body.id);
+      orders.push({ type: 'found-outpost', ship: s.id, body: body.id });
+      continue;
+    }
     if (target !== at) {
       orders.push({ type: 'move', ship: s.id, to: target });
       continue;
@@ -414,6 +462,10 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   // A conqueror builds toward a weak power it cannot yet reach (M4_FLEETS.md §31.1).
   const bridge = bridgeLane(world, state, faction);
   if (bridge) orders.push({ type: 'queue', holding: bridge.holding.id, item: { kind: 'lane', to: bridge.to } });
+  // A power that digs builds a lane straight to the nearest site it cannot yet reach (M5_UNKNOWN.md §20.7, as built).
+  const unreached = digTargets.find((id) => !reachable(power.capital, id));
+  const road = !bridge && unreached ? laneToSite(world, state, faction, unreached) : null;
+  if (road) orders.push({ type: 'queue', holding: road.holding, item: { kind: 'lane', to: road.to } });
   for (const h of mine) {
     if (h.queue.length > 0 || (h.kind === 'colony' && !me.laneBuilder)) continue;
     const lane = nearestLane(world, state, faction, h.system);
@@ -444,6 +496,17 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   )
     orders.push({ type: 'queue', holding: capital.id, item: work });
 
+  // Relic sites (M5_UNKNOWN.md §20.7): its share by character, every excavation it may begin, and
+  // each chapter's choice, studied or taken.
+  if (power.digShare !== me.digs) orders.push({ type: 'dig-share', share: me.digs });
+  if (me.digs > 0 && canExcavate(state, faction))
+    for (const site of knownSites(world, state, faction))
+      if (excavateRefusal(world, state, faction, site.system) === null)
+        orders.push({ type: 'excavate', system: site.system });
+  for (const d of state.digs)
+    if (d.by === faction && d.waiting !== null && d.answer === null)
+      orders.push({ type: 'chapter-choice', system: d.system, choice: me.studies ? 0 : 1 });
+
   // Research: the cheapest it can with what it needs, by base cost, its own fields at half the price
   // (M2B_SCIENCE.md §18.4), so a deep tree in its own fields does not keep it from the first steps of
   // the others.
@@ -456,19 +519,27 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     // the Weapons field only once it holds warships (M4_FLEETS.md §21), for the same reason.
     const learning = power.contacts.some((c) => c.stage === 'words');
     const armed = state.ships.some((s) => s.owner === faction && isHull(s.type));
+    // Excavation's technologies only for a power that digs and knows a site (M5_UNKNOWN.md §20.7).
+    const digging = me.digs > 0 && knownSites(world, state, faction).length > 0;
+    const relicTech = (x: TechId) => ['excavation', 'relic-charts', 'chapter-percent'].includes(TECHS[x].effect.kind);
     const idle = (id: TechId) =>
       (!learning && withNeeds(power, id).some((x) => TECHS[x].effect.kind === 'translation')) ||
-      (!armed && withNeeds(power, id).some((x) => TECHS[x].field === 'weapons'))
+      (!armed && withNeeds(power, id).some((x) => TECHS[x].field === 'weapons')) ||
+      (!digging && withNeeds(power, id).some(relicTech))
         ? 1
         : 0;
     // At war, its batteries first (§26.11), then its troops (§28.3).
     const warTech = (['planetary-defence', 'ground-forces'] as const).find((t) => canResearch(power).includes(t));
+    // A power that digs learns to excavate as soon as it knows a site (M5_UNKNOWN.md §20.7).
+    const relicFirst = digging && canResearch(power).includes('relic-studies') ? 'relic-studies' : undefined;
     const next =
       atWarNow && warTech
         ? warTech
-        : canResearch(power)
-            .filter((id) => withNeeds(power, id).every(own))
-            .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];
+        : relicFirst
+          ? relicFirst
+          : canResearch(power)
+              .filter((id) => withNeeds(power, id).every(own))
+              .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];
     if (next) orders.push({ type: 'research', tech: next });
   }
 

@@ -35,6 +35,7 @@ import { fleetAt, fleetById, fleetShips } from '../../sim/fleets.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindReachDeci, findRoute, lanesFor } from '../../sim/movement.ts';
 import type { Need } from '../../sim/needs.ts';
+import { knownSites } from '../../sim/relics.ts';
 import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type Fleet, type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
@@ -69,6 +70,7 @@ import {
   shipStatus,
   TargetBar,
 } from './play.tsx';
+import { RelicSiteSection, RelicsView } from './relics.tsx';
 import { ResearchView } from './research.tsx';
 import {
   failed,
@@ -127,6 +129,7 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['Y', 'Diplomacy: the other powers, and how they regard you'],
   ['B', 'Designs: the warships you can build'],
   ['G', 'The Assembly: its members, votes and elections'],
+  ['J', 'Relics: the sites of the Absent, their chapters and the journal'],
 ];
 
 function shipMarks(game: GameState, viewer?: FactionId): ShipMark[] {
@@ -278,6 +281,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       } else if (n.kind === 'vote') {
         targeting.value = null;
         panel.value = 'assembly';
+      } else if (n.kind === 'chapter') {
+        targeting.value = null;
+        panel.value = 'relics';
       } else if (n.kind === 'debt') {
         targeting.value = null;
         panel.value = 'empire';
@@ -577,6 +583,21 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   useEffect(() => {
     view.current?.setShips(play ? shipMarks(latest.current.game, latest.current.play?.faction) : []);
   }, [shipsKey, ready, play]);
+  // The relic sites we know (M5_UNKNOWN.md §20.8), once the content is drawn.
+  const relicsKey = play
+    ? JSON.stringify([knownSites(world, game, play.faction).map((x) => x.system), game.digs.map((d) => d.system)])
+    : '';
+  useEffect(() => {
+    const p = latest.current.play;
+    view.current?.setRelics(
+      p
+        ? knownSites(world, latest.current.game, p.faction).map((x) => ({
+            at: x.system,
+            begun: latest.current.game.digs.some((d) => d.system === x.system),
+          }))
+        : [],
+    );
+  }, [relicsKey, lanesKey, ready]);
   const t = targeting.value;
   const hoverId = hover.value?.id ?? null;
   useEffect(() => {
@@ -777,7 +798,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 ? panel.value === 'diplomacy'
                 : n.kind === 'vote'
                   ? panel.value === 'assembly'
-                  : n.holding === selectedHolding.value,
+                  : n.kind === 'chapter'
+                    ? panel.value === 'relics'
+                    : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -838,6 +861,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'y' && p && game.powers.length > 1) panel.value = panel.value === 'diplomacy' ? null : 'diplomacy';
       else if (k === 'b' && p) panel.value = panel.value === 'designs' ? null : 'designs';
       else if (k === 'g' && p && game.powers.length > 1) panel.value = panel.value === 'assembly' ? null : 'assembly';
+      else if (k === 'j' && p) panel.value = panel.value === 'relics' ? null : 'relics';
       else if (k === 'm' && p && selectedFleet.value !== null)
         targeting.value = { fleet: selectedFleet.value, blind: false, to: null };
       else if (k === 'm' && p && selectedShip.value !== null)
@@ -912,6 +936,18 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         const done = power.investigated.includes(id);
         return { name: ANOMALIES[a].name, text: done ? ANOMALIES[a].found : ANOMALIES[a].seen, investigated: done };
       })()}
+      relic={
+        power ? (
+          <RelicSiteSection
+            world={world}
+            game={game}
+            faction={power.faction}
+            play={play ?? undefined}
+            system={id}
+            onRelics={play ? () => (panel.value = 'relics') : undefined}
+          />
+        ) : undefined
+      }
       ships={shipsAt(id)}
       onShip={pickShip}
       fleets={
@@ -975,6 +1011,19 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   );
   // The Assembly (M4_FLEETS.md §29.4).
   const assembly = play && others && <AssemblyView world={world} game={game} faction={play.faction} play={play} />;
+  // Relic sites (M5_UNKNOWN.md §20.8).
+  const relics = play && (
+    <RelicsView
+      world={world}
+      game={game}
+      faction={play.faction}
+      play={play}
+      onGo={(id) => {
+        if (!desktop) panel.value = null;
+        go(id);
+      }}
+    />
+  );
   // The end of the game (M4_FLEETS.md §30.3): play on, unless our power has left the game.
   const outcome = play ? outcomeFor(game, play.faction) : null;
   const end = play && outcome && (
@@ -1157,6 +1206,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && end && panel.value === 'end' && (
           <div class="popover end-popover" role="dialog" aria-label="The end of the game" data-keep-clear>
             {end}
+          </div>
+        )}
+        {desktop && relics && panel.value === 'relics' && (
+          <div class="popover relics-popover" role="dialog" aria-label="Relics" data-keep-clear>
+            {relics}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
           </div>
         )}
         {desktop && assembly && panel.value === 'assembly' && (
@@ -1387,6 +1444,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             >
               Guide me
             </button>
+            <button type="button" class="button button-quiet" onClick={() => (panel.value = 'relics')}>
+              Relics
+            </button>
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
               Legend
             </button>
@@ -1544,6 +1604,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           if (play && panel.value === 'research') return sheet('Research', research, close, 'research');
           if (diplomacy && panel.value === 'diplomacy') return sheet('Diplomacy', diplomacy, close, 'diplomacy');
           if (assembly && panel.value === 'assembly') return sheet('The Assembly', assembly, close, 'assembly');
+          if (relics && panel.value === 'relics') return sheet('Relics', relics, close, 'relics');
           if (end && panel.value === 'end') return sheet('The end of the game', end, close, 'end');
           if (play && panel.value === 'designs') return sheet('Designs', designs, close, 'designs');
           if (play && panel.value === 'menu')
@@ -1573,6 +1634,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                     The Assembly
                   </button>
                 )}
+                <button type="button" class="button button-quiet" onClick={() => (panel.value = 'relics')}>
+                  Relics
+                </button>
                 {outcome && (
                   <button type="button" class="button button-quiet" onClick={() => (panel.value = 'end')}>
                     The end of the game
@@ -1807,7 +1871,9 @@ function PlayOutliner({
                     ? n.kind
                     : n.kind === 'offer'
                       ? `offer-${n.from}-${n.treaty}`
-                      : `${n.kind}-${n.holding}`
+                      : n.kind === 'chapter'
+                        ? `chapter-${n.system}`
+                        : `${n.kind}-${n.holding}`
               }
             >
               <button type="button" class="outliner-item" onClick={() => onNeed(n)}>

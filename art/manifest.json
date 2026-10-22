@@ -8173,6 +8173,158 @@
       "aiGenerated": true
     },
     {
+      "briefId": "relic-array",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: An enormous lattice of thin silver rods floating in space, many kilometres across, every rod pointing the same way toward one point of the southern sky, a dim brown dwarf glowing deep red behind it, a small engineering ship beside one node for scale; precise, ancient, switched off; no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T21:47:58.271Z",
+      "note": "Here is the painted widescreen illustration for your strategy game event, focusing on a quiet, grounded sci-fi aesthetic with an immense silver lattice and a tiny engineering ship to show its true scale:",
+      "id": "relic-array",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T21:52:36.150Z",
+      "candidate": "art/out/relic-array/20261022-214730-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/relic-array-640.webp",
+          "bytes": 40204
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/relic-array-1280.webp",
+          "bytes": 113682
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "relic-beacon",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: An ancient beacon floating in space near a small white dwarf star: an elegant smooth spire of dark metal shaped somewhat like a modern lane beacon but older and stranger, a single faint pale light at its tip, turned slightly toward the far stars; a small human survey ship approaching cautiously; lonely, patient; no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T21:50:47.962Z",
+      "note": "Here is the painted widescreen illustration of the ancient beacon and survey ship for the strategy game event:",
+      "id": "relic-beacon",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T21:52:37.724Z",
+      "candidate": "art/out/relic-beacon/20261022-214958-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/relic-beacon-640.webp",
+          "bytes": 11772
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/relic-beacon-1280.webp",
+          "bytes": 39798
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "relic-charts",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A long dim hall of tall flat dark panels, each covered in tiny points of light like star charts, faint lines drawn between some of the points, two astronaut surveyors in work suits small in the distance holding up handheld lights to read them; hushed, archival, very old; no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T21:49:36.321Z",
+      "id": "relic-charts",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T21:52:37.233Z",
+      "candidate": "art/out/relic-charts/20261022-214914-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/relic-charts-640.webp",
+          "bytes": 14718
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/relic-charts-1280.webp",
+          "bytes": 49018
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "relic-dust",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A vast cloud of fine glittering dust drifting in deep space beside a faint white dwarf star, the dust arranged in perfect concentric rings and slow spirals as if combed, a tiny survey ship with lights hanging at its edge for scale; still, beautiful, unnatural; no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T21:47:12.033Z",
+      "id": "relic-dust",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T21:52:35.583Z",
+      "candidate": "art/out/relic-dust/20261022-214650-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/relic-dust-640.webp",
+          "bytes": 24056
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/relic-dust-1280.webp",
+          "bytes": 103606
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "relic-moon",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: The interior of a small hollow moon: tiers of smooth curved galleries ringing a great empty central chamber, a ring of plain stone seats on the lowest floor all facing an empty centre, a single work lamp left by a survey crew casting a warm pool of light; vast, quiet, carefully kept; no people, no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T21:48:56.322Z",
+      "id": "relic-moon",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T21:52:36.695Z",
+      "candidate": "art/out/relic-moon/20261022-214827-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/relic-moon-640.webp",
+          "bytes": 19274
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/relic-moon-1280.webp",
+          "bytes": 55182
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "relic-vault",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Inside an ancient vault cut into dark rock: a long, perfectly straight corridor of smooth grey stone lit by a soft even glow with no visible source, empty racks along both walls, everything swept clean and orderly, a single small object resting on a shelf at the far end; quiet, tidy, uncanny; no people, no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T21:46:50.462Z",
+      "id": "relic-vault",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T21:52:35.014Z",
+      "candidate": "art/out/relic-vault/20261022-214606-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/relic-vault-640.webp",
+          "bytes": 11878
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/relic-vault-1280.webp",
+          "bytes": 32684
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "rover",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",

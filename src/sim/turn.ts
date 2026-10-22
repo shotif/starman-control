@@ -47,6 +47,7 @@ import { deliverGifts, fadeMemories, remember } from './memory.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import { applyInPlace } from './orders.ts';
 import { resolveRaids } from './raids.ts';
+import { knownSites, resolveChapterChoices, resolveDigs, siteAt } from './relics.ts';
 import type { ReportEvent } from './report.ts';
 import { effects, grantResearch, speciesFor, spendResearch } from './research.ts';
 import {
@@ -146,6 +147,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   const state = structuredClone(before);
   const events = new Map(state.powers.map((p) => [p.faction, [] as ReportEvent[]]));
   const log = (ship: ShipState) => events.get(ship.owner) as ReportEvent[];
+  // The relic sites each power knew as the turn began, to tell it of those its Old charts show it (M5_UNKNOWN.md §20.2).
+  const sitesBefore = new Map(
+    state.powers.map((p) => [p.faction, new Set(knownSites(world, state, p.faction).map((x) => x.system))]),
+  );
 
   // 0. The rivals give their orders (M2_WORLDS.md §26.2), from the state as it stands, power by
   // power in the order they are listed, through the same orders as the player's.
@@ -191,6 +196,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       return level === 'comfortable' || level === 'tolerable' || (domes && level === 'harsh');
     });
     const anomaly = anomalyAt(state.seed, system);
+    const relic = siteAt(world, state.seed, system);
     const log = events.get(power.faction) as ReportEvent[];
     log.push({
       kind: 'surveyed',
@@ -199,6 +205,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       worlds: bodies.length,
       habitable: habitable.map((b) => b.id),
       ...(anomaly ? { anomaly } : {}),
+      ...(relic ? { relic: relic.kind } : {}),
     });
     // What astronomers have observed here gives research, once (M2B_SCIENCE.md §17.2).
     const found = observationsAt(world, system);
@@ -454,10 +461,12 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     }
   }
 
-  // 4. Research: each power's points go into its research queue.
+  // 4. Research: each power's points go into its research queue, but for the share its excavations
+  // take (M5_UNKNOWN.md §20.3).
+  const forTech = resolveDigs(state, research, events);
   for (const p of state.powers) {
     p.story.research += research.get(p.faction) ?? 0;
-    const done = spendResearch(state, p, research.get(p.faction) ?? 0);
+    const done = spendResearch(state, p, forTech.get(p.faction) ?? 0);
     for (const tech of done) (events.get(p.faction) as ReportEvent[]).push({ kind: 'researched', tech });
   }
   // 4b. The yards (M4_FLEETS.md §21.3): a new design wherever research now allows a better one.
@@ -571,6 +580,19 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);
+  // 11b. Relic sites (M5_UNKNOWN.md §20.3): chapters' choices taken; and the sites a power's Old
+  // charts show it for the first time.
+  resolveChapterChoices(world, state, events, (power, system) => {
+    survey(power, system, {});
+    return true;
+  });
+  for (const p of state.powers) {
+    const before = sitesBefore.get(p.faction) ?? new Set<SystemId>();
+    const charted = knownSites(world, state, p.faction)
+      .map((x) => x.system)
+      .filter((id) => !before.has(id) && !hasSurveyed(p, id));
+    if (charted.length > 0) events.get(p.faction)?.push({ kind: 'relics-charted', systems: charted });
+  }
 
   // 12. Inspirations (M2B_SCIENCE.md §17.1): deeds done this turn, or standing now, teach each power
   // something towards a technology it has not yet researched; one finished may give the yards more.

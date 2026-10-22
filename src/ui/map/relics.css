@@ -1,0 +1,112 @@
+/* Relic sites (M5_UNKNOWN.md §20.8): a site in its system's panel, the Relics screen, the share. */
+.relics {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.relics p,
+.relics h3,
+.relic-site p,
+.relic-site h3 {
+  margin: 0;
+}
+
+.relic-site {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.relic-art {
+  margin: 0;
+}
+
+.relic-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+}
+
+.relic-waiting {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  border: 1px solid var(--accent);
+  background: rgba(10, 18, 34, 0.6);
+}
+
+.dig-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+}
+
+.dig-share-buttons {
+  display: inline-flex;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.dig-share-buttons .button {
+  min-height: 44px;
+}
+
+.relic-list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relic-list li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.2rem 0.6rem;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+  background: rgba(10, 18, 34, 0.6);
+}
+
+.relic-list .relic-kind,
+.relic-list .relic-status {
+  grid-column: 1;
+}
+
+.relic-list .button,
+.relic-list .relic-why {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+
+.relic-why {
+  max-width: 14rem;
+  font-size: 0.85em;
+}
+
+.relic-journal {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+@media (max-width: 480px) {
+  .relic-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .relic-list .button,
+  .relic-list .relic-why {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}

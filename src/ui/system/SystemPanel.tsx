@@ -2,6 +2,7 @@
 // lanes, every fact with where it comes from. The same content on both layouts: a bottom sheet on a
 // phone, the inspector on a desktop. In the codex (`realOnly`) it shows only what is observed.
 
+import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 import type { FactionId } from '../../content/factions.ts';
 import { SPECIES, type SpeciesDef } from '../../content/species.ts';
@@ -47,6 +48,8 @@ interface Props {
   others?: readonly { id: number; name: string; kind: string; owner: FactionId; hostile?: boolean }[];
   /** An anomaly the viewer has found here: what the survey saw, or, once investigated, what was found. */
   anomaly?: { name: string; text: string; investigated: boolean };
+  /** A relic site the viewer knows of here (M5_UNKNOWN.md §20.8), drawn by the map screen. */
+  relic?: ComponentChildren;
   /** Colonies and outposts here, anyone's; the viewer's own open with `onHolding`. */
   holdings?: readonly HoldingRow[];
   onHolding?: (id: number) => void;
@@ -192,6 +195,7 @@ export function SystemPanel({
   holdings = [],
   onHolding,
   anomaly,
+  relic,
 }: Props) {
   const system = world.system(id);
   const s = system.sky;
@@ -272,6 +276,8 @@ export function SystemPanel({
           {!anomaly.investigated && <p class="dim">Not yet investigated: a survey ship here can look closer.</p>}
         </section>
       )}
+
+      {relic}
 
       {holdings.length > 0 && (
         <>

@@ -10,6 +10,7 @@ import { RULES } from '../../content/rules.ts';
 import { FIELDS, type FieldId, TECH_IDS, TECHS, type TechId } from '../../content/techs.ts';
 import { inspirationPoints } from '../../sim/discoveries.ts';
 import { researchOf } from '../../sim/economy.ts';
+import { splitResearch } from '../../sim/relics.ts';
 import {
   closedBy,
   knownBy,
@@ -23,6 +24,7 @@ import { type GameState, powerOf } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { AdvisorBy } from './advisor.tsx';
 import { give, type Play } from './play.tsx';
+import { DigShareLine } from './relics.tsx';
 import './research.css';
 
 function ordinal(n: number): string {
@@ -422,6 +424,8 @@ export function ResearchView({
 }) {
   const p = powerOf(game, faction);
   const rate = researchOf(world, game, faction);
+  // What reaches the technology, once the excavations take their share (M5_UNKNOWN.md §20.3).
+  const forTech = splitResearch(game, faction, rate.total).rest;
   const head = (
     <>
       <h2 class="sheet-heading">Research</h2>
@@ -432,6 +436,7 @@ export function ResearchView({
           <span class="dim">= {rate.parts.map((p) => `${p.value} ${p.label}`).join(' + ')}</span>
         )}
       </p>
+      <DigShareLine world={world} game={game} faction={faction} play={play} />
       <p class="dim">
         Inspirations: {p.inspired.length} of {TECH_IDS.length} met. Each technology names a deed that teaches you{' '}
         {RULES.discoveries.inspirationPercent}% of it once; a first survey of what astronomers have observed gives
@@ -454,7 +459,7 @@ export function ResearchView({
           </div>
           <aside class="research-side" aria-label="Research queue">
             <h3>The queue</h3>
-            <Queue game={game} faction={faction} play={play} rate={rate.total} />
+            <Queue game={game} faction={faction} play={play} rate={forTech} />
           </aside>
         </div>
       </section>
@@ -462,7 +467,7 @@ export function ResearchView({
   return (
     <section class="research" aria-label="Research">
       {head}
-      <Queue game={game} faction={faction} play={play} rate={rate.total} />
+      <Queue game={game} faction={faction} play={play} rate={forTech} />
       <h3>The research tree</h3>
       <FieldTabs game={game} faction={faction} play={play} />
     </section>

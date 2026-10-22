@@ -54,7 +54,9 @@ export type Need =
   /** A treaty or an exchange offered, waiting for an answer before this turn ends (M3_NEIGHBOURS.md §21.2, §23.1). */
   | { kind: 'offer'; from: FactionId; treaty: OfferKind }
   /** An election or a resolution before the Assembly this turn, and no vote of ours cast (M4_FLEETS.md §29.4). */
-  | { kind: 'vote'; floor: 'election' | 'resolution' };
+  | { kind: 'vote'; floor: 'election' | 'resolution' }
+  /** A chapter of excavation done, waiting for our choice (M5_UNKNOWN.md §20.8); turns left before the first is taken. */
+  | { kind: 'chapter'; system: SystemId; left: number };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
@@ -76,6 +78,9 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
     !state.assembly?.cast.some((c) => c.faction === faction)
   )
     out.push({ kind: 'vote', floor });
+  for (const d of state.digs)
+    if (d.by === faction && d.waiting !== null && d.answer === null)
+      out.push({ kind: 'chapter', system: d.system, left: Math.max(1, RULES.relics.waits - (state.turn - d.waiting)) });
   for (const s of state.ships) {
     if (
       s.owner !== faction ||

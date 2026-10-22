@@ -30,9 +30,12 @@ import { formatLy } from './geometry.ts';
 import { missionRefusal } from './invasion.ts';
 import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
+import { chapterRefusal, digAt, excavate, excavateRefusal, stopExcavation, stopRefusal } from './relics.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
 import {
   type Amount,
+  DIG_SHARES,
+  type DigShare,
   type GameState,
   type Mission,
   type OfferKind,
@@ -121,7 +124,12 @@ export type Order =
   | { type: 'fleet-orders'; fleet: number; stance?: Stance; target?: TargetPriority; retreat?: RetreatPoint }
   | { type: 'rename-fleet'; fleet: number; name: string }
   /** An invasion or a bombardment of a holding in the fleet's system, or none (M4_FLEETS.md §26.4, §26.5). */
-  | { type: 'fleet-mission'; fleet: number; mission: Mission | null };
+  | { type: 'fleet-mission'; fleet: number; mission: Mission | null }
+  /** Relic sites (M5_UNKNOWN.md §20.3): an excavation begun or stopped, the share of research, a chapter's choice. */
+  | { type: 'excavate'; system: SystemId }
+  | { type: 'stop-excavation'; system: SystemId }
+  | { type: 'dig-share'; share: DigShare }
+  | { type: 'chapter-choice'; system: SystemId; choice: 0 | 1 };
 
 type FleetOrder = Extract<
   Order,
@@ -229,6 +237,13 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
       ? null
       : 'There is no such tax rate.';
   if (order.type === 'answer') return choiceRefusal(state, faction, order.choice);
+  if (order.type === 'excavate') return excavateRefusal(world, state, faction, order.system);
+  if (order.type === 'stop-excavation') return stopRefusal(state, faction, order.system);
+  if (order.type === 'dig-share') return DIG_SHARES.includes(order.share) ? null : 'There is no such share.';
+  if (order.type === 'chapter-choice')
+    return order.choice === 0 || order.choice === 1
+      ? chapterRefusal(state, faction, order.system)
+      : 'There is no such choice.';
   if (order.type === 'gift') return giftRefusal(state, faction, order.to, order.credits);
   if (order.type === 'design') return designRefusal(powerOf(state, faction), order.hull, order.name, order.modules);
   if (order.type === 'form-fleet') return formRefusal(state, faction, order.ships);
@@ -358,6 +373,23 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   if (order.type === 'answer') {
     const ev = powerOf(next, faction).event;
     if (ev) ev.answer = order.choice;
+    return { ok: true, state: next };
+  }
+  if (order.type === 'excavate') {
+    excavate(next, faction, order.system);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'stop-excavation') {
+    stopExcavation(next, order.system);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'dig-share') {
+    powerOf(next, faction).digShare = order.share;
+    return { ok: true, state: next };
+  }
+  if (order.type === 'chapter-choice') {
+    const d = digAt(next, order.system);
+    if (d) d.answer = order.choice;
     return { ok: true, state: next };
   }
   if (order.type === 'gift') {

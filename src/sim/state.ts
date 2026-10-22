@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 25;
+export const STATE_VERSION = 26;
 
 export interface Stockpile {
   metals: number;
@@ -90,6 +90,29 @@ export interface PowerState {
    * and the research points and industry it has made in the game, its works in the score (§31.4).
    */
   story: { wars: number; battles: number; taken: number; research: number; industry: number };
+  /** The share of its research that goes to its excavations, in percent (M5_UNKNOWN.md §20.3). */
+  digShare: DigShare;
+  /** How many chapters of excavation it has completed, which says its next revelation (§20.5). */
+  chapters: number;
+}
+
+/** The shares of research a power may give its excavations (M5_UNKNOWN.md §20.3). */
+export const DIG_SHARES = [0, 25, 50] as const;
+export type DigShare = (typeof DIG_SHARES)[number];
+
+/**
+ * A relic site's excavation (M5_UNKNOWN.md §20.3), once one has begun there: the power excavating it
+ * now, or none; the chapters done; the research toward the next; and the turn its last chapter began
+ * to wait for its choice, or null.
+ */
+export interface Dig {
+  system: SystemId;
+  by: FactionId | null;
+  chapters: number;
+  progress: number;
+  waiting: number | null;
+  /** The choice given for the chapter waiting, taken as the turn ends; it may be changed until then. */
+  answer: 0 | 1 | null;
 }
 
 /** A war between two powers (M4_FLEETS.md §23.1): `a` before `b` in id order; `by` declared it. */
@@ -446,6 +469,8 @@ export interface GameState {
   ended: { winner: FactionId | null; how: VictoryKind; turn: number } | null;
   /** Every power's score every 10 turns, in the powers' order, for the story (§30.3). */
   history: { turn: number; scores: number[] }[];
+  /** The relic sites' excavations (M5_UNKNOWN.md §20.10), one for each site begun, in system order. */
+  digs: Dig[];
 }
 
 /** How a game is won (M4_FLEETS.md §30.1). */
@@ -603,6 +628,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       mostColonies: 1,
       left: null,
       story: { wars: 0, battles: 0, taken: 0, research: 0, industry: 0 },
+      digShare: RULES.relics.share as DigShare,
+      chapters: 0,
     })),
     lanes,
     ships: [],
@@ -621,6 +648,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     limit: setup.limit === undefined ? RULES.victory.limit : setup.limit,
     ended: null,
     history: [],
+    digs: [],
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

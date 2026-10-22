@@ -200,7 +200,11 @@ varying float vShape;
 void main() {
   vec2 p = gl_PointCoord * 2.0 - 1.0;
   float d;
-  if (vShape > 0.5) {
+  if (vShape > 2.5) {
+    // A relic site (M5_UNKNOWN.md §20.8): a diamond, hollow while untouched, solid once excavated.
+    float r = abs(p.x) + abs(p.y);
+    d = vShape > 3.5 ? r - 0.62 : abs(r - 0.55) - 0.13;
+  } else if (vShape > 0.5) {
     // A fleet (M4_FLEETS.md §22.3): a solid wedge pointing right.
     d = max(-p.x - 0.75, abs(p.y) - (0.75 - p.x) * 0.55);
   } else {
@@ -215,7 +219,7 @@ void main() {
   // Lighter than the power's colour, so a ship stands out against its own rings and lanes.
   vec3 body = mix(vTint, vec3(1.0), 0.45);
   // A fleet at war with the viewer has a red edge (M4_FLEETS.md §23.5).
-  vec3 rim = vShape > 1.5 ? vec3(1.0, 0.2, 0.2) : vec3(0.02, 0.03, 0.06);
+  vec3 rim = vShape > 1.5 && vShape < 2.5 ? vec3(1.0, 0.2, 0.2) : vec3(0.02, 0.03, 0.06);
   gl_FragColor = vec4(mix(body, rim, edge), 1.0);
 }`;
 
@@ -248,6 +252,12 @@ void main() {
 /** Seconds a flight takes, and the comet's points: its head and a fading tail. */
 const FLIGHT_S = 1.5;
 const TAIL = 7;
+
+/** A relic site the viewer knows (M5_UNKNOWN.md §20.8): where, and whether excavation has begun there. */
+export interface RelicMark {
+  at: SystemId;
+  begun: boolean;
+}
 
 export interface ShipMark {
   /** Where it is: a system, or partway between two on a blind jump (0 to 1). */
@@ -331,6 +341,7 @@ export class MapView {
   private readonly tuningMaterial: LineMaterial;
   private readonly grid = new THREE.Group();
   private ships: THREE.Points | null = null;
+  private relics: THREE.Points | null = null;
   private readonly shipMaterial: THREE.ShaderMaterial;
   private readonly routeLines: LineSegments2[] = [];
   private readonly routeMaterials: Record<'plan' | 'orders' | 'planBlind' | 'ordersBlind', LineMaterial>;
@@ -1596,6 +1607,42 @@ export class MapView {
       this.ships = new THREE.Points(g, this.shipMaterial);
       this.ships.renderOrder = 5;
       this.scene.add(this.ships);
+    }
+    this.invalidate(false);
+  }
+
+  /** Relic sites the viewer knows (M5_UNKNOWN.md §20.8): a pale gold diamond below and left of the star. */
+  setRelics(marks: readonly RelicMark[]): void {
+    if (this.relics) {
+      this.scene.remove(this.relics);
+      this.relics.geometry.dispose();
+      this.relics = null;
+    }
+    const at = (id: SystemId) => this.content.systems[this.index.get(id) ?? -1]?.pos;
+    const items = marks.flatMap((m) => {
+      const pos = at(m.at);
+      return pos ? [{ pos, shape: m.begun ? 4 : 3 }] : [];
+    });
+    if (items.length > 0) {
+      const gold = new THREE.Color(0xe8d49a);
+      const pos = new Float32Array(items.length * 3);
+      const tint = new Float32Array(items.length * 3);
+      const offset = new Float32Array(items.length * 2);
+      const shape = new Float32Array(items.length);
+      items.forEach((it, i) => {
+        pos.set(it.pos, i * 3);
+        tint.set([gold.r, gold.g, gold.b], i * 3);
+        offset.set([-17, -15], i * 2);
+        shape[i] = it.shape;
+      });
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      g.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
+      g.setAttribute('offset', new THREE.BufferAttribute(offset, 2));
+      g.setAttribute('shape', new THREE.BufferAttribute(shape, 1));
+      this.relics = new THREE.Points(g, this.shipMaterial);
+      this.relics.renderOrder = 5;
+      this.scene.add(this.relics);
     }
     this.invalidate(false);
   }

@@ -14,6 +14,7 @@ import { isTreatyKind } from '../content/treaties.ts';
 import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { RETREATS, STANCES, TARGETS } from './fleets.ts';
+import { siteAt } from './relics.ts';
 import { techCost } from './research.ts';
 import { beaconSlots, contactWith, type GameState, MEMORY_KINDS, type MemoryKind, powerOf } from './state.ts';
 import { isSold, sellerOf } from './treaties.ts';
@@ -92,6 +93,22 @@ export function shapeProblems(raw: unknown): string[] {
     )
   )
     out.push('the history is not a list of scores');
+  // Relic sites' excavations (M5_UNKNOWN.md §20.10).
+  if (
+    !Array.isArray(raw.digs) ||
+    !raw.digs.every(
+      (d) =>
+        isRecord(d) &&
+        typeof d.system === 'string' &&
+        (d.by === null || isFactionId(d.by)) &&
+        isWhole(d.chapters) &&
+        (d.chapters as number) <= 3 &&
+        isWhole(d.progress) &&
+        (d.waiting === null || isWhole(d.waiting, 1)) &&
+        (d.answer === null || d.answer === 0 || d.answer === 1),
+    )
+  )
+    out.push('the excavations are not a list of excavations');
   // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
   if (
     !Array.isArray(raw.battles) ||
@@ -197,6 +214,10 @@ export function shapeProblems(raw: unknown): string[] {
         !isWhole(p.story.industry)
       )
         out.push(`power ${i}'s story is not its numbers`);
+      // Excavations (M5_UNKNOWN.md §20.10).
+      if (p.digShare !== 0 && p.digShare !== 25 && p.digShare !== 50)
+        out.push(`power ${i}'s share for excavations is not a share`);
+      if (!isWhole(p.chapters)) out.push(`power ${i}'s chapters done is not a whole number`);
       // Designs (M4_FLEETS.md §21.3).
       if (
         !Array.isArray(p.designs) ||
@@ -371,6 +392,15 @@ export function stateProblems(world: World, state: GameState): string[] {
       if (anomalyAt(state.seed, sys) === null) out.push(`${p.faction} investigated ${sys}, which has no anomaly`);
       last = sys;
     }
+  }
+  // Every excavation at a site, each once, in order (M5_UNKNOWN.md §20.10).
+  let lastDig = '';
+  for (const d of state.digs) {
+    if (!siteAt(world, state.seed, d.system)) out.push(`an excavation at ${d.system}, where there is no relic site`);
+    if (d.system <= lastDig) out.push('the excavations are out of order or listed twice');
+    if (d.by !== null && !state.powers.some((p) => p.faction === d.by))
+      out.push(`an excavation by ${d.by}, not in play`);
+    lastDig = d.system;
   }
   for (const s of state.ships) {
     const inv = s.investigating;

@@ -6,9 +6,11 @@
 import { writeFileSync } from 'node:fs';
 import { EVENTS, type EventId } from '../../src/content/events.ts';
 import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
+import { RULES } from '../../src/content/rules.ts';
 import { TECH_IDS, TECHS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { researchOf } from '../../src/sim/economy.ts';
+import { relicSites, siteKnown } from '../../src/sim/relics.ts';
 import { scoreOf } from '../../src/sim/score.ts';
 import { newGame } from '../../src/sim/state.ts';
 import { resolveTurn } from '../../src/sim/turn.ts';
@@ -60,12 +62,18 @@ let leftBefore100 = 0;
 let slowestAll = 0;
 let slowestTurn = 0;
 let biggestAll = 0;
+/** The whole game (M5_UNKNOWN.md §20, as built): the deepest treasury and the longest debt of any power. */
+let deepest = 0;
+let longestDebtAll = 0;
+/** Relic sites (§20.11): those some power knew by turn 150, in each game. */
+const sitesBy150: number[] = [];
 
 for (const seed of SEEDS) {
   let g = newGame(world, { seed, powers: FACTION_ORDER.map((faction) => ({ faction, controller: 'ai' as const })) });
   const debt = new Map<FactionId, number>();
   const done = new Set<FactionId>();
   const game = { firstWar: 0, wars: 0, battles: 0, taken: 0, surrenders: 0, left: [] as string[] };
+  const debtAll = new Map<FactionId, number>();
   for (let turn = 1; turn <= TURNS; turn++) {
     // Played on to turn 100 for the tables, and no further once decided.
     if (turn > 100 && g.ended) break;
@@ -79,6 +87,16 @@ for (const seed of SEEDS) {
     }
     g = r.state;
     if (turn % 25 === 0) biggestAll = Math.max(biggestAll, JSON.stringify(g).length);
+    for (const p of g.powers) {
+      deepest = Math.min(deepest, p.treasury);
+      const d = p.treasury < 0 ? (debtAll.get(p.faction) ?? 0) + 1 : 0;
+      debtAll.set(p.faction, d);
+      longestDebtAll = Math.max(longestDebtAll, d);
+    }
+    if (turn === 150)
+      sitesBy150.push(
+        relicSites(world, seed).filter((s) => g.powers.some((p) => siteKnown(world, g, p, s.system))).length,
+      );
     game.battles += g.battles.length;
     for (const rep of r.reports)
       for (const e of rep.events) {
@@ -170,8 +188,12 @@ for (const seed of SEEDS) {
   if (e && e.how !== 'score') wonBefore++;
   if (game.firstWar && game.firstWar <= 150) warBy150++;
   const how = !e ? 'undecided' : e.how === 'conquest' ? 'conquest' : e.how === 'vote' ? 'the Assembly' : 'score';
+  // Relic sites (M5_UNKNOWN.md §20.11): chapters done in all, and the power that did the most.
+  const chapters = g.powers.reduce((n, p) => n + p.chapters, 0);
+  const most = [...g.powers].sort((a, b) => b.chapters - a.chapters)[0];
+  const digger = most && most.chapters > 0 ? `${FACTIONS[most.faction].shortName} (${most.chapters})` : '—';
   ends.push(
-    `| ${seed} | ${e?.winner ? FACTIONS[e.winner].shortName : '—'} | ${how} | ${e ? e.turn : '—'} | ${game.firstWar || '—'} | ${game.wars} | ${game.battles} | ${game.taken} | ${game.surrenders} | ${game.left.join(', ') || '—'} |`,
+    `| ${seed} | ${e?.winner ? FACTIONS[e.winner].shortName : '—'} | ${how} | ${e ? e.turn : '—'} | ${game.firstWar || '—'} | ${game.wars} | ${game.battles} | ${game.taken} | ${game.surrenders} | ${game.left.join(', ') || '—'} | ${chapters} | ${digger} |`,
   );
 }
 
@@ -220,10 +242,12 @@ ${rows.join('\n')}
 Each game played on, after turn 100, until it was won or reached the default limit of ${TURNS} turns
 (M4_FLEETS.md §30.4). ${many(wonBefore, 'game was', 'games were')} won before the limit; ${many(warBy150, 'game', 'games')} saw a war by turn 150;
 ${many(leftBefore100, 'power', 'powers')} left the game before turn 100. The slowest turn of all took ${slowestAll.toFixed(0)} ms (turn ${slowestTurn}); the
-largest save was ${(biggestAll / 1024).toFixed(1)} KB.
+largest save was ${(biggestAll / 1024).toFixed(1)} KB. The deepest any treasury fell was ${deepest} credits;
+${streak(longestDebtAll, 'in debt', 'no power fell into debt').replace(/^T/, 't')}
+Of the ${RULES.relics.sites} relic sites in each game, some power knew ${sitesBy150.length > 0 ? `${Math.min(...sitesBy150)} to ${Math.max(...sitesBy150)}` : 'none'} by turn 150 (M5).
 
-| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game | Chapters | Most chapters |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${ends.join('\n')}
 
 ## Events, and how the rivals answered them

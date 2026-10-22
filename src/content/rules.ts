@@ -349,6 +349,33 @@ export const RULES = {
     /** Every power's score is kept every so many turns. */
     historyEvery: 10,
   },
+  /** Relic sites (M5_UNKNOWN.md §20): where, how many, what a chapter needs and gives. */
+  relics: {
+    /** Sites in every game, and how many of them at white dwarfs (besides GJ 915) and brown dwarfs. */
+    sites: 12,
+    whiteDwarfs: 5,
+    brownDwarfs: 3,
+    /** The system that is always a site, the white dwarf nearest Pyre (§13). */
+    always: 'gj-915',
+    /** At least so many tenths of a light-year from every capital, at most so many from the nearest, and apart. */
+    fromCapitalDeci: 80,
+    nearCapitalDeci: 180,
+    apartDeci: 30,
+    /** The share of research a new power gives its excavations, in percent. */
+    share: 25,
+    /** Research each chapter needs, the first to the third. */
+    chapterCost: [150, 300, 500] as const,
+    /** Field archaeology: each chapter needs this share less, in percent. */
+    fieldPercent: 20,
+    /** A chapter's choice not made in so many turns takes the first. */
+    waits: 3,
+    /** What each choice gives, chapter by chapter: research, a resource, systems surveyed. */
+    research: [100, 200, 350] as const,
+    resource: [40, 80, 120] as const,
+    charts: [3, 5, 8] as const,
+    /** Old charts: sites within so many tenths of a light-year of a holding are known. */
+    chartsDeci: 120,
+  },
   /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
   raid: {
     raided: -10,

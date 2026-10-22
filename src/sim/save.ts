@@ -307,6 +307,15 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     }));
     return { ...g, version: 25, powers, assembly: a ? { ...a, terms: a.leader ? 1 : 0 } : null };
   },
+  /**
+   * 25 → 26 (M5 increment 52): relic sites. Nothing excavated yet; every power gives a quarter of its
+   * research to excavations once it has one, and has read no revelation.
+   */
+  25: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, digShare: 25, chapters: 0 }));
+    return { ...g, version: 26, powers, digs: [] };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

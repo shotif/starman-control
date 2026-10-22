@@ -89,6 +89,10 @@ export type TechId =
   // M2b's great works (M2B_SCIENCE.md §20.1).
   | 'great-engineering'
   | 'translation'
+  // M5's relic sites (M5_UNKNOWN.md §20.6).
+  | 'relic-studies'
+  | 'old-charts'
+  | 'field-archaeology'
   // M4's Weapons field (M4_FLEETS.md §21.5).
   | 'fire-control'
   | 'destroyer-hulls'
@@ -191,7 +195,14 @@ export type TechEffect =
   | { kind: 'works-unrest'; works: number; approval: number }
   // M3's contact (M3_NEIGHBOURS.md §19.4).
   /** Translation of another species' tongue, this much more each turn, seen or not. */
-  | { kind: 'translation'; perTurn: number };
+  | { kind: 'translation'; perTurn: number }
+  // M5's relic sites (M5_UNKNOWN.md §20.6).
+  /** Relic sites may be excavated. */
+  | { kind: 'excavation' }
+  /** Every relic site within this many tenths of a light-year of a holding is known. */
+  | { kind: 'relic-charts'; deci: number }
+  /** Each chapter of excavation needs this share less research, in percent. */
+  | { kind: 'chapter-percent'; percent: number };
 
 /**
  * A deed that teaches a power something towards a technology: its inspiration (M2B_SCIENCE.md §17.1,
@@ -265,7 +276,12 @@ export type Deed =
   /** Warships held. */
   | { kind: 'warships'; n: number }
   /** Battles fought (M4_FLEETS.md §24). */
-  | { kind: 'battles'; n: number };
+  | { kind: 'battles'; n: number }
+  // M5 (M5_UNKNOWN.md §20.6).
+  /** Anomalies investigated that are threads of the mystery. */
+  | { kind: 'mysteries'; n: number }
+  /** Chapters of excavation completed. */
+  | { kind: 'chapters'; n: number };
 
 export interface TechDef {
   id: TechId;
@@ -922,6 +938,40 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'translation', perTurn: 1 },
     text: 'Learning another species’ tongue goes faster: 1 more a turn, seen or not.',
     inspiration: { deed: { kind: 'contacts', n: 2 }, text: 'contact with two other powers' },
+  },
+  // M5's relic sites (M5_UNKNOWN.md §20.6).
+  'relic-studies': {
+    id: 'relic-studies',
+    name: 'Relic studies',
+    field: 'xenology',
+    tier: 2,
+    cost: 80,
+    needs: [],
+    effect: { kind: 'excavation' },
+    text: 'Relic sites may be excavated.',
+    inspiration: { deed: { kind: 'mysteries', n: 2 }, text: 'two of the mystery’s anomalies investigated' },
+  },
+  'old-charts': {
+    id: 'old-charts',
+    name: 'Old charts',
+    field: 'xenology',
+    tier: 3,
+    cost: 140,
+    needs: ['relic-studies'],
+    effect: { kind: 'relic-charts', deci: 120 },
+    text: 'Every relic site within 12 light-years of a holding is known.',
+    inspiration: { deed: { kind: 'chapters', n: 2 }, text: 'two chapters of excavation done' },
+  },
+  'field-archaeology': {
+    id: 'field-archaeology',
+    name: 'Field archaeology',
+    field: 'xenology',
+    tier: 4,
+    cost: 260,
+    needs: ['old-charts'],
+    effect: { kind: 'chapter-percent', percent: 20 },
+    text: 'Each chapter of excavation needs a fifth less research.',
+    inspiration: { deed: { kind: 'chapters', n: 5 }, text: 'five chapters of excavation done' },
   },
   // M2b's doctrines (M2B_SCIENCE.md §19.1): each pair a fork.
   'open-frontier': {

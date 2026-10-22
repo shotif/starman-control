@@ -12,6 +12,7 @@ import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId, WAR_REASONS } from '../../content/factions.ts';
 import type { ModuleId } from '../../content/modules.ts';
 import { itemName, PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
+import { RELIC_KINDS } from '../../content/relics.ts';
 import { RULES } from '../../content/rules.ts';
 import { type HullId, SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
@@ -43,6 +44,7 @@ import { endText } from './end.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
 import { bombardedText, invasionText, RadioTraffic, raidedText } from './invasion.tsx';
+import { relicText } from './relics.tsx';
 import { panel, say, targeting } from './state.ts';
 
 export interface Play {
@@ -400,8 +402,15 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
   switch (e.kind) {
     case 'surveyed': {
       const n = e.habitable.length;
-      const by = e.station !== undefined ? `The survey station at ${holding(e.station)}` : shipOf(e.ship);
-      const found = e.anomaly ? ` An anomaly: ${ANOMALIES[e.anomaly].seen}` : '';
+      const by =
+        e.station !== undefined
+          ? `The survey station at ${holding(e.station)}`
+          : e.ship !== undefined
+            ? shipOf(e.ship)
+            : 'The charts of the Absent';
+      const found =
+        (e.anomaly ? ` An anomaly: ${ANOMALIES[e.anomaly].seen}` : '') +
+        (e.relic ? ` A relic site of the Absent: ${RELIC_KINDS[e.relic].seen}` : '');
       return `${by} surveyed ${name(e.system)}: ${e.worlds} world${e.worlds === 1 ? '' : 's'}${
         n > 0 ? `, ${n} your people could live on` : ', none your people could live on without domes'
       }.${found}`;
@@ -646,6 +655,11 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'power-left':
     case 'game-ended':
       return endText(game, e, playerPower(game)?.faction) ?? '';
+    case 'relics-charted':
+    case 'dig':
+    case 'chapter':
+    case 'chapter-answered':
+      return relicText(world, game, e, playerPower(game)?.faction) ?? '';
   }
 }
 
@@ -665,7 +679,8 @@ function eventPlace(
   | { research: true }
   | { event: true }
   | { designs: true }
-  | { assembly: true } {
+  | { assembly: true }
+  | { relics: true } {
   switch (e.kind) {
     case 'researched':
     case 'inspired':
@@ -739,6 +754,12 @@ function eventPlace(
     case 'power-left':
     case 'game-ended':
       return { system: playerPower(game)?.capital ?? 'sol' };
+    // Relic sites' events open the Relics screen (M5_UNKNOWN.md §20.8).
+    case 'relics-charted':
+    case 'chapter':
+    case 'chapter-answered':
+    case 'dig':
+      return { relics: true };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -824,6 +845,10 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   sanctions: { icon: 'diplomacy', tone: 'needs' },
   'power-left': { icon: 'diplomacy', tone: 'news' },
   'game-ended': { icon: 'diplomacy', tone: 'needs' },
+  'relics-charted': { icon: 'anomaly', tone: 'news' },
+  dig: { icon: 'anomaly', tone: 'wrong' },
+  chapter: { icon: 'anomaly', tone: 'needs' },
+  'chapter-answered': { icon: 'anomaly', tone: 'growth' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -835,7 +860,8 @@ export function dispatchPicture(events: readonly ReportEvent[]): DispatchPicture
   if (has('war-declared')) return 'dispatch-war';
   if (has('peace-made')) return 'dispatch-peace';
   if (has('assembly-formed') || has('elected')) return 'dispatch-assembly';
-  if (has('investigated') || events.some((e) => e.kind === 'surveyed' && e.anomaly)) return 'dispatch-anomaly';
+  if (has('investigated') || has('chapter') || events.some((e) => e.kind === 'surveyed' && (e.anomaly || e.relic)))
+    return 'dispatch-anomaly';
   if (has('founded')) return 'dispatch-colony';
   if (has('researched')) return 'dispatch-research';
   if (has('lane-opened')) return 'dispatch-lane';
@@ -982,6 +1008,7 @@ export function ReportView({
                   else if ('event' in place) onEvent?.();
                   else if ('designs' in place) onDesigns?.();
                   else if ('assembly' in place) panel.value = 'assembly';
+                  else if ('relics' in place) panel.value = 'relics';
                   else onGo(place.system);
                 }}
               >
@@ -1064,7 +1091,9 @@ export function NeedsStack({
                           ? 'Open Diplomacy'
                           : need.kind === 'vote'
                             ? 'Open the Assembly'
-                            : 'Open the colony'}
+                            : need.kind === 'chapter'
+                              ? 'Open Relics'
+                              : 'Open the colony'}
               </button>
               <button type="button" class="button button-quiet" onClick={() => setAt(at + 1)}>
                 Skip

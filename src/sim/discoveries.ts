@@ -3,12 +3,14 @@
 // system holding something astronomers have observed. Both are earned by every power by the same
 // rules. Pure and in whole numbers.
 
+import { ANOMALIES } from '../content/anomalies.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import { isHull, STARTING_FLEET } from '../content/ships.ts';
 import { SOL_BODIES } from '../content/sol.ts';
 import { type Deed, TECH_IDS, TECHS, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
+import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import {
   approvalOf,
@@ -217,6 +219,15 @@ export function deedDone(
       return state.ships.filter((s) => s.owner === faction && isHull(s.type)).length >= deed.n;
     case 'contacts':
       return power.contacts.length >= deed.n;
+    case 'mysteries':
+      return (
+        power.investigated.filter((id) => {
+          const a = anomalyAt(state.seed, id);
+          return a !== null && ANOMALIES[a].mystery === true;
+        }).length >= deed.n
+      );
+    case 'chapters':
+      return power.chapters >= deed.n;
   }
 }
 

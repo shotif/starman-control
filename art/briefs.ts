@@ -261,6 +261,62 @@ const FIRST: ArtBrief[] = [
       'ring of light filling with two arcs of colour, cyan and amber, as the votes come in.',
     purpose: 'Report: the Assembly formed, or a vote taken (M4).',
   },
+  // Relic sites of the Absent (M5_UNKNOWN.md §20.9): one for each kind, an old, tidy, switched-off
+  // place, never a ruin, with no writing and no figures. Every site is fiction.
+  {
+    id: 'relic-vault',
+    series: 'illustration',
+    subject:
+      'Inside an ancient vault cut into dark rock: a long, perfectly straight corridor of smooth grey stone lit by a ' +
+      'soft even glow with no visible source, empty racks along both walls, everything swept clean and orderly, a ' +
+      'single small object resting on a shelf at the far end; quiet, tidy, uncanny; no people, no writing.',
+    purpose: 'A relic site of the Absent: a vault (M5).',
+  },
+  {
+    id: 'relic-dust',
+    series: 'illustration',
+    subject:
+      'A vast cloud of fine glittering dust drifting in deep space beside a faint white dwarf star, the dust arranged ' +
+      'in perfect concentric rings and slow spirals as if combed, a tiny survey ship with lights hanging at its edge ' +
+      'for scale; still, beautiful, unnatural; no writing.',
+    purpose: 'A relic site of the Absent: a field of ordered dust (M5).',
+  },
+  {
+    id: 'relic-array',
+    series: 'illustration',
+    subject:
+      'An enormous lattice of thin silver rods floating in space, many kilometres across, every rod pointing the ' +
+      'same way toward one point of the southern sky, a dim brown dwarf glowing deep red behind it, a small ' +
+      'engineering ship beside one node for scale; precise, ancient, switched off; no writing.',
+    purpose: 'A relic site of the Absent: an array (M5).',
+  },
+  {
+    id: 'relic-moon',
+    series: 'illustration',
+    subject:
+      'The interior of a small hollow moon: tiers of smooth curved galleries ringing a great empty central chamber, ' +
+      'a ring of plain stone seats on the lowest floor all facing an empty centre, a single work lamp left by a ' +
+      'survey crew casting a warm pool of light; vast, quiet, carefully kept; no people, no writing.',
+    purpose: 'A relic site of the Absent: a hollow moon (M5).',
+  },
+  {
+    id: 'relic-charts',
+    series: 'illustration',
+    subject:
+      'A long dim hall of tall flat dark panels, each covered in tiny points of light like star charts, faint lines ' +
+      'drawn between some of the points, two astronaut surveyors in work suits small in the distance holding up ' +
+      'handheld lights to read them; hushed, archival, very old; no writing.',
+    purpose: 'A relic site of the Absent: a hall of charts (M5).',
+  },
+  {
+    id: 'relic-beacon',
+    series: 'illustration',
+    subject:
+      'An ancient beacon floating in space near a small white dwarf star: an elegant smooth spire of dark metal shaped ' +
+      'somewhat like a modern lane beacon but older and stranger, a single faint pale light at its tip, turned ' +
+      'slightly toward the far stars; a small human survey ship approaching cautiously; lonely, patient; no writing.',
+    purpose: 'A relic site of the Absent: a quiet beacon (M5).',
+  },
   // The end of the game (M4_FLEETS.md §30.5): victory and defeat. Every person and power is fiction.
   {
     id: 'end-victory',

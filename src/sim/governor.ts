@@ -8,7 +8,7 @@
 import { ZONE_DEFS, type Zone } from '../content/districts.ts';
 import { CALMING, PRIORITY_DEFS, type Priority } from '../content/edicts.ts';
 import type { FactionId } from '../content/factions.ts';
-import type { ProjectId } from '../content/projects.ts';
+import { PROJECTS, type ProjectId } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import {
   approvalOf,
@@ -18,11 +18,12 @@ import {
   networkFood,
   networkOf,
   queueRefusal,
+  treasuryOf,
   unworkedDistricts,
   zoneRefusal,
 } from './economy.ts';
 import type { ReportEvent } from './report.ts';
-import type { GameState, Holding } from './state.ts';
+import { type GameState, type Holding, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 type Governed = Extract<ReportEvent, { kind: 'governed' }>;
@@ -153,10 +154,19 @@ export function govern(world: World, state: GameState, h: Holding): Governed[] {
   }
 
   // 4. A project when nothing else is queued: something to calm its people first, if they need it.
+  // None that costs upkeep while the treasury is in debt or falling (M5_UNKNOWN.md §20, as built).
   if (h.queue.length === 0) {
     const uneasy = approvalOf(world, state, h).level !== 'content';
     const list: ProjectId[] = [...(uneasy ? CALMING : []), ...PRIORITY_DEFS[priority].projects];
-    const project = list.find((p) => queueRefusal(world, state, h, { kind: 'project', project: p }) === null);
+    let falling: boolean | undefined;
+    const affordable = (p: ProjectId) => {
+      if (PROJECTS[p].upkeep === 0) return true;
+      falling ??= powerOf(state, h.owner).treasury < 0 || treasuryOf(world, state, h.owner).total < 0;
+      return !falling;
+    };
+    const project = list.find(
+      (p) => queueRefusal(world, state, h, { kind: 'project', project: p }) === null && affordable(p),
+    );
     if (project) {
       h.queue.push({ kind: 'project', project, governor: true });
       out.push({

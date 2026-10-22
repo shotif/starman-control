@@ -25,6 +25,7 @@ export const panel = signal<
   | 'designs'
   | 'assembly'
   | 'end'
+  | 'relics'
   | null
 >(null);
 export const hover = signal<{ id: SystemId; x: number; y: number } | null>(null);

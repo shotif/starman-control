@@ -7,6 +7,7 @@ import type { EdictId } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
 import type { FactionId, WarReason } from '../content/factions.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
+import type { RelicKind } from '../content/relics.ts';
 import type { HullId, ShipType } from '../content/ships.ts';
 import type { TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
@@ -29,6 +30,8 @@ export type ReportEvent =
       habitable: string[];
       /** An anomaly found there. */
       anomaly?: AnomalyId;
+      /** A relic site found there (M5_UNKNOWN.md §20.2). */
+      relic?: RelicKind;
     }
   /** A survey ship finished investigating an anomaly; its reward has been given. */
   | { kind: 'investigated'; ship: number; system: SystemId; anomaly: AnomalyId }
@@ -239,7 +242,28 @@ export type ReportEvent =
   /** A power left the game, its last colony gone (M4_FLEETS.md §30.2). */
   | { kind: 'power-left'; faction: FactionId }
   /** The game decided (§30.1): who won, none when played alone, and how. */
-  | { kind: 'game-ended'; winner: FactionId | null; how: VictoryKind };
+  | { kind: 'game-ended'; winner: FactionId | null; how: VictoryKind }
+  // Relic sites (M5_UNKNOWN.md §20).
+  /** Relic sites made known by Old charts (§20.2). */
+  | { kind: 'relics-charted'; systems: SystemId[] }
+  /** An excavation begun or stopped: by order, or because the power no longer holds the system. */
+  | { kind: 'dig'; system: SystemId; stage: 'begun' | 'stopped' | 'lost' }
+  /** A chapter of a site done (1 to 3), waiting for its choice, with the power's next revelation (from 1). */
+  | { kind: 'chapter'; system: SystemId; chapter: number; revelation: number }
+  /**
+   * A chapter's choice taken, by the power or by its first after waiting: research given (and any
+   * technology it finished), a resource, or systems surveyed by the charts.
+   */
+  | {
+      kind: 'chapter-answered';
+      system: SystemId;
+      chapter: number;
+      choice: 0 | 1;
+      auto: boolean;
+      research?: number;
+      resource?: { kind: 'metals' | 'volatiles' | 'fuel'; amount: number };
+      surveyed?: SystemId[];
+    };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {
