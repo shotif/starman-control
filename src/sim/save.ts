@@ -263,6 +263,8 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const ships = (g.ships as Raw[]).map((s) => ({ ...s, damage: 0 }));
     return { ...g, version: 19, ships, battles: [] };
   },
+  /** 19 → 20 (M4 increment 45): the replay. A battle kept from before has no weapons' kinds, so none is kept. */
+  19: (g) => ({ ...g, version: 20, battles: [] }),
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

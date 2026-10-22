@@ -193,9 +193,13 @@ offered and answered with a truce of 10 turns, non-aggression and alliance, forc
 enemy's lanes, interception where its warships wait, war weariness; state version 18. **Done:
 increment 44, battles** (§24): rounds at three ranges by each fleet's orders, Reborn's damage
 matrix, retreat, damage that stays and repairs near home, the battle and its reasons in the report,
-rivals arming when at war; state version 19.
+rivals arming when at war; state version 19. **Done: increment 45, the replay** (§25): *Watch* on
+each battle in the report opens it in 3D in the map's place, each power's ships from Reborn's kit
+(and two alien builders of our own), shots by kind, shields flaring, ships breaking up; play,
+pause, a round at a time, rewind, faster and skip; the account beside it; its code loads only when
+watched (30 KB); state version 20.
 
-The art and music spend: about $25.55 of $50 (raised on 22 October 2026; about $24.45 left). M3's
+The art and music spend: about $25.85 of $50 (raised on 22 October 2026; about $24.15 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

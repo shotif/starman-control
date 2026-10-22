@@ -21,6 +21,7 @@ import { FACTION_IDS, FACTIONS, type FactionId } from '../../content/factions.ts
 import { moodFor } from '../../content/music.ts';
 import { isHull } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
+import type { BattleScene } from '../../render/BattleScene.ts';
 import type { ColonyView } from '../../render/ColonyView.ts';
 import type { SceneBuilding } from '../../render/colonyScene.ts';
 import type { MapRoute, MapView, ShipMark, ViewMode } from '../../render/MapView.ts';
@@ -83,6 +84,7 @@ import {
   selectedShip,
   targeting,
   toast,
+  watching,
 } from './state.ts';
 import '../sheet.css';
 import './map.css';
@@ -491,6 +493,31 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else setVeil(null);
     };
   }, [colony, world, ready]);
+  // A battle watched (M4_FLEETS.md §25): its screen and scene load only now, and borrow the map's renderer.
+  const battleRef = useRef<BattleScene | null>(null);
+  const [Replay, setReplay] = useState<typeof import('./replay.tsx').ReplayView | null>(null);
+  const watched = watching.value === null ? undefined : game.battles.find((b) => b.id === watching.value);
+  useEffect(() => {
+    if (watching.value !== null && !watched) watching.value = null;
+    if (!watched || Replay) return;
+    let gone = false;
+    void import('./replay.tsx').then((m) => {
+      if (!gone) setReplay(() => m.ReplayView);
+    });
+    return () => {
+      gone = true;
+    };
+  }, [watched, Replay]);
+  const closeReplay = useCallback(() => {
+    watching.value = null;
+    // Back to the report, where the battle was.
+    panel.value = 'report';
+  }, []);
+  const onBattleScene = useCallback((scene: BattleScene | null) => {
+    battleRef.current = scene;
+    if (scene) requestAnimationFrame(() => updateStage());
+  }, []);
+
   // The colony's scene follows the game: a turn ends, something is queued.
   const colonyHolding = colony === null ? undefined : game.holdings.find((x) => x.id === colony);
   const colonyKey = colonyHolding ? JSON.stringify(stillScene(world, game, colonyHolding)) : '';
@@ -636,6 +663,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     v.setStage(stage, avoid);
     sceneRef.current?.setStage(stage, avoid);
     colonyRef.current?.setStage(stage);
+    battleRef.current?.setStage(stage, avoid);
   }, []);
 
   useLayoutEffect(() => {
@@ -745,6 +773,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const v = view.current;
+      // The replay has keys of its own (M4_FLEETS.md §25.3).
+      if (watching.value !== null) return;
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) {
         if (e.key === 'Escape') (e.target as HTMLElement).blur();
         return;
@@ -979,6 +1009,17 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         targeting.value = null;
         panel.value = 'designs';
       }}
+      onWatch={
+        ready > 0 && !failed.value
+          ? (id) => {
+              targeting.value = null;
+              panel.value = null;
+              insideSystem.value = null;
+              insideColony.value = null;
+              watching.value = id;
+            }
+          : undefined
+      }
     />
   );
   const waiting = play ? powerOf(game, play.faction).event : null;
@@ -987,8 +1028,23 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const endLabel = play?.resolving ? 'Ending…' : 'End turn';
 
   return (
-    <div ref={root} class={`map-screen layout-${layout.value}${play ? ' is-playing' : ''}`}>
+    <div
+      ref={root}
+      class={`map-screen layout-${layout.value}${play ? ' is-playing' : ''}${watched ? ' is-watching' : ''}`}
+    >
       <div ref={host} class="map-host" data-testid="map">
+        {watched && play && Replay && view.current && (
+          <Replay
+            world={world}
+            game={game}
+            log={watched}
+            me={play.faction}
+            view={view.current}
+            wide={desktop || sideSheets.value}
+            onClose={closeReplay}
+            onScene={onBattleScene}
+          />
+        )}
         {veil && <div key={veil.n} class={`map-veil veil-${veil.kind}`} aria-hidden="true" />}
         {colonyHolding && (
           <div class="system-bar colony-bar" style={{ top: desktop ? '12px' : `${topHeight + 8}px` }} data-keep-clear>
@@ -1414,6 +1470,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
       {!desktop &&
         !targeting.value &&
+        !watched &&
         (() => {
           const sheet = (label: string, body: ComponentChildren, onClose: () => void, key: string) => (
             <Sheet

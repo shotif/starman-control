@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 19;
+export const STATE_VERSION = 20;
 
 export interface Stockpile {
   metals: number;

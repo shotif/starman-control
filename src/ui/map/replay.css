@@ -1,0 +1,255 @@
+/* The battle replay (M4_FLEETS.md §25.4): its bars over the scene, the controls in thumb reach on a
+   phone, the account as a sheet over the scene's foot on a phone and a panel on the right when wide. */
+
+.replay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.replay > * {
+  pointer-events: auto;
+}
+
+.replay-top {
+  position: absolute;
+  top: calc(8px + env(safe-area-inset-top, 0px));
+  left: var(--gutter, 12px);
+  right: var(--gutter, 12px);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.replay-title {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 4px #000;
+}
+
+.replay-round {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.replay-dock {
+  position: absolute;
+  left: var(--gutter, 12px);
+  right: var(--gutter, 12px);
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.replay-controls,
+.replay-account,
+.replay-card {
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(7, 12, 23, 0.9);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+.replay-controls {
+  padding: 0.4rem 0.6rem 0.5rem;
+}
+
+.replay-slider {
+  position: relative;
+  padding: 0.2rem 0 0.5rem;
+}
+
+.replay-slider input {
+  display: block;
+  width: 100%;
+  min-height: 32px;
+  margin: 0;
+  accent-color: var(--accent, #5cc8ff);
+}
+
+.replay-marks {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0.15rem;
+  height: 6px;
+}
+
+.replay-marks i {
+  position: absolute;
+  width: 2px;
+  height: 6px;
+  background: var(--text-muted);
+  opacity: 0.6;
+}
+
+.replay-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.replay-buttons .chip {
+  flex: 1;
+  padding: 0 0.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-buttons .replay-play {
+  flex: 1.4;
+  border-color: var(--accent, #5cc8ff);
+}
+
+.replay-account {
+  max-height: 42vh;
+  overflow-y: auto;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.replay-account.is-side {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  bottom: 8px;
+  width: min(360px, 40%);
+  max-height: none;
+}
+
+.replay.is-wide .replay-top,
+.replay.is-wide .replay-dock {
+  right: calc(min(360px, 40%) + 20px);
+}
+
+.replay.is-wide .replay-dock {
+  left: 12px;
+}
+
+.replay.is-wide .replay-controls {
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.replay-summary {
+  margin: 0 0 0.5rem;
+}
+
+.replay-side h3 {
+  margin: 0.6rem 0 0.1rem;
+  font-size: 0.95rem;
+}
+
+.replay-tally {
+  margin: 0 0 0.3rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-force-name {
+  margin: 0.3rem 0 0.1rem;
+  font-weight: 600;
+}
+
+.replay-force ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.replay-ship {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 70px 4.5em;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 32px;
+}
+
+.replay-ship .link {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.replay-ship .dim {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-ship.is-picked .link {
+  color: var(--accent, #5cc8ff);
+}
+
+.replay-ship.is-destroyed .link,
+.replay-ship.is-gone .link {
+  color: var(--text-muted);
+}
+
+.replay-ship.is-destroyed .link {
+  text-decoration: line-through;
+}
+
+.replay-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.replay-bar span {
+  display: block;
+  height: 100%;
+  background: var(--good, #62e39a);
+}
+
+.replay-account .battle-why {
+  margin: 0.6rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--text-muted);
+}
+
+.replay-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin: 0.6rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.replay-key i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+
+.replay-card {
+  position: absolute;
+  top: calc(68px + env(safe-area-inset-top, 0px));
+  left: var(--gutter, 12px);
+  max-width: min(320px, calc(100% - 24px));
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.replay-card p {
+  margin: 0 0 0.3rem;
+}
+
+.battle-label.map-label {
+  border-left: 3px solid var(--held);
+  padding-left: 0.3rem;
+  color: var(--text);
+  background: rgba(4, 7, 14, 0.55);
+}

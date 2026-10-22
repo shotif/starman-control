@@ -35,6 +35,8 @@ export const selectedBody = signal<string | null>(null);
 
 /** A colony seen as a living diorama (COLONY_VIEW.md), by its holding's id. */
 export const insideColony = signal<number | null>(null);
+/** The battle of the turn being watched in the replay (M4_FLEETS.md §25), by its number. */
+export const watching = signal<number | null>(null);
 
 /** The colony whose queue's first project the pointer is over: its scaffold is lit in the scene. */
 export const queueHover = signal<number | null>(null);

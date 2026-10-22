@@ -803,11 +803,14 @@ export function ReportView({
   onViewColony,
   onEvent,
   onDesigns,
+  onWatch,
 }: {
   world: World;
   game: GameState;
   faction: FactionId;
   needs: number;
+  /** Opens a battle's replay (M4_FLEETS.md §25.4); absent where it cannot be drawn. */
+  onWatch?: (battle: number) => void;
   /** Opens the designs (M4_FLEETS.md §21.7). */
   onDesigns?: () => void;
   onGo: (id: SystemId) => void;
@@ -889,6 +892,16 @@ export function ReportView({
                   const log = game.battles.find((b) => b.id === e.battle);
                   return log ? <BattleWhy log={log} me={faction} /> : null;
                 })()}
+              {e.kind === 'battle' && onWatch && game.battles.some((b) => b.id === e.battle) && (
+                <button
+                  type="button"
+                  class="button button-small battle-watch"
+                  aria-label={`Watch the battle at ${world.system(e.system).name}`}
+                  onClick={() => onWatch(e.battle)}
+                >
+                  Watch
+                </button>
+              )}
               {onViewColony && e.kind === 'built' && e.item.kind === 'project' && (
                 <button type="button" class="link report-see" onClick={() => onViewColony(e.holding)}>
                   See it

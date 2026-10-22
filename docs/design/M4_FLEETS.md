@@ -37,6 +37,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 22. [Increment 42 in detail: fleets](#22-increment-42-in-detail-fleets-written-before-building-it)
 23. [Increment 43 in detail: war and peace](#23-increment-43-in-detail-war-and-peace-written-before-building-it)
 24. [Increment 44 in detail: battles](#24-increment-44-in-detail-battles-written-before-building-it)
+25. [Increment 45 in detail: the replay](#25-increment-45-in-detail-the-replay-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -911,3 +912,140 @@ the battle and why, on the phone, tablet and desktop.
   interception return at once, and the slowest turn is 189 ms.
 - **Tests:** `battles.test.ts` (13 tests); 551 unit tests; `battles.spec.ts` on the phone, tablet and
   desktop.
+
+## 25. Increment 45 in detail: the replay (written before building it)
+
+**Goals.** D-63 as decided (A): any battle of the turn can be **watched** from the report, in 3D,
+in the system where it was fought: the ships drawn procedurally in each power's look and colour,
+from Reborn's ship kit; the task forces closing to their ranges round by round; shots by the kind
+of their weapon; shields flaring; ships breaking up; task forces leaving. It plays in about 30
+seconds, and can be paused, stepped a round at a time, rewound, played faster and skipped to the
+end. The report's account of the battle stays beside it. It is first-class on a phone (full
+screen, the controls in thumb reach) and on a desktop (the account beside the scene, keys for the
+controls). Its code loads only when a battle is watched.
+
+**Out of scope.** Sound (none in M4); battles of earlier turns (the turn's battles only, as kept in
+§24.8); choosing a camera per ship; pictures (none to buy).
+
+### 25.1 What is shown
+
+- **The place:** the map's Milky Way behind, as the system view has it, and the system's chief star
+  as a disc of its colour far off, so a battle at a red dwarf looks red-lit. The battle is fought in
+  open space; worlds are not drawn (fiction: battles happen where fleets meet, not by a world).
+- **The sides:** each power in the battle takes a bearing round the centre (the player's power, if
+  it fought, on the near side, facing away from the camera); each of its task forces a row along
+  that bearing, its ships in a line abreast, larger hulls behind. A task force's **distance** from
+  the centre shows its range: long, middle or close. Between rounds it moves to its new range.
+- **The ships:** one model for each power, from Reborn's kit (D-10), with its colour as the accent
+  and a ring of its colour under each ship, as the map marks it:
+  - the Transit Authority: Reborn's Kite courier, its accent in the Authority's green;
+  - the Frontier Co-op: Reborn's Hauler, frugal and long;
+  - the Hollow Wake: Reborn's raider, salvaged gunmetal and rust;
+  - the Dusk Concord (fiction): a dark crescent hull with amber slits, for a people of the dusk;
+  - the Drift Moot (fiction): clustered pods like their floaters, violet-lit.
+  Sizes follow the hull: a corvette smallest, a capital ship about three times its length; civil
+  ships small.
+- **Shots,** each from the log in its round, coloured by its weapon's damage type: energy a
+  blue-white bolt, kinetic a fast orange tracer, plasma a slow green bloom, ion a violet crackle. A
+  miss passes by and fades; a hit on shields flares a bubble round the ship, coloured by the kind
+  of its shield (deflector blue, diffuser amber, balanced white); a hit on the structure throws
+  sparks.
+- **A ship destroyed** flashes, tumbles and breaks into debris that drifts out and fades. **A task
+  force that leaves** turns away, makes off and jumps out with a flash.
+- **Labels:** each task force's name over it in its power's colour, placed by the labels' layout
+  (as on the map); a ship chosen (a tap or a click) shows its name, design and structure left.
+
+### 25.2 The timeline
+
+A pure model of the replay (`src/render/replayModel.ts`), from the battle's log alone, gives where
+everything is at any moment, so the replay can be **seeked** to any time and is the same however it
+got there:
+
+- An opening of **1.5 s** (the forces at long range), then **3.5 s a round**: the first **0.8 s**
+  the task forces move to the round's range, then its shots, spread over the next 2.4 s in the log's
+  order; a closing of **1.5 s**. Eight rounds take 31 s.
+- A shot flies for a time by its kind (kinetic 0.25 s, energy 0.4 s, plasma 0.7 s, ion 0.15 s) and
+  takes its shields and structure when it lands. Shields recover a fifth of their capacity at the
+  end of a round, as in the battle (§24.4).
+- A ship is destroyed when the shot that ends it lands. A task force leaves in the last 0.6 s of its
+  last round.
+- The model gives, for a time: each ship's place, heading, structure and shields left, and whether
+  it is fighting, breaking up, leaving or gone; the shots in flight and their impacts; each side's
+  ships and structure left; and the round.
+
+### 25.3 The controls
+
+- **Play / pause**, **a round back**, **a round on**, **back to the start**, **speed** (1×, 2×,
+  4×), **Skip** (straight to the end, with the result), and a **slider** across the whole battle
+  marked at each round. At the end it stops, and *play* starts it again.
+- **The camera** turns slowly round the battle unless reduced motion is set or the player has
+  turned it; drag to turn, pinch or wheel to zoom.
+- **Keys on the desktop:** Space play and pause, ← and → a round, Home the start, F faster, S skip,
+  Escape close.
+- With **reduced motion**, the camera stays still and shots are drawn as short lines that appear
+  and fade, not travel.
+
+### 25.4 On the screen
+
+- **Watch:** each battle in the report has *Watch* under it, on the phone, the tablet and the
+  desktop. It closes the report and opens the replay in the map's place (it borrows the map's
+  renderer, as the system view does, so a phone never holds two WebGL contexts). With no WebGL
+  there is no *Watch*.
+- **On a phone** (and a tablet held upright): the replay fills the screen. A top bar with *← Back*
+  and the battle's place and round; at the bottom, in thumb reach, the slider and the controls;
+  *Account* opens the report's account of the battle as a sheet over the lower part.
+- **On a desktop** (and a wide tablet): the account in a panel on the right (the forces on each
+  side with their ships and structure left as it plays, the losses, who held the system, and why),
+  the controls along the bottom of the scene.
+- Closing it (*Back*, Escape) returns to the report, still open, where it was.
+
+### 25.5 State
+
+The log keeps, for each ship, the **damage types of its weapons**, so each shot can be drawn by
+its kind (`BattleShip.weapons`). **State version 20**; a save from version 19 keeps no battles (they
+are the last turn's only).
+
+### 25.6 Budgets
+
+The replay's code, the ship kit included, loads only when a battle is watched: its own line in the
+app's budgets, **within 60 KB** compressed beyond the map's code. The map's first load stays within
+its 900 KB. A battle of 40 ships draws at 60 frames a second on a desktop and is smooth on a mid
+phone: each power's model is built once and shared by its ships.
+
+### 25.7 Tests
+
+`replay.test.ts`: the timeline's length by rounds; task forces at their range in each round and
+moving between; shots in their round, landing in order; structure and shields as the log has
+them at the end; ships gone after the shot that destroys them; task forces leaving after their
+last round; the same moment the same however it was reached; each side's tally. `replay.spec.ts`:
+a battle watched from the report on the phone, the tablet and the desktop: it plays, pauses, steps a
+round, rewinds, plays faster and skips to the end, the account beside it, and *Back* returns to the
+report.
+
+### Increment 45: the replay (22 October 2026)
+
+- **The timeline as §25.2** (`src/render/replayModel.ts`), pure and seekable: an opening of 1.5 s,
+  3.5 s a round, a closing of 1.5 s. One change found while building: the shots are spread over
+  **1.9 s** after the move (2.4 s in the design), and fly 0.3 s (kinetic), 0.5 s (energy), 0.75 s
+  (plasma) and 0.2 s (ion), so every shot lands within its round, before the shields recover.
+- **The scene as §25.1** (`src/render/BattleScene.ts`), on the map's renderer: Reborn's Kite (its
+  accent in the Authority's green), Hauler and raider (`src/render/art/ships.ts` and its kit, copied
+  at ba4ef73), and our own Duskfolk crescent and Drifter pods (`src/render/art/alienShips.ts`,
+  fiction); each power's model built once and copied for its ships; a ring of its colour under each;
+  a ship's length 15 (corvette) to 46 (capital); the system's chief star far off, lighting it. Shots
+  as glowing bolts with trails, ion fire as a flickering crackle, hits as flashes and sparks,
+  shields as a bubble in the colour of their kind, ships breaking into debris, task forces turning
+  away and jumping out. With reduced motion: no drift or bobbing, shots as lines that appear and
+  fade, smaller flashes.
+- **The camera:** it frames every ship as the battle opens; on an upright screen it looks down more
+  steeply, so the two sides stack up the screen; it turns slowly until the player turns it.
+- **The screen as §25.3 and §25.4** (`src/ui/map/replay.tsx`, loaded only when a battle is
+  watched): *Watch* under each battle in the report; the map's bars hidden meanwhile; a top bar with
+  *← Back*, the place and the round; the slider marked at each round and the controls (start, a
+  round back, play or pause, a round on, 1×, 2×, 4×, *Skip*) at the foot; the account (the report's
+  line, each side's ships with their structure as it plays, the reasons, the kinds of fire) in a
+  panel on the right when wide and behind *Account* on a phone; a ship chosen in the scene or the
+  account shows its card. Keys: Space, ← and →, Home, F, S, Escape. Closing returns to the report.
+- **State version 20**, as §25.5. **Budget:** the replay's code is 30 KB beyond the map's (of 60).
+  A frame of the timeline for a battle of 40 ships takes 0.1 ms.
+- **Tests:** `replay.test.ts` (11 tests); `replay.spec.ts` on the phone, tablet and desktop.

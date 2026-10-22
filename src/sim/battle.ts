@@ -60,6 +60,8 @@ export interface BattleShip {
   shieldMax: number;
   shieldKind: ShieldKind;
   armed: boolean;
+  /** Its weapons' damage types, in the order a shot names them (for the replay, §25.5). */
+  weapons: DamageType[];
 }
 
 /** One shot: who fired, at whom, with which of its weapons; tenths taken by shields and by structure (−1 a miss). */
@@ -239,6 +241,7 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
         shieldMax: sh.max,
         shieldKind: sh.kind,
         armed: weaponsOf(state, s).length > 0,
+        weapons: weaponsOf(state, s).map((w) => w.type),
       } satisfies BattleShip,
       weapons: weaponsOf(state, s),
       targeting: shipDesign(state, s)?.modules.includes('targeting') ?? false,

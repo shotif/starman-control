@@ -1,7 +1,8 @@
 // The size budgets (M1_PROOF.md §4), measured on the build after `vite build`: what the title
 // loads, and what a phone loads to reach the map in a game, compressed; and what a phone loads to
 // open a colony's scene (COLONY_VIEW.md §5): the scene's own code, past what the map already
-// loaded, and the pictures of the heaviest first visit. Fails when over budget. Run by
+// loaded, and the pictures of the heaviest first visit; and to watch a battle (M4_FLEETS.md §25.6):
+// the replay's code, past the map's. Fails when over budget. Run by
 // `npm run check` and in CI.
 
 import { readdir, readFile, stat } from 'node:fs/promises';
@@ -61,6 +62,20 @@ for (const b of BUDGETS) {
   const ok = bytes <= limit;
   failed ||= !ok;
   console.log(`${ok ? 'ok  ' : 'OVER'} Opening a colony (its code): ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`);
+}
+
+// Watching a battle: the replay's screen and scene, the ship kit with them, past the map's code.
+{
+  const map = files(['index.html', 'src/ui/game/route.tsx', 'src/render/MapView.ts']);
+  let bytes = 0;
+  for (const f of files(['src/ui/map/replay.tsx']))
+    if (!map.has(f)) bytes += gzipSync(await readFile(`dist/${f}`)).length;
+  const limit = 60 * KB;
+  const ok = bytes <= limit;
+  failed ||= !ok;
+  console.log(
+    `${ok ? 'ok  ' : 'OVER'} Watching a battle (its code): ${(bytes / KB).toFixed(1)} KB of ${limit / KB} KB`,
+  );
 }
 
 // A colony's first visit on a phone, at its heaviest (COLONY_VIEW.md §5, §9.3): every scene the

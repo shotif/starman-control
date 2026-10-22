@@ -975,3 +975,22 @@
   color: var(--accent);
   white-space: nowrap;
 }
+
+/* A battle watched (M4_FLEETS.md §25.4): the replay takes the map's place; the map's bars and panels
+   wait until it closes. */
+.map-screen.is-watching .map-top,
+.map-screen.is-watching .map-bottom,
+.map-screen.is-watching .outliner,
+.map-screen.is-watching .map-inspector,
+.map-screen.is-watching .map-view-switch,
+.map-screen.is-watching .map-credit,
+.map-screen.is-watching .target-bar,
+.map-screen.is-watching .guide-card,
+.map-screen.is-watching .toast {
+  display: none;
+}
+
+.map-screen.layout-desktop.is-watching {
+  grid-template-columns: 0 1fr 0;
+  grid-template-rows: 0 1fr;
+}
