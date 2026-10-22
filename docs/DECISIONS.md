@@ -68,7 +68,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-14 | Victory and defeat ([M4 §13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | Decided 2026-10-22 | **A, conquest, the vote, a score at a turn limit** (250 turns by default), as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
-| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--open)) | **Open** | the owner wants more than one winner; trials of D, C, F and G recorded; recommended: B, a brake and a road to victory for each faction |
+| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--open)) | **Open** | the owner wants more than one winner; trials of D, C, F, G and H recorded; recommended: B, a brake and a road to victory for each faction, H built as war plans |
 | D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -651,7 +651,7 @@ within the $24.45 of D-27 left; ships and battles are drawn in code.
 In the headless games of increment 50 (M4_FLEETS.md §30, M2_BALANCE.md), six of eight games were won
 by the Assembly's choice between turns 157 and 234, and **every one by the Frontier Co-op**. The
 owner does not want one faction to win every time (22 October 2026), and asked to explore other
-options; the owner chose to try D, C, F and G.
+options; the owner chose to try D, C, F and G, and then H.
 
 **Why.** The Co-op grows fastest (+20%), so it is always one of the two candidates, and no power
 has a reason to dislike it: it never declares war, the human powers count it as kin, and no
@@ -673,9 +673,20 @@ scratch copy, not in the game):
 | K and G | Co-op 2 | Co-op 3, Concord 3 |
 | K and C | Co-op 2 | Concord 4, Co-op 2 |
 | B (increment 50): only a power's friends vote it into victory | — | Concord 5, Co-op 3 |
+| H: the Wake and the Concord refuse peace while they are the stronger, and the Concord falls on the weak too | Co-op 6 | Concord 2 |
+| H, harder: from turn 80 they keep a warship for every colony, look for the weak among every power they know, and ignore the Assembly's calls for peace while winning | Co-op 8 | — |
+| H, harder, with K and C | Co-op 3 | Co-op 4, Concord 1 |
+| H, harder, with K, C and G | Co-op 2 | Co-op 5, Concord 1 |
 
 **What they show.** Every brake turns the Co-op's wins by vote into wins on score, and only two
-factions ever win. The others have no road to victory: the **Transit Authority** leads in research
+factions ever win. H as a rule does not make conquest happen: with it, wars came more often (up to
+11 in a game) but no power surrendered or left the game in any trial. **The rivals cannot carry a
+war to a distant enemy:** in seed 5 the Concord was at war with the Co-op for 60 turns, at up to
+half again its strength, and never landed a trooper, because its strikes go only to enemy holdings
+within 6 jumps of its own capital. Wars end by weariness or by the Assembly's calls for peace. More
+war only helped the peaceful Co-op. A real H is an increment of its own: war plans that stage a
+fleet forward to a holding near the enemy, transports that follow it, targets anywhere the lanes
+reach, and a siege of the capital until it surrenders. The others have no road to victory: the **Transit Authority** leads in research
 but holds few colonies, and research counts little in the score; the **Hollow Wake** is disliked by
 every lawful power, so it can never have two thirds, and no rival ever finishes a conquest (no power
 left the game or surrendered in any trial); the **Drift Moot** is small and joins the Assembly late.
@@ -688,8 +699,8 @@ between two of them.
   and tire of a long-serving leader. Fewer and later wins by the vote; still only the Co-op and the
   Concord win the games without a player.
 - **B. A brake and a road for each faction (recommended):** K and C, and
-  - **the Wake and the Concord see a conquest through** (H): at war with a beaten neighbour, they
-    press on to its capital and take its surrender, rather than making peace;
+  - **the Wake and the Concord see a conquest through** (H, built as war plans: a fleet staged
+    forward, transports following, a siege of the capital), rather than making peace;
   - **the Moot buys votes:** envoys (G's half that is not the denouncing) for every power, the
     player too, and the Moot, rich and a broker, uses them most;
   - **the Authority's road is the keys** (M5's victory by the precursor mystery, D-14), and until
