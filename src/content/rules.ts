@@ -230,6 +230,27 @@ export const RULES = {
     wearyWarship: 2,
     wearyShip: 1,
   },
+  /** Battles (M4_FLEETS.md §24, D-62). */
+  battle: {
+    rounds: 8,
+    /** A weapon's damage at its best range, a step away and two steps away, in percent. */
+    rangePercent: [100, 60, 30],
+    /** The chance in a hundred to hit, and what changes it. */
+    toHit: 70,
+    targeting: 15,
+    evading: 15,
+    sizeToHit: { corvette: -10, frigate: -5, destroyer: 0, cruiser: 5, capital: 10 } as Record<string, number>,
+    /** An evading task force leaves after this round. */
+    evadeAfter: 2,
+    /** Shields recover this share of their capacity after each round, in percent. */
+    shieldRegenPercent: 20,
+    /** A civil ship's structure. */
+    civilStructure: 10,
+    /** Repairs a turn, in percent of a ship's whole structure: at a shipyard, at a colony, by a repair bay. */
+    repairYardPercent: 50,
+    repairColonyPercent: 10,
+    repairBayPercent: 10,
+  },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {
     /** Attitude is held between these. */

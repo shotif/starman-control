@@ -106,7 +106,9 @@ export type TechId =
   | 'heavy-guns'
   | 'lattice-armour'
   | 'particle-beams'
-  | 'layered-shields';
+  | 'layered-shields'
+  // Increment 44 (M4_FLEETS.md §24.6).
+  | 'field-repairs';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -257,7 +259,9 @@ export type Deed =
   | { kind: 'contacts'; n: number }
   // M4 (M4_FLEETS.md §21.5).
   /** Warships held. */
-  | { kind: 'warships'; n: number };
+  | { kind: 'warships'; n: number }
+  /** Battles fought (M4_FLEETS.md §24). */
+  | { kind: 'battles'; n: number };
 
 export interface TechDef {
   id: TechId;
@@ -1199,6 +1203,17 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'opens' },
     text: 'Opens the balanced shield III: 18 capacity.',
     inspiration: { deed: { kind: 'warships', n: 16 }, text: 'holding sixteen warships' },
+  },
+  'field-repairs': {
+    id: 'field-repairs',
+    name: 'Field repairs',
+    field: 'weapons',
+    tier: 2,
+    cost: 60,
+    needs: ['fire-control'],
+    effect: { kind: 'opens' },
+    text: 'Opens the repair bay: every ship of its fleet is repaired a tenth of its structure a turn, anywhere.',
+    inspiration: { deed: { kind: 'battles', n: 1 }, text: 'a battle fought' },
   },
 };
 

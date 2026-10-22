@@ -36,6 +36,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 21. [Increment 41 in detail: warships](#21-increment-41-in-detail-warships-written-before-building-it)
 22. [Increment 42 in detail: fleets](#22-increment-42-in-detail-fleets-written-before-building-it)
 23. [Increment 43 in detail: war and peace](#23-increment-43-in-detail-war-and-peace-written-before-building-it)
+24. [Increment 44 in detail: battles](#24-increment-44-in-detail-battles-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -777,4 +778,136 @@ tablet and desktop.
 - **Numbers:** `npm run balance` at turn 100: the Authority 37.6 technologies, the Cooperative 23.0,
   the Wake 22.1, the Concord 19.9 and the Moot 19.8, as after M3; the slowest turn 173 ms.
 - **Tests:** `war.test.ts` (10 tests); 538 unit tests; `war.spec.ts` on the phone, tablet and
+  desktop.
+
+## 24. Increment 44 in detail: battles (written before building it)
+
+**Goals.** D-62 as decided (A): a **battle** wherever, after the turn's movement, armed ships of two
+powers at war meet, or armed ships meet the ships of a power at war with theirs. It is fought in
+rounds at three ranges by the rules below, from the game's seed, so the same game and the same
+orders give the same battle (D-06). Each fleet fights as a task force by its own stance, target
+and retreat point (D-07, D-61). Damage stays after the battle and is **repaired** near home. Every
+battle is **reported**, with why it went as it did, and kept for the replay (45). The rivals at war
+build warships to defend themselves.
+
+**Out of scope.** The replay (45); defences and invasion (46); raids (47); the rivals attacking
+(48).
+
+### 24.1 Where and who
+
+- After movement (and before arrivals), every system where a power has an **armed** ship (a warship
+  with a weapon) and a power at war with it has any ship is a battle. Every power there at war with
+  another there takes part.
+- **Task forces:** each fleet of a power there is a task force with its fleet's orders; a power's
+  ships sailing alone there form one task force of their own (*evade*, *warships*, *never*).
+- A ship fires only at ships of powers at war with its own.
+
+### 24.2 Rounds and ranges
+
+- Up to **8 rounds**. Every task force starts at **long** range and moves a step towards its
+  stance's range at the start of each round, before firing: *engage* close, *defend* middle, *evade*
+  long. Between two task forces the
+  range is the nearer of their two (the bolder sets it).
+- An *evade* task force leaves after the **second** round, having taken the long-range fire of the
+  first two.
+- Each weapon fires once a round at its best range for its full damage, **60%** a step away and
+  **30%** two steps away (kinetic best at long, energy and ion at middle, plasma at close).
+
+### 24.3 Hits and targets
+
+- **To hit:** 70 in 100, **+15** with a targeting computer, **−15** against a task force that
+  evades; against a corvette −10, a frigate −5, a cruiser +5, a capital ship +10.
+- **Targets**, by the firing task force's priority: *warships* (armed ships, then the rest), *the
+  largest* (most structure left), *the smallest*, *transports* (ships with no weapon first); among
+  the first group, one chosen at random from the seed.
+
+### 24.4 Damage
+
+- Worked in tenths. A hit meets the target's **shields** first, by Reborn's damage matrix (copied
+  as percentages): energy 130 against deflectors, 70 against diffusers, 100 balanced, 90 on a hull;
+  kinetic 70, 100, 100, 120; plasma 90, 130, 100, 100; ion 160, 160, 150, 25. A ship's shields are
+  its shield modules' capacity together, of the kind of its strongest. What they do not stop reaches
+  the **structure**.
+- Shields recover **a fifth** of their capacity after each round. Structure lost stays (the ship's
+  `damage`). A ship with no structure left is **destroyed**.
+
+### 24.5 Retreat and the end
+
+- A task force whose ships have lost its **retreat point** of their structure at the start (a
+  quarter, half, three quarters; never at *never*) leaves after that round.
+- The battle ends after 8 rounds, or when no side has an armed ship still fighting, or no side has
+  an enemy still in the battle.
+- Ships that left go home: their fleet makes for the nearest other system with a colony of its own,
+  by lanes (a lone ship likewise); with none to go to, they stay.
+- **Who won:** the side with armed ships still in the system; if both have, neither, and they fight
+  again next turn.
+
+### 24.6 Repairs
+
+As the turn ends, a damaged warship is repaired: **half** its structure a turn at a system where its
+power has a shipyard, **a tenth** at one where it has a colony, and nothing elsewhere; a **repair
+bay** in its fleet repairs every ship of the fleet a tenth a turn anywhere. A new Weapons
+technology, **Field repairs** (tier 2, 60, inspired by a battle fought), opens the repair bay (a
+special module: 10 industry, 4 metals, 2 volatiles).
+
+### 24.7 Weariness and memory
+
+Each warship lost adds **2** to its power's war weariness, each other ship **1**.
+
+### 24.8 The report and the battle kept
+
+- **Each power** in a battle reads *a battle at Ross 128*: the forces on each side, the ships lost
+  and damaged, who held the system, and up to three lines of **why**, chosen from what happened:
+  their shields against our weapons and ours against theirs (*their deflectors shed our railguns: a
+  third of our fire was lost; plasma would burn through*), the ranges the stances made (*our evade
+  kept us at long range, where their plasma was weak*), the weight of fire on each side, a retreat.
+- **The battle is kept** for the turn (`GameState.battles`): the ships, their task forces, and each
+  round's moves and shots, for the replay; the next turn's battles replace it.
+
+### 24.9 The rivals at war
+
+A rival at war (only if attacked, until 48) builds warships of its yard's newest design at each
+shipyard while its treasury allows, and keeps them at its capital on *defend*. It researches the
+Weapons field once it holds warships, as increment 41 set out.
+
+### 24.10 State
+
+`ShipState.damage` (structure lost, in tenths); `GameState.battles` (the last turn's); the battle
+report event. **State version 19**; a save from before has no damage and no battles.
+
+### 24.11 Tests
+
+`battles.test.ts`: where battles happen and who takes part; the same battle from the same seed;
+ranges by stance and damage by range; hits and targets by priority; the damage matrix through
+shields; shields recovering; retreat and the end; going home; who won; repairs at a shipyard, a
+colony and by a repair bay; weariness from losses; the why lines; the rivals arming at war; the
+migration. `battles.spec.ts`: a fleet of ours meets the Cooperative's at war, and the report tells
+the battle and why, on the phone, tablet and desktop.
+
+### Increment 44: battles (22 October 2026)
+
+- **Battles as §24.1 to §24.5** (`src/sim/battle.ts`, step 1b of the turn, after movement): every
+  system with an armed ship and a ship of a power at war with it; each fleet a task force, each
+  power's ships sailing alone one more; rounds, ranges, hits, targets, Reborn's damage matrix in
+  tenths, retreat and evasion, all from the seed (`rng(seed, 'battle', turn, system)`). One change
+  found while testing: **shields recover a fifth** of their capacity a round (a third in the
+  design), as at a third three frigates against two lost nothing in eight rounds. A task force
+  moves a step before it fires, so engaging and defending task forces first fire at middle range.
+- **What stays:** a ship's `damage` (in tenths), ships destroyed (each warship lost adds 2 to its
+  power's weariness, each other ship 1), task forces that left sent to the nearest other system
+  with a colony of their own.
+- **Repairs as §24.6:** half at a shipyard, a tenth at a colony, a tenth anywhere with a repair bay
+  in the fleet; **Field repairs** (Weapons, tier 2) opens the repair bay (18 Weapons technologies,
+  80 in the tree).
+- **The report as §24.8:** the battle's line (where, against whom, rounds, losses on each side, who
+  holds the system) and its reasons, worded from the player's side (`src/ui/map/battle.tsx`); the
+  Admiral speaks of each battle; a damaged warship's panel and its fleet say how much structure is
+  left. The battles are kept in `GameState.battles` for the turn, for the replay (45).
+- **The rivals at war as §24.9:** they queue warships of their largest yard design at every yard
+  while the treasury gains, up to two more than their colonies, and send their fleets to the
+  capital. They still never declare war, so the headless games play as before.
+- **State version 19**, as §24.10.
+- **Numbers:** `npm run balance` at turn 100 as in increment 43; with no war, battles and
+  interception return at once, and the slowest turn is 189 ms.
+- **Tests:** `battles.test.ts` (13 tests); 551 unit tests; `battles.spec.ts` on the phone, tablet and
   desktop.

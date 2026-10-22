@@ -14,13 +14,14 @@ import { type HullId, type ShipType, STARTING_FLEET, shipName } from '../content
 import { TECHS, type TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
+import type { BattleLog } from './battle.ts';
 import { refreshYards } from './designs.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 18;
+export const STATE_VERSION = 19;
 
 export interface Stockpile {
   metals: number;
@@ -293,6 +294,8 @@ export interface ShipState {
   design: number | null;
   /** The fleet it sails with (M4_FLEETS.md §22.1): always one for a warship, none for a survey ship. */
   fleet: number | null;
+  /** Structure lost in battle and not yet repaired, in tenths (M4_FLEETS.md §24.4). */
+  damage: number;
 }
 
 /** A colony or an outpost (M1_COLONIES.md §1). */
@@ -351,6 +354,8 @@ export interface GameState {
   /** Wars, and truces after peace (M4_FLEETS.md §23), each in id order of its powers. */
   wars: War[];
   truces: Truce[];
+  /** The last turn's battles, kept for its report and replay (M4_FLEETS.md §24.8). */
+  battles: BattleLog[];
 }
 
 export interface NewGameSetup {
@@ -383,6 +388,7 @@ export function makeShip(
     investigating: null,
     design,
     fleet: null,
+    damage: 0,
   };
   state.nextShipId++;
   power.shipsBuilt++;
@@ -508,6 +514,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     offers: [],
     wars: [],
     truces: [],
+    battles: [],
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

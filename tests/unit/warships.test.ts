@@ -58,8 +58,8 @@ describe('the hulls and modules (§21.1, §21.2)', () => {
     expect(SHIPS.survey.upkeep).toBe(1);
   });
 
-  it('are 22 modules, four open from the start, every other opened by a Weapons technology', () => {
-    expect(MODULE_IDS).toHaveLength(22);
+  it('are 23 modules, four open from the start, every other opened by a Weapons technology', () => {
+    expect(MODULE_IDS).toHaveLength(23);
     expect(MODULE_IDS.filter((m) => !MODULES[m].needs)).toEqual(['pulse-1', 'railgun-1', 'shield-1', 'armour-1']);
     for (const m of MODULE_IDS) {
       const needs = MODULES[m].needs;
@@ -73,9 +73,9 @@ describe('the hulls and modules (§21.1, §21.2)', () => {
       ).toBe(true);
   });
 
-  it('the Weapons field is 17 technologies over five tiers, each with its inspiration', () => {
+  it('the Weapons field is 18 technologies over five tiers, each with its inspiration', () => {
     const weapons = TECH_IDS.filter((t) => TECHS[t].field === 'weapons');
-    expect(weapons).toHaveLength(17);
+    expect(weapons).toHaveLength(18);
     expect(new Set(weapons.map((t) => TECHS[t].tier))).toEqual(new Set([1, 2, 3, 4, 5]));
     for (const t of weapons) expect(TECHS[t].inspiration.text.length).toBeGreaterThan(0);
   });

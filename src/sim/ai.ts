@@ -12,8 +12,10 @@ import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import { TREATY_KINDS } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
+import { buildable } from './designs.ts';
 import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
+import { fleetAt } from './fleets.ts';
 import { habitability } from './habitability.ts';
 import { laneTargets } from './lanes.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
@@ -22,7 +24,7 @@ import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { type Amount, contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
-import { atWar } from './war.ts';
+import { atWar, enemiesOf } from './war.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -212,9 +214,24 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const unsurveyedLeft = world.systems.some((x) => !power.surveyed.includes(x.id));
   // A ship costs upkeep: none is built while the treasury gains nothing a turn.
   const income = treasuryOf(world, state, faction).total;
+  // At war (M4_FLEETS.md §24.9), every yard builds warships of the largest hull it knows, to a few
+  // more than its colonies; and its fleets wait at the capital on defend.
+  const atWarNow = enemiesOf(state, faction).length > 0;
+  const warships = state.ships.filter((s) => s.owner === faction && isHull(s.type)).length;
+  const yardDesign = [...buildable(power)].reverse()[0];
+  let arming = atWarNow && yardDesign !== undefined && warships < mine.filter((h) => h.kind === 'colony').length + 2;
   for (const h of mine) {
     if (!h.projects.includes('shipyard') || h.queue.some((q) => q.kind === 'ship')) continue;
     if (power.treasury < SHIP_TREASURY || income <= 0) continue;
+    if (arming && yardDesign) {
+      orders.push({
+        type: 'queue',
+        holding: h.id,
+        item: { kind: 'ship', ship: yardDesign.hull, design: yardDesign.id },
+      });
+      arming = warships + 1 < mine.filter((x) => x.kind === 'colony').length + 2;
+      continue;
+    }
     const ship: QueueItem | null =
       idle('colony') === 0 && settleTargets('colony')
         ? { kind: 'ship', ship: 'colony' }
@@ -224,6 +241,15 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
             ? { kind: 'ship', ship: 'survey' }
             : null;
     if (ship) orders.push({ type: 'queue', holding: h.id, item: ship });
+  }
+
+  // Fleets wait at the capital, ready to defend it (§24.9).
+  const home = power.capital;
+  for (const f of state.fleets) {
+    if (f.owner !== faction || f.destinations.length > 0 || f.hold) continue;
+    const at = fleetAt(state, f);
+    if (at !== null && at !== home && findRoute(world, state, faction, at, home, lanes))
+      orders.push({ type: 'fleet-move', fleet: f.id, to: home });
   }
 
   // Lanes: outposts (and the Authority's colonies) queue the nearest they can, when idle. An idle

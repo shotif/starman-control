@@ -257,6 +257,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, weariness: 0 }));
     return { ...g, version: 18, powers, wars: [], truces: [] };
   },
+  /** 18 → 19 (M4 increment 44): battles. No ship is damaged, and no battle is kept. */
+  18: (g) => {
+    if (!Array.isArray(g.ships)) throw new SaveError(DAMAGED);
+    const ships = (g.ships as Raw[]).map((s) => ({ ...s, damage: 0 }));
+    return { ...g, version: 19, ships, battles: [] };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

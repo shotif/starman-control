@@ -166,7 +166,11 @@ export type LineKind =
   | 'war-theirs'
   | 'war-ally'
   | 'peace-made'
-  | 'intercepted';
+  | 'intercepted'
+  // Battles (M4_FLEETS.md §24.8).
+  | 'battle-held'
+  | 'battle-lost'
+  | 'battle-even';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
   hungry: {
@@ -322,6 +326,21 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, {what} was stopped at {place} by the {power}’s warships.',
     warm: 'Control, the {power}’s warships stopped {what} at {place}.',
     blunt: '{what} ran into the {power}’s guns at {place}. Stopped dead.',
+  },
+  'battle-held': {
+    formal: 'Control, we have fought the {power} at {place}, and the system is ours. The report has the reckoning.',
+    warm: 'Control, we held {place} against the {power}! The crews did well; the report says what it cost.',
+    blunt: 'Fought the {power} at {place}. We’re still there; they’re not.',
+  },
+  'battle-lost': {
+    formal: 'Control, we were beaten by the {power} at {place}. I recommend you read why before we try again.',
+    warm: 'Control, the {power} drove us off at {place}. The report says why: let’s learn from it.',
+    blunt: 'The {power} beat us at {place}. Read why, then we hit back harder.',
+  },
+  'battle-even': {
+    formal: 'Control, the battle with the {power} at {place} is undecided: both fleets hold their ground.',
+    warm: 'Control, we and the {power} are both still at {place}: the fighting goes on.',
+    blunt: 'Nobody gave way at {place}. The {power} and us, still at it.',
   },
   'contact-talk': {
     formal: 'Control, we have made contact with the {power} at {place}. They share our tongue, so we may talk.',

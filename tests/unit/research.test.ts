@@ -157,9 +157,9 @@ describe('research points', () => {
 });
 
 describe('the research tree', () => {
-  it('has 79 technologies costing 12,240 points before the rise, each needing only what comes before it (M2B_SCIENCE.md §18.2, §19.1, §20.1, M3_NEIGHBOURS.md §19.4, M4_FLEETS.md §21.5)', () => {
-    expect(TECH_IDS).toHaveLength(79);
-    expect(TECH_IDS.reduce((sum, id) => sum + TECHS[id].cost, 0)).toBe(12240);
+  it('has 80 technologies costing 12,300 points before the rise, each needing only what comes before it (M2B_SCIENCE.md §18.2, §19.1, §20.1, M3_NEIGHBOURS.md §19.4, M4_FLEETS.md §21.5)', () => {
+    expect(TECH_IDS).toHaveLength(80);
+    expect(TECH_IDS.reduce((sum, id) => sum + TECHS[id].cost, 0)).toBe(12300);
     for (const f of ['propulsion', 'construction', 'life-sciences', 'society', 'survey', 'weapons'] as const)
       expect(
         TECH_IDS.some((id) => TECHS[id].field === f && TECHS[id].tier === 4),

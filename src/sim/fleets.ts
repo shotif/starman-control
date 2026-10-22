@@ -167,12 +167,13 @@ export function previewFleetMove(
 export function fleetStats(
   state: GameState,
   fleet: Fleet,
-): { ships: number; warships: number; attack: number; shields: number; structure: number } {
+): { ships: number; warships: number; attack: number; shields: number; structure: number; left: number } {
   let attack = 0;
   let shields = 0;
   let structure = 0;
   let warships = 0;
   const ships = fleetShips(state, fleet);
+  let damage = 0;
   for (const s of ships) {
     const d = shipDesign(state, s);
     if (!d) continue;
@@ -181,8 +182,10 @@ export function fleetStats(
     attack += st.attack;
     shields += st.shields;
     structure += st.structure;
+    damage += s.damage;
   }
-  return { ships: ships.length, warships, attack, shields, structure };
+  // Structure left after battle damage, in whole points (M4_FLEETS.md §24.4).
+  return { ships: ships.length, warships, attack, shields, structure, left: structure - Math.ceil(damage / 10) };
 }
 
 // ---------------------------------------------------------------- orders

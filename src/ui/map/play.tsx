@@ -35,6 +35,7 @@ import { amountWords, offerWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
+import { BattleWhy, battleText } from './battle.tsx';
 import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
 import { eventTitle } from './event.tsx';
@@ -228,6 +229,12 @@ function Warship({ game, ship, play }: { game: GameState; ship: ShipState; play:
       <p>
         <StatsLine stats={designStats(design)} />
       </p>
+      {ship.damage > 0 && (
+        <p class="waits">
+          Damaged: structure {designStats(design).structure - Math.ceil(ship.damage / 10)} of{' '}
+          {designStats(design).structure}. Repaired at a shipyard of ours, slowly at any colony of ours.
+        </p>
+      )}
       <ModuleList modules={design.modules} />
       {queued && <p class="dim">A refit is queued: it stays here until the shipyard has done it.</p>}
       {yard && !queued && refits.length > 0 && (
@@ -587,6 +594,11 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `We have made peace with the ${FACTIONS[e.faction].shortName}: neither of us may declare war for ${RULES.war.truce} turns.`;
     case 'intercepted':
       return `${e.fleet !== undefined ? `The ${fleetName(e.fleet)}` : shipOf(e.ship)} was stopped at ${name(e.system)} by the ${FACTIONS[e.by].shortName}’s warships.`;
+    case 'battle': {
+      const log = game.battles.find((b) => b.id === e.battle);
+      const me = playerPower(game)?.faction;
+      return log && me ? battleText(world, game, log, me) : `A battle at ${name(e.system)}.`;
+    }
   }
 }
 
@@ -730,6 +742,7 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'war-declared': { icon: 'diplomacy', tone: 'needs' },
   'peace-made': { icon: 'diplomacy', tone: 'growth' },
   intercepted: { icon: 'refused', tone: 'news' },
+  battle: { icon: 'ship', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -871,6 +884,11 @@ export function ReportView({
                 {eventText(world, game, e)}
               </button>
               {e.kind === 'observed' && <Badge kind="observed" />}
+              {e.kind === 'battle' &&
+                (() => {
+                  const log = game.battles.find((b) => b.id === e.battle);
+                  return log ? <BattleWhy log={log} me={faction} /> : null;
+                })()}
               {onViewColony && e.kind === 'built' && e.item.kind === 'project' && (
                 <button type="button" class="link report-see" onClick={() => onViewColony(e.holding)}>
                   See it

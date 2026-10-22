@@ -33,7 +33,8 @@ export type ModuleId =
   | 'armour-2'
   | 'armour-3'
   | 'targeting'
-  | 'jump-drive';
+  | 'jump-drive'
+  | 'repair-bay';
 
 export type ModuleKind = 'weapon' | 'shield' | 'armour' | 'special';
 
@@ -299,6 +300,17 @@ export const MODULES: Record<ModuleId, ModuleDef> = {
     cost: cost(10, 3, 0, 3),
     needs: 'combat-drives',
     does: 'Its ship has a jump point more a turn.',
+  },
+  // Increment 44 (M4_FLEETS.md §24.6).
+  'repair-bay': {
+    id: 'repair-bay',
+    name: 'Repair bay',
+    kind: 'special',
+    line: 'repair-bay',
+    mark: 1,
+    cost: cost(10, 4, 2, 0),
+    needs: 'field-repairs',
+    does: 'Repairs every ship of its fleet a tenth of its structure a turn, anywhere.',
   },
 };
 

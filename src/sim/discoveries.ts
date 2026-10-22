@@ -211,6 +211,8 @@ export function deedDone(
       );
     case 'investigations':
       return power.investigated.length >= deed.n;
+    case 'battles':
+      return events.some((e) => e.kind === 'battle');
     case 'warships':
       return state.ships.filter((s) => s.owner === faction && isHull(s.type)).length >= deed.n;
     case 'contacts':

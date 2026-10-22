@@ -133,6 +133,7 @@ export function isArmed(state: GameState, ship: ShipState): boolean {
 
 /** The power at war with `owner` whose armed warship at a system stops it there (§23.4), if any. */
 export function interceptedBy(state: GameState, owner: FactionId, system: SystemId): FactionId | null {
+  if (!state.wars.some((w) => w.a === owner || w.b === owner)) return null;
   for (const s of state.ships)
     if (s.at === system && s.owner !== owner && atWar(state, owner, s.owner) && isArmed(state, s)) return s.owner;
   return null;

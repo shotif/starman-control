@@ -201,7 +201,7 @@ export function FleetPanel({
           Shields <b>{st.shields}</b>
         </span>
         <span>
-          Structure <b>{st.structure}</b>
+          Structure <b>{st.left < st.structure ? `${st.left} of ${st.structure}` : st.structure}</b>
         </span>
       </p>
       <div class="ship-actions">
@@ -267,8 +267,10 @@ export function FleetPanel({
         <ul class="fleet-ships">
           {ships.map((s) => {
             const d = shipDesign(game, s);
+            const whole = d ? designStats(d).structure : 0;
+            const left = whole - Math.ceil(s.damage / 10);
             const line = d
-              ? `${d.name}: attack ${designStats(d).attack}, structure ${designStats(d).structure}`
+              ? `${d.name}: attack ${designStats(d).attack}, structure ${left < whole ? `${left} of ${whole}` : whole}`
               : SHIPS[s.type].name;
             return (
               <li key={s.id}>

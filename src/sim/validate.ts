@@ -66,6 +66,14 @@ export function shapeProblems(raw: unknown): string[] {
     out.push('wars are not a list of wars');
   if (!Array.isArray(raw.truces) || !raw.truces.every((t) => pairOf(t) && isRecord(t) && isWhole(t.until, 1)))
     out.push('truces are not a list of truces');
+  // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
+  if (
+    !Array.isArray(raw.battles) ||
+    !raw.battles.every(
+      (b) => isRecord(b) && isWhole(b.id, 1) && typeof b.system === 'string' && Array.isArray(b.rounds),
+    )
+  )
+    out.push('battles are not a list of battles');
   if (!isWhole(raw.nextHoldingId, 1)) out.push('nextHoldingId is not a whole number from 1');
   // Treaties and offers (M3_NEIGHBOURS.md §21, §23).
   const isAmount = (a: unknown) =>
@@ -234,6 +242,7 @@ export function shapeProblems(raw: unknown): string[] {
       if (typeof s.type !== 'string' || !(s.type in SHIPS)) out.push(`ship ${i} is of an unknown type`);
       if (s.design !== null && !isWhole(s.design, 1)) out.push(`ship ${i} has a design that is no design`);
       if (s.fleet !== null && !isWhole(s.fleet, 1)) out.push(`ship ${i} sails with a fleet that is no fleet`);
+      if (!isWhole(s.damage)) out.push(`ship ${i} damage is not a whole number`);
       if (s.at !== null && typeof s.at !== 'string') out.push(`ship ${i} is nowhere`);
       if (!isStrings(s.destinations)) out.push(`ship ${i} destinations are not a list`);
       if (typeof s.hold !== 'boolean' || typeof s.autoSurvey !== 'boolean')

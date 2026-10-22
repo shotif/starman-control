@@ -155,7 +155,9 @@ export type ReportEvent =
   | { kind: 'war-declared'; faction: FactionId; by: FactionId; ally?: FactionId }
   | { kind: 'peace-made'; faction: FactionId }
   /** A ship or fleet stopped where a power at war with it has warships (§23.4). */
-  | { kind: 'intercepted'; ship?: number; fleet?: number; system: SystemId; by: FactionId };
+  | { kind: 'intercepted'; ship?: number; fleet?: number; system: SystemId; by: FactionId }
+  /** A battle this power fought (M4_FLEETS.md §24): `battle` is its number among the turn's battles. */
+  | { kind: 'battle'; battle: number; system: SystemId };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

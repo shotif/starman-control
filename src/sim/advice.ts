@@ -30,6 +30,7 @@ import type { Need } from './needs.ts';
 import type { ReportEvent } from './report.ts';
 import { type GameState, powerOf } from './state.ts';
 import { offerWords } from './treaties.ts';
+import { atWar } from './war.ts';
 import { laneEnds, type World } from './world.ts';
 
 export interface AdviceLine {
@@ -263,6 +264,21 @@ export function adviceFor(
         { what, place: world.system(e.system).name, power: FACTIONS[e.by].shortName },
         { system: e.system },
       );
+    } else if (e.kind === 'battle') {
+      const log = state.battles.find((b) => b.id === e.battle);
+      const enemy = log?.powers.find((p) => p !== faction && atWar(state, faction, p));
+      if (log && enemy) {
+        const ours = log.held.includes(faction);
+        const theirs = log.held.some((p) => p !== faction && atWar(state, faction, p));
+        const kind = ours && !theirs ? 'battle-held' : theirs && !ours ? 'battle-lost' : 'battle-even';
+        say(
+          'admiral',
+          kind === 'battle-lost' ? 1 : 2,
+          kind,
+          { power: FACTIONS[enemy].shortName, place: world.system(e.system).name },
+          { system: e.system },
+        );
+      }
     } else if (e.kind === 'founded') {
       const kind = state.holdings.find((h) => h.id === e.holding)?.kind === 'outpost' ? 'outpost' : 'colony';
       say('colonies', 3, 'founded', { place: holdingName(e.holding), what: `a new ${kind}` }, { holding: e.holding });

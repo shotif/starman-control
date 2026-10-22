@@ -190,7 +190,10 @@ fleet, named in its power's word, moved and ordered as one, with its stance, tar
 point kept for battle; formed, merged, split and joined; state version 17. **Done: increment 43,
 war and peace** (§23): war declared at once (treaties end, everyone remembers, allies join), peace
 offered and answered with a truce of 10 turns, non-aggression and alliance, forced passage over an
-enemy's lanes, interception where its warships wait, war weariness; state version 18.
+enemy's lanes, interception where its warships wait, war weariness; state version 18. **Done:
+increment 44, battles** (§24): rounds at three ranges by each fleet's orders, Reborn's damage
+matrix, retreat, damage that stays and repairs near home, the battle and its reasons in the report,
+rivals arming when at war; state version 19.
 
 The art and music spend: about $25.55 of $50 (raised on 22 October 2026; about $24.45 left). M3's
 art is about 65 pictures (about $6.50).

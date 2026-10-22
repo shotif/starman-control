@@ -11,6 +11,7 @@ import { isHull } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
+import { repairShips, resolveBattles } from './battle.ts';
 import { bodiesOf } from './bodies.ts';
 import { claimantsAt, tradeIncome } from './borders.ts';
 import { resolveContacts } from './contact.ts';
@@ -161,6 +162,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     }
     if (!ship.founding && !ship.investigating) moveShip(world, state, ship, log(ship));
   }
+
+  // 1b. Battles (M4_FLEETS.md §24): wherever armed ships of powers at war meet, kept for the replay.
+  state.battles = resolveBattles(world, state, events);
 
   // 2. Arrivals: surveys (one per system and power, by the first ship there), survey stations,
   // then colonies and outposts founded.
@@ -507,6 +511,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 7b. Gifts (M3_NEIGHBOURS.md §20.2): paid when given, they arrive now and are remembered.
   deliverGifts(state, events);
+
+  // 7c. Repairs (M4_FLEETS.md §24.6).
+  repairShips(state);
 
   // 8. Governors (M2_WORLDS.md §25.1): what each governed colony does as the turn ends, so the
   // report shows it and the player can undo it before the next.

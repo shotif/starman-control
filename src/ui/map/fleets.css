@@ -91,3 +91,28 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* A battle's reasons in the report (M4_FLEETS.md §24.8). */
+.battle-why {
+  grid-column: 2;
+  margin: 0.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.report-items .battle-why li {
+  display: list-item;
+  margin: 0.15rem 0 0.15rem 1rem;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  list-style: disc;
+}
+
+/* A battle's buttons under its line in the report (M4_FLEETS.md §25). */
+.report-items .battle-watch {
+  grid-column: 2;
+  justify-self: start;
+}
