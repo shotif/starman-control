@@ -68,7 +68,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-14 | Victory and defeat ([M4 §13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | Decided 2026-10-22 | **A, conquest, the vote, a score at a turn limit** (250 turns by default), as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
-| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--open)) | **Open** | the owner wants more than one winner; trials of D, C, F, G and H recorded; recommended: B, a brake and a road to victory for each faction, H built as war plans |
+| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--decided-owners-choice)) | Decided 2026-10-22 (owner's choice) | **war plans for the rivals (H), fear at the deciding vote (K), tiring of a leader (C), and a less-loved Cooperative**, as increment 51 |
 | D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -646,7 +646,7 @@ within the $24.45 of D-27 left; ships and battles are drawn in code.
 
 ## Found while building M4
 
-### D-69 · Who wins by the Assembly's vote — **Open**
+### D-69 · Who wins by the Assembly's vote — **Decided (owner's choice)**
 
 In the headless games of increment 50 (M4_FLEETS.md §30, M2_BALANCE.md), six of eight games were won
 by the Assembly's choice between turns 157 and 234, and **every one by the Frontier Co-op**. The
@@ -711,6 +711,13 @@ between two of them.
 - **C. Change the factions instead:** take the Co-op's growth down and give it a quarrel (the
   Wake's raids, say), so it is not loved by all. Simple, but it blunts the faction rather than
   giving the others a way to win.
+
+**Answer (22 October 2026, the owner's choice):** *H as war plans, K, C, and a less-loved Co-op.*
+The rivals get war plans that carry a war to a distant enemy, the Wake and the Concord see a war
+through, the Assembly's members fear a power about to be chosen and tire of a long-serving leader,
+and the Cooperative grows more slowly and has a quarrel. Built as increment 51
+([M4_FLEETS.md §31](design/M4_FLEETS.md)), and shipped only if the headless games show at least four
+different winners in the eight games, none winning more than three.
 
 ## Made without waiting
 

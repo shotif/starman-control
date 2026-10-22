@@ -43,6 +43,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 28. [Increment 48 in detail: rivals at war](#28-increment-48-in-detail-rivals-at-war-written-before-building-it)
 29. [Increment 49 in detail: the Assembly](#29-increment-49-in-detail-the-assembly-written-before-building-it)
 30. [Increment 50 in detail: victory, defeat and the proof](#30-increment-50-in-detail-victory-defeat-and-the-proof-written-before-building-it)
+31. [Increment 51 in detail: many roads to victory](#31-increment-51-in-detail-many-roads-to-victory-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -1688,3 +1689,71 @@ tablet and desktop.
 
 **M4 is complete** (22 October 2026): a full game can be won by the Assembly's vote, as six of the
 eight headless games were, or by conquest, which the player can now achieve.
+
+## 31. Increment 51 in detail: many roads to victory (written before building it)
+
+**Goals.** D-69 as decided by the owner: no one faction should win every game. In the headless games
+of increment 50 the Cooperative won six of eight by the Assembly's vote, and the trials recorded
+under D-69 showed why: it is always a candidate and loved by all, no rival stops a power about to
+win, and no rival can carry a war far enough to conquer anyone. So: **war plans** for the rivals,
+the Wake and the Concord as **conquerors**, two **brakes** on the Assembly's vote, and a
+**less-loved Cooperative**.
+
+**Out of scope.** The Moot's envoys and the Authority's road through the keys (M5). The denouncing
+resolution (G), which failed in nearly every trial.
+
+### 31.1 War plans
+
+Every rival at war plans its strike as §28.3, with two changes:
+
+- **Anywhere the lanes reach.** The target is any enemy holding its strike fleet can reach by the
+  lanes it may sail (forced passage included), not only those within 6 jumps.
+- **The capital first.** It strikes the enemy's capital when its fleet's attack is at least twice what
+  defends it there: a capital lost is a power beaten, which surrenders (§28.5). Otherwise the nearest
+  holding it outmatches, as before. It builds transports for the garrison and 2 more troops, as
+  before; after a landing its fleet comes home for more.
+
+### 31.2 The conquerors
+
+The **Hollow Wake** and the **Dusk Concord** (by character: the outlaw, and the people slow to
+forget) are conquerors:
+
+- **They arm in earnest** from turn 80: a warship for every colony they hold, whatever their
+  neighbours hold.
+- **They fall on the weak** among every power they know, not only their neighbours (§28.1's *you
+  are weak, and near* becomes *you are weak* for them); the Concord gains that reason.
+- **They see a war through:** while their warships' attack is at least their enemy's, and their war
+  weariness under 60, they neither offer peace nor accept it, and they ignore the Assembly's calls
+  for peace (and take the sanctions that follow).
+
+### 31.3 The Assembly's brakes
+
+- **Fear at the deciding vote (K).** When the members' votes, as they lean, would choose a power
+  outright, every member that is not its ally thinks 20 less of it for that vote: it votes for it
+  only if it still regards it at least warmly, and otherwise for the other candidate if it regards
+  that one warmly, or abstains. The Assembly's screen shows the leanings with this already counted.
+- **Tiring of a leader (C).** A leader elected three times or more in a row is regarded 10 less by
+  every member that is not its ally for each election past the second: *Tired of its leading*, among
+  the reasons on the diplomacy screen.
+
+### 31.4 A less-loved Cooperative
+
+- **Settlers:** its colonies grow 10% faster (20% before).
+- **Two quarrels** (fiction, in each faction's character): the Wake thinks the Cooperative soft and
+  easy pickings (−10), and the Concord fears its settlers will crowd its claim (−5).
+
+### 31.5 State
+
+`Assembly.terms`: how many elections in a row its leader has won. **State version 25**; an older save
+counts one term for a leader it has, none without.
+
+### 31.6 Targets and tests
+
+- **The headless games** (`npm run balance`, the eight seeds to their end): **at least four
+  different winners, none winning more than three**; M3's targets still met at turn 100; turns and
+  saves within their budgets. If the first build misses, its numbers (who goes to war, who
+  surrenders, who wins how) decide what to tune, and each change is noted here as built.
+- **Unit tests** (`roads.test.ts`): the target anywhere the lanes reach, the capital first; the
+  conquerors' arming, their reason for war, pressing on and ignoring a call; fear at the deciding
+  vote; tiring of a leader; the Cooperative's growth and the quarrels; the migration.
+- **Journeys:** the Assembly's and the war journeys still pass on the phone, tablet and desktop.
