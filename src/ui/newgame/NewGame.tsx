@@ -1,18 +1,18 @@
-// A new game (§10; FIRST_IMPRESSION.md §3): the three powers as tall cards, each with its home in a
+// A new game (§10; FIRST_IMPRESSION.md §3): the powers one can lead as tall cards, each with its home in a
 // picture, its leader's face and its emblem, then where it starts, how it plays, its trait and its
 // shipmakers; and a seed for those who want the same game twice. Side by side on a desktop; one at
 // a time on a phone, swiped sideways. How the pictures are made is said in the codex's credits (D-29).
 
 import { useRef, useState } from 'preact/hooks';
 import { startGame, world } from '../../app/game.ts';
-import { FACTION_IDS, FACTIONS, type FactionId } from '../../content/factions.ts';
+import { FACTIONS, type FactionId, PLAYABLE_IDS } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { Emblem } from '../parts.tsx';
 import './newgame.css';
 
 /** Each power's pictures (art/manifest.json) and what they show, for those who cannot see them. */
-const ART: Record<FactionId, { file: string; scene: string; leader: string; leaderAlt: string }> = {
+const ART: Partial<Record<FactionId, { file: string; scene: string; leader: string; leaderAlt: string }>> = {
   sta: {
     file: 'sta',
     scene:
@@ -39,6 +39,7 @@ const base = import.meta.env.BASE_URL;
 function PowerCard({ id, starting, onStart }: { id: FactionId; starting: FactionId | null; onStart: () => void }) {
   const f = FACTIONS[id];
   const art = ART[id];
+  if (!art) return null;
   const capital = world.system(f.capital.systemId);
   const scene = `${base}art/illustration/power-${art.file}-scene`;
   const leader = `${base}art/portrait/power-${art.file}-leader`;
@@ -157,16 +158,16 @@ export function NewGame() {
           waiting.{' '}
           {alone
             ? 'You play alone: no other power is in play.'
-            : 'The other two powers play too, as your rivals, by your rules and with no bonuses.'}
+            : 'The other powers play too, as your rivals, by your rules and with no bonuses: the other two, and the Dusk Concord, an alien power far out in the shell.'}
         </p>
       </header>
       <div class="power-cards" ref={track} onScroll={onScroll}>
-        {FACTION_IDS.map((id) => (
+        {PLAYABLE_IDS.map((id) => (
           <PowerCard key={id} id={id} starting={starting} onStart={() => void start(id)} />
         ))}
       </div>
       <div class="power-dots" aria-hidden="true">
-        {FACTION_IDS.map((id, i) => (
+        {PLAYABLE_IDS.map((id, i) => (
           <button
             key={id}
             type="button"
@@ -205,7 +206,7 @@ export function NewGame() {
             <legend>Rivals</legend>
             <label>
               <input type="radio" name="rivals" checked={!alone} onChange={() => setAlone(false)} /> With rivals{' '}
-              <span class="dim">: the other two powers play, by your rules, at one difficulty</span>
+              <span class="dim">: every other power plays, by your rules, at one difficulty</span>
             </label>
             <label>
               <input type="radio" name="rivals" checked={alone} onChange={() => setAlone(true)} /> Play alone{' '}

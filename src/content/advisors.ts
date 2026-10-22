@@ -78,6 +78,20 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       envoy: { name: 'Hush', role: 'who does the talking', portrait: 'advisor-wake-envoy' },
     },
   },
+  // The Duskfolk's names are translations (M3_NEIGHBOURS.md §24.1). Only First Voice has a face yet:
+  // the others are seen only by a player of the Concord, which comes later.
+  'dusk-concord': {
+    voice: 'formal',
+    people: {
+      colonies: { name: 'Warm Stone', role: 'who speaks for the Settled', portrait: 'advisor-dusk-colonies' },
+      works: { name: 'Long Hands', role: 'who speaks for the Builders', portrait: 'advisor-dusk-works' },
+      treasury: { name: 'Full Store', role: 'who keeps the Stores', portrait: 'advisor-dusk-treasury' },
+      science: { name: 'Quiet Eye', role: 'who speaks for the Learned', portrait: 'advisor-dusk-science' },
+      survey: { name: 'Far Walker', role: 'who speaks for the Wayfarers', portrait: 'advisor-dusk-survey' },
+      watch: { name: 'Night Ear', role: 'who speaks for the Watchers', portrait: 'advisor-dusk-watch' },
+      envoy: { name: 'First Voice', role: 'who speaks to strangers', portrait: 'advisor-dusk-envoy' },
+    },
+  },
 };
 
 /**

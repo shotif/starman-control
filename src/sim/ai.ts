@@ -76,6 +76,18 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     doctrines: ['open-frontier', 'deep-jumpers', 'industrial-worlds'],
     greatWork: 'lanewright-foundry',
   },
+  // Patient expanders far from anyone's lanes (M3_NEIGHBOURS.md §24.7).
+  'dusk-concord': {
+    capital: 'grow',
+    colonies: 'grow',
+    settles: 'nearest',
+    fields: ['life-sciences', 'construction'],
+    taxes: 'standard',
+    laneBuilder: true,
+    edict: 'festival',
+    doctrines: ['open-frontier', 'lane-network', 'garden-worlds'],
+    greatWork: 'commons',
+  },
 };
 
 /** Below this, or with no income to keep one, a rival builds no ships. */

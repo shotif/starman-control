@@ -55,14 +55,15 @@ describe('the data preview', () => {
     const sol = rows.find((r) => r.id === 'sol');
     expect(sol?.web).toBe('sta');
     expect(sol?.lanes.filter((l) => l.owner === 'sta')).toHaveLength(4);
-    expect(rows.filter((r) => r.web !== null)).toHaveLength(21);
-    expect(rows.flatMap((r) => r.lanes).filter((l) => l.owner)).toHaveLength(36); // 18 lanes, seen from both ends
+    // Three webs of 7 and the Concord's of 6 (M3_NEIGHBOURS.md §24.4).
+    expect(rows.filter((r) => r.web !== null)).toHaveLength(27);
+    expect(rows.flatMap((r) => r.lanes).filter((l) => l.owner)).toHaveLength(46); // 23 lanes, seen from both ends
   });
 
   it('finds names whatever the accents, apostrophes and case', () => {
     expect(searchKey('Barnard’s Star')).toBe('barnards star');
     expect(filterRows(rows, 'BARNARDS', false).map((r) => r.id)).toEqual(['barnard']);
-    expect(filterRows(rows, '', true)).toHaveLength(21);
+    expect(filterRows(rows, '', true)).toHaveLength(27);
   });
 
   it('sorts by distance, name, planets and lanes', () => {

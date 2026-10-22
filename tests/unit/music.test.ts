@@ -3,7 +3,7 @@ import { MUSIC_BRIEFS, musicPrompt } from '../../music/briefs.ts';
 import manifest from '../../music/manifest.json' with { type: 'json' };
 import { auditMusic, upsertMusic } from '../../scripts/music/catalogue.ts';
 import { lyriaRequest, parseLyria } from '../../scripts/music/lyria.ts';
-import { FACTION_IDS, FACTIONS } from '../../src/content/factions.ts';
+import { FACTIONS, PLAYABLE_IDS } from '../../src/content/factions.ts';
 import {
   MOOD_PIECES,
   MUSIC_PIECES,
@@ -23,7 +23,7 @@ describe('the music (MUSIC.md)', () => {
   });
 
   it('gives every power’s colonies the piece of its architecture, never the player’s (D-08)', () => {
-    for (const f of FACTION_IDS) {
+    for (const f of PLAYABLE_IDS) {
       const mood = moodFor({ screen: 'map', colony: FACTIONS[f].architecture }) as MusicMood;
       expect(MOOD_PIECES[mood]).toEqual([`colony-${FACTIONS[f].architecture}`]);
     }

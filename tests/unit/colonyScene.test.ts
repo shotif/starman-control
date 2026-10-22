@@ -15,7 +15,7 @@ import {
   structureArt,
   structureId,
 } from '../../src/content/colonyArt.ts';
-import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
+import { FACTIONS, type FactionId, PLAYABLE_IDS } from '../../src/content/factions.ts';
 import { PROJECT_IDS } from '../../src/content/projects.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { frameTown, placeAll, placeBuilding, placeProps } from '../../src/render/colonyPlace.ts';
@@ -178,7 +178,7 @@ describe('a colony’s scene', () => {
   });
 
   it('never assumes the power: each capital is drawn in its owner’s architecture', () => {
-    for (const f of FACTION_IDS) {
+    for (const f of PLAYABLE_IDS) {
       const g = start(f, 42);
       expect(colonyScene(world, g, capital(g, f))?.architecture).toBe(FACTIONS[f].architecture);
     }
@@ -231,7 +231,7 @@ describe('the colony view’s pictures', () => {
   it('cover every ground, and every power’s homes and projects', () => {
     for (const biome of ['garden', 'shore', 'steppe', 'desert', 'inferno', 'tundra', 'ice', 'airless', 'haze'] as const)
       expect(LANDSCAPES[biome], biome).toBeDefined();
-    for (const f of FACTION_IDS) {
+    for (const f of PLAYABLE_IDS) {
       const a = FACTIONS[f].architecture;
       for (const size of [1, 2, 3] as const)
         for (const envelope of ['open', 'domed'] as const)
@@ -418,7 +418,7 @@ describe('props between the buildings (COLONY_VIEW.md §9.3)', () => {
         }
       }
     try {
-      for (const f of FACTION_IDS)
+      for (const f of PLAYABLE_IDS)
         for (const people of [30, 100, 200]) {
           const g = start(f, 1);
           const s = colonyScene(world, g, { ...capital(g, f), people });

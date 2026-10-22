@@ -31,7 +31,26 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
     'In the architecture of the Hollow Wake raiders: built from salvaged starship hull sections and old cargo ' +
     'containers, angular, patched with mismatched plates and welded seams, dark gunmetal and rust, set into ' +
     'banked earth, triangular braces, small red lights; improvised and tough.',
+  // M3_NEIGHBOURS.md §24: written now, painted when the Duskfolk can be played.
+  dusk:
+    'In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, ' +
+    'curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone ' +
+    'and woven screens, narrow slit windows glowing warm amber; communal, patient and very old.',
 };
+
+/** The architectures whose buildings are painted: the Duskfolk's wait until they can be played (§24.10). */
+type Painted = Exclude<ArchitectureId, 'dusk'>;
+
+/**
+ * The Duskfolk (M3_NEIGHBOURS.md §24), an invented people, written once and put into every brief
+ * that shows them, so they look like one people. Fiction, and like no other work's aliens.
+ */
+const DUSKFOLK =
+  'one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow ' +
+  'head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless ' +
+  'mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms ' +
+  'with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven ' +
+  'shawls in charcoal, ochre and plum';
 
 const FIRST: ArtBrief[] = [
   // The style test: the same four subjects from both services, so the owner can choose a direction
@@ -521,7 +540,37 @@ export const BRIEFS: ArtBrief[] = [
   ...greatWorks(),
   ...advisors(),
   ...events(),
+  ...duskfolk(),
 ];
+
+/** Increment 38's pictures (M3_NEIGHBOURS.md §24.10): the Concord's envoy and speaker, and its people at home. */
+function duskfolk(): ArtBrief[] {
+  return [
+    {
+      id: 'advisor-dusk-envoy',
+      series: 'portrait',
+      subject: `First Voice, who speaks to strangers for the Dusk Concord: ${DUSKFOLK}, with a band of amber thread at the shawl's edge; attentive and unhurried, the head tilted as if listening.`,
+      purpose: 'The Concord’s Envoy, on the diplomacy screen (M3, fiction).',
+    },
+    {
+      id: 'speaker-dusk-concord',
+      series: 'portrait',
+      subject: `Still Water, the speaker of the Dusk Concord: ${DUSKFOLK}, in a heavy shawl of many layers, the crest worn and pale with great age; calm and still, the gaze steady.`,
+      purpose: 'The Concord’s speaker, on the data page (M3, fiction).',
+    },
+    {
+      id: 'people-duskfolk',
+      series: 'illustration',
+      subject:
+        'The ring of dusk on a world locked to its red dwarf sun: the huge, dim red sun sits half below the horizon and never moves; ' +
+        'to the left the land runs into bright, heat-hazed desert, to the right into blue darkness and ice. On a curved ridge between them, ' +
+        'long low halls roofed with turf and slate glow with amber slit windows, and a few of the Duskfolk walk a path among them: ' +
+        'tall, long-limbed figures with slate-grey skin and large eyes that catch the red light, in layered woven shawls. Quiet and patient. ' +
+        'An invented alien people, not human, and like no other story’s aliens.',
+      purpose: 'The Duskfolk at home, on the data page (M3, fiction).',
+    },
+  ];
+}
 
 /** Each home's second and third versions: the same kind of home told another way. */
 function homeVersions(first: ArtBrief[]): ArtBrief[] {
@@ -631,7 +680,7 @@ function homeVersions(first: ArtBrief[]): ArtBrief[] {
 
 /** The props (COLONY_VIEW.md §9.3): five in each power's architecture, ten shared. */
 function props(): ArtBrief[] {
-  const own: Record<string, Record<ArchitectureId, string>> = {
+  const own: Record<string, Record<Painted, string>> = {
     'water-tanks': {
       authority:
         'Water tanks for a colony: three tall white ceramic cylinders on a neat steel frame, with pipes and a ladder, a slim green light on top.',
@@ -691,7 +740,7 @@ function props(): ArtBrief[] {
       'A small regolith plant that bakes fusion fuel out of the soil: a squat boxy machine with a hopper on top, a short conveyor feeding it and a chute of grey dust.',
   };
   const ownBriefs = Object.entries(own).flatMap(([kind, by]) =>
-    (Object.keys(by) as ArchitectureId[]).map((a) => ({
+    (Object.keys(by) as Painted[]).map((a) => ({
       id: `${a}-${kind}`,
       series: 'prop' as const,
       subject: `${ARCHITECTURE[a]} ${by[a]}`,
@@ -713,7 +762,7 @@ function props(): ArtBrief[] {
  * housing shows homes. Works, labs and markets are new, in each power's architecture.
  */
 function districts(): ArtBrief[] {
-  const own: Record<string, Record<ArchitectureId, string>> = {
+  const own: Record<string, Record<Painted, string>> = {
     works: {
       authority:
         'A works district: a long, orderly manufacturing hall of prefabricated modules with a sawtooth roof of skylights, a loading bay with a small gantry crane, stacked standard containers and green lights.',
@@ -736,10 +785,10 @@ function districts(): ArtBrief[] {
       wake: 'A market district: a black market in stacked cargo containers opened up as stalls, scrap awnings, hanging lamps, crates and barrels, a watchtower with a red light.',
     },
   };
-  const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
+  const names: Record<Painted, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
   return [
     ...Object.entries(own).flatMap(([kind, by]) =>
-      (Object.keys(by) as ArchitectureId[]).map((a) => ({
+      (Object.keys(by) as Painted[]).map((a) => ({
         id: `${a}-${kind}`,
         series: 'structure' as const,
         subject: `${ARCHITECTURE[a]} ${by[a]}`,
@@ -759,7 +808,7 @@ function districts(): ArtBrief[] {
 
 /** Increment 21's projects (M2_WORLDS.md §23.1), each in every power's architecture. */
 function projects(): ArtBrief[] {
-  const own: Record<string, Record<ArchitectureId, string>> = {
+  const own: Record<string, Record<Painted, string>> = {
     hydroponics: {
       authority:
         'A hydroponics farm: a long, low prefabricated building with a glazed roof, racks of green plants under pink-white grow lights visible through its windows, water tanks and pipes along one side, green lights.',
@@ -862,9 +911,9 @@ function projects(): ArtBrief[] {
       wake: 'A terraforming station: the engine block of a wrecked bulk carrier rigged as an atmosphere processor, its exhausts roaring white vapour into the sky, tanks and crooked pipes, red lights.',
     },
   };
-  const names: Record<ArchitectureId, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
+  const names: Record<Painted, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
   return Object.entries(own).flatMap(([kind, by]) =>
-    (Object.keys(by) as ArchitectureId[]).map((a) => ({
+    (Object.keys(by) as Painted[]).map((a) => ({
       id: `${a}-${kind}`,
       series: 'structure' as const,
       subject: `${ARCHITECTURE[a]} ${by[a]}`,

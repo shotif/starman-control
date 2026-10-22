@@ -8,7 +8,7 @@ import type { Body } from './bodies.ts';
 export type Habitability = 'comfortable' | 'tolerable' | 'harsh' | 'uninhabitable';
 
 export interface HabitabilityReason {
-  condition: 'surface' | 'temperature' | 'atmosphere' | 'gravity' | 'water' | 'flare';
+  condition: 'surface' | 'temperature' | 'atmosphere' | 'gravity' | 'water' | 'flare' | 'open';
   /** The world's value, e.g. "cold". */
   value: string;
   /** Points it costs, or null when it alone makes the world uninhabitable. */
@@ -40,6 +40,8 @@ export function habitability(body: Body, species: SpeciesDef): HabitabilityResul
     { condition: 'water', value: body.water, cost: c.water[body.water] },
   ];
   if (body.flareExposed) reasons.push({ condition: 'flare', value: 'flare-exposed', cost: c.flare });
+  // A world not locked to its star has no ring of dusk (M3_NEIGHBOURS.md §24.3).
+  if (!body.locked) reasons.push({ condition: 'open', value: 'open sky', cost: c.open });
   const impossible = reasons.some((r) => r.cost === null);
   const total = reasons.reduce((sum, r) => sum + (r.cost ?? 0), 0);
   const level: Habitability = impossible

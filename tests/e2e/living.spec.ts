@@ -53,7 +53,8 @@ test('a game’s map has its sky, each power’s reach, and its lanes alive', as
 test('the neighbourhood shows every power’s home web alive', async ({ page }) => {
   await page.goto('./?test#/map');
   await expect(page.getByTestId('map')).toHaveAttribute('data-sky', 'yes', { timeout: 30_000 });
-  expect(await hook(page)).toEqual({ animating: true, fields: 21, sparks: 18 });
+  // Three webs of 7 systems and 6 lanes, and the Concord's of its own 6 and 5 (M3_NEIGHBOURS.md §24.4).
+  expect(await hook(page)).toEqual({ animating: true, fields: 27, sparks: 23 });
 });
 
 test('glides into a system, and comes back to where it was', async ({ page }, info) => {

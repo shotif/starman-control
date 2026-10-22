@@ -1,11 +1,11 @@
-// The headless games (M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): three rivals play 100 turns on eight
-// seeds, and what each power made of it is written to docs/design/M2_BALANCE.md, to read when
+// The headless games (M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): every power plays 100 turns as a
+// rival (the alien powers too, M3_NEIGHBOURS.md §24.8) on eight seeds, and what each power made of it is written to docs/design/M2_BALANCE.md, to read when
 // balancing. Not part of `npm run check` (the unit tests check the limits); run it with
 // `npm run balance`.
 
 import { writeFileSync } from 'node:fs';
 import { EVENTS, type EventId } from '../../src/content/events.ts';
-import { FACTIONS, type FactionId } from '../../src/content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
 import { TECH_IDS, TECHS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { researchOf } from '../../src/sim/economy.ts';
@@ -18,7 +18,7 @@ const SEEDS = [42, 7, 2176, 1, 2, 3, 4, 5];
 /** What a power can learn: every technology but one of each pair of doctrines (M2B_SCIENCE.md §19.1). */
 const LEARNABLE = TECH_IDS.length - TECH_IDS.filter((id) => TECHS[id].fork).length / 2;
 const AT = [25, 50, 100];
-const FACTION_ORDER: FactionId[] = ['sta', 'frontier', 'hollow-wake'];
+const FACTION_ORDER: readonly FactionId[] = FACTION_IDS;
 
 interface Line {
   colonies: number;
@@ -127,7 +127,7 @@ const streak = (turns: number, what: string, never: string) =>
 
 const out = `# The headless games
 
-*Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): three
+*Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): ${FACTION_ORDER.length}
 rivals, ${SEEDS.length} seeds, 100 turns each. Regenerate it after any change to the rules or the rivals.*
 
 The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100

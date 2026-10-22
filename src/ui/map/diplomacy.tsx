@@ -4,6 +4,7 @@
 // each, the chosen one opened under its card.
 
 import { useSignal } from '@preact/signals';
+import { ADVISORS } from '../../content/advisors.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
 import { TREATIES, TREATY_KINDS } from '../../content/treaties.ts';
@@ -22,7 +23,7 @@ import {
   wouldExchange,
 } from '../../sim/treaties.ts';
 import type { World } from '../../sim/world.ts';
-import { FactionTag } from '../parts.tsx';
+import { AdvisorFace, FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
 import { give, type Play } from './play.tsx';
 
@@ -337,6 +338,12 @@ export function DiplomacyView({
             <p class="dim">{contactText(game, faction, other)}</p>
           </>
         )}
+        <p class="diplomacy-envoy">
+          <AdvisorFace advisor={ADVISORS[other].people.envoy} size={48} />
+          <span>
+            Their envoy: <b>{ADVISORS[other].people.envoy.name}</b>, {ADVISORS[other].people.envoy.role}
+          </span>
+        </p>
         <p class="diplomacy-regard">
           Their regard for us: <b class={`regard-${regard.word}`}>{regard.word}</b> ({signed(regard.total)})
         </p>
@@ -393,7 +400,7 @@ export function DiplomacyView({
         )}
         <p class="dim">
           A gift is remembered at 1 for every {FACTIONS[other].giftCredits} credits, and fades a point every{' '}
-          {RULES.memory.fadeEvery} turns.
+          {FACTIONS[other].forgets} turns.
         </p>
       </section>
     );

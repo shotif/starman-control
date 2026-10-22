@@ -450,3 +450,20 @@
 .web-advisors li > span {
   display: grid;
 }
+
+.web-people {
+  margin: 0.5rem 0;
+}
+
+.web-people img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--panel-border);
+}
+
+.web-people figcaption {
+  margin-top: 0.3rem;
+  color: var(--text-muted);
+  font-size: 0.9em;
+}

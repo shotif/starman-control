@@ -215,10 +215,6 @@ export const RULES = {
     /** 1 for every so many turns since first contact, up to `knownMost`. */
     knownEvery: 10,
     knownMost: 10,
-    /** A memory fades a point towards nothing every so many turns. */
-    fadeEvery: 4,
-    /** A gift is remembered at 1 for every so many credits. */
-    giftCredits: 5,
     /** The gifts a power may send. */
     gifts: [20, 50, 100],
     /** A great work they finished that it was building. */

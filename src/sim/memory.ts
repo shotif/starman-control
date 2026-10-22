@@ -113,10 +113,13 @@ export function remember(
   powerOf(state, holder).memories.push({ faction: about, turn: state.turn, ...m });
 }
 
-/** Memories fade a point towards nothing every few turns, and are forgotten at nothing (§20.1). */
+/**
+ * Memories fade a point towards nothing every few turns, by the holder's character (§20.1, §24.6),
+ * and are forgotten at nothing.
+ */
 export function fadeMemories(state: GameState): void {
-  const every = RULES.memory.fadeEvery;
   for (const p of state.powers) {
+    const every = FACTIONS[p.faction].forgets;
     for (const m of p.memories) {
       const age = state.turn - m.turn;
       if (age > 0 && age % every === 0) m.amount -= Math.sign(m.amount);

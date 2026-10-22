@@ -6,7 +6,10 @@ import { homeWebs } from '../../src/sim/homeWeb.ts';
 import { buildWorld, laneEnds } from '../../src/sim/world.ts';
 
 const world = buildWorld(SKY);
-const capitals = FACTION_IDS.map((f) => ({ faction: f, capital: FACTIONS[f].capital.systemId }));
+// The webs of Reborn's old lanes; a capital in the shell grows one of its own (duskfolk.test.ts).
+const capitals = FACTION_IDS.map((f) => ({ faction: f, capital: FACTIONS[f].capital.systemId })).filter(
+  (c) => world.catalogueAt(c.capital).length > 0,
+);
 const webs = homeWebs(world, capitals);
 const web = (f: string) => webs.find((w) => w.faction === f) as (typeof webs)[number];
 

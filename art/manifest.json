@@ -1,6 +1,36 @@
 {
   "images": [
     {
+      "briefId": "advisor-dusk-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: First Voice, who speaks to strangers for the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, with a band of amber thread at the shawl's edge; attentive and unhurried, the head tilted as if listening.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T08:35:59.791Z",
+      "id": "advisor-dusk-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T08:36:53.281Z",
+      "candidate": "art/out/advisor-dusk-envoy/20261022-083524-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-envoy-128.webp",
+          "bytes": 4004
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-envoy-384.webp",
+          "bytes": 20252
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-envoy-768.webp",
+          "bytes": 64690
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-frontier-colonies",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -7170,6 +7200,31 @@
       "aiGenerated": true
     },
     {
+      "briefId": "people-duskfolk",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: The ring of dusk on a world locked to its red dwarf sun: the huge, dim red sun sits half below the horizon and never moves; to the left the land runs into bright, heat-hazed desert, to the right into blue darkness and ice. On a curved ridge between them, long low halls roofed with turf and slate glow with amber slit windows, and a few of the Duskfolk walk a path among them: tall, long-limbed figures with slate-grey skin and large eyes that catch the red light, in layered woven shawls. Quiet and patient. An invented alien people, not human, and like no other story’s aliens.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T08:34:00.593Z",
+      "id": "people-duskfolk",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T08:36:55.453Z",
+      "candidate": "art/out/people-duskfolk/20261022-083146-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/people-duskfolk-640.webp",
+          "bytes": 23192
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/people-duskfolk-1280.webp",
+          "bytes": 67716
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "power-frontier-leader",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -7595,6 +7650,36 @@
         "width": 1788,
         "height": 816
       },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "speaker-dusk-concord",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Still Water, the speaker of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, in a heavy shawl of many layers, the crest worn and pale with great age; calm and still, the gaze steady.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T08:36:16.828Z",
+      "id": "speaker-dusk-concord",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T08:36:54.350Z",
+      "candidate": "art/out/speaker-dusk-concord/20261022-083524-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/speaker-dusk-concord-128.webp",
+          "bytes": 3518
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/speaker-dusk-concord-384.webp",
+          "bytes": 18184
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/speaker-dusk-concord-768.webp",
+          "bytes": 51638
+        }
+      ],
       "aiGenerated": true
     },
     {

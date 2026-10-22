@@ -7,6 +7,7 @@ import { signal } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
 import { ADVISORS, DEPARTMENT_NAMES, DEPARTMENTS } from '../../content/advisors.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
+import { SPECIES } from '../../content/species.ts';
 import type { SystemId } from '../../data/types.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { formatLy } from '../../sim/geometry.ts';
@@ -225,20 +226,53 @@ function WebCard({ faction, world, game }: { faction: (typeof FACTION_IDS)[numbe
         <Badge kind="fiction" />
       </p>
       <p class="web-traits">{f.traits.map((t) => t.text).join(' ')}</p>
-      <ul class="web-advisors" aria-label={`The ${f.name}’s advisors`}>
-        {DEPARTMENTS.map((d) => {
-          const a = ADVISORS[faction].people[d];
-          return (
-            <li key={d}>
-              <AdvisorFace advisor={a} size={40} />
-              <span>
-                <b>{a.name}</b>
-                <span class="dim">{DEPARTMENT_NAMES[d]}</span>
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      {f.people && (
+        <figure class="web-people">
+          <img
+            src={`${import.meta.env.BASE_URL}art/illustration/${f.people.picture}-640.webp`}
+            srcset={`${import.meta.env.BASE_URL}art/illustration/${f.people.picture}-640.webp 640w, ${import.meta.env.BASE_URL}art/illustration/${f.people.picture}-1280.webp 1280w`}
+            sizes="(min-width: 960px) 30vw, 88vw"
+            width={640}
+            height={427}
+            alt={f.people.alt}
+            decoding="async"
+          />
+          <figcaption>
+            {SPECIES[f.species].name}, who make the {f.name} <Badge kind="fiction" />
+          </figcaption>
+        </figure>
+      )}
+      {f.playable ? (
+        <ul class="web-advisors" aria-label={`The ${f.name}’s advisors`}>
+          {DEPARTMENTS.map((d) => {
+            const a = ADVISORS[faction].people[d];
+            return (
+              <li key={d}>
+                <AdvisorFace advisor={a} size={40} />
+                <span>
+                  <b>{a.name}</b>
+                  <span class="dim">{DEPARTMENT_NAMES[d]}</span>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <ul class="web-advisors" aria-label={`The ${f.name}’s people`}>
+          {[f.speaker, ADVISORS[faction].people.envoy].map(
+            (a) =>
+              a && (
+                <li key={a.portrait}>
+                  <AdvisorFace advisor={a} size={40} />
+                  <span>
+                    <b>{a.name}</b>
+                    <span class="dim">{a.role}</span>
+                  </span>
+                </li>
+              ),
+          )}
+        </ul>
+      )}
       <button
         type="button"
         class="link"

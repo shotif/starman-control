@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import manifest from '../../art/manifest.json' with { type: 'json' };
 import { ADVISORS, DEPARTMENTS, fillLine, LINES, type LineKind } from '../../src/content/advisors.ts';
-import { FACTION_IDS, type FactionId } from '../../src/content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { adviceFor } from '../../src/sim/advice.ts';
 import { needsOf } from '../../src/sim/needs.ts';
@@ -21,7 +21,11 @@ describe('the advisors', () => {
     for (const f of FACTION_IDS) {
       const people = Object.values(ADVISORS[f].people);
       expect(Object.keys(ADVISORS[f].people).sort()).toEqual([...DEPARTMENTS].sort());
-      for (const a of people) expect(portraits.has(a.portrait), a.portrait).toBe(true);
+      // A power not yet playable shows only its Envoy, and its speaker (M3_NEIGHBOURS.md §24.9).
+      const shown = FACTIONS[f].playable ? people : [ADVISORS[f].people.envoy];
+      for (const a of shown) expect(portraits.has(a.portrait), a.portrait).toBe(true);
+      const speaker = FACTIONS[f].speaker;
+      if (speaker) expect(portraits.has(speaker.portrait), speaker.portrait).toBe(true);
     }
   });
 

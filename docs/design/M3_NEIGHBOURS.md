@@ -35,6 +35,7 @@ them, and the first aliens, powers you deal with.
 21. [Increment 36 in detail: treaties](#21-increment-36-in-detail-treaties-written-before-building-it)
 22. [Increment 37 in detail: borders and trade](#22-increment-37-in-detail-borders-and-trade-written-before-building-it)
 23. [Increment 37b in detail: exchanges and the Wake's dealings](#23-increment-37b-in-detail-exchanges-and-the-wakes-dealings-written-before-building-it)
+24. [Increment 38 in detail: the Duskfolk](#24-increment-38-in-detail-the-duskfolk-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -844,3 +845,166 @@ the Wake, on the phone, tablet and desktop.
   exchanges are made in six; one rival was a turn in debt once. The slowest headless turn 136 ms.
 - **Tests:** `dealings.test.ts` as §23.9 (19 tests, with 100 turns of three rivals); 490 unit tests;
   `dealings.spec.ts` on the phone, tablet and desktop.
+
+## 24. Increment 38 in detail: the Duskfolk (written before building it)
+
+**Goals.** The first alien species of D-12 as decided (A), the *twilight folk* of §5, and the power
+it makes: as data, as humans are (D-08); its home a real red dwarf's world in the shell (§4, D-01,
+D-02); a rival in every game with rivals, not yet one to play; its own tongue, so contact with it
+goes through words (§19); habitability unlike humans'; a character as a rival and in its regard;
+its envoy's and speaker's faces and a picture of its people. Nothing in the rules is the Duskfolk's alone: each rule
+reads the species' or the power's data.
+
+**Out of scope.** Playing the Duskfolk (later, D-08): their six other advisors' faces, their
+buildings in the colony view and the twilight landscapes of their worlds wait until then, since no
+screen shows a rival's colonies (§24.9).
+Technologies of their own; their ships' looks (M4); the cloud drifters (increment 39); five-power
+balance (40).
+
+### 24.1 Names (fiction)
+
+- **The Duskfolk**: the name humans give the species, for the dusk they live in; *a Duskfolk
+  colony*. Their own name for themselves is a sound humans do not make.
+- **The Dusk Concord** (*the Concord*): their power, governed by consensus. Amber (`#ffb347`), and
+  a diamond beside the colour wherever it is shown.
+- **Their names** are translations: the Envoy is *First Voice, who speaks to strangers*; their
+  speaker *Still Water, speaker of the Concord*. Their seven advisors (for when they are played):
+  Warm Stone (the Settled), Long Hands (the Builders), Full Store (the Stores), Quiet Eye (the
+  Learned), Far Walker (the Wayfarers), Night Ear (the Watchers) and First Voice; a formal voice.
+
+### 24.2 Their home (observed and fiction)
+
+**GJ 433 d**, a real super-Earth of the red dwarf GJ 433 in Hydra, 29.6 ly from Sol, in the shell:
+observed by radial velocity, likely tidally locked by its short orbit (the game's facts say which
+are observed and which estimated). Five more systems lie within 5 ly of it (20 Crateris, WISE
+1141−3326, SIPS 1141−3624, VB 5, WISE 1112−3857). It is 28 ly from Wolf 1061 and further from
+Sol and Tau Ceti, so the Wake is the likeliest to meet the Concord first. The Duskfolk living there
+are fiction, and the game labels them so.
+
+### 24.3 The worlds they live on
+
+Each condition costs what the species' data says, as humans' does (M1_PLANETS.md §5). A new
+condition, **an open sky**: a world that is not tidally locked, with no ring of dusk to live in.
+
+| | Humans | The Duskfolk |
+| --- | --- | --- |
+| Temperature | frozen 2, cold 1, temperate 0, warm 1, hot 2, scorching never | frozen 1, cold 0, temperate 0, warm 0, hot 1, scorching 2 |
+| Atmosphere | none 2, thin 1, dense 0, toxic 2 | none 2, thin 0, dense 0, toxic 1 |
+| Gravity | low 1, normal 0, high 2 | low 0, normal 0, high 1 |
+| Water | none 1, ice 0, oceans 0 | none 1, ice 0, oceans 0 |
+| Flares | 1 | 0 |
+| An open sky | 0 | 2 |
+
+The levels are humans' (comfortable 0, tolerable up to 2, harsh up to 6). So the red dwarfs'
+locked worlds, harsh for humans, are tolerable or comfortable for the Duskfolk, and an Earth-like
+open world only tolerable: the natural expanders of §5. GJ 433 d (cold, thin, normal gravity, ice,
+locked) is comfortable for them.
+
+### 24.4 Their home web, of their own lanes
+
+D-19a gives every power a home web by one rule. Reborn's old lanes end at 27 ly, so a capital in
+the shell has none to tend. **A power whose capital has no old lane grows its web the same way
+over lanes of its own**: from the capital to systems up to 6 ly apart (a new lane's reach), within
+two such links, nearest first, within the beacon slots, at most 7 systems. Its lanes are open and
+its own from the start, like any home web's. The webs of old lanes are still trimmed to the
+smallest of them; a web of a power's own lanes keeps what it reaches. The Concord's is 6 systems
+and 5 lanes (GJ 433's capital anchors all five), one fewer than each human power's 7; so no
+human start changes.
+
+### 24.5 Their tongue
+
+The Duskfolk share no tongue with humans, so contact goes signal, words, talk (§19.1): about 20
+turns of sight to talk, 10 with Translation. Before talk, an offer may be misread (§21.2).
+
+### 24.6 Their regard and treaties (fiction)
+
+*Slow to trust, slow to forget* (§5):
+
+- **Slow to forget:** their memories fade a point every **8** turns, not 4 (a power's
+  `forgets`).
+- **Slow to trust:** no kin with any human power; a gift is remembered at 1 for every **8**
+  credits; they ask a regard of 20 for open lanes, 30 for shared research, 0 for a border (they
+  like a clear line), 10 for trade, 10 to buy passage, and never buy protection. Lawful.
+- **Their view of others' ways:** −5 for the Hollow Wake (*Takes what is not given*); humans think
+  nothing of them for their ways until they know them.
+
+### 24.7 As a rival
+
+The same rules and orders as every rival (M2_WORLDS.md §26.2). Its character: the capital and its
+colonies run to grow; it settles the **nearest** world it can; it researches life sciences and
+construction; standard taxes; it builds lanes from its colonies too (it starts far from anyone's
+lanes); a festival when its attention is full; the doctrines Open frontier, Lane network and Garden
+worlds; and the Commons as its great work. Its trait, **Patient**: colonies grow 10% faster.
+
+### 24.8 In the game
+
+- A **faction can be played or not** (`playable`). The new game offers the three human powers
+  only; the Concord plays as a rival in every game with rivals, so every new game has four powers.
+- A game saved before keeps its three powers.
+- The title's sky shows the capitals of the powers one can lead, as now.
+
+### 24.9 On the screen
+
+- **The map:** the Concord's colour and diamond wherever a power is shown (the standings, claims,
+  lanes, holdings, the data page).
+- **A world's panel** says how habitable it is for the player's species with its reasons, now
+  with *an open sky* where it counts.
+- **The diplomacy screen** shows each power's envoy beside its name (new for every power), so the
+  Concord's First Voice is seen there.
+- **The data page** lists the Concord with its home web, its speaker and a picture of the
+  Duskfolk, labelled *Fiction*, and GJ 433 d's facts as for any world.
+- **Not yet:** the Duskfolk's buildings in the colony view, their other advisors' faces, and the
+  twilight landscapes of locked worlds (a sun fixed low, which the colony view's sky would have to
+  paint too), all of which a player of the Concord would see first.
+
+### 24.10 Pictures (D-57)
+
+First Voice's and Still Water's faces, and the Duskfolk at home for the data page: **3 pictures, 6
+candidates, about $0.30**, sent as lettered sheets. The Duskfolk are
+described to the generator as an invented people (long-limbed, grey-violet skin with a fine
+mineral sheen against flares, wide dark eyes for a dim red sun, layered woven shawls), never as
+any existing people or any other work's aliens. Their buildings (about 24 pictures, about $2.40)
+and two twilight landscapes (about $0.20) wait until they can be played.
+
+### 24.11 State
+
+The faction list gains `dusk-concord`, the species list `duskfolk`; a power in play is still just a
+faction, so the state's shape is unchanged. **Version 15** still; a save from before reads as it is,
+with its three powers.
+
+### 24.12 Tests
+
+`duskfolk.test.ts`: the Duskfolk's habitability (an open sky, flares, the red dwarfs' worlds);
+the home web of their own lanes (6 systems, no human web changed); contact through words with
+humans; memories that fade every 8 turns; gifts at 1 for every 8 credits; the Concord as a rival
+for 100 turns with the game sound; the new game's four powers and its three playable factions.
+`duskfolk.spec.ts`: the new game offers three powers; the Concord's diplomacy card with its envoy
+and the words of its tongue; GJ 433 d's panel with its habitability reasons; on the phone, tablet
+and desktop.
+
+### Increment 38: the Duskfolk (22 October 2026)
+
+- **The species and the power as §24.1 to §24.3** (`src/content/species.ts`, `src/content/factions.ts`):
+  the Duskfolk with an *open sky* among habitability's conditions (2 for them, 0 for humans, in the
+  world panel's reasons as *open sky +2*); the Dusk Concord at GJ 433 d, amber with a diamond on the
+  map, the title's capitals (only those one can lead), the colony view's mark and the emblems.
+- **Its home web as §24.4** (`src/sim/homeWeb.ts`): a capital with no old lane grows its web over
+  links of up to 6 ly between systems with no old lane; the Concord starts with 6 systems and 5 lanes,
+  and every human web is as before. The codex lists a power's own lanes beside Reborn's.
+- **Its character as §24.6 and §24.7:** memories fade by each power's `forgets` (4, the Concord 8);
+  gifts by each power's `giftCredits` (the Concord 8); its asks, its regard of the Wake, and its rival
+  character. A faction is `playable` or not; a new game offers the three human powers, and says that
+  the Concord plays as a rival.
+- **On the screen as §24.9:** the diplomacy screen shows every power's envoy beside its regard; the
+  codex shows the Concord's speaker, its envoy and its people with *Fiction*, and no advisors for a
+  power one cannot lead.
+- **Pictures as §24.10:** 10 candidates (the first two faces looked like grey-skinned humans, so they
+  were re-rolled to match the people's picture): First Voice D, Still Water C, the Duskfolk at home A.
+- **Numbers:** in the eight headless games, now played with four powers, the human powers' turn-100
+  numbers are unchanged (the Authority 37.6, the Cooperative 23.3, the Wake 22.0 technologies); the
+  Concord reaches 19.9 technologies, 13 colonies and the most people (99.9 million). It is first heard
+  of by the Authority about turn 70 (from a great work), meets the Cooperative about turn 100 and
+  the Wake about turn 150, not first as §24.2 guessed. The slowest headless turn 171 ms (136 ms with
+  three powers), within M1's 200 ms.
+- **Tests:** `duskfolk.test.ts` as §24.12; 500 unit tests; `duskfolk.spec.ts` on the phone, tablet and
+  desktop; the codex's counts now include the Concord's web.

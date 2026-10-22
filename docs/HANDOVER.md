@@ -110,6 +110,9 @@ way in.
   and protection sold by a power whose character sells them (the Wake), paid every turn and lapsing
   when unpaid; the Wake's bribes; the lawful's regard for those who deal with outlaws; state
   version 15.
+  **Increment 38 is built:** the Duskfolk, the first alien species (fiction), and their Dusk
+  Concord at GJ 433 d in the shell, with a home web of its own lanes; a rival in every game, not yet
+  one to lead; contact with it goes through words; its envoy, speaker and people pictured.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
   the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
   loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
@@ -158,9 +161,10 @@ with notice or broken, and the rivals dealing by character; state version 14. **
 37, borders and trade** (§22): claims round every holding on the map, contested systems, the
 border treaty and the trade agreement. **Done: increment 37b, exchanges and the Wake's dealings**
 (§23): exchanges of resources, passage for a toll, protection and bribes (D-56); state version 15.
-**Next: increment 38**, the twilight folk, then the cloud drifters (39) and the proof (40).
+**Done: increment 38, the Duskfolk** (§24): the first alien species and its power, the Dusk
+Concord, a rival in every game. **Next: increment 39**, the cloud drifters, then the proof (40).
 
-The art and music spend: about $24.75 of $50 (raised on 22 October 2026; about $25.25 left). M3's
+The art and music spend: about $25.25 of $50 (raised on 22 October 2026; about $24.75 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId, PLAYABLE_IDS } from '../../src/content/factions.ts';
 import type { QueueItem } from '../../src/content/projects.ts';
 import { RULES } from '../../src/content/rules.ts';
 import { SPECIES } from '../../src/content/species.ts';
@@ -505,7 +505,8 @@ function grow(faction: FactionId, seed: number, n: number, given?: Order[][]) {
 }
 
 describe('a scripted player that grows', () => {
-  for (const f of FACTION_IDS) {
+  // As any power one can lead; the Concord as a rival is in duskfolk.test.ts.
+  for (const f of PLAYABLE_IDS) {
     it(`plays 50 turns as ${f}: settles, grows, builds, researches, lays lanes and investigates, and replays exactly`, () => {
       const first = grow(f, 42, 50);
       const mine = first.state.holdings.filter((h) => h.owner === f);

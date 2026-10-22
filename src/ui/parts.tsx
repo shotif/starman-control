@@ -36,6 +36,7 @@ export function FactionMark({ faction, size = 12 }: { faction: FactionId; size?:
       {f.mark === 'square' && <rect x="1.5" y="1.5" width="9" height="9" fill={f.colour} />}
       {f.mark === 'circle' && <circle cx="6" cy="6" r="4.8" fill={f.colour} />}
       {f.mark === 'triangle' && <polygon points="6,1 11.2,10.6 0.8,10.6" fill={f.colour} />}
+      {f.mark === 'diamond' && <polygon points="6,0.8 11.2,6 6,11.2 0.8,6" fill={f.colour} />}
     </svg>
   );
 }
@@ -53,7 +54,8 @@ export function FactionTag({ faction }: { faction: FactionId }) {
 /**
  * A power's emblem, drawn on its mark (FIRST_IMPRESSION.md §4; D-08, colour always with shape):
  * the Authority's square within a square, crossed by a lane; the Cooperative's circle of three
- * rising shoots; the Wake's triangle trailing a broken wake. All fiction.
+ * rising shoots; the Wake's triangle trailing a broken wake; the Concord's diamond, a sun low on a
+ * horizon within it. All fiction.
  */
 export function Emblem({ faction, size = 40 }: { faction: FactionId; size?: number }) {
   const f = FACTIONS[faction];
@@ -82,6 +84,13 @@ export function Emblem({ faction, size = 40 }: { faction: FactionId; size?: numb
             <path d="M24 4L40 31H8Z" />
             <path d="M24 14L32.5 28h-17Z" fill="currentColor" />
             <path d="M13 37h6M21.5 37h5M29 37h6M7 43h7M20.5 43h7M34 43h7" />
+          </>
+        )}
+        {f.mark === 'diamond' && (
+          <>
+            <path d="M24 3L45 24L24 45L3 24Z" />
+            <path d="M10 27h28" />
+            <path d="M17 27a7 7 0 0 1 14 0Z" fill="currentColor" />
           </>
         )}
       </g>

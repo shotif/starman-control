@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { world } from '../app/world.ts';
-import { FACTION_IDS, FACTIONS } from '../content/factions.ts';
+import { FACTIONS, PLAYABLE_IDS } from '../content/factions.ts';
 import type { SystemId } from '../data/types.ts';
 import { homeWebs } from '../sim/homeWeb.ts';
 import { laneEnds } from '../sim/world.ts';
@@ -73,6 +73,7 @@ varying float vPulse;
 float shapeDistance(vec2 p) {
   if (vShape < 0.5) return max(abs(p.x), abs(p.y)) * 1.12;
   if (vShape < 1.5) return length(p);
+  if (vShape > 2.5) return (abs(p.x) + abs(p.y)) * 0.85;
   // An equilateral triangle, point up.
   vec2 q = vec2(abs(p.x), -p.y + 0.12);
   return max(q.x * 0.866 + q.y * 0.5, -q.y) * 1.7;
@@ -132,16 +133,16 @@ export interface TitleSceneOptions {
   reducedMotion: boolean;
 }
 
-const SHAPES = { square: 0, circle: 1, triangle: 2 } as const;
+const SHAPES = { square: 0, circle: 1, triangle: 2, diamond: 3 } as const;
 
-/** The scene's centre: between the three capitals, so every power is in view. */
+/** The scene's centre: between the capitals of the powers one can lead, so each is in view. */
 function centreOfPowers(): THREE.Vector3 {
   const c = new THREE.Vector3();
-  for (const id of FACTION_IDS) {
+  for (const id of PLAYABLE_IDS) {
     const p = equatorialToMap(world.system(FACTIONS[id].capital.systemId).positionLy);
     c.add(new THREE.Vector3(p[0], p[1], p[2]));
   }
-  return c.divideScalar(FACTION_IDS.length);
+  return c.divideScalar(PLAYABLE_IDS.length);
 }
 
 export class TitleScene {
@@ -236,11 +237,11 @@ export class TitleScene {
   }
 
   private addCapitals(dpr: number): void {
-    const n = FACTION_IDS.length;
+    const n = PLAYABLE_IDS.length;
     const positions = new Float32Array(n * 3);
     const colours = new Float32Array(n * 3);
     const shapes = new Float32Array(n);
-    FACTION_IDS.forEach((id, i) => {
+    PLAYABLE_IDS.forEach((id, i) => {
       const f = FACTIONS[id];
       equatorialToMap(world.system(f.capital.systemId).positionLy).forEach((v, k) => {
         positions[i * 3 + k] = v;
@@ -273,7 +274,7 @@ export class TitleScene {
     // Each power's home web, worked out as a new game does, lit in its colour; the rest dark.
     const webs = homeWebs(
       world,
-      FACTION_IDS.map((id) => ({ faction: id, capital: FACTIONS[id].capital.systemId })),
+      PLAYABLE_IDS.map((id) => ({ faction: id, capital: FACTIONS[id].capital.systemId })),
     );
     const lit = new Map<string, { colour: string; jumps: Map<SystemId, number> }>();
     for (const w of webs) for (const id of w.lanes) lit.set(id, { colour: FACTIONS[w.faction].colour, jumps: w.jumps });

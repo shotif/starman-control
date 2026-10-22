@@ -10,6 +10,7 @@
 
 import * as THREE from 'three';
 import { type LandscapeArt, STRUCTURES } from '../content/colonyArt.ts';
+import type { FactionMark } from '../content/factions.ts';
 import {
   dayLight,
   shuttleAt,
@@ -1215,7 +1216,7 @@ function alphaOf(tex: THREE.Texture): { w: number; h: number; data: Uint8Clamped
 }
 
 /** A power's mark, glowing: its shape in its colour on a soft halo, with a pale edge. */
-function markSheet(mark: 'square' | 'circle' | 'triangle', hex: string): HTMLCanvasElement {
+function markSheet(mark: FactionMark, hex: string): HTMLCanvasElement {
   const c = document.createElement('canvas');
   c.width = 64;
   c.height = 64;
@@ -1229,7 +1230,13 @@ function markSheet(mark: 'square' | 'circle' | 'triangle', hex: string): HTMLCan
   g.beginPath();
   if (mark === 'square') g.rect(20, 20, 24, 24);
   else if (mark === 'circle') g.arc(32, 32, 13, 0, Math.PI * 2);
-  else {
+  else if (mark === 'diamond') {
+    g.moveTo(32, 16);
+    g.lineTo(48, 32);
+    g.lineTo(32, 48);
+    g.lineTo(16, 32);
+    g.closePath();
+  } else {
     g.moveTo(32, 17);
     g.lineTo(46, 43);
     g.lineTo(18, 43);

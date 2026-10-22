@@ -1,11 +1,11 @@
 // What the data preview shows (M1 increment 1): every system with its real data, and every old
-// lane as it stands at the start of a game with all three powers in play. Pure, so it is tested
+// lane as it stands at the start of a game with every power in play. Pure, so it is tested
 // without a browser.
 
 import type { FactionId } from '../../content/factions.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { GameState } from '../../sim/state.ts';
-import type { LaneId, World } from '../../sim/world.ts';
+import { type LaneId, laneEnds, otherEnd, type World } from '../../sim/world.ts';
 import { searchKey } from '../search.ts';
 
 export interface LaneRow {
@@ -47,10 +47,31 @@ export function systemRows(world: World, game: GameState): SystemRow[] {
     belts: s.sky.belts.length,
     flare: s.flare,
     web: web.get(s.id) ?? null,
-    lanes: world.catalogueAt(s.id).map((l) => {
-      const to = l.a === s.id ? l.b : l.a;
-      return { id: l.id, to, toName: world.system(to).name, lengthDeci: l.lengthDeci, owner: owner.get(l.id) ?? null };
-    }),
+    lanes: [
+      ...world.catalogueAt(s.id).map((l) => {
+        const to = l.a === s.id ? l.b : l.a;
+        return {
+          id: l.id,
+          to,
+          toName: world.system(to).name,
+          lengthDeci: l.lengthDeci,
+          owner: owner.get(l.id) ?? null,
+        };
+      }),
+      // A power's own lanes, where Reborn had none (M3_NEIGHBOURS.md §24.4).
+      ...game.lanes
+        .filter((l) => l.id.split('~').includes(s.id) && !world.catalogueLane(...laneEnds(l.id)))
+        .map((l) => {
+          const to = otherEnd(l.id, s.id);
+          return {
+            id: l.id,
+            to,
+            toName: world.system(to).name,
+            lengthDeci: world.distanceDeci(s.id, to),
+            owner: l.owner,
+          };
+        }),
+    ],
   }));
 }
 

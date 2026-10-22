@@ -67,7 +67,8 @@ function saveSoon(): void {
 }
 
 /**
- * A new game for a power, with the other two as rivals unless it plays alone (M2_WORLDS.md §26.1);
+ * A new game for a power, with every other power as a rival unless it plays alone (M2_WORLDS.md §26.1,
+ * M3_NEIGHBOURS.md §24.8);
  * `governed` is the imperial start, with a governor for every colony (§25.1).
  */
 export async function startGame(faction: FactionId, seed?: number, governed = false, alone = false): Promise<void> {

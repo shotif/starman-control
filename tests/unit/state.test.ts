@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FACTION_IDS } from '../../src/content/factions.ts';
+import { FACTION_IDS, PLAYABLE_IDS } from '../../src/content/factions.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { dateOfTurn, formatDate } from '../../src/sim/calendar.ts';
 import { beaconSlots, newGame } from '../../src/sim/state.ts';
@@ -21,14 +21,15 @@ describe('the calendar', () => {
 });
 
 describe('a new game', () => {
-  it('can be started as any of the three powers, and is a possible state', () => {
+  it('can be started as any power, and is a possible state', () => {
     for (const f of FACTION_IDS) {
       const g = solo(f);
       expect(shapeProblems(g), f).toEqual([]);
       expect(stateProblems(world, g), f).toEqual([]);
       expect(g.turn).toBe(1);
       expect(g.powers).toHaveLength(1);
-      expect(g.lanes, f).toHaveLength(6);
+      // The Concord's home web is of its own lanes, five (M3_NEIGHBOURS.md §24.4).
+      expect(g.lanes, f).toHaveLength(PLAYABLE_IDS.includes(f) ? 6 : 5);
       expect(g.lanes.every((l) => l.owner === f && l.status === 'open')).toBe(true);
     }
   });
@@ -59,7 +60,7 @@ describe('a new game', () => {
       seed: 1,
       powers: FACTION_IDS.map((f) => ({ faction: f, controller: f === 'sta' ? 'player' : 'ai' })),
     });
-    expect(all.lanes).toHaveLength(18);
+    expect(all.lanes).toHaveLength(18 + 5);
     expect(stateProblems(world, all)).toEqual([]);
   });
 

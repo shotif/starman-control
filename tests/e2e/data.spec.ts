@@ -13,7 +13,7 @@ test.describe('the codex', () => {
     await expect(page.getByRole('heading', { name: /Codex/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /How the game works out/ })).toBeVisible();
     await expect(page.locator('.count')).toHaveText('356 of 356');
-    await expect(page.locator('.web-card')).toHaveCount(3);
+    await expect(page.locator('.web-card')).toHaveCount(4);
   });
 
   test('uses the layout for the device', async ({ page }, info) => {
@@ -66,10 +66,12 @@ test.describe('the codex', () => {
     await expect(detail.getByText('No lane ran here before the Lapse: it lies beyond the old network.')).toBeVisible();
   });
 
-  test('shows the home webs: seven systems each, the rest dark', async ({ page }, info) => {
+  test('shows the home webs: seven systems each, six of its own lanes for the Concord, the rest dark', async ({
+    page,
+  }, info) => {
     await page.goto('./#/codex');
     await press(page.getByLabel('Home webs only'), info.project.name);
-    await expect(page.locator('.count')).toHaveText('21 of 356');
+    await expect(page.locator('.count')).toHaveText('27 of 356');
     await press(page.getByRole('button', { name: 'Show Tau Ceti' }), info.project.name);
     const detail = isDesktop(info.project.name) ? page.locator('.inspector') : page.getByRole('dialog');
     await expect(detail.getByRole('heading', { name: 'Tau Ceti' })).toBeVisible();
