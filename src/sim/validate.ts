@@ -9,10 +9,11 @@ import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { SHIPS } from '../content/ships.ts';
 import { isTechId, TECHS, type TechId } from '../content/techs.ts';
+import { isTreatyKind } from '../content/treaties.ts';
 import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { techCost } from './research.ts';
-import { beaconSlots, type GameState } from './state.ts';
+import { beaconSlots, contactWith, type GameState, MEMORY_KINDS, type MemoryKind, powerOf } from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -29,6 +30,29 @@ export function shapeProblems(raw: unknown): string[] {
   if (!isWhole(raw.turn, 1)) out.push('turn is not a whole number from 1');
   if (!isWhole(raw.nextShipId, 1)) out.push('nextShipId is not a whole number from 1');
   if (!isWhole(raw.nextHoldingId, 1)) out.push('nextHoldingId is not a whole number from 1');
+  // Treaties and offers (M3_NEIGHBOURS.md §21).
+  if (
+    !Array.isArray(raw.treaties) ||
+    !raw.treaties.every(
+      (t) =>
+        isRecord(t) &&
+        isTreatyKind(t.kind) &&
+        isFactionId(t.a) &&
+        isFactionId(t.b) &&
+        isWhole(t.since, 1) &&
+        (t.ends === null || isWhole(t.ends, 1)) &&
+        (t.endedBy === null || isFactionId(t.endedBy)) &&
+        typeof t.broken === 'boolean',
+    )
+  )
+    out.push('treaties are not a list of treaties');
+  if (
+    !Array.isArray(raw.offers) ||
+    !raw.offers.every(
+      (o) => isRecord(o) && isTreatyKind(o.kind) && isFactionId(o.from) && isFactionId(o.to) && isWhole(o.turn, 1),
+    )
+  )
+    out.push('offers are not a list of offers');
   if (!Array.isArray(raw.powers)) out.push('powers is not a list');
   else
     for (const [i, p] of raw.powers.entries()) {
@@ -68,7 +92,7 @@ export function shapeProblems(raw: unknown): string[] {
           (m) =>
             isRecord(m) &&
             isFactionId(m.faction) &&
-            (m.kind === 'gift' || m.kind === 'great-work-lost' || m.kind === 'settled-beside') &&
+            MEMORY_KINDS.includes(m.kind as MemoryKind) &&
             typeof m.amount === 'number' &&
             Number.isInteger(m.amount) &&
             isWhole(m.turn, 1),
@@ -278,6 +302,26 @@ export function stateProblems(world: World, state: GameState): string[] {
     for (const [id, v] of Object.entries(p.techProgress))
       if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId, false))
         out.push(`${p.faction} has progress in ${id}, which is done`);
+  }
+  // Treaties (M3_NEIGHBOURS.md §21): between two powers in play in contact, one of a kind; offers too.
+  const playing = new Set(state.powers.map((p) => p.faction));
+  const seenTreaty = new Set<string>();
+  for (const t of state.treaties) {
+    const key = `${t.a}~${t.b}~${t.kind}`;
+    if (!(t.a < t.b) || !playing.has(t.a) || !playing.has(t.b))
+      out.push(`treaty ${key} is not between two powers in play`);
+    else if (!contactWith(powerOf(state, t.a), t.b) || !contactWith(powerOf(state, t.b), t.a))
+      out.push(`treaty ${key} is between powers not in contact`);
+    if (seenTreaty.has(key)) out.push(`treaty ${key} is held twice`);
+    seenTreaty.add(key);
+    if (t.since > state.turn) out.push(`treaty ${key} begins after this turn`);
+    if ((t.endedBy === null) !== (t.ends === null) || (t.broken && t.endedBy === null))
+      out.push(`treaty ${key} ends without anyone ending it`);
+  }
+  for (const o of state.offers) {
+    if (o.from === o.to || !playing.has(o.from) || !playing.has(o.to))
+      out.push(`an offer of ${o.kind} is not between two powers in play`);
+    if (o.turn > state.turn) out.push(`an offer of ${o.kind} is made after this turn`);
   }
   const used = new Map<string, number>();
   let previous = '';

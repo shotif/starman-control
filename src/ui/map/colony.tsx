@@ -13,6 +13,7 @@ import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { type Cost, itemName, PROJECTS, projectWords, type QueueItem, withArticle } from '../../content/projects.ts';
 import { RULES } from '../../content/rules.ts';
 import { SHIPS } from '../../content/ships.ts';
+import { TREATIES } from '../../content/treaties.ts';
 import type { SystemId } from '../../data/types.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import {
@@ -898,6 +899,8 @@ export function needText(world: World, game: GameState, need: Need): string {
     return `${title}: it needs your answer${need.left === 1 ? ' before this turn ends' : ''}.`;
   }
   if (need.kind === 'no-research') return 'Nothing is being researched.';
+  if (need.kind === 'offer')
+    return `The ${FACTIONS[need.from].shortName} offers us ${TREATIES[need.treaty].name.toLowerCase()}: it needs your answer before this turn ends.`;
   if (need.kind === 'debt')
     return need.turns === 0
       ? 'The treasury is in debt: every colony is unhappier until it is paid off.'

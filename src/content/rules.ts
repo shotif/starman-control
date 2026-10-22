@@ -158,6 +158,20 @@ export const RULES = {
     /** Translation gained in a turn when anything of theirs is in sight. */
     wordsSeen: 1,
   },
+  /** Treaties (M3_NEIGHBOURS.md §21, D-53). */
+  treaties: {
+    /** Turns a treaty holds once notice is given. */
+    notice: 5,
+    /** With shared research, a technology the partner knows costs this much less, and knowledge at most this. */
+    sharedPercent: 25,
+    sharedMost: 50,
+    /** The rivals offer every so many turns; a rival with more credits than this may send a gift, so many, at most once in so many turns, to a power within so much of a treaty it wants. */
+    offerEvery: 5,
+    giftAbove: 150,
+    gift: 50,
+    giftEvery: 10,
+    giftWithin: 10,
+  },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {
     /** Attitude is held between these. */
@@ -177,6 +191,14 @@ export const RULES = {
     greatWorkLost: -15,
     /** A colony or outpost of theirs founded in a system where it holds one. */
     settledBeside: -5,
+    /** Each treaty in force between them (M3_NEIGHBOURS.md §21.1). */
+    treaty: 5,
+    /** A treaty ended with notice, or broken: the other remembers; every other in contact hears of a breach. */
+    treatyEnded: -5,
+    treatyBroken: -20,
+    treatyBrokenHeard: -5,
+    /** An offer misread before talk. */
+    offerMisread: -5,
     /** The attitude's words: each the least it takes, the first that fits. */
     words: [
       { word: 'friendly', least: 40 },

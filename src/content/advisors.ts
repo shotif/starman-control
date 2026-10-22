@@ -115,6 +115,12 @@ export type LineKind =
   | 'contact-understood'
   | 'gift-sent'
   | 'gift-received'
+  | 'offer-waiting'
+  | 'offer-accepted'
+  | 'offer-refused'
+  | 'treaty-begun'
+  | 'treaty-ending'
+  | 'treaty-broken'
   | 'event';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
@@ -257,6 +263,37 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, the {power} has sent us a gift of {credits} credits.',
     warm: 'Control, the {power} sent us {credits} credits, as a gift! How kind.',
     blunt: 'The {power} sent us {credits} credits. Free money. Wonder what they want.',
+  },
+  // Treaties (M3_NEIGHBOURS.md §21).
+  'offer-waiting': {
+    formal: 'Control, the {power} offers us {treaty}. They await your answer before this turn ends.',
+    warm: 'Control, the {power} would like {treaty} with us! Shall we say yes? They need an answer this turn.',
+    blunt: 'The {power} wants {treaty}. Yes or no, this turn.',
+  },
+  'offer-accepted': {
+    formal: 'Control, the {power} has accepted our offer of {treaty}.',
+    warm: 'Control, good news: the {power} said yes to {treaty}!',
+    blunt: 'The {power} took our {treaty}.',
+  },
+  'offer-refused': {
+    formal: 'Control, the {power} has declined our offer of {treaty}. Their regard for us is not yet enough.',
+    warm: 'Control, the {power} said no to {treaty}, for now. They need to think better of us first.',
+    blunt: 'The {power} said no to {treaty}. They don’t like us enough. Yet.',
+  },
+  'treaty-begun': {
+    formal: 'Control, our treaty of {treaty} with the {power} is in force.',
+    warm: 'Control, we have {treaty} with the {power} now. A good day.',
+    blunt: '{treaty} with the {power}: done.',
+  },
+  'treaty-ending': {
+    formal: 'Control, our treaty of {treaty} with the {power} is coming to an end.',
+    warm: 'Control, our {treaty} with the {power} is ending. A pity.',
+    blunt: 'Our {treaty} with the {power} is finished.',
+  },
+  'treaty-broken': {
+    formal: 'Control, the {power} has broken our treaty of {treaty}. It will not be forgotten.',
+    warm: 'Control, the {power} broke our {treaty}! After everything.',
+    blunt: 'The {power} broke the {treaty}. Remember that.',
   },
   // Events (M2_WORLDS.md §27.6): the department the event belongs to speaks.
   event: {

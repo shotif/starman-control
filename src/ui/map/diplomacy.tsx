@@ -5,8 +5,10 @@
 import { useSignal } from '@preact/signals';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
+import { TREATIES, TREATY_KINDS } from '../../content/treaties.ts';
 import { attitudeOf, giftRefusal } from '../../sim/memory.ts';
-import { contactWith, type GameState, inContact, powerOf } from '../../sim/state.ts';
+import { contactWith, type GameState, inContact, powerOf, treatyOf } from '../../sim/state.ts';
+import { offerRefusal } from '../../sim/treaties.ts';
 import type { World } from '../../sim/world.ts';
 import { FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
@@ -20,6 +22,108 @@ export function contactText(game: GameState, faction: FactionId, other: FactionI
   if (!c) return 'not yet heard';
   if (c.stage === 'talk') return 'we can talk';
   return `learning their tongue: ${c.words} of ${RULES.contact.wordsToTalk}`;
+}
+
+/** The treaties with a power (§21.5): those in force, offers both ways, and what can be offered. */
+function Treaties({
+  game,
+  faction,
+  other,
+  play,
+  regard,
+}: {
+  game: GameState;
+  faction: FactionId;
+  other: FactionId;
+  play: Play;
+  /** Their regard for us. */
+  regard: number;
+}) {
+  const name = FACTIONS[other].shortName;
+  const m = RULES.memory;
+  return (
+    <>
+      <h4>Treaties</h4>
+      <ul class="diplomacy-treaties" aria-label={`Treaties with the ${name}`}>
+        {TREATY_KINDS.map((kind) => {
+          const t = TREATIES[kind];
+          const held = treatyOf(game, faction, other, kind);
+          const theirs = game.offers.find((o) => o.from === other && o.to === faction && o.kind === kind);
+          const ours = game.offers.find((o) => o.from === faction && o.to === other && o.kind === kind);
+          const asks = FACTIONS[other].asks[kind];
+          return (
+            <li key={kind}>
+              <b>{t.name}</b> <span class="dim">{t.does}</span>
+              {held ? (
+                held.ends !== null ? (
+                  <p>In force; it ends in {Math.max(0, held.ends - game.turn)} turns.</p>
+                ) : (
+                  <p>
+                    In force.{' '}
+                    <button
+                      type="button"
+                      class="button button-quiet button-small"
+                      title={`It holds ${RULES.treaties.notice} more turns; they will remember it (${m.treatyEnded}).`}
+                      onClick={() => give(play, { type: 'end-treaty', with: other, treaty: kind })}
+                    >
+                      End with notice
+                    </button>{' '}
+                    <button
+                      type="button"
+                      class="button button-quiet button-small"
+                      title={`It ends as the turn ends; they will remember it (${m.treatyBroken}), and every power that knows us (${m.treatyBrokenHeard}).`}
+                      onClick={() => give(play, { type: 'break-treaty', with: other, treaty: kind })}
+                    >
+                      Break it now
+                    </button>
+                  </p>
+                )
+              ) : theirs && theirs.turn < game.turn ? (
+                <p>
+                  They offer it.{' '}
+                  <button
+                    type="button"
+                    class="button button-small"
+                    onClick={() => give(play, { type: 'answer-offer', from: other, treaty: kind, accept: true })}
+                  >
+                    Accept
+                  </button>{' '}
+                  <button
+                    type="button"
+                    class="button button-quiet button-small"
+                    onClick={() => give(play, { type: 'answer-offer', from: other, treaty: kind, accept: false })}
+                  >
+                    Refuse
+                  </button>
+                </p>
+              ) : ours ? (
+                <p class="dim">Our offer reaches them as the turn ends.</p>
+              ) : (
+                <p>
+                  <button
+                    type="button"
+                    class="button button-small"
+                    aria-label={`Offer the ${name} ${t.name.toLowerCase()}`}
+                    disabled={offerRefusal(game, faction, other, kind) !== null}
+                    onClick={() => give(play, { type: 'offer', to: other, treaty: kind })}
+                  >
+                    Offer it
+                  </button>{' '}
+                  <span class="dim">
+                    {asks === null
+                      ? 'They never agree to it.'
+                      : regard >= asks
+                        ? 'Their regard is enough: likely yes.'
+                        : `Likely no: they ask for a regard of ${signed(asks)}.`}
+                  </span>
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
 }
 
 export function DiplomacyView({
@@ -73,6 +177,7 @@ export function DiplomacyView({
         ) : (
           <p class="dim">They have no reason yet to think anything of us.</p>
         )}
+        <Treaties game={game} faction={faction} other={other} play={play} regard={regard.total} />
         <h4>A gift</h4>
         {waiting ? (
           <p>
@@ -110,7 +215,7 @@ export function DiplomacyView({
         )}
         <p class="dim">
           A gift is remembered at 1 for every {RULES.memory.giftCredits} credits, and fades a point every{' '}
-          {RULES.memory.fadeEvery} turns. Treaties come later.
+          {RULES.memory.fadeEvery} turns.
         </p>
       </section>
     );

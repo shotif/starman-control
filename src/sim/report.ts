@@ -9,6 +9,7 @@ import type { FactionId } from '../content/factions.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
 import type { ShipType } from '../content/ships.ts';
 import type { TechId } from '../content/techs.ts';
+import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ObservationKind } from './discoveries.ts';
 import type { LaneId } from './world.ts';
@@ -97,6 +98,16 @@ export type ReportEvent =
   /** A gift arrived (M3_NEIGHBOURS.md §20.2): the one this power sent to `faction`, or one `faction` sent it. */
   | { kind: 'gift-sent'; faction: FactionId; credits: number }
   | { kind: 'gift-received'; faction: FactionId; credits: number }
+  /** Treaties (M3_NEIGHBOURS.md §21): an offer waiting for this power's answer, or its own answered or misread. */
+  | { kind: 'offer-received'; faction: FactionId; treaty: TreatyKind }
+  | { kind: 'offer-answered'; faction: FactionId; treaty: TreatyKind; accepted: boolean }
+  | { kind: 'offer-misread'; faction: FactionId; treaty: TreatyKind; ours: boolean }
+  /** A treaty agreed with `faction`; notice given by `by`, ending on turn `ends`; ended, or broken by `by`. */
+  | { kind: 'treaty-begun'; faction: FactionId; treaty: TreatyKind }
+  | { kind: 'treaty-notice'; faction: FactionId; treaty: TreatyKind; by: FactionId; ends: number }
+  | { kind: 'treaty-ended'; faction: FactionId; treaty: TreatyKind; by: FactionId; broken: boolean }
+  /** `faction` broke a treaty with `victim`, as heard by a power in contact with it. */
+  | { kind: 'treaty-broken-heard'; faction: FactionId; victim: FactionId; treaty: TreatyKind }
   /** The Watch hears that a rival in contact has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
   | { kind: 'rival-tech'; faction: FactionId; tech: TechId }
   /** A great work finished by another power (all hear of it, M2B_SCIENCE.md §20.2). */

@@ -8,6 +8,7 @@ import type { SystemId } from '../data/types.ts';
 import { ceilDiv } from './geometry.ts';
 import { effects } from './research.ts';
 import type { GameState, ShipState } from './state.ts';
+import { passageWith } from './treaties.ts';
 import { type LaneId, laneEnds, type World } from './world.ts';
 
 /** Jump points a power's ships have each turn: 2, plus any trait (the Wake's +1) and Jump tuning. */
@@ -36,11 +37,13 @@ export interface Hop {
   lengthDeci: number;
 }
 
-/** The open lanes a power's ships may use, from each system. */
-export function lanesFor(world: World, state: GameState, owner: FactionId): Map<SystemId, Hop[]> {
+/** A power's open lanes, from each system; with `passage`, every lane its ships may use. */
+export function lanesFor(world: World, state: GameState, owner: FactionId, passage = false): Map<SystemId, Hop[]> {
   const out = new Map<SystemId, Hop[]>();
+  // With `passage`, the lanes of powers it has open lanes with too (M3_NEIGHBOURS.md §21.1).
+  const open = new Set<FactionId>([owner, ...(passage ? passageWith(state, owner) : [])]);
   for (const l of state.lanes) {
-    if (l.owner !== owner || l.status !== 'open') continue;
+    if (!open.has(l.owner) || l.status !== 'open') continue;
     const [a, b] = laneEnds(l.id);
     const lengthDeci = world.catalogueLane(a, b)?.lengthDeci ?? world.distanceDeci(a, b);
     const cost = laneCost(lengthDeci);
@@ -66,9 +69,10 @@ export function findRoute(
   owner: FactionId,
   from: SystemId,
   to: SystemId,
+  /** The power's lanes with passage, when the caller has them already (a rival asks many routes in a row). */
+  graph: Map<SystemId, Hop[]> = lanesFor(world, state, owner, true),
 ): Hop[] | null {
   if (from === to) return [];
-  const graph = lanesFor(world, state, owner);
   type Best = { points: number; lanes: number; deci: number; via: Hop | null };
   const best = new Map<SystemId, Best>([[from, { points: 0, lanes: 0, deci: 0, via: null }]]);
   const done = new Set<SystemId>();

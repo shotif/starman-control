@@ -11,13 +11,14 @@ import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { type ShipType, STARTING_FLEET, shipName } from '../content/ships.ts';
 import { TECHS, type TechId } from '../content/techs.ts';
+import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 13;
+export const STATE_VERSION = 14;
 
 export interface Stockpile {
   metals: number;
@@ -71,8 +72,17 @@ export interface PowerState {
   gifts: { to: FactionId; credits: number }[];
 }
 
-/** What a memory is of (M3_NEIGHBOURS.md §20.1). */
-export type MemoryKind = 'gift' | 'great-work-lost' | 'settled-beside';
+/** What a memory is of (M3_NEIGHBOURS.md §20.1, §21). */
+export const MEMORY_KINDS = [
+  'gift',
+  'great-work-lost',
+  'settled-beside',
+  'treaty-ended',
+  'treaty-broken',
+  'treaty-broken-heard',
+  'offer-misread',
+] as const;
+export type MemoryKind = (typeof MEMORY_KINDS)[number];
 
 /** A memory of another power: its amount now, fading a point towards nothing every few turns. */
 export interface Memory {
@@ -86,6 +96,33 @@ export interface Memory {
   credits?: number;
   system?: SystemId;
   project?: ProjectId;
+  /** For a treaty ended, broken or misread: which; for a breach heard of, the power it was broken with. */
+  treaty?: TreatyKind;
+  victim?: FactionId;
+}
+
+/**
+ * A treaty between two powers (M3_NEIGHBOURS.md §21): `a` before `b` in id order. Notice given, it
+ * ends on turn `ends`; broken, it ends as the turn that broke it ends.
+ */
+export interface Treaty {
+  kind: TreatyKind;
+  a: FactionId;
+  b: FactionId;
+  /** The turn it was agreed; it holds from then. */
+  since: number;
+  ends: number | null;
+  /** Who gave notice or broke it, and whether it was broken. */
+  endedBy: FactionId | null;
+  broken: boolean;
+}
+
+/** A treaty offered: on its way as the turn it was made ends, then waiting for the player's answer. */
+export interface Offer {
+  kind: TreatyKind;
+  from: FactionId;
+  to: FactionId;
+  turn: number;
 }
 
 /**
@@ -217,6 +254,9 @@ export interface GameState {
   nextHoldingId: number;
   /** What happened to each power in the last turn that ended. */
   reports: { faction: FactionId; turn: number; events: ReportEvent[] }[];
+  /** Treaties in force (M3_NEIGHBOURS.md §21), and offers on their way or waiting for an answer. */
+  treaties: Treaty[];
+  offers: Offer[];
 }
 
 export interface NewGameSetup {
@@ -357,6 +397,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     holdings: [],
     nextHoldingId: 1,
     reports: [],
+    treaties: [],
+    offers: [],
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });
@@ -398,6 +440,12 @@ export function powerOf(state: GameState, faction: FactionId): PowerState {
 /** A power's contact with another, if it has heard them (M3_NEIGHBOURS.md §19.1). */
 export function contactWith(power: PowerState, other: FactionId): Contact | undefined {
   return power.contacts.find((c) => c.faction === other);
+}
+
+/** The treaty of a kind between two powers, if they hold one (M3_NEIGHBOURS.md §21). */
+export function treatyOf(state: GameState, x: FactionId, y: FactionId, kind: TreatyKind): Treaty | undefined {
+  const [a, b] = x < y ? [x, y] : [y, x];
+  return state.treaties.find((t) => t.kind === kind && t.a === a && t.b === b);
 }
 
 /** Whether a power is in contact with another: it has heard a signal from them, or more (§19.2). */

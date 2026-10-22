@@ -101,6 +101,9 @@ way in.
   known, character, and memories that fade: gifts, great works lost, settling beside); gifts of
   credits; the diplomacy screen (Y on a desktop; the menu and the Powers tab on a phone); state
   version 13.
+  **Increment 36 is built:** treaties of open lanes and shared research, offered and answered by
+  the player and the rivals alike, ended with notice or broken (and remembered); the rivals offer,
+  send gifts and give notice by their character and regard; state version 14.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
   the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
   loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
@@ -144,8 +147,10 @@ their cost. **Done: increment 33, the shell** (§18): 149 real systems between 2
 and saved games unchanged. **Done: increment 34, contact** (§19): signal, words and talk between
 powers, the Envoy (a seventh advisor), Translation; state version 12. **Done: increment 35,
 memory** (§20): attitudes with their reasons, gifts, and the diplomacy screen; state version 13.
-**Next: increment 36, treaties** (open lanes, shared research, offers and answers, the rivals
-dealing).
+**Done: increment 36, treaties** (§21): open lanes and shared research, offered, answered, ended
+with notice or broken, and the rivals dealing by character; state version 14. **Next: increment
+37, borders and trade** (claims, contested systems, border and trade treaties), then 37b
+(exchanges and the Wake's dealings).
 
 The art and music spend: about $24.75 of $50 (raised on 22 October 2026; about $25.25 left). M3's
 art is about 65 pictures (about $6.50).

@@ -7,7 +7,7 @@ import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ReportEvent } from './report.ts';
 import { effects } from './research.ts';
-import { contactWith, type GameState } from './state.ts';
+import { contactWith, type GameState, powerOf } from './state.ts';
 import { seesHolding, seesLane, seesShip, watchedSystems } from './visibility.ts';
 import { laneEnds, type World } from './world.ts';
 
@@ -42,6 +42,31 @@ export function translationOf(state: GameState, faction: FactionId): number {
 }
 
 /**
+ * A power hears another for the first time (§19.1): at talk if they share a tongue, at the first
+ * words if not; its report says where. Also when an offer comes from a power not heard (§21.2).
+ */
+export function hear(
+  state: GameState,
+  faction: FactionId,
+  other: FactionId,
+  at: SystemId | null,
+  events: Map<FactionId, ReportEvent[]>,
+): void {
+  const power = powerOf(state, faction);
+  if (contactWith(power, other) || faction === other) return;
+  const talk = sharesTongue(faction, other);
+  power.contacts.push({
+    faction: other,
+    stage: talk ? 'talk' : 'words',
+    since: state.turn,
+    words: talk ? RULES.contact.wordsToTalk : 0,
+  });
+  events
+    .get(faction)
+    ?.push({ kind: 'contact', faction: other, stage: talk ? 'talk' : 'words', first: true, system: at });
+}
+
+/**
  * The turn's contact (§19.1), as it ends: each power hears the powers it sees for the first time,
  * and its words with the others grow; the report says when contact begins and when talk comes.
  */
@@ -55,21 +80,7 @@ export function resolveContacts(world: World, state: GameState, events: Map<Fact
       const at = seenAt(state, power.faction, other.faction, watched);
       const contact = contactWith(power, other.faction);
       if (!contact) {
-        if (at === null) continue;
-        const talk = sharesTongue(power.faction, other.faction);
-        power.contacts.push({
-          faction: other.faction,
-          stage: talk ? 'talk' : 'words',
-          since: state.turn,
-          words: talk ? r.wordsToTalk : 0,
-        });
-        events.get(power.faction)?.push({
-          kind: 'contact',
-          faction: other.faction,
-          stage: talk ? 'talk' : 'words',
-          first: true,
-          system: at,
-        });
+        if (at !== null) hear(state, power.faction, other.faction, at, events);
         continue;
       }
       if (contact.stage !== 'words') continue;

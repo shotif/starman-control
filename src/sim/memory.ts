@@ -6,13 +6,14 @@
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
+import { TREATIES } from '../content/treaties.ts';
 import type { ReportEvent } from './report.ts';
 import { contactWith, type GameState, type Memory, type MemoryKind, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 /** One part of an attitude, with its reason as the regarded power reads it. */
 export interface AttitudePart {
-  kind: 'kin' | 'known' | 'character' | MemoryKind;
+  kind: 'kin' | 'known' | 'character' | 'treaty' | MemoryKind;
   reason: string;
   amount: number;
 }
@@ -29,6 +30,8 @@ export function attitudeWord(total: number): string {
   return RULES.memory.words.find((w) => total >= w.least)?.word ?? 'hostile';
 }
 
+const treatyWords = (m: Memory) => (m.treaty ? TREATIES[m.treaty].name.toLowerCase() : 'a');
+
 /** A memory's reason, as the power remembered reads it. */
 export function memoryReason(world: World, m: Memory): string {
   const place = m.system ? world.system(m.system).name : 'a system of its own';
@@ -39,6 +42,14 @@ export function memoryReason(world: World, m: Memory): string {
       return `Lost ${m.project ? `the ${PROJECTS[m.project].name}` : 'a great work'} to us`;
     case 'settled-beside':
       return `We settled beside it at ${place}`;
+    case 'treaty-ended':
+      return `We ended the ${treatyWords(m)} treaty`;
+    case 'treaty-broken':
+      return `We broke the ${treatyWords(m)} treaty`;
+    case 'treaty-broken-heard':
+      return `We broke a treaty with the ${m.victim ? FACTIONS[m.victim].shortName : 'others'}`;
+    case 'offer-misread':
+      return `Misread our offer of ${treatyWords(m)}`;
   }
 }
 
@@ -59,6 +70,15 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
     if (known > 0) parts.push({ kind: 'known', reason: `Has known us ${turns} turns`, amount: known });
     const regard = FACTIONS[holder].regard[toward];
     if (regard) parts.push({ kind: 'character', reason: regard.reason, amount: regard.amount });
+    // Each treaty in force between them (§21.1).
+    const [a, b] = holder < toward ? [holder, toward] : [toward, holder];
+    for (const t of state.treaties)
+      if (t.a === a && t.b === b)
+        parts.push({
+          kind: 'treaty',
+          reason: `Bound to us by ${TREATIES[t.kind].name.toLowerCase()}`,
+          amount: r.treaty,
+        });
     for (const m of power.memories)
       if (m.faction === toward) parts.push({ kind: m.kind, reason: memoryReason(world, m), amount: m.amount });
   }

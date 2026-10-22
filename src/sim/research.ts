@@ -7,7 +7,13 @@ import { FACTIONS } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import { SPECIES, type SpeciesDef } from '../content/species.ts';
 import { TECH_IDS, TECHS, type TechEffect, type TechId } from '../content/techs.ts';
-import { type GameState, inContact, type PowerState, powerOf } from './state.ts';
+import { type GameState, inContact, type PowerState, powerOf, treatyOf } from './state.ts';
+
+/**
+ * Each researched list's effects by kind, kept while the list only grows (technologies are only
+ * ever added to it; a new list is a new key): the rules ask for them many times a turn.
+ */
+const effectsSeen = new WeakMap<readonly TechId[], { length: number; byKind: Map<string, TechEffect[]> }>();
 
 /** The effects of every technology a power has researched, of one kind. */
 export function effects<K extends TechEffect['kind']>(
@@ -15,11 +21,19 @@ export function effects<K extends TechEffect['kind']>(
   faction: FactionId,
   kind: K,
 ): Extract<TechEffect, { kind: K }>[] {
-  const out: Extract<TechEffect, { kind: K }>[] = [];
-  for (const id of powerOf(state, faction).researched)
-    for (const e of [TECHS[id].effect, ...(TECHS[id].also ?? [])])
-      if (e.kind === kind) out.push(e as Extract<TechEffect, { kind: K }>);
-  return out;
+  const researched = powerOf(state, faction).researched;
+  let seen = effectsSeen.get(researched);
+  if (!seen || seen.length !== researched.length) {
+    seen = { length: researched.length, byKind: new Map() };
+    for (const id of researched)
+      for (const e of [TECHS[id].effect, ...(TECHS[id].also ?? [])]) {
+        const list = seen.byKind.get(e.kind) ?? [];
+        list.push(e);
+        seen.byKind.set(e.kind, list);
+      }
+    effectsSeen.set(researched, seen);
+  }
+  return [...(seen.byKind.get(kind) ?? [])] as Extract<TechEffect, { kind: K }>[];
 }
 
 export function hasTech(power: PowerState, id: TechId): boolean {
@@ -52,13 +66,20 @@ export function knownBy(state: GameState, power: PowerState, tech: TechId): Fact
 /**
  * What a technology costs a power now (M2B_SCIENCE.md §18.1, §19.2): its base cost, and 8% of it for
  * every technology the power already knows; then 15% less for each power in contact that knows it,
- * at most 30% (unless `spread` is false). Rounded down.
+ * at most 30%, or 25% for each it shares research with, at most 50% (M3_NEIGHBOURS.md §21.1), unless
+ * `spread` is false. Rounded down.
  */
 export function techCost(state: GameState, power: PowerState, tech: TechId, spread = true): number {
   const r = RULES.research;
   const risen = Math.floor((TECHS[tech].cost * (100 + r.risePercent * power.researched.length)) / 100);
   if (!spread) return risen;
-  const less = Math.min(r.spreadMost, r.spreadPercent * knownBy(state, power, tech).length);
+  const knowers = knownBy(state, power, tech);
+  const shared = knowers.filter((f) => treatyOf(state, power.faction, f, 'shared-research')).length;
+  const t = RULES.treaties;
+  const less = Math.min(
+    shared > 0 ? t.sharedMost : r.spreadMost,
+    (knowers.length - shared) * r.spreadPercent + shared * t.sharedPercent,
+  );
   return less > 0 ? Math.floor((risen * (100 - less)) / 100) : risen;
 }
 

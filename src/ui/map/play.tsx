@@ -13,6 +13,7 @@ import { FACTIONS, type FactionId } from '../../content/factions.ts';
 import { itemName, PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
+import { TREATIES } from '../../content/treaties.ts';
 import type { SystemId } from '../../data/types.ts';
 import { adviceFor } from '../../sim/advice.ts';
 import { anomalyAt, investigateRefusal, investigationTurns, rewardTimes } from '../../sim/anomalies.ts';
@@ -377,6 +378,28 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `The Envoy took our gift of ${e.credits} credits to the ${FACTIONS[e.faction].shortName}.`;
     case 'gift-received':
       return `The ${FACTIONS[e.faction].shortName} sent us a gift of ${e.credits} credits.`;
+    case 'offer-received':
+      return `The ${FACTIONS[e.faction].shortName} offers us ${TREATIES[e.treaty].name.toLowerCase()}: answer it in Diplomacy before this turn ends.`;
+    case 'offer-answered':
+      return `The ${FACTIONS[e.faction].shortName} ${e.accepted ? 'accepted' : 'refused'} our offer of ${TREATIES[e.treaty].name.toLowerCase()}.`;
+    case 'offer-misread':
+      return e.ours
+        ? `The ${FACTIONS[e.faction].shortName} misread our offer of ${TREATIES[e.treaty].name.toLowerCase()}, and took offence: the Envoy has not yet learnt their tongue.`
+        : `The ${FACTIONS[e.faction].shortName} offered us something we could not make out, and it did not sound friendly.`;
+    case 'treaty-begun':
+      return `We have ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.faction].shortName} now: ${TREATIES[e.treaty].does}`;
+    case 'treaty-notice':
+      return e.by === e.faction
+        ? `The ${FACTIONS[e.faction].shortName} has given notice: our ${TREATIES[e.treaty].name.toLowerCase()} ends in ${e.ends - game.turn + 1} turns.`
+        : `We have given the ${FACTIONS[e.faction].shortName} notice: our ${TREATIES[e.treaty].name.toLowerCase()} ends in ${e.ends - game.turn + 1} turns.`;
+    case 'treaty-ended':
+      return e.broken
+        ? e.by === e.faction
+          ? `The ${FACTIONS[e.faction].shortName} broke our ${TREATIES[e.treaty].name.toLowerCase()}.`
+          : `We broke our ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.faction].shortName}; every power that knows us will remember it.`
+        : `Our ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.faction].shortName} has ended.`;
+    case 'treaty-broken-heard':
+      return `The ${FACTIONS[e.faction].shortName} broke its ${TREATIES[e.treaty].name.toLowerCase()} with the ${FACTIONS[e.victim].shortName}.`;
     case 'contact':
       if (!e.first)
         return `The Envoy has learnt the ${FACTIONS[e.faction].shortName}’s tongue: we can talk with them now.`;
@@ -447,6 +470,13 @@ function eventPlace(
       return { system: e.system ?? playerPower(game)?.capital ?? 'sol' };
     case 'gift-sent':
     case 'gift-received':
+    case 'offer-received':
+    case 'offer-answered':
+    case 'offer-misread':
+    case 'treaty-begun':
+    case 'treaty-notice':
+    case 'treaty-ended':
+    case 'treaty-broken-heard':
       return { system: playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
@@ -490,6 +520,13 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   contact: { icon: 'empire', tone: 'news' },
   'gift-sent': { icon: 'empire', tone: 'news' },
   'gift-received': { icon: 'growth', tone: 'growth' },
+  'offer-received': { icon: 'diplomacy', tone: 'needs' },
+  'offer-answered': { icon: 'diplomacy', tone: 'news' },
+  'offer-misread': { icon: 'refused', tone: 'wrong' },
+  'treaty-begun': { icon: 'diplomacy', tone: 'growth' },
+  'treaty-notice': { icon: 'diplomacy', tone: 'news' },
+  'treaty-ended': { icon: 'diplomacy', tone: 'news' },
+  'treaty-broken-heard': { icon: 'diplomacy', tone: 'news' },
   'great-work': { icon: 'colony', tone: 'news' },
   'great-work-begun': { icon: 'colony', tone: 'news' },
   'great-work-lost': { icon: 'refused', tone: 'wrong' },

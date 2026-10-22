@@ -51,6 +51,7 @@ import {
   powerOf,
   type ShipState,
 } from './state.ts';
+import { resolveTreaties } from './treaties.ts';
 import { watchNews } from './visibility.ts';
 import { laneId, type World } from './world.ts';
 
@@ -459,6 +460,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 10b. Contact (M3_NEIGHBOURS.md §19.1): each power hears those it sees for the first time, and
   // learns the tongues it has words of.
   resolveContacts(world, state, events);
+
+  // 10c. Treaties (M3_NEIGHBOURS.md §21): ends that have come, and the turn's offers answered.
+  resolveTreaties(world, state, events);
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);

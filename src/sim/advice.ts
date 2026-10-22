@@ -18,6 +18,7 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { PROJECTS, projectWords, withArticle } from '../content/projects.ts';
 import { SHIPS } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
+import { TREATIES } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
 import { listWords, observationShort } from './discoveries.ts';
@@ -102,6 +103,11 @@ export function adviceFor(
       if (n.turns === 0) say('treasury', 1, 'debt', {});
       else say('treasury', 1, 'debt-coming', { when: when(n.turns) });
     } else if (n.kind === 'no-research') say('science', 2, 'no-research', {});
+    else if (n.kind === 'offer')
+      say('envoy', 1, 'offer-waiting', {
+        power: FACTIONS[n.from].shortName,
+        treaty: TREATIES[n.treaty].name.toLowerCase(),
+      });
     else if (n.kind === 'event') {
       const ev = powerOf(state, faction).event;
       if (!ev) continue;
@@ -187,6 +193,18 @@ export function adviceFor(
       );
     } else if (e.kind === 'rival-tech') {
       say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
+    } else if (e.kind === 'offer-answered') {
+      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].name.toLowerCase() };
+      say('envoy', 2, e.accepted ? 'offer-accepted' : 'offer-refused', values);
+    } else if (e.kind === 'treaty-begun') {
+      say('envoy', 2, 'treaty-begun', {
+        power: FACTIONS[e.faction].shortName,
+        treaty: TREATIES[e.treaty].name.toLowerCase(),
+      });
+    } else if (e.kind === 'treaty-notice' || e.kind === 'treaty-ended') {
+      const values = { power: FACTIONS[e.faction].shortName, treaty: TREATIES[e.treaty].name.toLowerCase() };
+      const broken = e.kind === 'treaty-ended' && e.broken && e.by === e.faction;
+      say('envoy', broken ? 1 : 3, broken ? 'treaty-broken' : 'treaty-ending', values);
     } else if (e.kind === 'gift-sent' || e.kind === 'gift-received') {
       say('envoy', 3, e.kind, { power: FACTIONS[e.faction].shortName, credits: String(e.credits) });
     } else if (e.kind === 'contact') {

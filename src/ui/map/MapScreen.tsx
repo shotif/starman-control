@@ -226,6 +226,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (n.kind === 'event') {
         targeting.value = null;
         panel.value = 'event';
+      } else if (n.kind === 'offer') {
+        targeting.value = null;
+        panel.value = 'diplomacy';
       } else if (n.kind === 'debt') {
         targeting.value = null;
         panel.value = 'empire';
@@ -526,7 +529,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const from = ship.at;
     const around = targetBlind
       ? world.systems.filter((s) => world.distanceDeci(from, s.id) <= blindReachDeci(g, ship.owner)).map((s) => s.id)
-      : (lanesFor(world, g, ship.owner).get(from) ?? []).map((h) => h.to);
+      : (lanesFor(world, g, ship.owner, true).get(from) ?? []).map((h) => h.to);
     v.frameAround(from, around);
   }, [targetShip, targetBlind, world]);
 
@@ -663,7 +666,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             ? panel.value === 'empire'
             : n.kind === 'event'
               ? panel.value === 'event'
-              : n.holding === selectedHolding.value,
+              : n.kind === 'offer'
+                ? panel.value === 'diplomacy'
+                : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -1568,7 +1573,9 @@ function PlayOutliner({
                   ? `s${n.ship}`
                   : n.kind === 'no-research' || n.kind === 'debt' || n.kind === 'event'
                     ? n.kind
-                    : `${n.kind}-${n.holding}`
+                    : n.kind === 'offer'
+                      ? `offer-${n.from}-${n.treaty}`
+                      : `${n.kind}-${n.holding}`
               }
             >
               <button type="button" class="outliner-item" onClick={() => onNeed(n)}>

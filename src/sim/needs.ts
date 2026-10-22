@@ -4,6 +4,7 @@
 import type { EventId } from '../content/events.ts';
 import type { FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
+import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
 import {
@@ -45,7 +46,9 @@ export type Need =
   /** The treasury will fall into debt within `turns` (0: it is in debt) (M2_WORLDS.md §4). */
   | { kind: 'debt'; turns: number }
   /** Districts zoned with no one to work them. */
-  | { kind: 'unworked'; holding: number; system: SystemId; districts: number };
+  | { kind: 'unworked'; holding: number; system: SystemId; districts: number }
+  /** A treaty offered, waiting for an answer before this turn ends (M3_NEIGHBOURS.md §21.2). */
+  | { kind: 'offer'; from: FactionId; treaty: TreatyKind };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
@@ -58,6 +61,8 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
       system: ev.system,
       left: Math.max(1, RULES.events.waits - (state.turn - ev.turn)),
     });
+  for (const o of state.offers)
+    if (o.to === faction && o.turn < state.turn) out.push({ kind: 'offer', from: o.from, treaty: o.kind });
   for (const s of state.ships) {
     if (
       s.owner !== faction ||

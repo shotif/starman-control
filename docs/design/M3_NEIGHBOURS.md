@@ -32,6 +32,7 @@ them, and the first aliens, powers you deal with.
 18. [Increment 33 in detail: the shell](#18-increment-33-in-detail-the-shell-written-before-building-it)
 19. [Increment 34 in detail: contact](#19-increment-34-in-detail-contact-written-before-building-it)
 20. [Increment 35 in detail: memory and the diplomacy screen](#20-increment-35-in-detail-memory-and-the-diplomacy-screen-written-before-building-it)
+21. [Increment 36 in detail: treaties](#21-increment-36-in-detail-treaties-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -515,3 +516,122 @@ from the diplomacy screen and the regard rising with its reason, on the phone, t
   two rings that meet.
 - **State version 13**, as §20.4.
 - **Tests:** `memory.test.ts` as §20.5; `diplomacy.spec.ts` on the phone, tablet and desktop.
+
+## 21. Increment 36 in detail: treaties (written before building it)
+
+**Goals.** D-53 as decided (A), its first two treaties: **open lanes** and **shared research**,
+each **offered**, **accepted or refused**, and **ended with notice** or **broken**, by the player
+and the rivals through the same orders. What a power accepts and offers follows its attitude
+(§20) and its character, so memory starts to matter; breaking a treaty is remembered. The rivals
+deal: they offer, answer, and send gifts to win a treaty they want.
+
+**Out of scope.** Trade agreements, borders and the Wake's tolls, bribes and protection (increment
+37). Non-aggression, alliance and war (M4).
+
+### 21.1 The treaties
+
+| Treaty | What it does |
+| --- | --- |
+| **Open lanes** | Each power's ships may use the other's open lanes (D-37 closed them until now). Food and survey stations still follow a power's own lanes. |
+| **Shared research** | A technology the other knows costs **25% less** (in place of the 15% that contact gives), and the most knowledge can take off is **50%** (30% from contact alone). |
+
+A treaty is between two powers that can **talk**; one of each kind between them at most. While it
+holds, each counts it in its attitude to the other: **+5 for each treaty** (*Bound to us by open
+lanes*).
+
+### 21.2 Offers and answers
+
+- **Order `offer`:** a treaty to a power you are in contact with, one offer of each kind to each
+  power a turn. It reaches them as the turn ends.
+- **A rival answers** as the turn ends: yes if its attitude to you reaches what its character asks
+  for that treaty (§21.4), no otherwise.
+- **The player answers** an offer during the next turn, in the diplomacy screen and in *what needs
+  you*: accept or refuse (order `answer-offer`). One left unanswered is refused as that turn ends.
+- **Accepted:** the treaty holds from the next turn. **Refused:** nothing more (the offerer is told).
+- **Before talk** (at *words*, with a power of another tongue) an offer may be **misread**: it fails
+  with a chance of 1 in 20 for each word still to learn, and the receiver remembers it (−5, *Misread
+  our offer*). A deterministic draw, from the game's seed.
+
+### 21.3 Ending and breaking
+
+- **End with notice** (order `end-treaty`): it holds 5 more turns, then ends; the other remembers
+  it (−5, *Ended our treaty*).
+- **Break it now** (order `break-treaty`): it ends as the turn ends; the other remembers it (−20,
+  *Broke our open lanes treaty*), and so does every other power in contact with the breaker (−5,
+  *Broke a treaty with the Frontier Co-op*).
+- Ships of the other power on your lanes when open lanes end finish the hop they are on and stop.
+
+### 21.4 The rivals deal
+
+Each rival's character asks for an attitude before it accepts or offers a treaty:
+
+| | Open lanes | Shared research |
+| --- | --- | --- |
+| The Authority (law) | warm (10) | friendly (40) |
+| The Cooperative (trade and peace) | warm (10) | warm (10) |
+| The Wake (tolls and profit) | never (it sells passage, increment 37) | warm (25) |
+
+- **Offers:** every 5 turns a rival offers each power it can talk with the treaties its character
+  wants whose level that power's attitude to it has reached (as far as it knows: the same reasons
+  the diplomacy screen shows).
+- **Gifts:** a rival with more than 200 credits sends 50 credits, at most once in 10 turns, to a
+  power whose attitude is within 10 of a treaty the rival wants.
+- **Breaking:** a rival ends a treaty with notice when its attitude to the other falls below 0, and
+  never breaks one.
+
+### 21.5 On the screen
+
+- **The diplomacy screen:** under the chosen power, *Treaties*: those in force (with *End with
+  notice* and *Break it now*, each saying what it costs), offers waiting for your answer (*Accept*,
+  *Refuse*), your offers on their way, and the treaties you can offer, each with what it does and
+  how the other is likely to answer ("their regard is warm: likely yes").
+- **What needs you:** an offer waiting for your answer.
+- **The report:** offers made and answered, treaties begun, ended and broken, in the Envoy's words.
+- **The map:** a power's lanes open to you are drawn as yours to use (a lighter line in its colour).
+
+### 21.6 State
+
+`GameState.treaties` (kind, the two powers, the turn it began, the turn it ends if notice is
+given) and `GameState.offers` (kind, from, to, the turn made). **State version 14**; a save from
+before has none.
+
+### 21.7 Tests
+
+`treaties.test.ts`: offers, answers, misreading; open lanes in routes (and not in food or survey
+stations); shared research's costs; ending with notice and breaking, and what is remembered; the
+rivals' offers, answers, gifts and endings by character and attitude; the migration. Headless
+games with three rivals: every power holds at least one treaty by turn 100, and no rival accepts
+below its level. `treaties.spec.ts`: an offer of open lanes accepted by the Cooperative, a ship
+routed over its lanes, and the treaty ended with notice, on the phone, tablet and desktop.
+
+### Increment 36: treaties (22 October 2026)
+
+- **Open lanes and shared research as §21.1** (`src/content/treaties.ts`, `src/sim/treaties.ts`):
+  ships route over a partner's open lanes (`lanesFor(…, passage)`), while food networks and survey
+  stations keep to a power's own; shared research takes 25% off for each partner that knows a
+  technology, at most 50% in all; each treaty in force counts +5 in each side's regard.
+- **Offers and answers as §21.2**, with two readings made while building: a treaty needs each
+  power **in contact** with the other rather than at talk (so an offer before talk that is not
+  misread can still be accepted), and an offer from a power not yet heard is **a signal of its own**
+  (`hear`, shared with the contact step). Offers resolve in step 10c of the turn.
+- **Ending and breaking as §21.3**, remembered as the order is given.
+- **The rivals deal as §21.4** (`dealings` in `src/sim/ai.ts`), with two numbers **tuned** with the
+  headless games so that every power agrees a treaty within 100 turns: the Wake asks **10** for
+  shared research (25 in the design), and a rival sends a gift when it has more than **150** credits
+  (200). As the Wake is the one rival with credits to spare, it buys its way into shared research
+  with the Cooperative, while the Authority and the Wake keep apart.
+- **On the screen as §21.5**: the diplomacy screen's *Treaties* (in force, with *End with notice*
+  and *Break it now*; offers to answer; ours on their way; what can be offered and how it is likely
+  to be answered); an offer waiting in *what needs you*; the report and the Envoy. The map does not
+  yet draw a partner's lanes differently (they show in its colour, as before).
+- **State version 14**, as §21.6.
+- **Numbers:** `npm run balance` at turn 100 on its eight seeds: the Authority 37.6 technologies
+  (36 to 40), the Cooperative 23.1 (20 to **26**), the Wake 22.0 (20 to 24). On seed 4 the
+  Cooperative ends one over M2b's 25: its open lanes with the Authority from turn 35 lift both by
+  a technology. Dealing is meant to help those who deal, so it is left so, for the owner to judge.
+- **Faster turns:** the rivals build their lane graph once a turn rather than for every route they
+  test, and each power's technology effects are kept by kind while its research only grows. Games
+  play out exactly as before; a turn's median fell from about 35 ms to about 20 ms, and the slowest
+  headless turn is 125 ms.
+- **Tests:** `treaties.test.ts` as §21.7; 465 unit tests; `treaties.spec.ts` on the phone, tablet
+  and desktop (a ship routed over a partner's lanes is tested in the unit tests).

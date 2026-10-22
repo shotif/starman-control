@@ -4,20 +4,23 @@
 // decides its ships, its shipyards, its lanes, its research and its taxes, in its power's character.
 
 import type { Priority } from '../content/edicts.ts';
-import type { FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
+import { TREATY_KINDS } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
 import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
 import { habitability } from './habitability.ts';
 import { laneTargets } from './lanes.ts';
-import { blindReachDeci, findRoute } from './movement.ts';
+import { attitudeOf } from './memory.ts';
+import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
-import { type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
+import { contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
+import { offerRefusal, partnerOf, treatiesOf } from './treaties.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -97,8 +100,10 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const orders: Order[] = [];
   const claimed = new Set<string>();
   const mine = state.holdings.filter((h) => h.owner === faction);
+  // Its lanes, with any it has passage on, once for all the routes it asks this turn.
+  const lanes = lanesFor(world, state, faction, true);
   const reachable = (from: SystemId, to: SystemId) =>
-    from === to || findRoute(world, state, faction, from, to) !== null;
+    from === to || findRoute(world, state, faction, from, to, lanes) !== null;
   const byDistance = (from: SystemId) => (a: SystemId, b: SystemId) =>
     world.distanceDeci(from, a) - world.distanceDeci(from, b) || (a < b ? -1 : 1);
 
@@ -245,6 +250,11 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     if (next) orders.push({ type: 'research', tech: next });
   }
 
+  // Dealing (M3_NEIGHBOURS.md §21.4): every few turns, each treaty it wants with each power it can
+  // talk with, offered when the other's regard reaches what the other asks, or a gift when it falls
+  // a little short; and notice given on a treaty with a power it has turned against.
+  orders.push(...dealings(world, state, faction));
+
   // Taxes: its own rate while the treasury allows; a step higher while it runs low and falls;
   // low while a colony is in unrest and the treasury holds plenty.
   const unrest = mine.some((h: Holding) => {
@@ -293,5 +303,44 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
 
   // Its event (§27.4): the first choice when it can pay and keep 20 credits, else the second.
   if (power.event && power.event.answer === null) orders.push({ type: 'answer', choice: rivalChoice(state, faction) });
+  return orders;
+}
+
+/** A rival's offers, gifts and notices this turn (M3_NEIGHBOURS.md §21.4). */
+export function dealings(world: World, state: GameState, faction: FactionId): Order[] {
+  const t = RULES.treaties;
+  const power = powerOf(state, faction);
+  const orders: Order[] = [];
+  const index = state.powers.findIndex((p) => p.faction === faction);
+  if ((state.turn + index) % t.offerEvery === 0) {
+    let treasury = power.treasury;
+    for (const other of state.powers) {
+      if (other.faction === faction || contactWith(power, other.faction)?.stage !== 'talk') continue;
+      const mine = attitudeOf(world, state, faction, other.faction).total;
+      const theirs = attitudeOf(world, state, other.faction, faction).total;
+      const lastGift = other.memories.some(
+        (m) => m.faction === faction && m.kind === 'gift' && m.turn > state.turn - t.giftEvery,
+      );
+      let gave = false;
+      for (const kind of TREATY_KINDS) {
+        const want = FACTIONS[faction].asks[kind];
+        const asks = FACTIONS[other.faction].asks[kind];
+        if (want === null || asks === null || mine < want || offerRefusal(state, faction, other.faction, kind))
+          continue;
+        if (theirs >= asks) orders.push({ type: 'offer', to: other.faction, treaty: kind });
+        else if (!gave && !lastGift && theirs >= asks - t.giftWithin && treasury > t.giftAbove) {
+          orders.push({ type: 'gift', to: other.faction, credits: t.gift });
+          treasury -= t.gift;
+          gave = true;
+        }
+      }
+    }
+  }
+  for (const treaty of treatiesOf(state, faction)) {
+    if (treaty.ends !== null) continue;
+    const other = partnerOf(treaty, faction);
+    if (attitudeOf(world, state, faction, other).total < 0)
+      orders.push({ type: 'end-treaty', with: other, treaty: treaty.kind });
+  }
   return orders;
 }

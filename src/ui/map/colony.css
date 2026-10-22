@@ -443,6 +443,23 @@
   border-bottom: 1px solid rgba(126, 170, 255, 0.12);
 }
 
+.diplomacy-treaties {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.3rem 0 0.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.diplomacy-treaties li {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.12);
+}
+
+.diplomacy-treaties p {
+  margin: 0.3rem 0 0;
+}
+
 .diplomacy-gifts {
   display: flex;
   flex-wrap: wrap;

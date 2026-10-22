@@ -7,6 +7,7 @@ import { EDICTS, type EdictId, isEdictId, isPriority, type Priority } from '../c
 import type { FactionId } from '../content/factions.ts';
 import type { QueueItem } from '../content/projects.ts';
 import { isTechId, type TechId } from '../content/techs.ts';
+import { isTreatyKind, type TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
@@ -16,6 +17,7 @@ import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
 import { type GameState, powerOf, type ShipState, type TaxRate } from './state.ts';
+import { answerOffer, answerRefusal, endRefusal, endTreaty, makeOffer, offerRefusal } from './treaties.ts';
 import type { World } from './world.ts';
 
 export type Order =
@@ -56,7 +58,12 @@ export type Order =
   /** The answer to the event waiting (M2_WORLDS.md §27), taken as the turn ends; it may be changed until then. */
   | { type: 'answer'; choice: 0 | 1 }
   /** A gift of credits to another power, sent as the turn ends; 0 takes it back (M3_NEIGHBOURS.md §20.2). */
-  | { type: 'gift'; to: FactionId; credits: number };
+  | { type: 'gift'; to: FactionId; credits: number }
+  /** A treaty offered, answered, ended with notice or broken (M3_NEIGHBOURS.md §21). */
+  | { type: 'offer'; to: FactionId; treaty: TreatyKind }
+  | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind; accept: boolean }
+  | { type: 'end-treaty'; with: FactionId; treaty: TreatyKind }
+  | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind };
 
 type HoldingOrder = Extract<Order, { holding: number }>;
 type ResearchOrder = Extract<Order, { tech: TechId }>;
@@ -135,6 +142,17 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
       : 'There is no such tax rate.';
   if (order.type === 'answer') return choiceRefusal(state, faction, order.choice);
   if (order.type === 'gift') return giftRefusal(state, faction, order.to, order.credits);
+  if (
+    order.type === 'offer' ||
+    order.type === 'answer-offer' ||
+    order.type === 'end-treaty' ||
+    order.type === 'break-treaty'
+  ) {
+    if (!isTreatyKind(order.treaty)) return 'There is no such treaty.';
+    if (order.type === 'offer') return offerRefusal(state, faction, order.to, order.treaty);
+    if (order.type === 'answer-offer') return answerRefusal(state, faction, order.from, order.treaty);
+    return endRefusal(state, faction, order.with, order.treaty, order.type === 'break-treaty');
+  }
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -202,6 +220,18 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'gift') {
     giveGift(next, faction, order.to, order.credits);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'offer') {
+    makeOffer(next, faction, order.to, order.treaty);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'answer-offer') {
+    answerOffer(next, faction, order.from, order.treaty, order.accept);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'end-treaty' || order.type === 'break-treaty') {
+    endTreaty(next, faction, order.with, order.treaty, order.type === 'break-treaty');
     return { ok: true, state: next };
   }
   if (order.type === 'edict') {
