@@ -56,7 +56,18 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-56 | The Hollow Wake's dealings ([M3 §11](design/M3_NEIGHBOURS.md#11-the-hollow-wakes-dealings-d-56)) | Decided 2026-10-22 | **A, tolls, bribes and protection in M3**, as recommended; see [Round 6](#round-6-neighbours-decided-22-october-2026) |
 | D-57 | The art for M3 ([M3 §16](design/M3_NEIGHBOURS.md#16-art-and-its-cost-d-57)) | Decided 2026-10-22 | **raise D-27 to $50**, as recommended; see [Round 6](#round-6-neighbours-decided-22-october-2026) |
 | D-58 | Battles and wars | Decided 2026-10-22 (owner's direction) | **yes:** "I would like the possibility to have battles and wars"; M4 is designed for it in [M4_FLEETS.md](design/M4_FLEETS.md); see [D-58](#d-58--battles-and-wars--decided) |
-| D-59 – D-68, D-14, D-17 | The M4 design: warships, the Weapons field, fleets, battles, the replay, war and peace, invasion, raids, the council, rivals at war, victory, words from the other powers | Open (proposed 2026-10-22) | see [Round 7](#round-7-fleets-proposed-22-october-2026) and [M4_FLEETS.md §20](design/M4_FLEETS.md#20-decisions-for-the-owner) |
+| D-59 | Warships and their designs ([M4 §4](design/M4_FLEETS.md#4-warships-and-their-designs-d-59)) | Decided 2026-10-22 | **A, hulls and modules**, the yard's designs and refits, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-60 | Weapons research ([M4 §5](design/M4_FLEETS.md#5-the-weapons-field-d-60)) | Decided 2026-10-22 | **A, a seventh field, Weapons**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-61 | Fleets and their orders ([M4 §6](design/M4_FLEETS.md#6-fleets-and-their-orders-d-61)) | Decided 2026-10-22 | **A, fleets with orders, fighting together as task forces**; upkeep by size, repairs near home, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-62 | Battles ([M4 §7](design/M4_FLEETS.md#7-battles-d-62)) | Decided 2026-10-22 | **A, rounds at three ranges**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-63 | The replay ([M4 §8](design/M4_FLEETS.md#8-the-replay-d-63)) | Decided 2026-10-22 | **A, in 3D in the system**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-64 | War and peace ([M4 §9](design/M4_FLEETS.md#9-war-and-peace-d-64)) | Decided 2026-10-22 | **A, declared war, peace, pacts, capitulation, weariness**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-65 | Defences and invasion ([M4 §10](design/M4_FLEETS.md#10-defences-and-invasion-d-65)) | Decided 2026-10-22 | **A, all of SCOPE §4.8**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-66 | Raids and protection ([M4 §11](design/M4_FLEETS.md#11-raids-and-protection-d-66)) | Decided 2026-10-22 | **A, the outlaw raids without war**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-67 | The council ([M4 §12](design/M4_FLEETS.md#12-the-council-d-67)) | Decided 2026-10-22 | **A, the Assembly: elections and two resolutions**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-14 | Victory and defeat ([M4 §13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | Decided 2026-10-22 | **A, conquest, the vote, a score at a turn limit** (250 turns by default), as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
+| D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -539,9 +550,9 @@ people pay taxes and eat but make nothing; approval does not count them. Built i
 | --- | --- | --- | --- |
 | D-12 | The alien roster: how many species in 1.0, and which concepts (drafts in [SCOPE.md §4.11](SCOPE.md#411-alien-species)) | M3 | five or six, each with a different way to play against — and, since they will become playable (D-08), each with enough to play as. **M3's two are decided in [Round 6](#round-6-neighbours-decided-22-october-2026)** |
 | D-13 | The artefacts and the vanished species behind them ([SCOPE.md §4.12](SCOPE.md#412-unknown-artefacts-and-the-precursors)) | M5 | tie them to Reborn's old derelicts and Pyre |
-| D-14 | Victory conditions | M4 | conquest, a council vote, the artefact hunt, and a score at a turn limit. **Put for M4 in [Round 7](#round-7-fleets-proposed-22-october-2026)** |
+| D-14 | Victory conditions | M4 (decided) | conquest, a council vote, the artefact hunt, and a score at a turn limit. **Decided for M4 in [Round 7](#round-7-fleets-decided-22-october-2026)** |
 | D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **decided with the M2 design** ([Round 4](#round-4-the-m2-design-decided-21-october-2026)): optional governors, edicts as policies paid from attention |
-| D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art. **Put for M4 in [Round 7](#round-7-fleets-proposed-22-october-2026)** |
+| D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 (decided) | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art. **Decided for M4 in [Round 7](#round-7-fleets-decided-22-october-2026)** |
 | D-18 | Free or paid, open source or not, Steam or web only | M5 | develop in the open on GitHub Pages; decide at M5 |
 
 ## Round 5: science and rivalry, decided 21 October 2026
@@ -587,7 +598,7 @@ GitHub's runners, and D-57's raises D-27 to about $50.
 | **D-56** | The Hollow Wake's dealings ([§11](design/M3_NEIGHBOURS.md#11-the-hollow-wakes-dealings-d-56)) | A tolls, bribes and protection in M3 · B later, with M4's raids | **A** | the Wake should deal unlike the lawful powers from the first treaty |
 | **D-57** | The art for M3 ([§16](design/M3_NEIGHBOURS.md#16-art-and-its-cost-d-57)) | raise D-27 to $50 · keep $35 | **raise to $50** | about 65 pictures (about $6.50) fit the $10.55 left, but leave nothing for re-rolls or M4's ships |
 
-## Round 7: fleets, proposed 22 October 2026
+## Round 7: fleets, decided 22 October 2026
 
 ### D-58 · Battles and wars — **Decided (owner's direction)**
 
@@ -602,13 +613,15 @@ first victories ([design/M4_FLEETS.md](design/M4_FLEETS.md)). War is possible, n
 player can keep the peace, and the rivals go to war for reasons they show (D-68).
 
 The owner was also asked to play M3 (100 turns or more, on a phone and a desktop); their answers
-will be recorded here and folded into the M4 design when they come.
+will be recorded here and folded into the M4 design when they come (not yet, on 22 October 2026).
 
-### The M4 questions — **Open**
+### The M4 questions — **Decided**
 
 Each question has its options and reasons in the section of [M4_FLEETS.md](design/M4_FLEETS.md)
-named. Answer *as recommended* to take every recommendation, or name what to change. Nothing that
-depends on them is built until they are answered.
+named. **Decided on 22 October 2026: every one as recommended** (the owner chose *as recommended*
+for Round 7). So M4 is built as M4_FLEETS.md §17 sets out, increments 41 to 50, each with its
+detailed design written first. Asked the same day whether they had played M3, the owner said *not
+yet*; M4 goes ahead without it, and the try stays open.
 
 | ID | Question | Options | Recommendation | Why |
 | --- | --- | --- | --- | --- |

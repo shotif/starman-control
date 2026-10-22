@@ -1,11 +1,10 @@
 # M4 · Fleets
 
 *Proposed 22 October 2026, after M3, on the owner's direction (D-58): "Yes, I would like the
-possibility to have battles and wars." Its questions, D-14, D-17 and D-59 to D-68, are in §20 and
-[DECISIONS.md, Round 7](../DECISIONS.md#round-7-fleets-proposed-22-october-2026). Nothing that
-depends on an open question is built until the owner has answered. Each increment then gets a
-detailed design section (§21 onwards), written before it is built, as M3's did, with its notes as
-built.*
+possibility to have battles and wars." **D-14, D-17 and D-59 to D-68 decided the same day, every
+one as recommended** ([DECISIONS.md, Round 7](../DECISIONS.md#round-7-fleets-decided-22-october-2026)).
+Each increment gets a detailed design section (§21 onwards), written before it is built, as M3's
+did, with its notes as built.*
 
 SCOPE.md's M4: *the ship designer, fleets and task forces, battles with orders and replays,
 invasion and defences, war and peace, the council, the first victory conditions.* Done when *a full
