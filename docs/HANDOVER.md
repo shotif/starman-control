@@ -1,4 +1,4 @@
-# Handover: Starman Control, 21 October 2026 (M2b complete)
+# Handover: Starman Control, 22 October 2026 (M3 complete, M4 proposed)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -173,7 +173,15 @@ Moot, brokers who live on giants. **Done: increment 40, the proof** (§26): five
 headless games, the 100-turn journeys on CI. **M3 is complete.** The owner is asked to try it (a
 game of 100 turns or more on a phone and a desktop, to meet the aliens) and may overrule the
 names, the picture picks of increments 38 and 39, and the tuning recorded in DECISIONS.md. M4
-(*Fleets*) is next, once the owner has tried M3 and its first questions are put.
+(*Fleets*) is next.
+
+**Now: M4 "Fleets"** ([design/M4_FLEETS.md](design/M4_FLEETS.md)), proposed on 22 October 2026 on
+the owner's direction (D-58: "Yes, I would like the possibility to have battles and wars"):
+warships and designs, fleets, battles with orders and a 3D replay, war and peace, defences and
+invasion, the outlaw's raids, the Assembly (the council), rivals at war, and the first victories,
+in increments 41 to 50. Its questions (D-59 to D-68, D-14, D-17) are in
+[DECISIONS.md Round 7](DECISIONS.md#round-7-fleets-proposed-22-october-2026); nothing that depends on
+them is built until the owner answers. The owner's try of M3, when it comes, is recorded there too.
 
 The art and music spend: about $25.55 of $50 (raised on 22 October 2026; about $24.45 left). M3's
 art is about 65 pictures (about $6.50).

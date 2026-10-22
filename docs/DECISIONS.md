@@ -55,7 +55,9 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-55 | Memory and attitude ([M3 §7](design/M3_NEIGHBOURS.md#7-memory-and-attitude-d-55)) | Decided 2026-10-22 | **A, remembered acts with their reasons**, as recommended; see [Round 6](#round-6-neighbours-decided-22-october-2026) |
 | D-56 | The Hollow Wake's dealings ([M3 §11](design/M3_NEIGHBOURS.md#11-the-hollow-wakes-dealings-d-56)) | Decided 2026-10-22 | **A, tolls, bribes and protection in M3**, as recommended; see [Round 6](#round-6-neighbours-decided-22-october-2026) |
 | D-57 | The art for M3 ([M3 §16](design/M3_NEIGHBOURS.md#16-art-and-its-cost-d-57)) | Decided 2026-10-22 | **raise D-27 to $50**, as recommended; see [Round 6](#round-6-neighbours-decided-22-october-2026) |
-| D-13, D-14, D-17, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
+| D-58 | Battles and wars | Decided 2026-10-22 (owner's direction) | **yes:** "I would like the possibility to have battles and wars"; M4 is designed for it in [M4_FLEETS.md](design/M4_FLEETS.md); see [D-58](#d-58--battles-and-wars--decided) |
+| D-59 – D-68, D-14, D-17 | The M4 design: warships, the Weapons field, fleets, battles, the replay, war and peace, invasion, raids, the council, rivals at war, victory, words from the other powers | Open (proposed 2026-10-22) | see [Round 7](#round-7-fleets-proposed-22-october-2026) and [M4_FLEETS.md §20](design/M4_FLEETS.md#20-decisions-for-the-owner) |
+| D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
 
@@ -537,9 +539,9 @@ people pay taxes and eat but make nothing; approval does not count them. Built i
 | --- | --- | --- | --- |
 | D-12 | The alien roster: how many species in 1.0, and which concepts (drafts in [SCOPE.md §4.11](SCOPE.md#411-alien-species)) | M3 | five or six, each with a different way to play against — and, since they will become playable (D-08), each with enough to play as. **M3's two are decided in [Round 6](#round-6-neighbours-decided-22-october-2026)** |
 | D-13 | The artefacts and the vanished species behind them ([SCOPE.md §4.12](SCOPE.md#412-unknown-artefacts-and-the-precursors)) | M5 | tie them to Reborn's old derelicts and Pyre |
-| D-14 | Victory conditions | M4 | conquest, a council vote, the artefact hunt, and a score at a turn limit |
+| D-14 | Victory conditions | M4 | conquest, a council vote, the artefact hunt, and a score at a turn limit. **Put for M4 in [Round 7](#round-7-fleets-proposed-22-october-2026)** |
 | D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **decided with the M2 design** ([Round 4](#round-4-the-m2-design-decided-21-october-2026)): optional governors, edicts as policies paid from attention |
-| D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art |
+| D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art. **Put for M4 in [Round 7](#round-7-fleets-proposed-22-october-2026)** |
 | D-18 | Free or paid, open source or not, Steam or web only | M5 | develop in the open on GitHub Pages; decide at M5 |
 
 ## Round 5: science and rivalry, decided 21 October 2026
@@ -584,6 +586,47 @@ GitHub's runners, and D-57's raises D-27 to about $50.
 | **D-55** | Memory and attitude ([§7](design/M3_NEIGHBOURS.md#7-memory-and-attitude-d-55)) | A remembered acts, each with its reason · B a single number | **A** | every number explains itself; the player can see why a neighbour is cold |
 | **D-56** | The Hollow Wake's dealings ([§11](design/M3_NEIGHBOURS.md#11-the-hollow-wakes-dealings-d-56)) | A tolls, bribes and protection in M3 · B later, with M4's raids | **A** | the Wake should deal unlike the lawful powers from the first treaty |
 | **D-57** | The art for M3 ([§16](design/M3_NEIGHBOURS.md#16-art-and-its-cost-d-57)) | raise D-27 to $50 · keep $35 | **raise to $50** | about 65 pictures (about $6.50) fit the $10.55 left, but leave nothing for re-rolls or M4's ships |
+
+## Round 7: fleets, proposed 22 October 2026
+
+### D-58 · Battles and wars — **Decided (owner's direction)**
+
+M3 gave the powers treaties without war (D-53), leaving non-aggression, alliance and war for M4.
+On 22 October 2026, after M3, the owner said:
+
+> Yes, I would like the possibility to have battles and wars.
+
+So M4 is designed around it: warships and their designs, fleets, battles with orders before and a
+replay after (D-07), war and peace, invasion and defences, the outlaw's raids, the council, and the
+first victories ([design/M4_FLEETS.md](design/M4_FLEETS.md)). War is possible, never forced: a
+player can keep the peace, and the rivals go to war for reasons they show (D-68).
+
+The owner was also asked to play M3 (100 turns or more, on a phone and a desktop); their answers
+will be recorded here and folded into the M4 design when they come.
+
+### The M4 questions — **Open**
+
+Each question has its options and reasons in the section of [M4_FLEETS.md](design/M4_FLEETS.md)
+named. Answer *as recommended* to take every recommendation, or name what to change. Nothing that
+depends on them is built until they are answered.
+
+| ID | Question | Options | Recommendation | Why |
+| --- | --- | --- | --- | --- |
+| **D-59** | Warships and their designs ([§4](design/M4_FLEETS.md#4-warships-and-their-designs-d-59)) | A hulls and modules, the yard's designs, refits · B fixed classes · C a full designer | **A** | designs that counter the enemy's, without a designer too deep for a phone; the rivals use the yard's |
+| **D-60** | Weapons research ([§5](design/M4_FLEETS.md#5-the-weapons-field-d-60)) | A a seventh field, Weapons · B spread over the fields | **A** | SCOPE planned one; a power that arms learns less of the rest, and its choices are in one place |
+| **D-61** | Fleets and their orders ([§6](design/M4_FLEETS.md#6-fleets-and-their-orders-d-61)) | A fleets with orders, fighting together as task forces · B task forces inside fleets · C no fleets | **A**, with upkeep by size and repairs near home | D-07's orders for each task force, with one list of fleets for a phone |
+| **D-62** | Battles ([§7](design/M4_FLEETS.md#7-battles-d-62)) | A rounds at three ranges · B one comparison of strength | **A** | stance, priority, retreat and the damage types each change the outcome, and every battle can say why |
+| **D-63** | The replay ([§8](design/M4_FLEETS.md#8-the-replay-d-63)) | A in 3D in the system · B a 2D schematic · C later | **A** | D-07 decided a 3D replay; ships drawn in code cost nothing and each power's look is its own |
+| **D-64** | War and peace ([§9](design/M4_FLEETS.md#9-war-and-peace-d-64)) | A declared war, peace, pacts, capitulation, weariness · B war and peace only | **A** | wars with reasons and a price, and a way for a beaten power to surrender, so conquest can end |
+| **D-65** | Defences and invasion ([§10](design/M4_FLEETS.md#10-defences-and-invasion-d-65)) | A all of SCOPE §4.8 · B without bombardment and blockade | **A** | a war is won by taking worlds; bombardment and blockade make holding an orbit matter |
+| **D-66** | Raids and protection ([§11](design/M4_FLEETS.md#11-raids-and-protection-d-66)) | A the outlaw raids without war · B raids only in war | **A** | keeps M3's promise (§23.4) that protection matters from M4, and the Wake plays as an outlaw |
+| **D-67** | The council ([§12](design/M4_FLEETS.md#12-the-council-d-67)) | A elections and two resolutions · B elections only · C more resolutions | **A** | the vote is a victory, and the Assembly has something to do between elections |
+| **D-14** | Victory and defeat ([§13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | A conquest, the vote, a score at a turn limit · B no turn limit | **A**, 250 turns by default | every game can end, within D-16's length |
+| **D-68** | Rivals at war ([§14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | A by character · B strength alone · C no rival starts a war | **A** | wars the player can see coming and understand |
+| **D-17** | Words from the other powers ([§15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | A written into the game · B written at build time · C the player's own key | **A** | no key can live in a public site, and every line can be checked |
+
+The art M4 needs is about 20 pictures, about $2 with candidates ([§19](design/M4_FLEETS.md#19-art-and-its-cost)),
+within the $24.45 of D-27 left; ships and battles are drawn in code.
 
 ## Made without waiting
 
