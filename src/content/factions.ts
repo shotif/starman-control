@@ -7,16 +7,17 @@ import type { SystemId } from '../data/types.ts';
 import type { SpeciesId } from './species.ts';
 import type { TreatyKind } from './treaties.ts';
 
-export type FactionId = 'sta' | 'frontier' | 'hollow-wake' | 'dusk-concord';
+export type FactionId = 'sta' | 'frontier' | 'hollow-wake' | 'dusk-concord' | 'drift-moot';
 
 /**
  * How a power builds: each has its own buildings in the colony view (D-28, COLONY_VIEW.md §3). An
- * alien species brings its own (D-12); the Duskfolk's are drawn when they can be played (§24.9).
+ * alien species brings its own (D-12); the Duskfolk's and the Drifters' are drawn when they can be
+ * played (§24.9, §25.8).
  */
-export type ArchitectureId = 'authority' | 'cooperative' | 'wake' | 'dusk';
+export type ArchitectureId = 'authority' | 'cooperative' | 'wake' | 'dusk' | 'drift';
 
 /** A shape drawn beside the colour wherever a faction is shown, so colour is never the only cue. */
-export type FactionMark = 'square' | 'circle' | 'triangle' | 'diamond';
+export type FactionMark = 'square' | 'circle' | 'triangle' | 'diamond' | 'hexagon';
 
 /** What a trait does. The rules read these; the interface shows `text`. Draft values, balanced in M2 and M3. */
 export type TraitEffect =
@@ -210,9 +211,45 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       alt: 'Duskfolk in the ring of dusk on their world, a red sun low on the horizon (fiction)',
     },
   },
+  // The second alien power (M3_NEIGHBOURS.md §25), fiction: the Drifters of HD 192310 c, in the shell.
+  'drift-moot': {
+    id: 'drift-moot',
+    playable: false,
+    name: 'Drift Moot',
+    shortName: 'Drift Moot',
+    description: 'The Drifters of HD 192310 c, vast and long-lived floaters in a giant planet’s air.',
+    playsAs:
+      'Brokers who live only on giant planets and trade their fusion fuel; they want trade with everyone, and pay for peace.',
+    colour: '#b48cff',
+    mark: 'hexagon',
+    species: 'drifters',
+    architecture: 'drift',
+    capital: { systemId: 'hd-192310', bodyId: 'hd-192310-c' },
+    traits: [
+      {
+        id: 'drift-long-lived',
+        name: 'Long-lived',
+        text: 'Colonies grow 20% slower.',
+        effect: { kind: 'growth-percent', percent: -20 },
+      },
+    ],
+    shipmakers: ['the Slow Hands'],
+    regard: { 'hollow-wake': { amount: -10, reason: 'Sells the lanes that should be open' } },
+    // Brokers (§25.6): trade with anyone, open lanes once known, and peace bought from those who sell it.
+    asks: { 'open-lanes': 0, 'shared-research': 20, border: 10, trade: -10, passage: 0, protection: -10 },
+    sells: [],
+    lawful: true,
+    giftCredits: 5,
+    forgets: 6,
+    speaker: { name: 'Deep Current', role: 'eldest of the Moot', portrait: 'speaker-drift-moot' },
+    people: {
+      picture: 'people-drifters',
+      alt: 'Drifters floating in the banded air of a giant planet, among its clouds (fiction)',
+    },
+  },
 };
 
-export const FACTION_IDS: readonly FactionId[] = ['sta', 'frontier', 'hollow-wake', 'dusk-concord'];
+export const FACTION_IDS: readonly FactionId[] = ['sta', 'frontier', 'hollow-wake', 'dusk-concord', 'drift-moot'];
 
 /** The factions a new game offers to lead (D-08). */
 export const PLAYABLE_IDS: readonly FactionId[] = FACTION_IDS.filter((f) => FACTIONS[f].playable);

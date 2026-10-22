@@ -37,6 +37,7 @@ export const MOOD_PIECES: Record<MusicMood, readonly MusicPiece[]> = {
   'colony-wake': ['colony-wake'],
   // None until the Duskfolk can be played and their colonies seen (M3_NEIGHBOURS.md §24.9).
   'colony-dusk': [],
+  'colony-drift': [],
 };
 
 /** Seconds of quiet after a piece ends, before the next. */
@@ -48,6 +49,7 @@ export const SILENCE_SECONDS: Record<MusicMood, number> = {
   'colony-cooperative': 20,
   'colony-wake': 20,
   'colony-dusk': 20,
+  'colony-drift': 20,
 };
 
 /** Seconds a change of mood takes to fade the old piece out and the new one in. */

@@ -36,6 +36,8 @@ them, and the first aliens, powers you deal with.
 22. [Increment 37 in detail: borders and trade](#22-increment-37-in-detail-borders-and-trade-written-before-building-it)
 23. [Increment 37b in detail: exchanges and the Wake's dealings](#23-increment-37b-in-detail-exchanges-and-the-wakes-dealings-written-before-building-it)
 24. [Increment 38 in detail: the Duskfolk](#24-increment-38-in-detail-the-duskfolk-written-before-building-it)
+25. [Increment 39 in detail: the Drifters](#25-increment-39-in-detail-the-drifters-written-before-building-it)
+26. [Increment 40 in detail: the proof](#26-increment-40-in-detail-the-proof-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -1008,3 +1010,156 @@ and desktop.
   three powers), within M1's 200 ms.
 - **Tests:** `duskfolk.test.ts` as §24.12; 500 unit tests; `duskfolk.spec.ts` on the phone, tablet and
   desktop; the codex's counts now include the Concord's web.
+
+## 25. Increment 39 in detail: the Drifters (written before building it)
+
+**Goals.** The second species of D-12 as decided (A), the *cloud drifters* of §5, and its power,
+the same way as the Duskfolk (§24): as data, its home a real giant planet in the shell, a rival in
+every game with rivals and not yet one to lead, its own tongue, habitability unlike anyone's, a
+character as a rival and in its regard, its envoy's and speaker's faces and a picture of its
+people. Nothing in the rules is the Drifters' alone.
+
+**Out of scope.** Playing the Drifters (later, D-08), so their buildings, other advisors' faces
+and the look of a colony in a giant's air; technologies of their own; five-power balance (40).
+
+### 25.1 Names (fiction)
+
+- **The Drifters**: the name humans give the species, vast, long-lived floaters in a giant
+  planet's air; *a Drifter colony*.
+- **The Drift Moot** (*the Moot*): their power, an assembly of the eldest, and brokers to
+  everyone. Violet (`#b48cff`), and a hexagon beside the colour wherever it is shown.
+- **Their names** are translations: the Envoy *Fair Wind, who carries offers*; the speaker *Deep
+  Current, eldest of the Moot*; their advisors (for when they are played) Wide Shelter (the
+  Settled), Slow Hands (the Makers), Full Hold (the Stores), Long Memory (the Learned), Far Drift
+  (the Wanderers), Still Air (the Listeners) and Fair Wind; a warm voice.
+
+### 25.2 Their home (observed and fiction)
+
+**HD 192310 c**, a real planet of at least 24 Earth masses (Neptune's class) about 1.2 AU from the
+orange dwarf HD 192310 (Gliese 785) in Capricornus, 28.7 ly from Sol, in the shell: observed by
+radial velocity (the game's facts say which are observed and which estimated). Its neighbours
+within 6 ly include **AU Microscopii**, a young flare star with Neptune-sized planets of its own. It is
+23.5 ly from Wolf 1061 and 28 or more from Sol and Tau Ceti, and 46 from GJ 433, so the Moot and
+the Concord lie at opposite ends of the shell. The Drifters living there are fiction.
+
+### 25.3 The worlds they live on
+
+Only giants: a gas giant, an ice giant or a mini-Neptune, never a solid surface. In a giant's air
+they float at the depth they like, so its temperature at the top of the clouds matters little.
+
+| | The Drifters |
+| --- | --- |
+| Surfaces | gas giants, ice giants and mini-Neptunes only |
+| Temperature | frozen 1, cold 0, temperate 0, warm 0, hot 1, scorching 2 |
+| Atmosphere | dense 0, toxic 1; none or thin never (a giant's air is dense) |
+| Gravity, water, flares, an open sky | nothing |
+
+A gas giant is comfortable for them, a scorching one harsh. Humans can only hold an outpost on a
+giant; the Drifters only a colony on one, and outposts elsewhere. A giant's riches are fusion fuel
+(gas giants 2, ice giants 1), so their fuel trade comes from where they live.
+
+### 25.4 Their home web
+
+By §24.4's rule: HD 192310, AU Microscopii, AT Microscopii, PM J20502−3424 and BPS CS 22879−0089,
+5 systems and 4 lanes of its own. No other web changes.
+
+### 25.5 Their tongue
+
+Not shared with anyone: signal, words, talk, as with the Duskfolk.
+
+### 25.6 Their regard and treaties (fiction)
+
+*Brokers, who want trade with everyone and pay for peace* (§5):
+
+- **Long-lived, long memory:** their memories fade a point every **6** turns.
+- **Brokers:** they ask a regard of −10 for a trade agreement and 0 for open lanes, 20 for shared
+  research and 10 for a border; they buy passage at 0 and **protection at −10** (they pay for
+  peace). A gift is remembered at 1 for every 5 credits. Lawful.
+- **Their view of others' ways:** −10 for the Hollow Wake (*Sells the lanes that should be open*).
+- **Their exchanges (§23.1):** a broker also offers its surplus: with more than 150 fusion fuel it
+  offers 20 of it for 40 credits every 5 turns, to the power that regards it best (`broker`).
+
+### 25.7 As a rival
+
+The same rules as every rival. Its character: its capital and colonies run to produce; it settles
+the **roomiest** giant it can; it researches propulsion and society; low taxes; it builds lanes
+from its colonies; a labour drive when its attention is full; the doctrines Open frontier, Lane
+network and Industrial worlds; the Lanewright Foundry as its great work. Its trait, **Long-lived**:
+colonies grow 20% slower (they are few in number).
+
+### 25.8 On the screen
+
+As the Duskfolk (§24.9): its colour and hexagon everywhere a power is shown; its envoy on the
+diplomacy screen; its speaker, envoy and people in the codex, labelled *Fiction*.
+
+### 25.9 Pictures (D-57)
+
+Fair Wind's and Deep Current's faces and the Drifters at home: **3 pictures, 6 candidates, about
+$0.30**, as lettered sheets. The Drifters are described to the generator as an invented people,
+like no other work's.
+
+### 25.10 State
+
+The faction list gains `drift-moot`, the species list `drifters`; version 15 still.
+
+### 25.11 Tests
+
+`drifters.test.ts`: their habitability (giants only, outposts elsewhere); their home web; contact
+through words; memories that fade every 6 turns; a broker's surplus offered; the Moot as a rival
+for 100 turns with the game sound; a game with five powers. `drifters.spec.ts`: the Moot in the
+codex, its envoy on the diplomacy screen; on the phone, tablet and desktop.
+
+### Increment 39: the Drifters (22 October 2026)
+
+- **As §25:** the Drifters (giants only: gas giants, ice giants and mini-Neptunes) and the Drift
+  Moot at HD 192310 c, violet with a hexagon; its home web of its own lanes, 5 systems and 4 lanes;
+  a rival in every game with rivals, so every such game now has five powers. A rival's character
+  may make it a **broker**, which offers its surplus for credits (`surplus` 150 in
+  `RULES.exchanges`); only the Moot is one.
+- **The new game** names the alien rivals from the data (*the Dusk Concord and the Drift Moot,
+  alien powers far out in the shell*), so a third needs no new words.
+- **Pictures:** 6 candidates, no re-roll: Fair Wind A, Deep Current B, the Drifters at home A.
+- **Numbers:** in the eight headless games, now with five powers, the Moot holds 5.9 colonies, 93
+  million people and 19.8 technologies at turn 100; it meets the Cooperative between turns 80 and
+  105. The others as before but the Cooperative, now 26 technologies on seeds 7, 3 and 4 (23.5 on
+  average, the target 15 to 25), left for increment 40. The slowest headless turn 180 ms, within
+  M1's 200 ms; the largest save at turn 100, 61 KB.
+- **Tests:** `drifters.test.ts` as §25.11, with 100 turns of all five powers; 505 unit tests;
+  `drifters.spec.ts` on the phone, tablet and desktop; the journeys count five powers.
+
+## 26. Increment 40 in detail: the proof (written before building it)
+
+**Goals.** Show that M3 holds together with all five powers, as M2b's increment 32 did with three
+(M2B_SCIENCE.md §20.4): the headless games against their targets, the budgets, the 100-turn
+journeys, and the owner's try. Tune what misses, in the smallest way, and say so.
+
+**Out of scope.** New rules. Playing the alien powers. M4's ships and battles.
+
+### 26.1 The headless games
+
+On the eight seeds of `npm run balance`, every game with all five powers as rivals, at turn 100:
+
+- **Technologies:** the research-led Authority 35 to 45, every other power 15 to 25, on every seed
+  (M2b's §2 targets, now for the aliens too); no power learns every technology it can before turn
+  180 (checked with 200-turn runs, reported in the notes).
+- **Neighbours:** every alien power is in contact with at least one human power by turn 120, and
+  every power has agreed at least one treaty by turn 100 (§21).
+- **Sound:** no crash, no lasting hunger, no debt longer than 5 turns, no rival banking more than
+  600 credits, a turn within **200 ms** and a save within **200 KB** (M1's budgets).
+- The unit tests play three of the seeds with all five powers and check these ranges, as
+  `rivals.test.ts` checked three powers.
+
+### 26.2 The browser
+
+The 100-turn journeys (`long.spec.ts`) on the phone and the desktop, now with five powers in play,
+the turn within its budget; every journey of M3 on the phone, tablet and desktop.
+
+### 26.3 The owner's try
+
+Play M3 on a phone and a desktop (a game of 100 turns or more, to meet the aliens) and say what is
+dull, unclear, slow or too easy, as M2's and M2b's tries asked.
+
+### 26.4 State and tests
+
+No change to the state (version 15). Tests: `rivals.test.ts` with five powers on seeds 42, 7 and
+2176, and the neighbours' checks; the balance file regenerated.

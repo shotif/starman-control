@@ -1,11 +1,11 @@
 // Species, as data (D-08). In M1 there is one, humans; alien species arrive in M3 (D-12), the
-// Duskfolk first (M3_NEIGHBOURS.md §24). What a species can live on is stated here and read by the
+// Duskfolk (M3_NEIGHBOURS.md §24) and the Drifters (§25). What a species can live on is stated here and read by the
 // rules (src/sim/habitability.ts), never hard-coded for humans (docs/design/M1_PLANETS.md §5).
 // Every species but humans is fiction.
 
 import type { Atmosphere, BodyKind, Gravity, TempBand, Water } from '../sim/bodies.ts';
 
-export type SpeciesId = 'human' | 'duskfolk';
+export type SpeciesId = 'human' | 'duskfolk' | 'drifters';
 
 /** How hard a condition is: 0 easy, more harder; null impossible. */
 type Costs<K extends string> = Record<K, number | null>;
@@ -59,6 +59,22 @@ export const SPECIES: Record<SpeciesId, SpeciesDef> = {
       water: { none: 1, ice: 0, oceans: 0 },
       flare: 0,
       open: 2,
+    },
+    levels: { comfortable: 0, tolerable: 2, harsh: 6 },
+  },
+  // The cloud drifters, vast floaters in a giant planet's air (§25.3): giants only.
+  drifters: {
+    id: 'drifters',
+    name: 'The Drifters',
+    adjective: 'Drifter',
+    surfaces: ['gas-giant', 'ice-giant', 'mini-neptune'],
+    costs: {
+      temperature: { frozen: 1, cold: 0, temperate: 0, warm: 0, hot: 1, scorching: 2 },
+      atmosphere: { none: null, thin: null, dense: 0, toxic: 1 },
+      gravity: { low: 0, normal: 0, high: 0 },
+      water: { none: 0, ice: 0, oceans: 0 },
+      flare: 0,
+      open: 0,
     },
     levels: { comfortable: 0, tolerable: 2, harsh: 6 },
   },

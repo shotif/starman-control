@@ -68,7 +68,7 @@ test('a gift from the diplomacy screen, remembered with its reason', async ({ pa
 
   let screen = await openDiplomacy(page, project);
   await expect(screen).toContainText('Isabel Achterberg');
-  await expect(screen).toContainText('Not yet heard: the Hollow Wake and the Dusk Concord.');
+  await expect(screen).toContainText('Not yet heard: the Hollow Wake, the Dusk Concord and the Drift Moot.');
   const coop = screen.getByRole('button', { name: 'The Frontier Co-op: warm' });
   await expect(coop).toContainText('we can talk');
   if (!isDesktop(project)) await coop.tap();

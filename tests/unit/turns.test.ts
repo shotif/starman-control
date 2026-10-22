@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FACTION_IDS, type FactionId } from '../../src/content/factions.ts';
+import { FACTION_IDS, type FactionId, PLAYABLE_IDS } from '../../src/content/factions.ts';
 import { shipName } from '../../src/content/ships.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { blindJumpTurns, findRoute, jumpPoints, laneCost, planJourney, previewMove } from '../../src/sim/movement.ts';
@@ -262,7 +262,8 @@ function play(faction: FactionId, seed: number, turns: number, given?: Order[][]
 }
 
 describe('a scripted player', () => {
-  for (const f of FACTION_IDS) {
+  // As any power one can lead; the alien powers as rivals are in duskfolk.test.ts and drifters.test.ts.
+  for (const f of PLAYABLE_IDS) {
     it(`plays 40 turns as ${f} without an impossible state, and the same orders replay to the same game`, () => {
       const first = play(f, 777, 40);
       expect(first.state.turn).toBe(41);

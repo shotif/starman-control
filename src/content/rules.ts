@@ -205,6 +205,8 @@ export const RULES = {
     offerCredits: 40,
     offerAmount: 20,
     offerAbove: 100,
+    /** A broker (M3_NEIGHBOURS.md §25.6) offers so much of what it holds more than `surplus` of, for credits. */
+    surplus: 150,
   },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {

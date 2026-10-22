@@ -36,10 +36,15 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
     'In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, ' +
     'curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone ' +
     'and woven screens, narrow slit windows glowing warm amber; communal, patient and very old.',
+  // M3_NEIGHBOURS.md §25: written now, painted when the Drifters can be played.
+  drift:
+    'In the architecture of the Drifters, an invented alien people who live in a giant planet’s air: buoyant ' +
+    'structures that float, rounded gas-filled pods of pale woven membrane tethered together by long cables, ' +
+    'with slatted vanes for steering and soft violet lights; light, airy and slowly turning.',
 };
 
-/** The architectures whose buildings are painted: the Duskfolk's wait until they can be played (§24.10). */
-type Painted = Exclude<ArchitectureId, 'dusk'>;
+/** The architectures whose buildings are painted: the aliens' wait until they can be played (§24.10, §25.9). */
+type Painted = Exclude<ArchitectureId, 'dusk' | 'drift'>;
 
 /**
  * The Duskfolk (M3_NEIGHBOURS.md §24), an invented people, written once and put into every brief
@@ -51,6 +56,17 @@ const DUSKFOLK =
   'mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms ' +
   'with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven ' +
   'shawls in charcoal, ochre and plum';
+
+/**
+ * The Drifters (M3_NEIGHBOURS.md §25), an invented people, written once for every brief that shows
+ * them. Fiction, and like no other work's aliens.
+ */
+const DRIFTER =
+  'one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human ' +
+  'nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet ' +
+  'and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark ' +
+  'eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and ' +
+  'cords hung with small tools and beads';
 
 const FIRST: ArtBrief[] = [
   // The style test: the same four subjects from both services, so the owner can choose a direction
@@ -541,7 +557,37 @@ export const BRIEFS: ArtBrief[] = [
   ...advisors(),
   ...events(),
   ...duskfolk(),
+  ...drifters(),
 ];
+
+/** Increment 39's pictures (M3_NEIGHBOURS.md §25.9): the Moot's envoy and speaker, and its people at home. */
+function drifters(): ArtBrief[] {
+  return [
+    {
+      id: 'advisor-drift-envoy',
+      series: 'portrait',
+      subject: `Fair Wind, who carries offers for the Drift Moot: ${DRIFTER}; the front edge of its body and its row of eyes fill the frame, a woven sash with violet beads across it; open and attentive.`,
+      purpose: 'The Moot’s Envoy, on the diplomacy screen (M3, fiction).',
+    },
+    {
+      id: 'speaker-drift-moot',
+      series: 'portrait',
+      subject: `Deep Current, eldest of the Drift Moot: ${DRIFTER}; the front edge of its body and its row of eyes fill the frame, its hide scarred and faded with very great age, many old cords and beads; calm and slow.`,
+      purpose: 'The Moot’s speaker, on the data page (M3, fiction).',
+    },
+    {
+      id: 'people-drifters',
+      series: 'illustration',
+      subject:
+        'Inside the banded clouds of a cold giant planet, high above an endless floor of cloud: a few vast Drifters float ' +
+        'among towering cloud walls, broad lens-shaped bodies of pale violet and cream hide with frills of thin vanes and long ' +
+        'feelers trailing below, and between them a cluster of floating, rounded pods of woven membrane tethered by cables, ' +
+        'with soft violet lights. A small orange sun low in a hazy sky. Vast in scale, quiet and slow. An invented alien ' +
+        'people, not human, and like no other story’s creatures.',
+      purpose: 'The Drifters at home, on the data page (M3, fiction).',
+    },
+  ];
+}
 
 /** Increment 38's pictures (M3_NEIGHBOURS.md §24.10): the Concord's envoy and speaker, and its people at home. */
 function duskfolk(): ArtBrief[] {

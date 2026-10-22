@@ -125,7 +125,7 @@ void main() {
   gl_FragColor = vec4(vTint * a * a * strength, 1.0);
 }`;
 
-/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle, diamond). */
+/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle, diamond, hexagon). */
 const MARK_VERTEX = `
 attribute float size;
 attribute vec3 tint;
@@ -164,14 +164,18 @@ void main() {
   if (vShape < 0.5) d = length(p) - 0.8;
   else if (vShape < 1.5) d = max(abs(p.x), abs(p.y)) - 0.68;
   else if (vShape < 2.5) d = triangle(p + vec2(0.0, 0.14), 0.82);
-  else d = (abs(p.x) + abs(p.y)) * 0.7071 - 0.6;
+  else if (vShape < 3.5) d = (abs(p.x) + abs(p.y)) * 0.7071 - 0.6;
+  else {
+    vec2 q = abs(p);
+    d = max(q.x * 0.8660254 + q.y * 0.5, q.y) - 0.7;
+  }
   float w = vWeight;
   float a = 1.0 - smoothstep(w, w + 0.07, abs(d));
   if (a <= 0.01) discard;
   gl_FragColor = vec4(vTint, a * opacity);
 }`;
 
-const SHAPE: Record<MapHolding['mark'], number> = { circle: 0, square: 1, triangle: 2, diamond: 3 };
+const SHAPE: Record<MapHolding['mark'], number> = { circle: 0, square: 1, triangle: 2, diamond: 3, hexagon: 4 };
 
 /** Ships: small chevrons drawn a fixed number of pixels from their star, so they never hide it. */
 const SHIP_VERTEX = `

@@ -1236,6 +1236,15 @@ function markSheet(mark: FactionMark, hex: string): HTMLCanvasElement {
     g.lineTo(32, 48);
     g.lineTo(16, 32);
     g.closePath();
+  } else if (mark === 'hexagon') {
+    for (let i = 0; i < 6; i++) {
+      const a = (Math.PI / 3) * i;
+      const x = 32 + 14 * Math.cos(a);
+      const y = 32 + 14 * Math.sin(a);
+      if (i === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.closePath();
   } else {
     g.moveTo(32, 17);
     g.lineTo(46, 43);

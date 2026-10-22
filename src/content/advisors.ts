@@ -92,6 +92,19 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       envoy: { name: 'First Voice', role: 'who speaks to strangers', portrait: 'advisor-dusk-envoy' },
     },
   },
+  // The Drifters' names are translations too (M3_NEIGHBOURS.md §25.1); only Fair Wind has a face yet.
+  'drift-moot': {
+    voice: 'warm',
+    people: {
+      colonies: { name: 'Wide Shelter', role: 'who speaks for the Settled', portrait: 'advisor-drift-colonies' },
+      works: { name: 'Slow Hands', role: 'who speaks for the Makers', portrait: 'advisor-drift-works' },
+      treasury: { name: 'Full Hold', role: 'who keeps the Stores', portrait: 'advisor-drift-treasury' },
+      science: { name: 'Long Memory', role: 'who speaks for the Learned', portrait: 'advisor-drift-science' },
+      survey: { name: 'Far Drift', role: 'who speaks for the Wanderers', portrait: 'advisor-drift-survey' },
+      watch: { name: 'Still Air', role: 'who speaks for the Listeners', portrait: 'advisor-drift-watch' },
+      envoy: { name: 'Fair Wind', role: 'who carries offers', portrait: 'advisor-drift-envoy' },
+    },
+  },
 };
 
 /**

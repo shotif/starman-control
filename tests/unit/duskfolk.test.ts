@@ -22,7 +22,7 @@ const body = (system: string, id: string) => {
   if (!b) throw new Error(`no ${id}`);
   return b;
 };
-const four = (player: FactionId = 'sta') =>
+const every = (player: FactionId = 'sta') =>
   newGame(world, {
     seed: 42,
     powers: FACTION_IDS.map((faction) => ({
@@ -98,7 +98,7 @@ describe('their home web, of their own lanes (§24.4)', () => {
   it('leaves every human web as it was, seven systems each', () => {
     const before = homeWebs(
       world,
-      capitals.filter((c) => c.faction !== 'dusk-concord'),
+      capitals.filter((c) => world.catalogueAt(c.capital).length > 0),
     );
     for (const w of before) {
       expect(webs.find((x) => x.faction === w.faction)?.systems).toEqual(w.systems);
@@ -110,8 +110,8 @@ describe('their home web, of their own lanes (§24.4)', () => {
 describe('the Concord in the game (§24.5 to §24.8)', () => {
   it('a new game offers the three human powers; the Concord plays as a rival', () => {
     expect(PLAYABLE_IDS).toEqual(['sta', 'frontier', 'hollow-wake']);
-    const g = four();
-    expect(g.powers.map((p) => p.faction)).toEqual(['sta', 'frontier', 'hollow-wake', 'dusk-concord']);
+    const g = every();
+    expect(g.powers.map((p) => p.faction)).toContain('dusk-concord');
     expect(g.holdings.find((h) => h.owner === 'dusk-concord')).toMatchObject({
       capital: true,
       system: 'gj-433',
@@ -127,7 +127,7 @@ describe('the Concord in the game (§24.5 to §24.8)', () => {
   });
 
   it('forgets slowly: a point every 8 turns, where humans forget one every 4', () => {
-    const g: GameState = four();
+    const g: GameState = every();
     for (const f of ['sta', 'dusk-concord'] as const)
       powerOf(g, f).memories.push({ faction: 'hollow-wake', kind: 'treaty-broken', amount: -10, turn: 1 });
     for (const turn of [5, 9]) {
@@ -139,7 +139,7 @@ describe('the Concord in the game (§24.5 to §24.8)', () => {
   });
 
   it('remembers a gift at 1 for every 8 credits', () => {
-    let g = four();
+    let g = every();
     powerOf(g, 'sta').contacts.push({ faction: 'dusk-concord', stage: 'talk', since: 1, words: 20 });
     powerOf(g, 'dusk-concord').contacts.push({ faction: 'sta', stage: 'talk', since: 1, words: 20 });
     const r = applyOrder(world, g, 'sta', { type: 'gift', to: 'dusk-concord', credits: 50 });

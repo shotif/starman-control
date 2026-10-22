@@ -1,6 +1,37 @@
 {
   "images": [
     {
+      "briefId": "advisor-drift-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Fair Wind, who carries offers for the Drift Moot: one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and cords hung with small tools and beads; the front edge of its body and its row of eyes fill the frame, a woven sash with violet beads across it; open and attentive.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T09:14:05.749Z",
+      "note": "I hope you like this painted sci-fi character portrait of Fair Wind for your strategy game! Let me know if you would like any changes.",
+      "id": "advisor-drift-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T09:15:56.731Z",
+      "candidate": "art/out/advisor-drift-envoy/20261022-091346-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-drift-envoy-128.webp",
+          "bytes": 4976
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-drift-envoy-384.webp",
+          "bytes": 27582
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-drift-envoy-768.webp",
+          "bytes": 80488
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-dusk-envoy",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -7200,6 +7231,31 @@
       "aiGenerated": true
     },
     {
+      "briefId": "people-drifters",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Inside the banded clouds of a cold giant planet, high above an endless floor of cloud: a few vast Drifters float among towering cloud walls, broad lens-shaped bodies of pale violet and cream hide with frills of thin vanes and long feelers trailing below, and between them a cluster of floating, rounded pods of woven membrane tethered by cables, with soft violet lights. A small orange sun low in a hazy sky. Vast in scale, quiet and slow. An invented alien people, not human, and like no other story’s creatures.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T09:15:22.894Z",
+      "id": "people-drifters",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T09:15:57.929Z",
+      "candidate": "art/out/people-drifters/20261022-091346-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/people-drifters-640.webp",
+          "bytes": 19556
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/people-drifters-1280.webp",
+          "bytes": 53368
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "people-duskfolk",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -7650,6 +7706,36 @@
         "width": 1788,
         "height": 816
       },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "speaker-drift-moot",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Deep Current, eldest of the Drift Moot: one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and cords hung with small tools and beads; the front edge of its body and its row of eyes fill the frame, its hide scarred and faded with very great age, many old cords and beads; calm and slow.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T09:15:03.035Z",
+      "id": "speaker-drift-moot",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T09:15:57.364Z",
+      "candidate": "art/out/speaker-drift-moot/20261022-091346-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/speaker-drift-moot-128.webp",
+          "bytes": 5290
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/speaker-drift-moot-384.webp",
+          "bytes": 31798
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/speaker-drift-moot-768.webp",
+          "bytes": 90248
+        }
+      ],
       "aiGenerated": true
     },
     {

@@ -42,10 +42,12 @@ test('a new game offers the three human powers; the Concord plays as a rival', a
   for (const name of ['Transit Authority', 'Frontier Co-op', 'Hollow Wake'])
     await expect(page.getByRole('button', { name: `Lead the ${name}` })).toBeAttached();
   await expect(page.getByRole('button', { name: 'Lead the Dusk Concord' })).toHaveCount(0);
-  await expect(page.getByText(/the Dusk Concord, an alien power far out in the shell/)).toBeVisible();
+  await expect(
+    page.getByText(/the other two, and the Dusk Concord and the Drift Moot, alien powers far out in the shell/),
+  ).toBeVisible();
   // The codex shows its home web, its speaker and its people, as fiction.
   await page.goto('./#/codex');
-  await expect(page.locator('.web-card')).toHaveCount(4);
+  await expect(page.locator('.web-card')).toHaveCount(5);
   const card = page.locator('.web-card').filter({ hasText: 'Dusk Concord' });
   await card.scrollIntoViewIfNeeded();
   await expect(card).toContainText('Capital GJ 433');

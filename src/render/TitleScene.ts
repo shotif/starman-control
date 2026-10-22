@@ -73,6 +73,7 @@ varying float vPulse;
 float shapeDistance(vec2 p) {
   if (vShape < 0.5) return max(abs(p.x), abs(p.y)) * 1.12;
   if (vShape < 1.5) return length(p);
+  if (vShape > 3.5) return max(abs(p.x) * 0.866 + abs(p.y) * 0.5, abs(p.y)) * 1.1;
   if (vShape > 2.5) return (abs(p.x) + abs(p.y)) * 0.85;
   // An equilateral triangle, point up.
   vec2 q = vec2(abs(p.x), -p.y + 0.12);
@@ -133,7 +134,7 @@ export interface TitleSceneOptions {
   reducedMotion: boolean;
 }
 
-const SHAPES = { square: 0, circle: 1, triangle: 2, diamond: 3 } as const;
+const SHAPES = { square: 0, circle: 1, triangle: 2, diamond: 3, hexagon: 4 } as const;
 
 /** The scene's centre: between the capitals of the powers one can lead, so each is in view. */
 function centreOfPowers(): THREE.Vector3 {

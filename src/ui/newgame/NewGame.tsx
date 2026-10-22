@@ -5,7 +5,7 @@
 
 import { useRef, useState } from 'preact/hooks';
 import { startGame, world } from '../../app/game.ts';
-import { FACTIONS, type FactionId, PLAYABLE_IDS } from '../../content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId, PLAYABLE_IDS } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { Emblem } from '../parts.tsx';
@@ -35,6 +35,14 @@ const ART: Partial<Record<FactionId, { file: string; scene: string; leader: stri
 };
 
 const base = import.meta.env.BASE_URL;
+
+/** The powers one cannot lead yet, which play as rivals: "the Dusk Concord and the Drift Moot". */
+const ALIENS = FACTION_IDS.filter((f) => !FACTIONS[f].playable)
+  .map((f) => `the ${FACTIONS[f].name}`)
+  .join(', ')
+  .replace(/, ([^,]*)$/, ' and $1');
+/** The other powers one could have led, in a word. */
+const OTHERS = ['none', 'one', 'two', 'three', 'four'][PLAYABLE_IDS.length - 1] ?? String(PLAYABLE_IDS.length - 1);
 
 function PowerCard({ id, starting, onStart }: { id: FactionId; starting: FactionId | null; onStart: () => void }) {
   const f = FACTIONS[id];
@@ -158,7 +166,7 @@ export function NewGame() {
           waiting.{' '}
           {alone
             ? 'You play alone: no other power is in play.'
-            : 'The other powers play too, as your rivals, by your rules and with no bonuses: the other two, and the Dusk Concord, an alien power far out in the shell.'}
+            : `The other powers play too, as your rivals, by your rules and with no bonuses: the other ${OTHERS}, and ${ALIENS}, alien powers far out in the shell.`}
         </p>
       </header>
       <div class="power-cards" ref={track} onScroll={onScroll}>

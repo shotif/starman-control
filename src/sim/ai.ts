@@ -19,7 +19,7 @@ import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
-import { contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
+import { type Amount, contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
 import type { World } from './world.ts';
 
@@ -39,6 +39,8 @@ export interface Personality {
   doctrines: readonly TechId[];
   /** The great work it builds at its capital when it can (§20.2). */
   greatWork: ProjectId;
+  /** A broker offers its surplus of a resource for credits (M3_NEIGHBOURS.md §25.6). */
+  broker?: boolean;
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -87,6 +89,19 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     edict: 'festival',
     doctrines: ['open-frontier', 'lane-network', 'garden-worlds'],
     greatWork: 'commons',
+  },
+  // Brokers of the giants' fuel (M3_NEIGHBOURS.md §25.7).
+  'drift-moot': {
+    capital: 'produce',
+    colonies: 'produce',
+    settles: 'roomiest',
+    fields: ['propulsion', 'society'],
+    taxes: 'low',
+    laneBuilder: true,
+    edict: 'labour-drive',
+    doctrines: ['open-frontier', 'lane-network', 'industrial-worlds'],
+    greatWork: 'lanewright-foundry',
+    broker: true,
   },
 };
 
@@ -371,17 +386,25 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
 }
 
 /**
- * A rival short of a resource, with credits to spare, offers credits for it (§23.1): to the power
- * it can talk with that regards it best, at least neutrally.
+ * A rival short of a resource, with credits to spare, offers credits for it (§23.1); a broker with
+ * a surplus offers some of it for credits (§25.6): to the power it can talk with that regards it
+ * best, at least neutrally.
  */
 function exchangeWanted(world: World, state: GameState, faction: FactionId): Order | null {
   const x = RULES.exchanges;
   const power = powerOf(state, faction);
-  if (power.treasury <= x.offerAbove) return null;
-  const short = (['metals', 'volatiles', 'fuel'] as const).find((r) => power.stockpile[r] < x.short);
-  if (!short) return null;
-  const give = { resource: 'credits', amount: x.offerCredits } as const;
-  const get = { resource: short, amount: x.offerAmount };
+  const resources = ['metals', 'volatiles', 'fuel'] as const;
+  const short = resources.find((r) => power.stockpile[r] < x.short);
+  const surplus = PERSONALITIES[faction].broker ? resources.find((r) => power.stockpile[r] > x.surplus) : undefined;
+  let give: Amount;
+  let get: Amount;
+  if (short && power.treasury > x.offerAbove) {
+    give = { resource: 'credits', amount: x.offerCredits };
+    get = { resource: short, amount: x.offerAmount };
+  } else if (surplus) {
+    give = { resource: surplus, amount: x.offerAmount };
+    get = { resource: 'credits', amount: x.offerCredits };
+  } else return null;
   let best: { to: FactionId; regard: number } | null = null;
   for (const other of state.powers) {
     if (other.faction === faction || offerRefusal(state, faction, other.faction, 'exchange', give, get)) continue;

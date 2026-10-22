@@ -61,7 +61,7 @@ test('rivals: unseen at first; the Watch sees a Wake survey ship reach Sol, on t
   let empire = await openEmpire(page, project);
   await press(empire.getByRole('tab', { name: 'Powers 1' }), project);
   await expect(empire.locator('.standings')).toContainText(
-    'Not yet seen: the Frontier Co-op, the Hollow Wake and the Dusk Concord.',
+    'Not yet seen: the Frontier Co-op, the Hollow Wake, the Dusk Concord and the Drift Moot.',
   );
   await closeEmpire(page, project);
 
@@ -88,7 +88,9 @@ test('rivals: unseen at first; the Watch sees a Wake survey ship reach Sol, on t
   // Science (M2B_SCIENCE.md §19.4): yours as a count, theirs ahead of you, level or behind.
   await expect(rows.nth(0)).toContainText('known');
   await expect(rows.nth(1)).toContainText(/ahead of us|level|behind/);
-  await expect(empire.locator('.standings')).toContainText('Not yet seen: the Frontier Co-op and the Dusk Concord.');
+  await expect(empire.locator('.standings')).toContainText(
+    'Not yet seen: the Frontier Co-op, the Dusk Concord and the Drift Moot.',
+  );
 });
 
 test('play alone: no other power in play, and no Powers tab', async ({ page }, info) => {

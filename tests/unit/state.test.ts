@@ -28,8 +28,8 @@ describe('a new game', () => {
       expect(stateProblems(world, g), f).toEqual([]);
       expect(g.turn).toBe(1);
       expect(g.powers).toHaveLength(1);
-      // The Concord's home web is of its own lanes, five (M3_NEIGHBOURS.md §24.4).
-      expect(g.lanes, f).toHaveLength(PLAYABLE_IDS.includes(f) ? 6 : 5);
+      // The aliens' home webs are of their own lanes: the Concord's five, the Moot's four (M3_NEIGHBOURS.md §24.4).
+      expect(g.lanes, f).toHaveLength(PLAYABLE_IDS.includes(f) ? 6 : f === 'dusk-concord' ? 5 : 4);
       expect(g.lanes.every((l) => l.owner === f && l.status === 'open')).toBe(true);
     }
   });
@@ -60,7 +60,7 @@ describe('a new game', () => {
       seed: 1,
       powers: FACTION_IDS.map((f) => ({ faction: f, controller: f === 'sta' ? 'player' : 'ai' })),
     });
-    expect(all.lanes).toHaveLength(18 + 5);
+    expect(all.lanes).toHaveLength(18 + 5 + 4);
     expect(stateProblems(world, all)).toEqual([]);
   });
 
