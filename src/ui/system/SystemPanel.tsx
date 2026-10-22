@@ -40,6 +40,9 @@ interface Props {
   /** The viewing power's ships here, and what to do when one is chosen. */
   ships?: readonly { id: number; name: string; kind: string; status: string }[];
   onShip?: (id: number) => void;
+  /** The viewing power's fleets here (M4_FLEETS.md §22.3), and what to do when one is chosen. */
+  fleets?: readonly { id: number; name: string; line: string; status: string }[];
+  onFleet?: (id: number) => void;
   /** Other powers' ships the viewer can see here (M2_WORLDS.md §26.3): never given orders. */
   others?: readonly { id: number; name: string; kind: string; owner: FactionId }[];
   /** An anomaly the viewer has found here: what the survey saw, or, once investigated, what was found. */
@@ -182,6 +185,8 @@ export function SystemPanel({
   surveyed = true,
   ships,
   onShip,
+  fleets,
+  onFleet,
   others,
   onEnter,
   holdings = [],
@@ -288,6 +293,23 @@ export function SystemPanel({
                     </span>
                   </div>
                 )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {fleets && fleets.length > 0 && (
+        <>
+          <h3>Your fleets here</h3>
+          <ul class="ships-here">
+            {fleets.map((f) => (
+              <li key={f.id}>
+                <button type="button" class="ship-row" onClick={() => onFleet?.(f.id)}>
+                  <b>{f.name}</b>
+                  <span class="ship-type">{f.line}</span>
+                  <span class="ship-line">{f.status}</span>
+                </button>
               </li>
             ))}
           </ul>

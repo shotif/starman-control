@@ -185,7 +185,9 @@ write each increment's detailed design section (§21 onwards) before building it
 yet played M3; their try, when it comes, is recorded there too. **Done: increment 41, warships**
 (§21): five hulls, 22 modules, the yard's designs and the player's own (*Designs*, **B**), refits,
 the Weapons field (17 technologies, 79 in the tree), upkeep by hull, the Admiral (an eighth
-advisor, 3 faces); state version 16.
+advisor, 3 faces); state version 16. **Done: increment 42, fleets** (§22): every warship sails in a
+fleet, named in its power's word, moved and ordered as one, with its stance, target and retreat
+point kept for battle; formed, merged, split and joined; state version 17.
 
 The art and music spend: about $25.55 of $50 (raised on 22 October 2026; about $24.45 left). M3's
 art is about 65 pictures (about $6.50).

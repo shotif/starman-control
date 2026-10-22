@@ -44,8 +44,8 @@ export type ReportEvent =
   | { kind: 'founded'; holding: number; shipName: string; system: SystemId; body: string }
   /** A ship could not found where it was told to. */
   | { kind: 'not-founded'; ship: number; system: SystemId; body: string; reason: string }
-  /** A colony finished an item of its queue (a new ship's id, if it was a ship). */
-  | { kind: 'built'; holding: number; item: BuildItem; ship?: number }
+  /** A colony finished an item of its queue (a new ship's id, if it was a ship, and a warship's fleet). */
+  | { kind: 'built'; holding: number; item: BuildItem; ship?: number; fleet?: number }
   /** A lane paid for: its beacons are tuned for so many turns. */
   | { kind: 'lane-begun'; holding: number; to: SystemId; relight: boolean; turns: number }
   /** A lane tuned and open. */
@@ -144,7 +144,10 @@ export type ReportEvent =
   | { kind: 'design-new'; design: number; hull: HullId; name: string; old: string | null }
   /** A warship refitted to another design (§21.4), or a refit dropped because the ship had left. */
   | { kind: 'refitted'; holding: number; ship: number; design: number }
-  | { kind: 'refit-dropped'; holding: number; ship: number; reason: string };
+  | { kind: 'refit-dropped'; holding: number; ship: number; reason: string }
+  /** A fleet reached the last of its destinations, or could not go on (M4_FLEETS.md §22.1). */
+  | { kind: 'fleet-arrived'; fleet: number; system: SystemId }
+  | { kind: 'fleet-blocked'; fleet: number; system: SystemId; to: SystemId };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

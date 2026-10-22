@@ -145,8 +145,8 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   // Ships.
   for (const s of state.ships) {
     if (s.owner !== faction || s.at === null || s.destinations.length > 0 || s.blindJump || s.founding) continue;
-    // Warships are not ordered here: the rivals build none until increment 43 (M4_FLEETS.md §21).
-    if (s.investigating || isHull(s.type)) continue;
+    // Warships and fleets are ordered by increment 43's rules, not here (M4_FLEETS.md §22).
+    if (s.investigating || s.fleet !== null || isHull(s.type)) continue;
     const at = s.at;
     if (s.type === 'survey') {
       if (investigateRefusal(state, s) === null) {

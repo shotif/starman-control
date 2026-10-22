@@ -19,6 +19,7 @@ import { ANOMALIES } from '../../content/anomalies.ts';
 import { EVENTS } from '../../content/events.ts';
 import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { moodFor } from '../../content/music.ts';
+import { isHull } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { ColonyView } from '../../render/ColonyView.ts';
 import type { SceneBuilding } from '../../render/colonyScene.ts';
@@ -29,12 +30,13 @@ import type { SceneLabel, SystemScene } from '../../render/SystemScene.ts';
 import { anomalyAt } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
+import { fleetAt, fleetById, fleetShips } from '../../sim/fleets.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindReachDeci, findRoute, lanesFor } from '../../sim/movement.ts';
 import type { Need } from '../../sim/needs.ts';
 import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
-import { type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
+import { type Fleet, type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { Icon } from '../icons.tsx';
 import { layout, sideSheets } from '../layout.ts';
@@ -48,6 +50,7 @@ import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText,
 import { DesignsView } from './designs.tsx';
 import { DiplomacyView } from './diplomacy.tsx';
 import { EventCard } from './event.tsx';
+import { FleetPanel, fleetLine, fleetStatus, planForFleet } from './fleets.tsx';
 import { GuideCard } from './guide.tsx';
 import {
   give,
@@ -74,6 +77,7 @@ import {
   queueHover,
   selected,
   selectedBody,
+  selectedFleet,
   selectedHolding,
   selectedShip,
   targeting,
@@ -110,8 +114,8 @@ export const SHORTCUTS: readonly [string, string][] = [
 export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['Enter', 'End the turn'],
   ['N', 'The next thing that needs you'],
-  ['M', 'Move the selected ship'],
-  ['Right click', 'Send the selected ship there (Shift: add a waypoint)'],
+  ['M', 'Move the selected ship or fleet'],
+  ['Right click', 'Send the selected ship or fleet there (Shift: add a waypoint)'],
   ['R', 'The report'],
   ['P', 'Your power: colonies, outposts and ships'],
   ['Y', 'Diplomacy: the other powers, and how they regard you'],
@@ -121,7 +125,8 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
 function shipMarks(game: GameState): ShipMark[] {
   return game.ships.map((s) => {
     const colour = FACTIONS[s.owner].colour;
-    if (s.at !== null || !s.blindJump) return { at: s.at, colour };
+    // A fleet with warships is drawn as a wedge beside its power's chevron (M4_FLEETS.md §22.3).
+    if (s.at !== null || !s.blindJump) return { at: s.at, colour, armed: s.fleet !== null && isHull(s.type) };
     const j = s.blindJump;
     return { at: null, from: j.from, to: j.to, progress: (j.turns - j.left + 0.5) / j.turns, colour };
   });
@@ -137,8 +142,21 @@ function orderRoutes(world: World, game: GameState, faction: string): MapRoute[]
     if (h.owner !== faction) continue;
     for (const q of h.queue) if (q.kind === 'lane') out.push({ systems: [h.system, q.to], kind: 'orders' });
   }
+  for (const f of game.fleets) {
+    const at = f.owner === faction ? fleetAt(game, f) : null;
+    if (at === null || f.destinations.length === 0) continue;
+    const path: SystemId[] = [at];
+    let from = at;
+    for (const d of f.destinations) {
+      const leg = findRoute(world, game, f.owner, from, d);
+      if (!leg) break;
+      path.push(...leg.map((h) => h.to));
+      from = d;
+    }
+    out.push({ systems: path, kind: 'orders' });
+  }
   for (const s of game.ships) {
-    if (s.owner !== faction) continue;
+    if (s.owner !== faction || s.fleet !== null) continue;
     if (s.blindJump) {
       out.push({ systems: [s.blindJump.from, s.blindJump.to], kind: 'orders', blind: true });
       continue;
@@ -176,6 +194,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     if (id !== selected.value) selectedBody.value = null;
     selected.value = id;
     selectedShip.value = null;
+    selectedFleet.value = null;
     selectedHolding.value = null;
     view.current?.setSelected(id);
     if (id && panel.value === 'search') panel.value = null;
@@ -192,6 +211,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     // Only the player's own ships take orders; others' are seen, not chosen (M2_WORLDS.md §26.3).
     if (!s || (latest.current.play && s.owner !== latest.current.play.faction)) return;
     selectedShip.value = id;
+    selectedFleet.value = null;
     selectedHolding.value = null;
     selected.value = s.at;
     panel.value = null;
@@ -203,11 +223,26 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const h = latest.current.game.holdings.find((x) => x.id === id);
     if (!h) return;
     selectedShip.value = null;
+    selectedFleet.value = null;
     selectedHolding.value = id;
     selected.value = h.system;
     panel.value = null;
     view.current?.setSelected(h.system);
     view.current?.focus(h.system);
+  }, []);
+  /** Chooses one of the player's fleets (M4_FLEETS.md §22.3). */
+  const pickFleet = useCallback((id: number) => {
+    const { game: g, play: p } = latest.current;
+    const f = fleetById(g, id);
+    if (!f || (p && f.owner !== p.faction)) return;
+    const at = fleetAt(g, f);
+    selectedFleet.value = id;
+    selectedShip.value = null;
+    selectedHolding.value = null;
+    selected.value = at;
+    panel.value = null;
+    view.current?.setSelected(at);
+    if (at) view.current?.focus(at);
   }, []);
   /** Opens a colony's or an outpost's scene, from anywhere (COLONY_VIEW.md §4). */
   const viewColony = useCallback(
@@ -256,6 +291,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const onCommand = useCallback(
     (id: SystemId, shift: boolean) => {
       const { game: g, play: p } = latest.current;
+      const fleet = fleetById(g, selectedFleet.value);
+      if (p && fleet) {
+        give(p, { type: 'fleet-move', fleet: fleet.id, to: id, append: shift });
+        return;
+      }
       const shipId = selectedShip.value;
       const ship = shipId === null ? undefined : g.ships.find((s) => s.id === shipId);
       if (!p || !ship) return;
@@ -492,7 +532,10 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     view.current?.setContent(mapContent(world, latest.current.game));
     view.current?.setSelected(selected.value);
   }, [world, lanesKey, ready]);
-  const shipsKey = JSON.stringify(game.ships.map((s) => [s.at, s.blindJump?.left, s.destinations]));
+  const shipsKey = JSON.stringify([
+    game.ships.map((s) => [s.at, s.blindJump?.left, s.destinations, s.fleet]),
+    game.fleets.map((f) => f.destinations),
+  ]);
   const queuesKey = JSON.stringify(game.holdings.map((h) => h.queue.filter((q) => q.kind === 'lane')));
   useEffect(() => {
     view.current?.setShips(play ? shipMarks(latest.current.game) : []);
@@ -508,8 +551,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       return;
     }
     const routes = orderRoutes(world, g, p.faction);
-    const ship = g.ships.find((s) => s.id === (t?.ship ?? selectedShip.value));
-    const to = t ? t.to : desktop && selectedShip.value !== null ? hoverId : null;
+    const fleet = fleetById(g, t ? t.fleet : selectedFleet.value);
+    const ship = fleet ? undefined : g.ships.find((s) => s.id === (t ? t.ship : selectedShip.value));
+    const to = t ? t.to : desktop && (selectedShip.value !== null || selectedFleet.value !== null) ? hoverId : null;
+    if (fleet && to) {
+      const plan = planForFleet(world, g, fleet, to);
+      if (plan.ok) routes.push({ systems: plan.path, kind: 'plan' });
+    }
     if (ship && to) {
       const plan = planFor(world, g, ship, to, t?.blind ?? false);
       if (plan.ok) routes.push({ systems: plan.path, kind: 'plan', blind: plan.blind });
@@ -517,23 +565,37 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     const lane = lanePreview.value;
     if (lane) routes.push({ systems: [lane.from, lane.to], kind: 'plan' });
     v.setRoutes(routes);
-  }, [shipsKey, queuesKey, ready, t, hoverId, desktop, selectedShip.value, lanePreview.value, world, play]);
+  }, [
+    shipsKey,
+    queuesKey,
+    ready,
+    t,
+    hoverId,
+    desktop,
+    selectedShip.value,
+    selectedFleet.value,
+    lanePreview.value,
+    world,
+    play,
+  ]);
 
-  // Choosing where a ship goes: every star it can reach in one go is framed above the bars.
+  // Choosing where a ship or fleet goes: every star it can reach in one go is framed above the bars.
   const targetShip = t?.ship ?? null;
+  const targetFleet = t?.fleet ?? null;
   const targetBlind = t?.blind ?? false;
   useEffect(() => {
     const v = view.current;
-    if (targetShip === null || !v) return;
+    if ((targetShip === null && targetFleet === null) || !v) return;
     const { game: g } = latest.current;
-    const ship = g.ships.find((s) => s.id === targetShip);
+    const fleet = fleetById(g, targetFleet);
+    const ship = fleet ? fleetShips(g, fleet)[0] : g.ships.find((s) => s.id === targetShip);
     if (!ship?.at) return;
     const from = ship.at;
     const around = targetBlind
       ? world.systems.filter((s) => world.distanceDeci(from, s.id) <= blindReachDeci(g, ship.owner)).map((s) => s.id)
       : (lanesFor(world, g, ship.owner, true).get(from) ?? []).map((h) => h.to);
     v.frameAround(from, around);
-  }, [targetShip, targetBlind, world]);
+  }, [targetShip, targetFleet, targetBlind, world]);
 
   /** Tells the map which part of it is not covered by bars, panels and sheets. */
   const updateStage = useCallback(() => {
@@ -728,6 +790,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 't' && p) panel.value = panel.value === 'research' ? null : 'research';
       else if (k === 'y' && p && game.powers.length > 1) panel.value = panel.value === 'diplomacy' ? null : 'diplomacy';
       else if (k === 'b' && p) panel.value = panel.value === 'designs' ? null : 'designs';
+      else if (k === 'm' && p && selectedFleet.value !== null)
+        targeting.value = { fleet: selectedFleet.value, blind: false, to: null };
       else if (k === 'm' && p && selectedShip.value !== null)
         targeting.value = { ship: selectedShip.value, blind: false, to: null };
       else if (k === 'v' && selected.value) insideSystem.value = insideSystem.value ? null : selected.value;
@@ -754,6 +818,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
   const current = selected.value;
   const ship = selectedShip.value === null ? undefined : game.ships.find((s) => s.id === selectedShip.value);
+  const fleet = fleetById(game, selectedFleet.value);
   const holding =
     selectedHolding.value === null ? undefined : game.holdings.find((h) => h.id === selectedHolding.value);
   const date = formatDate(game.turn);
@@ -762,7 +827,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const shipsAt = (id: SystemId) =>
     play
       ? game.ships
-          .filter((s) => s.owner === play.faction && s.at === id)
+          .filter((s) => s.owner === play.faction && s.at === id && s.fleet === null)
           .map((s: ShipState) => ({
             id: s.id,
             name: s.name,
@@ -801,6 +866,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       })()}
       ships={shipsAt(id)}
       onShip={pickShip}
+      fleets={
+        play
+          ? game.fleets
+              .filter((f) => f.owner === play.faction && fleetAt(game, f) === id)
+              .map((f) => ({ id: f.id, name: f.name, line: fleetLine(game, f), status: fleetStatus(world, game, f) }))
+          : undefined
+      }
+      onFleet={pickFleet}
       others={
         play
           ? game.ships
@@ -857,10 +930,24 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       table={desktop}
       onHolding={pickHolding}
       onView={viewColony}
-      shipsList={<ShipsList world={world} game={game} faction={play.faction} onPick={pickShip} />}
+      shipsList={<ShipsList world={world} game={game} faction={play.faction} onPick={pickShip} onFleet={pickFleet} />}
     />
   );
-  const shipView = (s: ShipState) => play && <ShipPanel world={world} game={game} ship={s} play={play} onGo={go} />;
+  const shipView = (s: ShipState) =>
+    play && <ShipPanel world={world} game={game} ship={s} play={play} onGo={go} onFleet={pickFleet} />;
+  const fleetView = (f: Fleet) =>
+    play && (
+      <FleetPanel
+        key={f.id}
+        world={world}
+        game={game}
+        fleet={f}
+        play={play}
+        onGo={go}
+        onShip={pickShip}
+        onFleet={pickFleet}
+      />
+    );
   const report = play && (
     <ReportView
       world={world}
@@ -1118,6 +1205,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             game={game}
             play={play}
             onShip={pickShip}
+            onFleet={pickFleet}
             onHolding={pickHolding}
             onNeed={onNeed}
             onGo={go}
@@ -1129,9 +1217,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       {desktop && (
         <aside
           class="map-inspector"
-          aria-label={ship ? 'Selected ship' : holding ? 'Selected colony' : 'Selected system'}
+          aria-label={
+            fleet ? 'Selected fleet' : ship ? 'Selected ship' : holding ? 'Selected colony' : 'Selected system'
+          }
         >
-          {ship ? (
+          {fleet ? (
+            fleetView(fleet)
+          ) : ship ? (
             shipView(ship)
           ) : holding ? (
             holdingView(holding)
@@ -1388,6 +1480,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               'menu',
             );
           if (panel.value === 'legend') return sheet('Legend', <Legend />, close, 'legend');
+          if (fleet)
+            return sheet(fleet.name, fleetView(fleet), () => (selectedFleet.value = null), `fleet-${fleet.id}`);
           if (ship) return sheet(ship.name, shipView(ship), () => (selectedShip.value = null), `ship-${ship.id}`);
           if (holding)
             return sheet(
@@ -1564,6 +1658,7 @@ function PlayOutliner({
   game,
   play,
   onShip,
+  onFleet,
   onHolding,
   onNeed,
   onGo,
@@ -1572,6 +1667,7 @@ function PlayOutliner({
   game: GameState;
   play: Play;
   onShip: (id: number) => void;
+  onFleet: (id: number) => void;
   onHolding: (id: number) => void;
   onNeed: (n: Need) => void;
   onGo: (id: SystemId) => void;
@@ -1624,7 +1720,7 @@ function PlayOutliner({
         ))}
       </ul>
       <h2>Ships</h2>
-      <ShipsList world={world} game={game} faction={play.faction} onPick={onShip} />
+      <ShipsList world={world} game={game} faction={play.faction} onPick={onShip} onFleet={onFleet} />
       <h2>Home</h2>
       <HomeWeb world={world} game={game} faction={play.faction} onGo={onGo} />
     </aside>

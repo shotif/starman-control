@@ -181,11 +181,14 @@ const SHAPE: Record<MapHolding['mark'], number> = { circle: 0, square: 1, triang
 const SHIP_VERTEX = `
 attribute vec3 tint;
 attribute vec2 offset;
+attribute float shape;
 uniform float scale;
 uniform vec2 viewport;
 varying vec3 vTint;
+varying float vShape;
 void main() {
   vTint = tint;
+  vShape = shape;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   gl_Position.xy += offset * scale * 2.0 / viewport * gl_Position.w;
   gl_PointSize = 18.0 * scale;
@@ -193,13 +196,20 @@ void main() {
 
 const SHIP_FRAGMENT = `
 varying vec3 vTint;
+varying float vShape;
 void main() {
   vec2 p = gl_PointCoord * 2.0 - 1.0;
-  // A chevron pointing up and to the right: two strokes meeting at the tip.
-  vec2 q = vec2(p.x - p.y, p.x + p.y) * 0.7071;
-  float arm = max(abs(q.x + 0.15) - 0.75, abs(q.y - 0.45) - 0.16);
-  float arm2 = max(abs(q.y - 0.15) - 0.75, abs(q.x - 0.45) - 0.16);
-  float d = min(arm, arm2);
+  float d;
+  if (vShape > 0.5) {
+    // A fleet (M4_FLEETS.md §22.3): a solid wedge pointing right.
+    d = max(-p.x - 0.75, abs(p.y) - (0.75 - p.x) * 0.55);
+  } else {
+    // A chevron pointing up and to the right: two strokes meeting at the tip.
+    vec2 q = vec2(p.x - p.y, p.x + p.y) * 0.7071;
+    float arm = max(abs(q.x + 0.15) - 0.75, abs(q.y - 0.45) - 0.16);
+    float arm2 = max(abs(q.y - 0.15) - 0.75, abs(q.x - 0.45) - 0.16);
+    d = min(arm, arm2);
+  }
   if (d > 0.12) discard;
   float edge = smoothstep(0.0, 0.12, d);
   // Lighter than the power's colour, so a ship stands out against its own rings and lanes.
@@ -244,6 +254,8 @@ export interface ShipMark {
   to?: SystemId;
   progress?: number;
   colour: string;
+  /** A fleet with warships, drawn as a wedge beside its power's chevron (M4_FLEETS.md §22.3). */
+  armed?: boolean;
 }
 
 export interface MapRoute {
@@ -1526,17 +1538,21 @@ export class MapView {
       this.ships = null;
     }
     const at = (id: SystemId | undefined) => this.content.systems[this.index.get(id ?? '') ?? -1]?.pos;
-    const items: { pos: readonly number[]; colour: string; offset: [number, number] }[] = [];
+    const items: { pos: readonly number[]; colour: string; offset: [number, number]; shape: number }[] = [];
     const seen = new Map<string, number>();
+    const rows = new Map<string, number>();
     for (const m of marks) {
       if (m.at) {
-        const key = `${m.at}|${m.colour}`;
+        const key = `${m.at}|${m.colour}|${m.armed ? 1 : 0}`;
         if (seen.has(key)) continue;
         seen.set(key, 1);
         const pos = at(m.at);
-        // Powers at the same system sit one above another.
-        const n = [...seen.keys()].filter((k) => k.startsWith(`${m.at}|`)).length - 1;
-        if (pos) items.push({ pos, colour: m.colour, offset: [19, 17 + n * 15] });
+        // Powers at the same system sit one above another; a power's fleets beside its ships.
+        const row = `${m.at}|${m.colour}`;
+        if (!rows.has(row)) rows.set(row, [...rows.keys()].filter((k) => k.startsWith(`${m.at}|`)).length);
+        const n = rows.get(row) ?? 0;
+        if (pos)
+          items.push({ pos, colour: m.colour, offset: [m.armed ? 35 : 19, 17 + n * 15], shape: m.armed ? 1 : 0 });
       } else {
         const a = at(m.from);
         const b = at(m.to);
@@ -1546,6 +1562,7 @@ export class MapView {
             pos: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t],
             colour: m.colour,
             offset: [0, 0],
+            shape: 0,
           });
       }
     }
@@ -1554,16 +1571,19 @@ export class MapView {
       const pos = new Float32Array(items.length * 3);
       const tint = new Float32Array(items.length * 3);
       const offset = new Float32Array(items.length * 2);
+      const shape = new Float32Array(items.length);
       items.forEach((it, i) => {
         pos.set(it.pos, i * 3);
         colour.set(it.colour);
         tint.set([colour.r, colour.g, colour.b], i * 3);
         offset.set(it.offset, i * 2);
+        shape[i] = it.shape;
       });
       const g = new THREE.BufferGeometry();
       g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       g.setAttribute('tint', new THREE.BufferAttribute(tint, 3));
       g.setAttribute('offset', new THREE.BufferAttribute(offset, 2));
+      g.setAttribute('shape', new THREE.BufferAttribute(shape, 1));
       this.ships = new THREE.Points(g, this.shipMaterial);
       this.ships.renderOrder = 5;
       this.scene.add(this.ships);

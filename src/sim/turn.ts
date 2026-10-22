@@ -7,6 +7,7 @@
 
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
+import { isHull } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
@@ -35,6 +36,7 @@ import {
   yieldsOf,
 } from './economy.ts';
 import { resolveEvents } from './events.ts';
+import { fleetById, moveFleet, placeBuilt, pruneFleets } from './fleets.ts';
 import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
@@ -138,8 +140,20 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     if (p.controller === 'ai')
       for (const o of aiOrders(world, state, p.faction)) applyInPlace(world, state, p.faction, o);
 
-  // 1. Movement. A ship founding a colony or outpost stays to do it.
-  for (const ship of state.ships) if (!ship.founding && !ship.investigating) moveShip(world, state, ship, log(ship));
+  // 1. Movement. A ship founding a colony or outpost stays to do it. A fleet moves as one when its
+  // first ship's turn comes (M4_FLEETS.md §22.1).
+  const moved = new Set<number>();
+  for (const ship of state.ships) {
+    if (ship.fleet !== null) {
+      const fleet = fleetById(state, ship.fleet);
+      if (fleet && !moved.has(fleet.id)) {
+        moved.add(fleet.id);
+        if (!fleet.hold) moveFleet(world, state, fleet, log(ship));
+      }
+      continue;
+    }
+    if (!ship.founding && !ship.investigating) moveShip(world, state, ship, log(ship));
+  }
 
   // 2. Arrivals: surveys (one per system and power, by the first ship there), survey stations,
   // then colonies and outposts founded.
@@ -251,6 +265,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     }
   }
   state.ships = state.ships.filter((s) => !usedUp.has(s.id));
+  pruneFleets(state);
 
   // 3. Production. Lanes being tuned come a turn nearer opening; then each colony's and outpost's
   // industry goes into its queue, and finished items appear (a paid lane begins its tuning).
@@ -345,7 +360,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       } else if (first.kind === 'ship') {
         const ship = makeShip(state, h.owner, first.ship, h.system, first.design ?? null);
         const { governor: _, ...item } = first;
-        log.push({ kind: 'built', holding: h.id, item, ship: ship.id });
+        // A warship joins the fleet waiting here, or forms one (M4_FLEETS.md §22.1).
+        const fleet = isHull(ship.type) ? placeBuilt(state, ship).id : undefined;
+        log.push({ kind: 'built', holding: h.id, item, ship: ship.id, ...(fleet === undefined ? {} : { fleet }) });
       } else if (first.kind === 'refit') {
         // Paid already (checked below, before paying): the ship takes its new design (§21.4).
         const ship = state.ships.find((s) => s.id === first.ship);

@@ -23,12 +23,13 @@ import { formatDate } from '../../sim/calendar.ts';
 import { designStats, queueName, refitTargets, shipDesign } from '../../sim/designs.ts';
 import { observationWords } from '../../sim/discoveries.ts';
 import { eventWords } from '../../sim/events.ts';
+import { fleetById } from '../../sim/fleets.ts';
 import { formatLy } from '../../sim/geometry.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, previewMove } from '../../sim/movement.ts';
 import { type Need, needsOf } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
-import { type GameState, playerPower, type ShipState } from '../../sim/state.ts';
+import { type Fleet, type GameState, playerPower, type ShipState } from '../../sim/state.ts';
 import { amountWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
@@ -36,6 +37,7 @@ import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
 import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
 import { eventTitle } from './event.tsx';
+import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
 import { panel, say, targeting } from './state.ts';
 
 export interface Play {
@@ -56,6 +58,9 @@ export function give(play: Play, o: Order): boolean {
 
 /** "Idle at Tau Ceti", "Bound for Epsilon Eridani: 1 turn", "On a blind jump to Ross 128: lands next turn". */
 export function shipStatus(world: World, game: GameState, ship: ShipState): string {
+  // A ship in a fleet goes where its fleet goes (M4_FLEETS.md §22.2).
+  const fleet = fleetById(game, ship.fleet);
+  if (fleet) return `With the ${fleet.name}: ${fleetStatus(world, game, fleet).replace(/^A/, 'a')}`;
   const j = ship.blindJump;
   if (j && ship.at === null)
     return `On a blind jump to ${world.system(j.to).name}: lands ${j.left <= 1 ? 'when this turn ends' : `in ${j.left} turns`}`;
@@ -91,18 +96,22 @@ export function ShipPanel({
   ship,
   play,
   onGo,
+  onFleet,
 }: {
   world: World;
   game: GameState;
   ship: ShipState;
   play: Play;
   onGo: (id: SystemId) => void;
+  /** Shows the fleet it sails with (M4_FLEETS.md §22.3). */
+  onFleet?: (id: number) => void;
 }) {
   const def = SHIPS[ship.type];
   const moving = ship.destinations.length > 0 || ship.blindJump !== null;
   const inFlight = ship.at === null;
   const reach = blindReachDeci(game, ship.owner);
   const design = shipDesign(game, ship);
+  const sailing = fleetById(game, ship.fleet);
   return (
     <article class="ship-panel" aria-label={ship.name}>
       {ship.at && (
@@ -118,7 +127,24 @@ export function ShipPanel({
         <p class="ship-status">{shipStatus(world, game, ship)}</p>
       </header>
       {design ? <Warship game={game} ship={ship} play={play} /> : <p class="dim">{def.does}</p>}
-      {!inFlight && (
+      {sailing && (
+        <div class="ship-actions">
+          <p>Sails with the {sailing.name}, which it goes where it goes.</p>
+          {onFleet && (
+            <button type="button" class="button" onClick={() => onFleet(sailing.id)}>
+              Show the fleet
+            </button>
+          )}
+          <button
+            type="button"
+            class="button button-quiet"
+            onClick={() => give(play, { type: 'leave-fleet', ship: ship.id })}
+          >
+            Take it out of the fleet
+          </button>
+        </div>
+      )}
+      {!inFlight && !sailing && (
         <div class="ship-actions">
           <button
             type="button"
@@ -229,16 +255,21 @@ export function ShipsList({
   game,
   faction,
   onPick,
+  onFleet,
 }: {
   world: World;
   game: GameState;
   faction: FactionId;
   onPick: (id: number) => void;
+  /** Chooses a fleet (M4_FLEETS.md §22.3). */
+  onFleet?: (id: number) => void;
 }) {
   const idle = (s: ShipState) =>
     s.at !== null && s.destinations.length === 0 && !s.blindJump && !s.hold && !s.founding && !s.investigating;
+  // Fleets first, then the ships that sail alone.
+  const fleets = game.fleets.filter((f) => f.owner === faction);
   const ships = game.ships
-    .filter((s) => s.owner === faction)
+    .filter((s) => s.owner === faction && s.fleet === null)
     .sort((a, b) => Number(idle(b)) - Number(idle(a)) || a.id - b.id);
   return (
     <>
@@ -247,6 +278,13 @@ export function ShipsList({
           Designs
         </button>
       </p>
+      {fleets.length > 0 && onFleet && (
+        <>
+          <h3 class="list-head">Fleets</h3>
+          <FleetRows world={world} game={game} fleets={fleets} onFleet={onFleet} />
+          <h3 class="list-head">Ships sailing alone</h3>
+        </>
+      )}
       <ShipRows world={world} game={game} ships={ships} onPick={onPick} idle={idle} />
     </>
   );
@@ -345,6 +383,7 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     return h ? holdingName(world, game, h) : 'A colony';
   };
   const name = (id: SystemId) => world.system(id).name;
+  const fleetName = (id: number) => fleetById(game, id)?.name ?? 'fleet';
   const body = (system: SystemId, id: string) =>
     bodiesOf(world, game.seed, system).find((b) => b.id === id)?.name ?? id;
   switch (e.kind) {
@@ -388,8 +427,9 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
           : design
             ? withArticle(design)
             : withArticle(itemName(e.item).toLowerCase());
+      const joins = e.fleet !== undefined ? `; she sails with the ${fleetName(e.fleet)}` : '';
       return e.ship !== undefined
-        ? `${holding(e.holding)} built ${what}, the ${shipOf(e.ship)}.`
+        ? `${holding(e.holding)} built ${what}, the ${shipOf(e.ship)}${joins}.`
         : `${holding(e.holding)} built ${what}.`;
     }
     case 'full':
@@ -527,6 +567,10 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     }
     case 'refit-dropped':
       return `The refit of ${shipOf(e.ship)} at ${holding(e.holding)} was dropped, unpaid: ${e.reason}`;
+    case 'fleet-arrived':
+      return `The ${fleetName(e.fleet)} reached ${name(e.system)}.`;
+    case 'fleet-blocked':
+      return `The ${fleetName(e.fleet)} could not go on to ${name(e.to)}: no open lane leads there.`;
   }
 }
 
@@ -563,6 +607,8 @@ function eventPlace(
     }
     case 'jumped':
       return { system: e.to };
+    case 'fleet-blocked':
+      return { system: e.system };
     case 'built':
     case 'full':
     case 'founded':
@@ -661,6 +707,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'design-new': { icon: 'ship', tone: 'growth' },
   refitted: { icon: 'ship', tone: 'growth' },
   'refit-dropped': { icon: 'refused', tone: 'wrong' },
+  'fleet-arrived': { icon: 'ship', tone: 'news' },
+  'fleet-blocked': { icon: 'refused', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -923,6 +971,8 @@ export function planFor(
 export function TargetBar({ world, game, play }: { world: World; game: GameState; play: Play }) {
   const t = targeting.value;
   if (!t) return null;
+  const fleet = fleetById(game, t.fleet);
+  if (fleet) return <FleetTargetBar world={world} game={game} play={play} fleet={fleet} to={t.to} />;
   const ship = game.ships.find((s) => s.id === t.ship);
   if (!ship) return null;
   const plan = t.to ? planFor(world, game, ship, t.to, t.blind) : null;
@@ -943,6 +993,48 @@ export function TargetBar({ world, game, play }: { world: World; game: GameState
             ? `Choose a star within ${formatLy(blindReachDeci(game, ship.owner))} for ${ship.name} to jump to.`
             : `Choose where ${ship.name} goes.`}
       </p>
+      <div class="target-actions">
+        {plan?.ok && (
+          <button type="button" class="button button-primary" onClick={confirm}>
+            Confirm
+          </button>
+        )}
+        <button
+          type="button"
+          class="button button-quiet"
+          onClick={() => {
+            targeting.value = null;
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Choosing where a fleet goes (M4_FLEETS.md §22.3): along lanes only, at its slowest ship's pace. */
+function FleetTargetBar({
+  world,
+  game,
+  play,
+  fleet,
+  to,
+}: {
+  world: World;
+  game: GameState;
+  play: Play;
+  fleet: Fleet;
+  to: SystemId | null;
+}) {
+  const plan = to ? planForFleet(world, game, fleet, to) : null;
+  const confirm = () => {
+    if (!to || !plan?.ok) return;
+    if (give(play, { type: 'fleet-move', fleet: fleet.id, to })) targeting.value = null;
+  };
+  return (
+    <div class="target-bar" role="dialog" aria-label="Choose a destination" data-covers-map>
+      <p>{plan ? plan.text : `Choose where the ${fleet.name} goes.`}</p>
       <div class="target-actions">
         {plan?.ok && (
           <button type="button" class="button button-primary" onClick={confirm}>

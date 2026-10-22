@@ -13,6 +13,7 @@ import { isTechId, TECHS, type TechId } from '../content/techs.ts';
 import { isTreatyKind } from '../content/treaties.ts';
 import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
+import { RETREATS, STANCES, TARGETS } from './fleets.ts';
 import { techCost } from './research.ts';
 import { beaconSlots, contactWith, type GameState, MEMORY_KINDS, type MemoryKind, powerOf } from './state.ts';
 import { isSold, sellerOf } from './treaties.ts';
@@ -31,6 +32,24 @@ export function shapeProblems(raw: unknown): string[] {
     out.push('seed is not a whole number from 1 to 2^32 − 1');
   if (!isWhole(raw.turn, 1)) out.push('turn is not a whole number from 1');
   if (!isWhole(raw.nextShipId, 1)) out.push('nextShipId is not a whole number from 1');
+  if (!isWhole(raw.nextFleetId, 1)) out.push('nextFleetId is not a whole number from 1');
+  // Fleets (M4_FLEETS.md §22.4).
+  if (
+    !Array.isArray(raw.fleets) ||
+    !raw.fleets.every(
+      (f) =>
+        isRecord(f) &&
+        isWhole(f.id, 1) &&
+        isFactionId(f.owner) &&
+        typeof f.name === 'string' &&
+        isStrings(f.destinations) &&
+        typeof f.hold === 'boolean' &&
+        STANCES.includes(f.stance as never) &&
+        TARGETS.includes(f.target as never) &&
+        RETREATS.includes(f.retreat as never),
+    )
+  )
+    out.push('fleets are not a list of fleets');
   if (!isWhole(raw.nextHoldingId, 1)) out.push('nextHoldingId is not a whole number from 1');
   // Treaties and offers (M3_NEIGHBOURS.md §21, §23).
   const isAmount = (a: unknown) =>
@@ -113,6 +132,7 @@ export function shapeProblems(raw: unknown): string[] {
         out.push(`power ${i} memories are not a list of memories`);
       if (!Array.isArray(p.gifts) || !p.gifts.every((g) => isRecord(g) && isFactionId(g.to) && isWhole(g.credits, 1)))
         out.push(`power ${i} gifts are not a list of gifts`);
+      if (!isWhole(p.fleetsMade)) out.push(`power ${i} fleets made is not a whole number`);
       // Designs (M4_FLEETS.md §21.3).
       if (
         !Array.isArray(p.designs) ||
@@ -196,6 +216,7 @@ export function shapeProblems(raw: unknown): string[] {
       }
       if (typeof s.type !== 'string' || !(s.type in SHIPS)) out.push(`ship ${i} is of an unknown type`);
       if (s.design !== null && !isWhole(s.design, 1)) out.push(`ship ${i} has a design that is no design`);
+      if (s.fleet !== null && !isWhole(s.fleet, 1)) out.push(`ship ${i} sails with a fleet that is no fleet`);
       if (s.at !== null && typeof s.at !== 'string') out.push(`ship ${i} is nowhere`);
       if (!isStrings(s.destinations)) out.push(`ship ${i} destinations are not a list`);
       if (typeof s.hold !== 'boolean' || typeof s.autoSurvey !== 'boolean')
@@ -434,6 +455,14 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (s.at !== null && !world.hasSystem(s.at)) out.push(`ship ${s.name} is at ${s.at}, which is not a system`);
     for (const d of s.destinations)
       if (!world.hasSystem(d)) out.push(`ship ${s.name} is bound for ${d}, which is not a system`);
+    // A warship sails in a fleet of its owner's, at one place with the rest; a survey ship in none (§22.1).
+    const fleet = state.fleets.find((f) => f.id === s.fleet);
+    if (s.fleet !== null && (!fleet || fleet.owner !== s.owner))
+      out.push(`ship ${s.name} sails with no fleet of its power's`);
+    if (isHull(s.type) && s.fleet === null) out.push(`warship ${s.name} sails in no fleet`);
+    if (s.fleet !== null && (s.type === 'survey' || s.at === null)) out.push(`ship ${s.name} cannot sail in a fleet`);
+    if (s.fleet !== null && s.destinations.length > 0)
+      out.push(`ship ${s.name} has destinations of its own in a fleet`);
     // A warship is built to a design of its owner's, of its hull; a civil ship to none (§21.3).
     const design = state.powers.find((p) => p.faction === s.owner)?.designs.find((d) => d.id === s.design);
     if (isHull(s.type) ? !design || design.hull !== s.type : s.design !== null)
@@ -444,6 +473,17 @@ export function stateProblems(world: World, state: GameState): string[] {
       if (j.left > j.turns) out.push(`ship ${s.name} has more of its jump left than it takes`);
       if (s.at === null && j.left === j.turns) out.push(`ship ${s.name} has left without its jump beginning`);
     }
+  }
+  let lastFleet = 0;
+  for (const f of state.fleets) {
+    if (f.id <= lastFleet) out.push(`fleet ${f.id} is out of order or listed twice`);
+    if (f.id >= state.nextFleetId) out.push(`fleet ${f.id} is numbered past the next fleet`);
+    lastFleet = f.id;
+    const ships = state.ships.filter((s) => s.fleet === f.id);
+    if (ships.length === 0) out.push(`fleet ${f.name} has no ships`);
+    if (new Set(ships.map((s) => s.at)).size > 1) out.push(`fleet ${f.name}'s ships are not at one place`);
+    for (const d of f.destinations)
+      if (!world.hasSystem(d)) out.push(`fleet ${f.name} is bound for ${d}, which is not a system`);
   }
   return out;
 }

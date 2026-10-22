@@ -34,6 +34,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 19. [Art and its cost](#19-art-and-its-cost)
 20. [Decisions for the owner](#20-decisions-for-the-owner)
 21. [Increment 41 in detail: warships](#21-increment-41-in-detail-warships-written-before-building-it)
+22. [Increment 42 in detail: fleets](#22-increment-42-in-detail-fleets-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -564,4 +565,95 @@ and built, on the phone, tablet and desktop.
 - **State version 16**, as §21.8.
 - **Tests:** `warships.test.ts` (15 tests); 520 unit tests; `warships.spec.ts` on the phone, tablet
   and desktop; the tree's journey counts seven tabs.
+
+## 22. Increment 42 in detail: fleets (written before building it)
+
+**Goals.** D-61 as decided (A): warships sail in **fleets**, each named and ordered as one, with
+the battle orders (stance, target priority, retreat point) that increment 44 will use, so several
+fleets in one system can fight as task forces. Fleets are formed, merged and split at will; colony
+and outpost ships may sail with them. On the map and in every list a fleet is one thing.
+
+**Out of scope.** War, interception and battles (43, 44); repairs (44); troop transports (46); the
+rivals' fleets (43 and 48: they build no warships until then).
+
+### 22.1 Fleets
+
+- **Every warship is in a fleet;** survey ships never are (they jump blind and stop to survey);
+  colony and outpost ships may join one, to sail under escort.
+- **A warship built** joins its power's fleet that waits at that system with no destinations, or
+  forms a new fleet there.
+- **Names:** each power counts its fleets in its own word, all fiction: the Authority's
+  *squadrons*, the Cooperative's *flotillas*, the Wake's *packs*, the Concord's *circles* and the
+  Moot's *drifts* (*1st Squadron*, *2nd Pack*). A fleet may be renamed (up to 24 characters).
+- **Moving:** a fleet moves along lanes like a ship, at the pace of its slowest ship (the fewest
+  jump points among them; a jump drive adds its point only to its own ship), with waypoints, *Stop*
+  and *Hold*. Its ships never have destinations of their own.
+- **Battle orders**, kept for increment 44: a **stance** (*engage*, *defend* or *evade*; *defend* at
+  first), a **target** (*warships*, *the largest*, *the smallest* or *transports*; *warships* at
+  first) and a **retreat point** (when a quarter, half or three quarters of its strength is lost, or
+  *never*; half at first).
+- **Forming, merging and splitting** (orders `form-fleet`, `merge-fleet`, `split-fleet`,
+  `join-fleet`): ships and fleets of one power at the same system, none on a blind jump. Ships
+  split off form a new fleet if any is a warship; civil ships split off sail alone. A fleet left
+  with no ships is gone.
+
+### 22.2 Civil ships in a fleet
+
+A colony or outpost ship in a fleet goes where its fleet goes: its own *Move* is refused (*the
+Fulmar sails with the 1st Squadron: order the fleet, or take it out first*). Told to found, it
+leaves the fleet and stays to found as before.
+
+### 22.3 On the screen
+
+- **The map:** a power's fleets at a system are drawn as one wedge beside its ships' chevron, in its
+  colour; a fleet's route as a ship's.
+- **A fleet's panel** (a sheet on a phone, the inspector on a desktop): its name and *Rename*, where
+  it is or is bound, its ships with their designs, its attack, shields and structure in all, *Move*,
+  *Stop* and *Hold*, its three battle orders as choices, *Split off* for the ships ticked, *Merge
+  into* each other fleet of ours at the system, and *Add* for each civil ship there.
+- **A ship in a fleet:** its panel says which, with *Show the fleet* and *Take it out of the fleet*.
+- **The Empire's tab** is *Fleets and ships* (fleets first), and the desktop's outliner lists fleets;
+  the system panel lists the fleets at a system, ours to choose and others' as seen.
+- **M** moves the chosen fleet, as it moves a ship.
+
+### 22.4 State
+
+`GameState.fleets` (each: an id, its owner, its name, its destinations, whether it holds, and its
+stance, target and retreat point) and `nextFleetId`; `ShipState.fleet`; `PowerState.fleetsMade`
+for naming. **State version 17**; a save from before puts each power's warships at each system into
+a fleet of their own.
+
+### 22.5 Tests
+
+`fleets.test.ts`: a warship built joins the fleet waiting there or forms one; forming, merging,
+splitting and joining, and what is refused; a fleet moves at its slowest ship's pace, with
+waypoints, and holds; its battle orders; a civil ship's own move refused, and founding taking it
+out; a fleet with no ships gone; the migration from version 16. `fleets.spec.ts`: two warships at
+the capital merged into one fleet, given a stance and sent to Alpha Centauri, on the phone, tablet
+and desktop.
+
+### Increment 42: fleets (22 October 2026)
+
+- **Fleets as §22.1** (`src/sim/fleets.ts`): `GameState.fleets`, each ship's `fleet`; a warship
+  built joins the fleet waiting at its yard with no destinations, or forms one, named in its power's
+  word (`fleetWord` in `src/content/factions.ts`); a fleet moves as one when its first-built ship's
+  turn to move comes, at the fewest jump points among its ships, and is reported as *fleet-arrived*
+  or *fleet-blocked*; its battle orders are kept for increment 44. A fleet left with no ships is
+  taken away as the turn ends and after every order that could empty it.
+- **Orders:** `form-fleet`, `merge-fleet`, `split-fleet`, `join-fleet`, `leave-fleet` (a warship
+  leaving forms a fleet of its own; a civil ship sails alone), `fleet-move` (with waypoints),
+  `fleet-stop`, `fleet-hold`, `fleet-orders` and `rename-fleet`.
+- **Civil ships as §22.2:** their own *Move*, *Stop* and *Hold* are refused while they sail with a
+  fleet; told to found, they leave it. A colony or outpost ship needs you only when its fleet is at
+  rest where it could found.
+- **On the screen as §22.3:** a wedge beside a power's chevron where it has a fleet; the fleet's
+  panel (its ships with a tick each to split them off, its strength, *Move*, *Stop*, *Hold*,
+  *Rename*, its stance, target and retreat as choices, and *Merge it into* and *Add it to* for
+  what else is at the system); a ship's panel says which fleet it sails with; the Empire's *Ships*
+  tab and the desktop's outliner list *Fleets* and *Ships sailing alone* (the tab keeps its short
+  name, *Ships*, so the phone's four tabs keep their width); the system panel lists our fleets
+  there; **M** and a right click move the chosen fleet.
+- **State version 17**, as §22.4.
+- **Tests:** `fleets.test.ts` (8 tests); 528 unit tests; `fleets.spec.ts` on the phone, tablet and
+  desktop.
 

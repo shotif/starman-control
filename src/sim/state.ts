@@ -20,7 +20,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 16;
+export const STATE_VERSION = 17;
 
 export interface Stockpile {
   metals: number;
@@ -74,6 +74,31 @@ export interface PowerState {
   gifts: { to: FactionId; credits: number }[];
   /** Its warships' designs, the yard's and its own, in the order made (M4_FLEETS.md §21.3). */
   designs: Design[];
+  /** Fleets it has ever formed, for naming the next (M4_FLEETS.md §22.1). */
+  fleetsMade: number;
+}
+
+/** How a fleet fights (M4_FLEETS.md §6, §22.1): the range it seeks. */
+export type Stance = 'engage' | 'defend' | 'evade';
+/** What a fleet's ships fire at first. */
+export type TargetPriority = 'warships' | 'largest' | 'smallest' | 'transports';
+/** The share of its strength, in percent, whose loss sends a fleet home; 100: never. */
+export type RetreatPoint = 25 | 50 | 75 | 100;
+
+/**
+ * A fleet (M4_FLEETS.md §22.1): ships of one power at one system, named and ordered as one. Its
+ * ships are those whose `fleet` is its id; it moves where they all are.
+ */
+export interface Fleet {
+  id: number;
+  owner: FactionId;
+  name: string;
+  /** Where it is going along lanes, in order (waypoints). */
+  destinations: SystemId[];
+  hold: boolean;
+  stance: Stance;
+  target: TargetPriority;
+  retreat: RetreatPoint;
 }
 
 /**
@@ -243,6 +268,8 @@ export interface ShipState {
   investigating: { system: SystemId; left: number } | null;
   /** A warship's design, one of its power's (M4_FLEETS.md §21.3); null for a civil ship. */
   design: number | null;
+  /** The fleet it sails with (M4_FLEETS.md §22.1): always one for a warship, none for a survey ship. */
+  fleet: number | null;
 }
 
 /** A colony or an outpost (M1_COLONIES.md §1). */
@@ -287,6 +314,9 @@ export interface GameState {
   /** In id order. */
   ships: ShipState[];
   nextShipId: number;
+  /** In id order (M4_FLEETS.md §22.1). */
+  fleets: Fleet[];
+  nextFleetId: number;
   /** Colonies and outposts, in id order. */
   holdings: Holding[];
   nextHoldingId: number;
@@ -326,6 +356,7 @@ export function makeShip(
     founding: null,
     investigating: null,
     design,
+    fleet: null,
   };
   state.nextShipId++;
   power.shipsBuilt++;
@@ -436,10 +467,13 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       lastEvent: 0,
       lasting: [],
       designs: [],
+      fleetsMade: 0,
     })),
     lanes,
     ships: [],
     nextShipId: 1,
+    fleets: [],
+    nextFleetId: 1,
     holdings: [],
     nextHoldingId: 1,
     reports: [],

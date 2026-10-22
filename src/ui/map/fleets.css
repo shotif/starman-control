@@ -1,0 +1,93 @@
+/* A fleet's panel and rows (M4_FLEETS.md §22.3). */
+.fleet-panel header h2 {
+  margin: 0.2rem 0;
+}
+
+.fleet-panel h3 {
+  margin: 0.8rem 0 0.3rem;
+  font-size: 1rem;
+}
+
+.fleet-rename {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.3rem 0;
+}
+
+.fleet-rename input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 0.5rem;
+  border: 1px solid rgba(126, 170, 255, 0.3);
+  background: rgba(5, 9, 18, 0.9);
+  color: var(--text);
+  font: inherit;
+}
+
+.fleet-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  border: 0;
+}
+
+.fleet-choices legend {
+  width: 100%;
+  margin-bottom: 0.2rem;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.fleet-choices .toggle-option {
+  padding: 0 0.6rem;
+  border-left: 1px solid var(--panel-border);
+}
+
+.fleet-choices .toggle-option[aria-pressed="true"] {
+  border-color: var(--accent);
+}
+
+.fleet-ships,
+.fleet-here {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.fleet-ships li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.5rem;
+  align-items: center;
+  min-height: 44px;
+}
+
+.fleet-ships input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+}
+
+.fleet-wedge {
+  grid-area: chev;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 13px solid var(--faction);
+}
+
+/* The headings between the fleets and the ships that sail alone, in a list of ships. */
+.list-head {
+  margin: 0.6rem 0 0.3rem;
+  color: var(--text-muted);
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

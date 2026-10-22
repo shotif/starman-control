@@ -6,6 +6,8 @@ import type { ViewMode } from '../../render/MapView.ts';
 
 export const selected = signal<SystemId | null>(null);
 export const selectedShip = signal<number | null>(null);
+/** A fleet being looked at (M4_FLEETS.md §22.3). */
+export const selectedFleet = signal<number | null>(null);
 /** A colony or outpost being looked at, in its system. */
 export const selectedHolding = signal<number | null>(null);
 export const mode = signal<ViewMode | null>(null);
@@ -40,8 +42,8 @@ export const queueHover = signal<number | null>(null);
 /** A lane being looked at in a colony's or outpost's list, drawn on the map (desktop hover). */
 export const lanePreview = signal<{ from: SystemId; to: SystemId } | null>(null);
 
-/** Choosing where a ship goes: the ship, whether it jumps blind, and the star chosen so far. */
-export const targeting = signal<{ ship: number; blind: boolean; to: SystemId | null } | null>(null);
+/** Choosing where a ship or a fleet goes: which, whether it jumps blind, and the star chosen so far. */
+export const targeting = signal<{ ship?: number; fleet?: number; blind: boolean; to: SystemId | null } | null>(null);
 
 /** A short message, such as why an order was refused. */
 export const toast = signal<string | null>(null);
@@ -58,6 +60,7 @@ export function say(message: string): void {
 export function resetMapState(): void {
   selected.value = null;
   selectedShip.value = null;
+  selectedFleet.value = null;
   selectedHolding.value = null;
   panel.value = null;
   hover.value = null;

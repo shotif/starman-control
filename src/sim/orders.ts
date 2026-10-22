@@ -15,11 +15,21 @@ import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.t
 import { designRefusal, makeDesign, retireRefusal } from './designs.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
 import { choiceRefusal } from './events.ts';
+import { fleetAt, fleetById, fleetRefusal, formFleet, formRefusal, pruneFleets, splitOff } from './fleets.ts';
 import { formatLy } from './geometry.ts';
 import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
-import { type Amount, type GameState, powerOf, type ShipState, type TaxRate } from './state.ts';
+import {
+  type Amount,
+  type GameState,
+  powerOf,
+  type RetreatPoint,
+  type ShipState,
+  type Stance,
+  type TargetPriority,
+  type TaxRate,
+} from './state.ts';
 import {
   answerOffer,
   answerRefusal,
@@ -77,7 +87,48 @@ export type Order =
   | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind }
   /** A warship design of the power's own (M4_FLEETS.md §21.3), and one taken off the build lists. */
   | { type: 'design'; hull: HullId; name: string; modules: ModuleId[] }
-  | { type: 'retire-design'; design: number };
+  | { type: 'retire-design'; design: number }
+  /** Fleets (M4_FLEETS.md §22.1): formed, merged, split, joined and left; moved, stopped, held and given battle orders. */
+  | { type: 'form-fleet'; ships: number[] }
+  | { type: 'merge-fleet'; fleet: number; into: number }
+  | { type: 'split-fleet'; fleet: number; ships: number[] }
+  | { type: 'join-fleet'; ship: number; fleet: number }
+  | { type: 'leave-fleet'; ship: number }
+  | { type: 'fleet-move'; fleet: number; to: SystemId; append?: boolean }
+  | { type: 'fleet-stop'; fleet: number }
+  | { type: 'fleet-hold'; fleet: number; hold: boolean }
+  | { type: 'fleet-orders'; fleet: number; stance?: Stance; target?: TargetPriority; retreat?: RetreatPoint }
+  | { type: 'rename-fleet'; fleet: number; name: string };
+
+type FleetOrder = Extract<
+  Order,
+  {
+    type:
+      | 'merge-fleet'
+      | 'split-fleet'
+      | 'join-fleet'
+      | 'leave-fleet'
+      | 'fleet-stop'
+      | 'fleet-hold'
+      | 'fleet-orders'
+      | 'rename-fleet';
+  }
+>;
+
+const FLEET_ORDERS: readonly string[] = [
+  'merge-fleet',
+  'split-fleet',
+  'join-fleet',
+  'leave-fleet',
+  'fleet-stop',
+  'fleet-hold',
+  'fleet-orders',
+  'rename-fleet',
+];
+
+function isFleetOrder(o: Order): o is FleetOrder {
+  return FLEET_ORDERS.includes(o.type);
+}
 
 type HoldingOrder = Extract<Order, { holding: number }>;
 type ResearchOrder = Extract<Order, { tech: TechId }>;
@@ -157,6 +208,20 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'answer') return choiceRefusal(state, faction, order.choice);
   if (order.type === 'gift') return giftRefusal(state, faction, order.to, order.credits);
   if (order.type === 'design') return designRefusal(powerOf(state, faction), order.hull, order.name, order.modules);
+  if (order.type === 'form-fleet') return formRefusal(state, faction, order.ships);
+  if (isFleetOrder(order)) return fleetRefusal(state, faction, order);
+  if (order.type === 'fleet-move') {
+    const f = fleetById(state, order.fleet);
+    if (!f || f.owner !== faction) return 'There is no such fleet of yours.';
+    const at = fleetAt(state, f);
+    if (at === null) return `The ${f.name} has no ships.`;
+    if (!world.hasSystem(order.to)) return 'There is no such system.';
+    const from = order.append ? (f.destinations.at(-1) ?? at) : at;
+    if (from === order.to) return `The ${f.name} is already there.`;
+    if (!findRoute(world, state, faction, from, order.to))
+      return `No open lane leads to ${world.system(order.to).name}.`;
+    return null;
+  }
   if (order.type === 'retire-design') return retireRefusal(powerOf(state, faction), order.design);
   if (
     order.type === 'offer' ||
@@ -177,6 +242,13 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
+  // A ship in a fleet goes where its fleet goes (M4_FLEETS.md §22.2).
+  const sailing = fleetById(state, ship.fleet);
+  if (
+    sailing &&
+    (order.type === 'move' || order.type === 'blind-jump' || order.type === 'stop' || order.type === 'hold')
+  )
+    return `The ${ship.name} sails with the ${sailing.name}: order the fleet, or take it out first.`;
   if (order.type === 'stop' || order.type === 'hold') return null;
   if (order.type === 'investigate') return investigateRefusal(state, ship);
   if (order.type === 'auto-survey') return ship.type === 'survey' ? null : 'Only survey ships survey.';
@@ -252,6 +324,10 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
     if (d) d.retired = true;
     return { ok: true, state: next };
   }
+  if (order.type === 'form-fleet' || isFleetOrder(order) || order.type === 'fleet-move') {
+    applyFleetOrder(next, faction, order);
+    return { ok: true, state: next };
+  }
   if (order.type === 'offer') {
     makeOffer(next, faction, order.to, order.treaty, order.give, order.get);
     return { ok: true, state: next };
@@ -314,6 +390,11 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
     }
     case 'colonise':
     case 'found-outpost':
+      // Told to found, it leaves its fleet (M4_FLEETS.md §22.2).
+      if (ship.fleet !== null) {
+        ship.fleet = null;
+        pruneFleets(next);
+      }
       ship.founding = { kind: order.type === 'colonise' ? 'colony' : 'outpost', body: order.body };
       ship.destinations = [];
       ship.blindJump = null;
@@ -352,4 +433,63 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
       break;
   }
   return { ok: true, state: next };
+}
+
+/** Puts a fleet order already checked into effect (M4_FLEETS.md §22.1). */
+function applyFleetOrder(
+  next: GameState,
+  faction: FactionId,
+  order: FleetOrder | Extract<Order, { type: 'form-fleet' | 'fleet-move' }>,
+): void {
+  const ships = (ids: readonly number[]) => next.ships.filter((s) => ids.includes(s.id));
+  if (order.type === 'form-fleet') {
+    formFleet(next, faction, ships(order.ships));
+    pruneFleets(next);
+    return;
+  }
+  if (order.type === 'join-fleet') {
+    const s = next.ships.find((x) => x.id === order.ship);
+    if (s) {
+      s.fleet = order.fleet;
+      s.destinations = [];
+      s.hold = false;
+    }
+    pruneFleets(next);
+    return;
+  }
+  if (order.type === 'leave-fleet') {
+    const s = next.ships.find((x) => x.id === order.ship);
+    if (s) splitOff(next, [s]);
+    return;
+  }
+  const f = fleetById(next, order.fleet);
+  if (!f) return;
+  switch (order.type) {
+    case 'merge-fleet':
+      for (const s of next.ships) if (s.fleet === f.id) s.fleet = order.into;
+      pruneFleets(next);
+      break;
+    case 'split-fleet':
+      splitOff(next, ships(order.ships));
+      break;
+    case 'fleet-move':
+      f.destinations = order.append ? [...f.destinations, order.to] : [order.to];
+      f.hold = false;
+      break;
+    case 'fleet-stop':
+      f.destinations = [];
+      break;
+    case 'fleet-hold':
+      f.hold = order.hold;
+      if (order.hold) f.destinations = [];
+      break;
+    case 'fleet-orders':
+      if (order.stance !== undefined) f.stance = order.stance;
+      if (order.target !== undefined) f.target = order.target;
+      if (order.retreat !== undefined) f.retreat = order.retreat;
+      break;
+    case 'rename-fleet':
+      f.name = order.name.trim();
+      break;
+  }
 }

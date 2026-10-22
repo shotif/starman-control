@@ -18,6 +18,7 @@ import {
   treasuryOf,
   unworkedDistricts,
 } from './economy.ts';
+import { fleetById } from './fleets.ts';
 import { canResearch } from './research.ts';
 import { type GameState, powerOf } from './state.ts';
 import type { World } from './world.ts';
@@ -76,6 +77,10 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
       continue;
     const canFound =
       s.type === 'colony' || s.type === 'outpost' ? settleable(world, state, faction, s.at, s.type).length : 0;
+    // A ship in a fleet waits with it (M4_FLEETS.md §22.2): only a colony or outpost ship of a fleet
+    // at rest, where it could found, needs you.
+    const fleet = fleetById(state, s.fleet);
+    if (fleet && (fleet.destinations.length > 0 || fleet.hold || canFound === 0)) continue;
     out.push({
       kind: 'idle-ship',
       ship: s.id,

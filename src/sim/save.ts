@@ -6,9 +6,11 @@
 
 import { FACTIONS, type FactionId, isFactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
+import { isHull } from '../content/ships.ts';
 import { sharesTongue } from './contact.ts';
 import { refreshYards } from './designs.ts';
 import { startZoning } from './economy.ts';
+import { formFleet } from './fleets.ts';
 import { capitalHolding, type GameState, type Holding, type PowerState, STATE_VERSION } from './state.ts';
 import { shapeProblems, stateProblems } from './validate.ts';
 import { laneEnds, type World } from './world.ts';
@@ -227,6 +229,27 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     });
     const ships = (g.ships as Raw[]).map((s) => ({ ...s, design: null }));
     return { ...g, version: 16, powers, ships };
+  },
+  /**
+   * 16 → 17 (M4 increment 42): fleets. Each power's warships at each system form a fleet of their
+   * own, named in its tradition; every other ship sails alone.
+   */
+  16: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
+    const game = { ...g, version: 17, fleets: [], nextFleetId: 1 } as Raw;
+    game.powers = (g.powers as Raw[]).map((p) => ({ ...p, fleetsMade: 0 }));
+    game.ships = (g.ships as Raw[]).map((s) => ({ ...s, fleet: null }));
+    const state = game as unknown as GameState;
+    for (const s of state.ships)
+      if (isHull(s.type) && s.fleet === null && s.at !== null) {
+        const at = s.at;
+        formFleet(
+          state,
+          s.owner,
+          state.ships.filter((x) => x.owner === s.owner && x.at === at && isHull(x.type)),
+        );
+      }
+    return game;
   },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
