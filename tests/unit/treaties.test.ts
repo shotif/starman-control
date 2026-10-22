@@ -319,17 +319,14 @@ describe('the rivals deal (§21.4)', () => {
       { type: 'offer', to: 'frontier', treaty: 'border' },
       { type: 'offer', to: 'frontier', treaty: 'trade' },
     ]);
-    // The Wake wants shared research with the Cooperative (its regard 10, as it asks), whose regard
-    // for it (5) falls short of the 10 it asks, and to sell the Authority passage (with 100 credits
-    // to pay for it), whose regard (−5) falls short of the 0 it asks (§23.6): a gift of 50 to each.
+    // The Wake wants to sell the Authority passage (with 100 credits to pay for it), whose regard
+    // (−5) falls short of the 0 it asks (§23.6): a gift of 50. It wants shared research with the
+    // Cooperative too, but the Cooperative's regard for it (5) is 15 short of the 20 it asks: too far.
     g.turn = 3;
     const gifts = () => dealings(world, g, 'hollow-wake').filter((o) => o.type === 'gift');
     powerOf(g, 'sta').treasury = 100;
     powerOf(g, 'hollow-wake').treasury = 300;
-    expect(gifts()).toEqual([
-      { type: 'gift', to: 'sta', credits: 50 },
-      { type: 'gift', to: 'frontier', credits: 50 },
-    ]);
+    expect(gifts()).toEqual([{ type: 'gift', to: 'sta', credits: 50 }]);
     powerOf(g, 'hollow-wake').treasury = 100;
     expect(gifts()).toEqual([]);
     // Gone cold: notice.

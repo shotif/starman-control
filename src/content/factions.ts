@@ -137,8 +137,9 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     ],
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
     regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
-    // Trade and peace: both once warm.
-    asks: { 'open-lanes': 10, 'shared-research': 10, border: 10, trade: 0, passage: -10, protection: 0 },
+    // Trade and peace once warm; its research a little warmer (20, tuned in M3's proof: at 10 its
+    // shared research with the Wake took it past 25 technologies by turn 100 on three seeds).
+    asks: { 'open-lanes': 10, 'shared-research': 20, border: 10, trade: 0, passage: -10, protection: 0 },
     sells: [],
     lawful: true,
     giftCredits: 5,

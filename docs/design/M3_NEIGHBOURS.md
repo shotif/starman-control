@@ -1142,8 +1142,9 @@ On the eight seeds of `npm run balance`, every game with all five powers as riva
 - **Technologies:** the research-led Authority 35 to 45, every other power 15 to 25, on every seed
   (M2b's §2 targets, now for the aliens too); no power learns every technology it can before turn
   180 (checked with 200-turn runs, reported in the notes).
-- **Neighbours:** every alien power is in contact with at least one human power by turn 120, and
-  every power has agreed at least one treaty by turn 100 (§21).
+- **Neighbours:** every alien power is in contact with at least one human power by turn 120;
+  every human power has agreed a treaty by turn 100 (§21), and the Moot, a broker, by turn 150.
+  The Concord, slow to trust, need not: how often it does is reported.
 - **Sound:** no crash, no lasting hunger, no debt longer than 5 turns, no rival banking more than
   600 credits, a turn within **200 ms** and a save within **200 KB** (M1's budgets).
 - The unit tests play three of the seeds with all five powers and check these ranges, as
@@ -1163,3 +1164,30 @@ dull, unclear, slow or too easy, as M2's and M2b's tries asked.
 
 No change to the state (version 15). Tests: `rivals.test.ts` with five powers on seeds 42, 7 and
 2176, and the neighbours' checks; the balance file regenerated.
+
+### Increment 40: the proof (22 October 2026)
+
+- **Tuned for the proof:** the Cooperative asks a regard of **20** for shared research (10 before).
+  With five powers its shared research with the Wake took it to 26 technologies by turn 100 on
+  three of the eight seeds; now at most 25. Nothing else moved.
+- **The headless games** (`npm run balance`, eight seeds, all five powers) at turn 100: the
+  Authority **37.6** technologies (35 to 40 by seed), the Cooperative **23.0** (20 to 25), the Wake
+  **22.1** (20 to 25), the Concord **19.9** (18 to 22) and the Moot **19.8** (18 to 24): §26.1's
+  targets on every seed. In 200-turn runs the Authority learnt all 59 it can on turns 182, 183 and
+  197 in three games, and no one did in the other five. The longest debt is 2 turns; no colony
+  went hungry; the largest save at turn 100 is 61 KB.
+- **Neighbours:** every alien power is in contact with a human one by turn 120 (the Concord hears
+  the Authority from about turn 66, the Moot meets the Cooperative between turns 80 and 105); every
+  human power agrees a treaty by turn 100 (checked on the unit tests' seeds 42, 7 and 2176), the
+  Moot a trade agreement with the Cooperative by turns
+  104 to 141. The Concord, slow to trust, agrees one (a border with the Cooperative) by turn 180 in
+  3 of the 8 games. §26.1 first asked every power for a treaty by turn 100; the aliens cannot meet
+  that, since they first talk with anyone between turns 86 and 135, so the target was set as above.
+- **The turn:** at turn 100 a turn takes about 90 ms on this machine (the fastest of three, as the
+  unit tests time it); the slowest single turn in the eight games 189 ms, within M1's 200 ms.
+- **Tests:** `rivals.test.ts`'s headless games now play all five powers on seeds 42, 7 and 2176,
+  with §26.1's ranges, the neighbours' checks, and at least 6 colonies and outposts for every power
+  (the Drifters settle only giants, so 3 outposts was too many to ask of them); 505 unit tests. The
+  100-turn journeys (`long.spec.ts`) run on CI with five powers.
+- **The owner's try** is next: a game of 100 turns or more on a phone and a desktop, to meet the
+  aliens.

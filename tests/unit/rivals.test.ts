@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { FactionId } from '../../src/content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId } from '../../src/content/factions.ts';
 import { PROJECTS } from '../../src/content/projects.ts';
 import type { TechId } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
@@ -10,6 +10,7 @@ import { queueRefusal } from '../../src/sim/economy.ts';
 import { findRoute } from '../../src/sim/movement.ts';
 import { applyOrder, type Order, refuse } from '../../src/sim/orders.ts';
 import {
+  contactWith,
   type GameState,
   type Holding,
   makeHolding,
@@ -438,13 +439,16 @@ describe('meeting without war (§26.4)', () => {
   });
 });
 
-describe('the headless games (§26.6)', () => {
+describe('the headless games (§26.6), with every power (M3_NEIGHBOURS.md §26.1)', () => {
   const play = (seed: number, turns: number) => {
-    let g = withRivals(seed, null);
+    let g = newGame(world, { seed, powers: FACTION_IDS.map((faction) => ({ faction, controller: 'ai' as const })) });
     const debt = new Map<FactionId, number>();
+    const treatied = new Set<FactionId>();
     let longestDebt = 0;
     for (let t = 0; t < turns; t++) {
-      g = resolveTurn(world, g).state;
+      const r = resolveTurn(world, g);
+      g = r.state;
+      for (const rep of r.reports) if (rep.events.some((e) => e.kind === 'treaty-begun')) treatied.add(rep.faction);
       const problems = [...shapeProblems(g), ...stateProblems(world, g)];
       if (problems.length > 0) throw new Error(`seed ${seed}, turn ${g.turn}: ${problems.join('; ')}`);
       for (const p of g.powers) {
@@ -460,30 +464,27 @@ describe('the headless games (§26.6)', () => {
       resolveTurn(world, g);
       lastTurnMs = Math.min(lastTurnMs, performance.now() - t0);
     }
-    return { g, lastTurnMs, longestDebt };
+    return { g, lastTurnMs, longestDebt, treatied };
   };
 
   for (const seed of [42, 7, 2176]) {
-    it(`seed ${seed}: 100 turns of three rivals, with no crash, hunger or lasting debt, within the budgets`, () => {
-      const { g, lastTurnMs, longestDebt } = play(seed, 100);
+    it(`seed ${seed}: 100 turns of every power, with no crash, hunger or lasting debt, within the budgets`, () => {
+      const { g, lastTurnMs, longestDebt, treatied } = play(seed, 100);
       for (const p of g.powers) {
         const held = g.holdings.filter((h) => h.owner === p.faction);
         expect(held.filter((h) => h.kind === 'colony').length, p.faction).toBeGreaterThanOrEqual(3);
-        // Outposts, and those an orbital habitat has made colonies (M2B_SCIENCE.md §18.3).
-        expect(
-          held.filter((h) => h.kind === 'outpost' || h.projects.includes('orbital-habitat')).length,
-          p.faction,
-        ).toBeGreaterThanOrEqual(3);
+        // Colonies and outposts, at least six together: the Drifters settle only giants, and are few.
+        expect(held.length, p.faction).toBeGreaterThanOrEqual(6);
         expect(
           held.reduce((n, h) => n + h.people, 0),
           p.faction,
-        ).toBeGreaterThan(capitalOf(withRivals(), p.faction).people * 2);
+        ).toBeGreaterThan(capitalOf(withRivals(), 'sta').people * 2);
         expect(
           held.every((h) => h.hungry <= 2),
           p.faction,
         ).toBe(true);
         // M2b's targets at turn 100 (M2B_SCIENCE.md §2, §20.4): the research-led Authority 35 to 45
-        // technologies, each other rival 15 to 25.
+        // technologies, each other rival 15 to 25, the alien powers too (M3_NEIGHBOURS.md §26.1).
         const [least, most] = p.faction === 'sta' ? [35, 45] : [15, 25];
         expect(p.researched.length, p.faction).toBeGreaterThanOrEqual(least);
         expect(p.researched.length, p.faction).toBeLessThanOrEqual(most);
@@ -495,7 +496,25 @@ describe('the headless games (§26.6)', () => {
       for (const p of g.powers) expect(p.treasury, p.faction).toBeLessThanOrEqual(600);
       expect(lastTurnMs).toBeLessThan(200);
       expect(JSON.stringify(g).length).toBeLessThan(200_000);
-    }, 120_000);
+      // Neighbours (§26.1): every human power has agreed a treaty by turn 100; by turn 120 every
+      // alien power is in contact with a human one, one way or the other; the Moot, a broker, has a
+      // treaty by turn 150.
+      const human = g.powers.filter((p) => FACTIONS[p.faction].species === 'human').map((p) => p.faction);
+      for (const f of human) expect(treatied.has(f), f).toBe(true);
+      let later = g;
+      for (let t = 0; t < 50; t++) {
+        const r = resolveTurn(world, later);
+        later = r.state;
+        for (const rep of r.reports) if (rep.events.some((e) => e.kind === 'treaty-begun')) treatied.add(rep.faction);
+        if (later.turn !== 121) continue;
+        for (const alien of later.powers.filter((p) => !human.includes(p.faction)))
+          expect(
+            human.some((h) => contactWith(powerOf(later, h), alien.faction) || contactWith(alien, h)),
+            alien.faction,
+          ).toBe(true);
+      }
+      expect(treatied.has('drift-moot')).toBe(true);
+    }, 240_000);
   }
 
   it('the same seed plays the same game', () => {

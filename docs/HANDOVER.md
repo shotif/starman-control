@@ -115,6 +115,10 @@ way in.
   one to lead; contact with it goes through words; its envoy, speaker and people pictured.
   **Increment 39 is built:** the Drifters, who live only on giant planets (fiction), and their Drift
   Moot at HD 192310 c, brokers of fusion fuel; five powers in every game with rivals.
+  **Increment 40 is built:** the proof with five powers: every power within M2b's targets at turn
+  100 on all eight seeds (the Cooperative's shared-research ask raised to 20), every alien met by
+  turn 120, no one through the tree before turn 180. **M3 is complete** and waits for the owner's
+  try.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
   the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
   loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
@@ -165,8 +169,11 @@ border treaty and the trade agreement. **Done: increment 37b, exchanges and the 
 (§23): exchanges of resources, passage for a toll, protection and bribes (D-56); state version 15.
 **Done: increment 38, the Duskfolk** (§24): the first alien species and its power, the Dusk
 Concord, a rival in every game. **Done: increment 39, the Drifters** (§25): the second, the Drift
-Moot, brokers who live on giants. **Next: increment 40, the proof**: five powers in the headless
-games, the 100-turn journeys, and the owner's try.
+Moot, brokers who live on giants. **Done: increment 40, the proof** (§26): five powers in the
+headless games, the 100-turn journeys on CI. **M3 is complete.** The owner is asked to try it (a
+game of 100 turns or more on a phone and a desktop, to meet the aliens) and may overrule the
+names, the picture picks of increments 38 and 39, and the tuning recorded in DECISIONS.md. M4
+(*Fleets*) is next, once the owner has tried M3 and its first questions are put.
 
 The art and music spend: about $25.55 of $50 (raised on 22 October 2026; about $24.45 left). M3's
 art is about 65 pictures (about $6.50).
