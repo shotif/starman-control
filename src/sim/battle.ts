@@ -14,6 +14,7 @@ import { shipDesign } from './designs.ts';
 import { bodyOf } from './economy.ts';
 import { fleetById, pruneFleets } from './fleets.ts';
 import { bestWeapon, hasBattery } from './invasion.ts';
+import { postedLeader, traitLevel } from './leaders.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import type { ReportEvent } from './report.ts';
 import { rng } from './rng.ts';
@@ -324,6 +325,21 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
     });
   }
   const byForce = new Map(forces.map((f) => [f.key, f]));
+  // Each fleet's commander (M5_UNKNOWN.md §24.2): what their traits add, by task force.
+  const led = new Map(
+    forces.map((f) => {
+      const c = f.fleet === null ? undefined : postedLeader(state, f.owner, 'commander', f.fleet);
+      const per = RULES.leaders.per;
+      return [
+        f.key,
+        {
+          bold: traitLevel(c, 'bold') * per.bold,
+          sharp: traitLevel(c, 'sharp-eyed') * per['sharp-eyed'],
+          steady: traitLevel(c, 'steady') * per.steady,
+        },
+      ] as const;
+    }),
+  );
   const startStructure = new Map(forces.map((f) => [f.key, 0]));
   for (const x of fighters) startStructure.set(x.log.force, (startStructure.get(x.log.force) ?? 0) + x.structure);
   const band = new Map<string, Band>(forces.map((f) => [f.key, 2]));
@@ -358,15 +374,18 @@ export function fight(world: World, state: GameState, system: SystemId, id: numb
         const t = choose(targets, mine.target, roll);
         const tForce = byForce.get(t.log.force) as TaskForce;
         const between = Math.min(band.get(mine.key) ?? 2, band.get(tForce.key) ?? 2) as Band;
-        const chance = hitChance(x.targeting, t.log.type, tForce.stance === 'evade');
+        const chance = hitChance(x.targeting, t.log.type, tForce.stance === 'evade') + (led.get(mine.key)?.sharp ?? 0);
         const sum = fired.get(x.log.owner) ?? { best: 0, ranged: 0, shield: 0, hull: 0 };
         fired.set(x.log.owner, sum);
         if (roll.int(1, 100) > chance) {
           round.shots.push([x.log.id, t.log.id, w, 0, -1]);
           continue;
         }
-        const damage = Math.floor((weapon.damage * rangePercent(weapon.best, between)) / 100);
-        const hit = hitDamage(damage, weapon.type, t.shield, t.log.shieldKind);
+        const bold = 100 + (led.get(mine.key)?.bold ?? 0);
+        const damage = Math.floor((weapon.damage * rangePercent(weapon.best, between) * bold) / 10000);
+        const struck = hitDamage(damage, weapon.type, t.shield, t.log.shieldKind);
+        const steady = led.get(tForce.key)?.steady ?? 0;
+        const hit = steady > 0 ? { ...struck, hull: Math.floor((struck.hull * (100 - steady)) / 100) } : struck;
         t.shield -= hit.shield;
         t.structure -= hit.hull;
         sum.best += weapon.damage;

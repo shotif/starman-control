@@ -25,6 +25,7 @@ import { FleetMissions } from './invasion.tsx';
 import { give, type Play } from './play.tsx';
 import { targeting } from './state.ts';
 import './fleets.css';
+import { LeaderLine } from './leaders.tsx';
 
 export const STANCE_WORDS: Record<Stance, { name: string; does: string }> = {
   engage: { name: 'Engage', does: 'closes to close range and fights it out' },
@@ -170,6 +171,7 @@ export function FleetPanel({
         </p>
         <p class="ship-status">{fleetStatus(world, game, fleet)}</p>
       </header>
+      <LeaderLine game={game} faction={fleet.owner} calling="commander" post={fleet.id} />
       {naming.value === null ? (
         <button
           type="button"

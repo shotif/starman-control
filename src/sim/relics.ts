@@ -7,6 +7,7 @@ import { RELIC_KIND_IDS, RELIC_KINDS, type RelicKind } from '../content/relics.t
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
+import { postGives } from './leaders.ts';
 import type { ReportEvent } from './report.ts';
 import { effects, grantResearch } from './research.ts';
 import { rng } from './rng.ts';
@@ -189,8 +190,13 @@ export function splitResearch(
   if (digs.length === 0 || share === 0 || points <= 0) return { digs: [], rest: points };
   const toDigs = Math.floor((points * share) / 100);
   const each = Math.floor(toDigs / digs.length);
+  // An Antiquarian scholar adds to what reaches the excavations, not taking it from the rest (§24.2).
+  const more = 100 + postGives(state, faction, 'scholar', 'antiquarian');
   return {
-    digs: digs.map((d, i) => ({ system: d.system, points: each + (i === 0 ? toDigs - each * digs.length : 0) })),
+    digs: digs.map((d, i) => ({
+      system: d.system,
+      points: Math.floor(((each + (i === 0 ? toDigs - each * digs.length : 0)) * more) / 100),
+    })),
     rest: points - toDigs,
   };
 }

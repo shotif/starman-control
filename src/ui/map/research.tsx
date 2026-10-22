@@ -26,6 +26,7 @@ import { AdvisorBy } from './advisor.tsx';
 import { give, type Play } from './play.tsx';
 import { DigShareLine } from './relics.tsx';
 import './research.css';
+import { LeaderLine } from './leaders.tsx';
 
 function ordinal(n: number): string {
   const end =
@@ -437,6 +438,7 @@ export function ResearchView({
         )}
       </p>
       <DigShareLine world={world} game={game} faction={faction} play={play} />
+      <LeaderLine game={game} faction={faction} calling="scholar" />
       <p class="dim">
         Inspirations: {p.inspired.length} of {TECH_IDS.length} met. Each technology names a deed that teaches you{' '}
         {RULES.discoveries.inspirationPercent}% of it once; a first survey of what astronomers have observed gives

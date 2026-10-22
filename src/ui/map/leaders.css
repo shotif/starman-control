@@ -1,0 +1,89 @@
+/* Leaders (M5_UNKNOWN.md §24.6): the Leaders screen, and a leader's line where they serve. */
+.leaders {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.leaders p,
+.leaders h3,
+.leaders h4 {
+  margin: 0;
+}
+
+.leaders section {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.leader-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leader-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: start;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+  background: rgba(10, 18, 34, 0.6);
+}
+
+.leader-body {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.leader-body > .button {
+  justify-self: start;
+  min-height: 44px;
+}
+
+.leader-traits {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.leader-flaw {
+  color: var(--warn, #f0b35a);
+}
+
+.leader-post {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.leader-post select {
+  min-height: 44px;
+  max-width: 100%;
+}
+
+.leader-post .button {
+  min-height: 44px;
+}
+
+.leader-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+}
+
+.popover.leaders-popover {
+  top: 12px;
+  right: auto;
+  left: 12px;
+  width: min(560px, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}

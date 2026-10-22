@@ -8055,6 +8055,611 @@
       "aiGenerated": true
     },
     {
+      "briefId": "leader-drift-moot-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and cords hung with small tools and beads; the front edge of its body and its row of eyes fill the frame, its hide unmarked and bright with youth, a single cord of blue beads; lively.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:19:09.660Z",
+      "id": "leader-drift-moot-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:36.112Z",
+      "candidate": "art/out/leader-drift-moot-1/20261022-230900-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-drift-moot-1-128.webp",
+          "bytes": 3802
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-drift-moot-1-384.webp",
+          "bytes": 21022
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-drift-moot-1-768.webp",
+          "bytes": 58498
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-drift-moot-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and cords hung with small tools and beads; the front edge of its body and its row of eyes fill the frame, broad darker bands across the hide, many tools on its straps; steady, practical.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:19:27.662Z",
+      "id": "leader-drift-moot-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:36.621Z",
+      "candidate": "art/out/leader-drift-moot-2/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-drift-moot-2-128.webp",
+          "bytes": 5438
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-drift-moot-2-384.webp",
+          "bytes": 32600
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-drift-moot-2-768.webp",
+          "bytes": 92044
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-drift-moot-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and cords hung with small tools and beads; the front edge of its body and its row of eyes fill the frame, a torn vane healed in a pale seam, a sash of green beads; wary, wise.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:20:03.931Z",
+      "id": "leader-drift-moot-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:37.148Z",
+      "candidate": "art/out/leader-drift-moot-3/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-drift-moot-3-128.webp",
+          "bytes": 5604
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-drift-moot-3-384.webp",
+          "bytes": 31890
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-drift-moot-3-768.webp",
+          "bytes": 90222
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-drift-moot-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Drifters, an invented alien creature that floats in a giant planet’s air and is not human nor like any animal of Earth: a vast, broad, flattened lens-shaped body of thick leathery hide, pale violet and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and cords hung with small tools and beads; the front edge of its body and its row of eyes fill the frame, the hide a deeper violet, cords of amber beads looped many times; calm, proud.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:20:38.002Z",
+      "id": "leader-drift-moot-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:37.651Z",
+      "candidate": "art/out/leader-drift-moot-4/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-drift-moot-4-128.webp",
+          "bytes": 4406
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-drift-moot-4-384.webp",
+          "bytes": 25584
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-drift-moot-4-768.webp",
+          "bytes": 68386
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-dusk-concord-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, the crest short and dark with youth; curious, alert.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:16:22.810Z",
+      "note": "I hope this captures the specific vision for the Duskfolk character portrait you had in mind! Let me know if you would like any changes to its features, lighting, or gear.",
+      "id": "leader-dusk-concord-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:34.175Z",
+      "candidate": "art/out/leader-dusk-concord-1/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-dusk-concord-1-128.webp",
+          "bytes": 3438
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-dusk-concord-1-384.webp",
+          "bytes": 18072
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-dusk-concord-1-768.webp",
+          "bytes": 56952
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-dusk-concord-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, a shawl of deep plum with a pale grey band, the crest notched by an old injury; grave, steady.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:16:59.326Z",
+      "id": "leader-dusk-concord-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:34.670Z",
+      "candidate": "art/out/leader-dusk-concord-2/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-dusk-concord-2-128.webp",
+          "bytes": 4180
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-dusk-concord-2-384.webp",
+          "bytes": 20592
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-dusk-concord-2-768.webp",
+          "bytes": 66242
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-dusk-concord-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, an ochre shawl pulled high about the neck, faint pale streaks along the crest; gentle, patient.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:17:37.296Z",
+      "note": "Here is a painted character portrait of a Duskfolk, captured in a grounded, observant style for a strategy game:",
+      "id": "leader-dusk-concord-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:35.155Z",
+      "candidate": "art/out/leader-dusk-concord-3/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-dusk-concord-3-128.webp",
+          "bytes": 3700
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-dusk-concord-3-384.webp",
+          "bytes": 18742
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-dusk-concord-3-768.webp",
+          "bytes": 60162
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-dusk-concord-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, a charcoal shawl with a thin copper thread, eyes glowing brighter than most; intent, sharp.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:18:16.575Z",
+      "id": "leader-dusk-concord-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:35.638Z",
+      "candidate": "art/out/leader-dusk-concord-4/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-dusk-concord-4-128.webp",
+          "bytes": 3796
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-dusk-concord-4-384.webp",
+          "bytes": 21392
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-dusk-concord-4-768.webp",
+          "bytes": 61068
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-frontier-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A settler of the Frontier Cooperative, in practical blue work clothes with a small round pin: a Maori woman in her fifties with a weathered face and grey-streaked hair; kind, sure.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:11:35.746Z",
+      "id": "leader-frontier-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:30.214Z",
+      "candidate": "art/out/leader-frontier-1/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-frontier-1-128.webp",
+          "bytes": 4830
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-frontier-1-384.webp",
+          "bytes": 26894
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-frontier-1-768.webp",
+          "bytes": 80984
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-frontier-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A settler of the Frontier Cooperative, in practical blue work clothes with a small round pin: an Irish man in his twenties with red hair, freckles and a sunburnt nose; open, cheerful.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:12:11.696Z",
+      "note": "Here is the requested sci-fi character portrait for your strategy game:",
+      "id": "leader-frontier-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:30.720Z",
+      "candidate": "art/out/leader-frontier-2/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-frontier-2-128.webp",
+          "bytes": 4928
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-frontier-2-384.webp",
+          "bytes": 25488
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-frontier-2-768.webp",
+          "bytes": 71102
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-frontier-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A settler of the Frontier Cooperative, in practical blue work clothes with a small round pin: a Kenyan man in his forties with a short beard and a wool scarf; thoughtful, warm.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:13:04.276Z",
+      "id": "leader-frontier-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:31.187Z",
+      "candidate": "art/out/leader-frontier-3/20261022-230900-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-frontier-3-128.webp",
+          "bytes": 3670
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-frontier-3-384.webp",
+          "bytes": 20170
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-frontier-3-768.webp",
+          "bytes": 58688
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-frontier-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A settler of the Frontier Cooperative, in practical blue work clothes with a small round pin: a Mexican woman in her thirties with a long black braid and a smudge of dust on one cheek; capable, wry.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:13:21.753Z",
+      "id": "leader-frontier-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:31.683Z",
+      "candidate": "art/out/leader-frontier-4/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-frontier-4-128.webp",
+          "bytes": 4394
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-frontier-4-384.webp",
+          "bytes": 23712
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-frontier-4-768.webp",
+          "bytes": 72614
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-hollow-wake-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A raider of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a gaunt woman in her forties with a shaved scalp and a tattooed line down the jaw; cold, watchful.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:13:57.949Z",
+      "id": "leader-hollow-wake-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:32.184Z",
+      "candidate": "art/out/leader-hollow-wake-1/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-hollow-wake-1-128.webp",
+          "bytes": 3740
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-hollow-wake-1-384.webp",
+          "bytes": 20292
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-hollow-wake-1-768.webp",
+          "bytes": 53542
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-hollow-wake-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A raider of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a heavy man in his thirties with a black beard and a burn scar on one cheek; fierce, amused.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:14:32.619Z",
+      "note": "Here is the painted science-fiction character portrait for your strategy game, depicting the rugged raider of the Hollow Wake:",
+      "id": "leader-hollow-wake-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:32.672Z",
+      "candidate": "art/out/leader-hollow-wake-2/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-hollow-wake-2-128.webp",
+          "bytes": 4576
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-hollow-wake-2-384.webp",
+          "bytes": 25860
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-hollow-wake-2-768.webp",
+          "bytes": 71960
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-hollow-wake-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A raider of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a wiry old man in his seventies with white stubble and a goggle pushed up on his brow; sly, tough.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:15:10.322Z",
+      "id": "leader-hollow-wake-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:33.167Z",
+      "candidate": "art/out/leader-hollow-wake-3/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-hollow-wake-3-128.webp",
+          "bytes": 4962
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-hollow-wake-3-384.webp",
+          "bytes": 28792
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-hollow-wake-3-768.webp",
+          "bytes": 81858
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-hollow-wake-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: A raider of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a young woman in her twenties with spiky dyed-blue hair and a split lip; defiant, quick.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:15:45.811Z",
+      "id": "leader-hollow-wake-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:33.678Z",
+      "candidate": "art/out/leader-hollow-wake-4/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-hollow-wake-4-128.webp",
+          "bytes": 4848
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-hollow-wake-4-384.webp",
+          "bytes": 27508
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-hollow-wake-4-768.webp",
+          "bytes": 73814
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-sta-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: An officer of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a Nigerian man in his thirties with close-cropped hair and a neat moustache; alert, correct.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:09:19.133Z",
+      "id": "leader-sta-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:28.228Z",
+      "candidate": "art/out/leader-sta-1/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-sta-1-128.webp",
+          "bytes": 3466
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-sta-1-384.webp",
+          "bytes": 16708
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-sta-1-768.webp",
+          "bytes": 48420
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-sta-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: An officer of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a Swedish woman in her forties with straight ash-blonde hair to the jaw; cool, precise.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:10:10.992Z",
+      "note": "Here is the painted science-fiction character portrait for a strategy game, featuring a grounded and observant Sol Transit Authority officer.",
+      "id": "leader-sta-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:28.726Z",
+      "candidate": "art/out/leader-sta-2/20261022-230900-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-sta-2-128.webp",
+          "bytes": 3552
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-sta-2-384.webp",
+          "bytes": 17624
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-sta-2-768.webp",
+          "bytes": 57394
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-sta-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: An officer of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a Chinese man in his sixties with thin grey hair and fine lines about the eyes; patient, wise.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:10:28.867Z",
+      "id": "leader-sta-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:29.218Z",
+      "candidate": "art/out/leader-sta-3/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-sta-3-128.webp",
+          "bytes": 3818
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-sta-3-384.webp",
+          "bytes": 20554
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-sta-3-768.webp",
+          "bytes": 58582
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-sta-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: An officer of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia: a Brazilian woman in her twenties with dark curls tied back; eager, bright.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:11:03.498Z",
+      "id": "leader-sta-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:21:29.728Z",
+      "candidate": "art/out/leader-sta-4/20261022-230900-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-sta-4-128.webp",
+          "bytes": 3836
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-sta-4-384.webp",
+          "bytes": 19254
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-sta-4-768.webp",
+          "bytes": 52070
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "long-array",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",

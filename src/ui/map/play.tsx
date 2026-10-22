@@ -45,6 +45,7 @@ import { intelText } from './espionage.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
 import { bombardedText, invasionText, RadioTraffic, raidedText } from './invasion.tsx';
+import { leaderText } from './leaders.tsx';
 import { relicText } from './relics.tsx';
 import { panel, say, targeting } from './state.ts';
 
@@ -665,6 +666,9 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return relicText(world, game, e, playerPower(game)?.faction) ?? '';
     case 'intel':
       return intelText(e);
+    case 'offered':
+    case 'leader':
+      return leaderText(e);
   }
 }
 
@@ -685,7 +689,8 @@ function eventPlace(
   | { event: true }
   | { designs: true }
   | { assembly: true }
-  | { relics: true } {
+  | { relics: true }
+  | { leaders: true } {
   switch (e.kind) {
     case 'researched':
     case 'inspired':
@@ -768,6 +773,10 @@ function eventPlace(
     case 'key':
     case 'answer':
       return { relics: true };
+    // Leaders' news opens the Leaders screen (M5_UNKNOWN.md §24.6).
+    case 'offered':
+    case 'leader':
+      return { leaders: true };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -860,6 +869,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   key: { icon: 'anomaly', tone: 'news' },
   answer: { icon: 'anomaly', tone: 'needs' },
   intel: { icon: 'diplomacy', tone: 'news' },
+  offered: { icon: 'diplomacy', tone: 'news' },
+  leader: { icon: 'diplomacy', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -1020,6 +1031,7 @@ export function ReportView({
                   else if ('designs' in place) onDesigns?.();
                   else if ('assembly' in place) panel.value = 'assembly';
                   else if ('relics' in place) panel.value = 'relics';
+                  else if ('leaders' in place) panel.value = 'leaders';
                   else onGo(place.system);
                 }}
               >

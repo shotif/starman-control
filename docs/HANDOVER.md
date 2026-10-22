@@ -243,9 +243,13 @@ sky** (§22): thirteen events more, twenty-five in all, five of the relics, thre
 flare and a nova, real astronomy marked) and one for each power. **Done: increment 55, light
 espionage** (§23): agents watch a power for credits, learning its holdings, its ships and its
 secrets as their intelligence rises; a guard at home; the rivals by character from turn 100; state
-version 28.
+version 28. **Done: increment 56, leaders** (§24): five callings (commander, steward, scholar,
+ambassador, spymaster) with twelve traits that grow and two flaws; three people offered every 10
+turns; wages; leaving in debt or from an unhappy colony, lured by a rival that knows our secrets,
+fallen with a fleet; the Leaders screen (**L**) and a leader's line where they serve; twenty faces;
+the rivals hire by character from turn 70; state version 29.
 
-The art and music spend: about $29.55 of $50 (raised on 22 October 2026; about $20.45 left). M3's
+The art and music spend: about $31.55 of $50 (raised on 22 October 2026; about $18.45 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

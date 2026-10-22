@@ -697,7 +697,100 @@ export const BRIEFS: ArtBrief[] = [
   ...events(),
   ...duskfolk(),
   ...drifters(),
+  ...leaders(),
 ];
+
+/**
+ * Increment 56's faces (M5_UNKNOWN.md §24.7): four for each people, worn by the leaders a power
+ * hires, whatever their calling. All fiction.
+ */
+function leaders(): ArtBrief[] {
+  const sta = 'of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia';
+  const coop = 'of the Frontier Cooperative, in practical blue work clothes with a small round pin';
+  const wake = 'of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels';
+  const faces: [string, string][] = [
+    [
+      'sta-1',
+      `An officer ${sta}: a Nigerian man in his thirties with close-cropped hair and a neat moustache; alert, correct.`,
+    ],
+    [
+      'sta-2',
+      `An officer ${sta}: a Swedish woman in her forties with straight ash-blonde hair to the jaw; cool, precise.`,
+    ],
+    [
+      'sta-3',
+      `An officer ${sta}: a Chinese man in his sixties with thin grey hair and fine lines about the eyes; patient, wise.`,
+    ],
+    ['sta-4', `An officer ${sta}: a Brazilian woman in her twenties with dark curls tied back; eager, bright.`],
+    [
+      'frontier-1',
+      `A settler ${coop}: a Maori woman in her fifties with a weathered face and grey-streaked hair; kind, sure.`,
+    ],
+    [
+      'frontier-2',
+      `A settler ${coop}: an Irish man in his twenties with red hair, freckles and a sunburnt nose; open, cheerful.`,
+    ],
+    [
+      'frontier-3',
+      `A settler ${coop}: a Kenyan man in his forties with a short beard and a wool scarf; thoughtful, warm.`,
+    ],
+    [
+      'frontier-4',
+      `A settler ${coop}: a Mexican woman in her thirties with a long black braid and a smudge of dust on one cheek; capable, wry.`,
+    ],
+    [
+      'hollow-wake-1',
+      `A raider ${wake}: a gaunt woman in her forties with a shaved scalp and a tattooed line down the jaw; cold, watchful.`,
+    ],
+    [
+      'hollow-wake-2',
+      `A raider ${wake}: a heavy man in his thirties with a black beard and a burn scar on one cheek; fierce, amused.`,
+    ],
+    [
+      'hollow-wake-3',
+      `A raider ${wake}: a wiry old man in his seventies with white stubble and a goggle pushed up on his brow; sly, tough.`,
+    ],
+    [
+      'hollow-wake-4',
+      `A raider ${wake}: a young woman in her twenties with spiky dyed-blue hair and a split lip; defiant, quick.`,
+    ],
+    ['dusk-concord-1', `${DUSKFOLK}, the crest short and dark with youth; curious, alert.`],
+    [
+      'dusk-concord-2',
+      `${DUSKFOLK}, a shawl of deep plum with a pale grey band, the crest notched by an old injury; grave, steady.`,
+    ],
+    [
+      'dusk-concord-3',
+      `${DUSKFOLK}, an ochre shawl pulled high about the neck, faint pale streaks along the crest; gentle, patient.`,
+    ],
+    [
+      'dusk-concord-4',
+      `${DUSKFOLK}, a charcoal shawl with a thin copper thread, eyes glowing brighter than most; intent, sharp.`,
+    ],
+    [
+      'drift-moot-1',
+      `${DRIFTER}; the front edge of its body and its row of eyes fill the frame, its hide unmarked and bright with youth, a single cord of blue beads; lively.`,
+    ],
+    [
+      'drift-moot-2',
+      `${DRIFTER}; the front edge of its body and its row of eyes fill the frame, broad darker bands across the hide, many tools on its straps; steady, practical.`,
+    ],
+    [
+      'drift-moot-3',
+      `${DRIFTER}; the front edge of its body and its row of eyes fill the frame, a torn vane healed in a pale seam, a sash of green beads; wary, wise.`,
+    ],
+    [
+      'drift-moot-4',
+      `${DRIFTER}; the front edge of its body and its row of eyes fill the frame, the hide a deeper violet, cords of amber beads looped many times; calm, proud.`,
+    ],
+  ];
+  return faces.map(([id, subject]) => ({
+    id: `leader-${id}`,
+    series: 'portrait' as const,
+    subject,
+    purpose: `A leader's face (M5, fiction): ${id.replace(/-\d$/, '')}.`,
+  }));
+}
 
 /** Increment 39's pictures (M3_NEIGHBOURS.md §25.9): the Moot's envoy and speaker, and its people at home. */
 function drifters(): ArtBrief[] {

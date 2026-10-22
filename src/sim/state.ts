@@ -7,6 +7,7 @@ import type { District } from '../content/districts.ts';
 import type { EdictId, Priority } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
 import { FACTIONS, type FactionId, type WarReason } from '../content/factions.ts';
+import type { Calling, FlawId, TraitId } from '../content/leaders.ts';
 import type { ModuleId } from '../content/modules.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -21,7 +22,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 28;
+export const STATE_VERSION = 29;
 
 export interface Stockpile {
   metals: number;
@@ -483,6 +484,39 @@ export interface GameState {
   keys: Key[];
   /** The Answer under way (§21.3): who answers and the turns left, or none. */
   answer: { by: FactionId; left: number } | null;
+  /** Every power's leaders (M5_UNKNOWN.md §24.8), in id order. */
+  leaders: Leader[];
+  /** The people offered to each power, until the next offers (§24.3), in id order. */
+  candidates: Candidate[];
+  nextLeaderId: number;
+}
+
+/**
+ * A leader (M5_UNKNOWN.md §24), all fiction: the power it serves, the people it comes from (its name
+ * and face are theirs), its calling, traits and flaw, its wage, and where it serves.
+ */
+export interface Leader {
+  id: number;
+  serves: FactionId;
+  people: FactionId;
+  name: string;
+  /** Which of its people's faces, from 1. */
+  face: number;
+  calling: Calling;
+  /** One or two, each at level 1 to 3. */
+  traits: { trait: TraitId; level: number }[];
+  flaw: FlawId | null;
+  /** Credits a turn. */
+  wage: number;
+  /** Where it serves: a fleet's id (a commander), a colony's (a steward), or 0 for the power's own post; null while waiting. */
+  post: number | null;
+  /** Turns served in a post, which make its traits grow (§24.2). */
+  served: number;
+}
+
+/** One offered to a power, with the fee to hire it (§24.3). */
+export interface Candidate extends Leader {
+  fee: number;
 }
 
 /**
@@ -676,6 +710,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     digs: [],
     keys: [],
     answer: null,
+    leaders: [],
+    candidates: [],
+    nextLeaderId: 1,
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

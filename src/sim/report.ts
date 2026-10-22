@@ -6,6 +6,7 @@ import type { Zone } from '../content/districts.ts';
 import type { EdictId } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
 import type { FactionId, WarReason } from '../content/factions.ts';
+import type { Calling, TraitId } from '../content/leaders.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
 import type { RelicKind } from '../content/relics.ts';
 import type { HullId, ShipType } from '../content/ships.ts';
@@ -270,7 +271,24 @@ export type ReportEvent =
   /** The Answer begun, a turn nearer (the turns left), or stopped. */
   | { kind: 'answer'; by: FactionId; stage: 'begun' | 'turns' | 'stopped'; left: number }
   /** Our agents' intelligence of a power reached a mark (M5_UNKNOWN.md §23.1). */
-  | { kind: 'intel'; faction: FactionId; level: number };
+  | { kind: 'intel'; faction: FactionId; level: number }
+  /** New people offered to serve us (M5_UNKNOWN.md §24.3). */
+  | { kind: 'offered'; count: number }
+  /**
+   * A leader of ours (§24.2, §24.4): a trait grown; left in debt, from an unhappy colony, or lured away
+   * by a rival; fallen with its fleet; or come over to us from a rival.
+   */
+  | {
+      kind: 'leader';
+      what: 'grew' | 'debt' | 'unhappy' | 'lured' | 'fell' | 'joined';
+      leader: number;
+      name: string;
+      calling: Calling;
+      trait?: TraitId;
+      level?: number;
+      /** The rival it left us for, or came from. */
+      faction?: FactionId;
+    };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

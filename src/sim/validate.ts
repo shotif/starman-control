@@ -5,6 +5,7 @@ import { isZone } from '../content/districts.ts';
 import { isEdictId, isPriority } from '../content/edicts.ts';
 import { isEventId } from '../content/events.ts';
 import { isFactionId } from '../content/factions.ts';
+import { CALLING_DEFS, CALLINGS, FLAWS, TRAITS } from '../content/leaders.ts';
 import { isModuleId } from '../content/modules.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -127,6 +128,33 @@ export function shapeProblems(raw: unknown): string[] {
     out.push('the keys are not a list of keys');
   if (raw.answer !== null && !(isRecord(raw.answer) && isFactionId(raw.answer.by) && isWhole(raw.answer.left)))
     out.push('the Answer is not an Answer');
+  // Leaders and the people offered (M5_UNKNOWN.md §24.8).
+  const isLeader = (l: unknown): l is Record<string, unknown> =>
+    isRecord(l) &&
+    isWhole(l.id, 1) &&
+    isFactionId(l.serves) &&
+    isFactionId(l.people) &&
+    typeof l.name === 'string' &&
+    isWhole(l.face, 1) &&
+    CALLINGS.includes(l.calling as never) &&
+    Array.isArray(l.traits) &&
+    l.traits.length >= 1 &&
+    l.traits.every(
+      (t) =>
+        isRecord(t) &&
+        typeof t.trait === 'string' &&
+        t.trait in TRAITS &&
+        isWhole(t.level, 1) &&
+        t.level <= RULES.leaders.topLevel,
+    ) &&
+    (l.flaw === null || FLAWS.includes(l.flaw as never)) &&
+    isWhole(l.wage) &&
+    (l.post === null || isWhole(l.post)) &&
+    isWhole(l.served);
+  if (!Array.isArray(raw.leaders) || !raw.leaders.every(isLeader)) out.push('the leaders are not a list of leaders');
+  if (!Array.isArray(raw.candidates) || !raw.candidates.every((c) => isLeader(c) && isWhole(c.fee)))
+    out.push('the people offered are not a list of leaders');
+  if (!isWhole(raw.nextLeaderId, 1)) out.push('nextLeaderId is not a whole number from 1');
   // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
   if (
     !Array.isArray(raw.battles) ||
@@ -433,6 +461,29 @@ export function stateProblems(world: World, state: GameState): string[] {
   }
   if (state.answer && !state.powers.some((p) => p.faction === state.answer?.by))
     out.push('the Answer is by no power in play');
+  // Every leader serves a power in play, each where its calling allows, one to a post (§24.1).
+  let lastLeader = 0;
+  const posts = new Set<string>();
+  for (const l of [...state.leaders, ...state.candidates]) {
+    if (!state.powers.some((p) => p.faction === l.serves)) out.push(`leader ${l.id} serves ${l.serves}, not in play`);
+    if (l.id >= state.nextLeaderId) out.push(`leader ${l.id} is numbered past nextLeaderId`);
+  }
+  for (const l of state.leaders) {
+    if (l.id <= lastLeader) out.push('the leaders are out of order or listed twice');
+    lastLeader = l.id;
+    if (l.post === null) continue;
+    const key = `${l.serves}|${l.calling}|${l.post}`;
+    if (posts.has(key)) out.push(`two leaders in one post: ${key}`);
+    posts.add(key);
+    if (CALLING_DEFS[l.calling].single && l.post !== 0) out.push(`leader ${l.id} is posted to ${l.post}, not its post`);
+    if (l.calling === 'commander' && !state.fleets.some((f) => f.id === l.post && f.owner === l.serves))
+      out.push(`commander ${l.id} commands no fleet of theirs`);
+    if (
+      l.calling === 'steward' &&
+      !state.holdings.some((h) => h.id === l.post && h.owner === l.serves && h.kind === 'colony')
+    )
+      out.push(`steward ${l.id} keeps no colony of theirs`);
+  }
   // Every excavation at a site, each once, in order (M5_UNKNOWN.md §20.10).
   let lastDig = '';
   for (const d of state.digs) {

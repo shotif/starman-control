@@ -29,6 +29,7 @@ import { ceilDiv } from './geometry.ts';
 import { type Habitability, habitability } from './habitability.ts';
 import { blockadedBy } from './invasion.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
+import { traitPart, wagesOf } from './leaders.ts';
 import { lanesFor, routeLength } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile, treatyOf } from './state.ts';
@@ -348,6 +349,9 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   const weary = wearinessApproval(state, h.owner);
   if (weary < 0) parts.push({ label: 'war weariness', value: weary });
   if (h.taken > 0) parts.push({ label: 'newly taken', value: RULES.invasion.takenApproval });
+  // The colony's steward (M5_UNKNOWN.md §24.2).
+  const beloved = traitPart(state, h.owner, 'steward', 'beloved', (v) => v, h.id);
+  if (beloved) parts.push(beloved);
   const total = Math.max(0, Math.min(100, sum(parts)));
   const level: ApprovalLevel =
     total >= a.levels.content
@@ -486,6 +490,8 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
     const value = Math.floor((base * t.effect.percent) / 100);
     if (value > 0) parts.push({ label: `from ${t.name} (+${t.effect.percent}%)`, value });
   }
+  const industrious = traitPart(state, h.owner, 'steward', 'industrious', (v) => Math.floor((base * v) / 100), h.id);
+  if (industrious) parts.push(industrious);
   // Edicts (§25.2) change what the colony makes before any is bought.
   const made = sum(parts);
   const ed = RULES.edicts;
@@ -585,6 +591,9 @@ export function researchOf(world: World, state: GameState, faction: FactionId): 
     const value = Math.floor((base * RULES.edicts.crashResearchPercent) / 100);
     if (value > 0) parts.push({ label: `a crash programme (+${RULES.edicts.crashResearchPercent}%)`, value });
   }
+  // The scholar (M5_UNKNOWN.md §24.2).
+  const brilliant = traitPart(state, faction, 'scholar', 'brilliant', (v) => Math.floor((base * v) / 100));
+  if (brilliant) parts.push(brilliant);
   return { total: sum(parts), parts };
 }
 
@@ -693,6 +702,8 @@ export function creditsOf(world: World, state: GameState, h: Holding): Figure {
   parts.push(...districtParts(world, state, h, 'market').parts);
   if (h.projects.includes('trade-exchange') && !stopped(world, state, h))
     parts.push({ label: 'the trade exchange', value: RULES.projects.exchangeCredits + worked(h, 'market') });
+  const thrifty = traitPart(state, h.owner, 'steward', 'thrifty', (v) => v, h.id);
+  if (thrifty && !stopped(world, state, h)) parts.push(thrifty);
   // A blockade halves it (M4_FLEETS.md §26.6).
   if (blockadedBy(state, h)) {
     const made = sum(parts);
@@ -716,6 +727,9 @@ export function upkeepOf(state: GameState, faction: FactionId): Figure {
   // Agents watching and guarding (M5_UNKNOWN.md §23).
   const agents = agentsCost(state, faction);
   if (agents > 0) parts.push({ label: 'agents', value: agents });
+  // Leaders' wages (§24.3).
+  const wages = wagesOf(state, faction);
+  if (wages > 0) parts.push({ label: 'leaders', value: wages });
   return { total: sum(parts), parts };
 }
 

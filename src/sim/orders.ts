@@ -30,6 +30,7 @@ import {
 import { formatLy } from './geometry.ts';
 import { missionRefusal } from './invasion.ts';
 import { beginAnswer, beginAnswerRefusal } from './keys.ts';
+import { dismiss, dismissRefusal, hire, hireRefusal, postLeader, postRefusal } from './leaders.ts';
 import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { chapterRefusal, digAt, excavate, excavateRefusal, stopExcavation, stopRefusal } from './relics.ts';
@@ -137,7 +138,11 @@ export type Order =
   | { type: 'begin-answer' }
   /** Agents set to watch a power, or recalled; and the guard kept at home (M5_UNKNOWN.md §23). */
   | { type: 'watch'; on: FactionId; watch: boolean }
-  | { type: 'guard'; level: GuardStep };
+  | { type: 'guard'; level: GuardStep }
+  /** A leader hired, posted (or called back with null), or let go (M5_UNKNOWN.md §24). */
+  | { type: 'hire'; leader: number }
+  | { type: 'post'; leader: number; post: number | null }
+  | { type: 'dismiss'; leader: number };
 
 type FleetOrder = Extract<
   Order,
@@ -251,6 +256,9 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'begin-answer') return beginAnswerRefusal(state, faction);
   if (order.type === 'watch') return watchRefusal(state, faction, order.on, order.watch);
   if (order.type === 'guard') return isGuardStep(order.level) ? null : 'There is no such guard.';
+  if (order.type === 'hire') return hireRefusal(state, faction, order.leader);
+  if (order.type === 'post') return postRefusal(state, faction, order.leader, order.post);
+  if (order.type === 'dismiss') return dismissRefusal(state, faction, order.leader);
   if (order.type === 'chapter-choice')
     return order.choice === 0 || order.choice === 1
       ? chapterRefusal(state, faction, order.system)
@@ -415,6 +423,19 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
     powerOf(next, faction).guard = order.level;
     return { ok: true, state: next };
   }
+  if (order.type === 'hire') {
+    hire(next, faction, order.leader);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'post') {
+    postLeader(next, faction, order.leader, order.post);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'dismiss') {
+    dismiss(next, faction, order.leader);
+    return { ok: true, state: next };
+  }
+
   if (order.type === 'gift') {
     giveGift(next, faction, order.to, order.credits);
     return { ok: true, state: next };

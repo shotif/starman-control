@@ -19,6 +19,7 @@ import { resolveContacts } from './contact.ts';
 import { refitRefusal, refreshYards } from './designs.ts';
 import { observationPoints, observationsAt, resolveInspirations } from './discoveries.ts';
 import {
+  approvalOf,
   capacityOf,
   costOf,
   creditsOf,
@@ -45,6 +46,7 @@ import { habitability } from './habitability.ts';
 import { blockadedNow, reportBlockades, resolveBombardment, resolveLandings, settleTaken } from './invasion.ts';
 import { resolveAnswer, resolveKeys, resolveKeysFound } from './keys.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
+import { makeCandidates, resolveLeaders } from './leaders.ts';
 import { deliverGifts, fadeMemories, remember } from './memory.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import { applyInPlace } from './orders.ts';
@@ -564,6 +566,12 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 9b. Espionage (M5_UNKNOWN.md §23): what each power's agents have gathered this turn.
   resolveEspionage(state, events);
+  // 9c. Leaders (M5_UNKNOWN.md §24): posts gone, experience, loyalty and lures; and new people offered.
+  resolveLeaders(state, events, (h) => {
+    const level = approvalOf(world, state, h).level;
+    return level === 'unrest' || level === 'revolt';
+  });
+  makeCandidates(state, events);
 
   // 10. The Watch (M2_WORLDS.md §26.3): what each power newly sees of the others.
   for (const p of state.powers) events.get(p.faction)?.push(...watchNews(world, before, state, p.faction));

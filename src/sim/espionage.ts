@@ -4,6 +4,7 @@
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
+import { postGives } from './leaders.ts';
 import type { ReportEvent } from './report.ts';
 import { contactWith, type GameState, GUARD_STEPS, type GuardStep, powerOf } from './state.ts';
 
@@ -69,8 +70,14 @@ export function resolveEspionage(state: GameState, events: Map<FactionId, Report
     for (const other of state.powers) {
       if (other.faction === p.faction) continue;
       const was = intelOf(state, p.faction, other.faction);
+      // A Cunning spymaster gathers more; a Vigilant one at home lets others gather less (M5_UNKNOWN.md §24.2).
+      const gain =
+        S.gain +
+        postGives(state, p.faction, 'spymaster', 'cunning') -
+        S.guardLess * other.guard -
+        postGives(state, other.faction, 'spymaster', 'vigilant');
       const level = p.agents.includes(other.faction)
-        ? Math.min(S.most, was + Math.max(S.least, S.gain - S.guardLess * other.guard))
+        ? Math.min(S.most, was + Math.max(S.least, gain))
         : Math.max(0, was - S.fade);
       if (level > 0) next.push({ faction: other.faction, level });
       for (const m of MARKS)

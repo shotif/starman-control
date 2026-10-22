@@ -5,6 +5,7 @@
 
 import type { Priority } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { CALLING_DEFS, type Calling } from '../content/leaders.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { isHull, SHIPS } from '../content/ships.ts';
@@ -21,6 +22,7 @@ import { habitability } from './habitability.ts';
 import { garrisonOf, holdsOrbit, missionRefusal, raidRefusal, troopsOf } from './invasion.ts';
 import { beginAnswerRefusal, isKeySite, keySight, keysHeld } from './keys.ts';
 import { nearestLane } from './lanes.ts';
+import { candidatesFor, leadersOf, postedLeader } from './leaders.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
@@ -77,6 +79,8 @@ export interface Personality {
   studies: boolean;
   /** How many powers its agents watch (M5_UNKNOWN.md §23.3). */
   watches: number;
+  /** The leaders it hires, in the order it wants them (M5_UNKNOWN.md §24.5). */
+  leaders: readonly Calling[];
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -94,6 +98,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     digs: 50,
     studies: true,
     watches: 1,
+    leaders: ['scholar', 'steward', 'ambassador'],
   },
   frontier: {
     capital: 'grow',
@@ -108,6 +113,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     digs: 25,
     studies: false,
     watches: 0,
+    leaders: ['steward', 'scholar', 'ambassador'],
   },
   'hollow-wake': {
     capital: 'produce',
@@ -122,6 +128,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     digs: 0,
     studies: false,
     watches: 2,
+    leaders: ['commander', 'spymaster', 'steward'],
   },
   // Patient expanders far from anyone's lanes (M3_NEIGHBOURS.md §24.7).
   'dusk-concord': {
@@ -137,6 +144,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     digs: 25,
     studies: false,
     watches: 1,
+    leaders: ['ambassador', 'steward', 'scholar'],
   },
   // Brokers of the giants' fuel (M3_NEIGHBOURS.md §25.7).
   'drift-moot': {
@@ -152,6 +160,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     digs: 25,
     studies: true,
     watches: 2,
+    leaders: ['ambassador', 'spymaster', 'steward'],
     broker: true,
   },
 };
@@ -366,6 +375,55 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       : [];
   for (const f of power.agents) if (!watchable.includes(f)) orders.push({ type: 'watch', on: f, watch: false });
   for (const f of watchable) if (!power.agents.includes(f)) orders.push({ type: 'watch', on: f, watch: true });
+
+  // Leaders (M5_UNKNOWN.md §24.5): it hires those its character wants, while its treasury has the fee
+  // and more and it is gaining, posts each at once, and lets a waiting one go when in debt.
+  const LR = RULES.leaders;
+  const ours = leadersOf(state, faction);
+  if (power.treasury < 0) {
+    for (const l of ours) if (l.post === null) orders.push({ type: 'dismiss', leader: l.id });
+  } else {
+    const waiting = ours.filter((l) => l.post === null);
+    const want = me.leaders.find((c) => !ours.some((l) => l.calling === c));
+    if (want && ours.length < LR.rivalsMost && income > 0 && state.turn >= LR.rivalsFrom) {
+      const offer = candidatesFor(state, faction)
+        .filter((c) => c.calling === want && power.treasury >= c.fee + LR.rivalsSpare)
+        .sort((a, b) => b.traits.length - a.traits.length || a.fee - b.fee || a.id - b.id)[0];
+      if (offer) {
+        orders.push({ type: 'hire', leader: offer.id });
+        waiting.push(offer);
+      }
+    }
+    const taken = new Set(ours.filter((l) => l.post !== null && l.calling !== 'commander').map((l) => l.post));
+    const commanded = new Set(ours.filter((l) => l.calling === 'commander').map((l) => l.post));
+    // One of the power's own posts takes the abler of two; a second, lured or hired, is let go.
+    const levels = (x: { traits: { level: number }[] }) => x.traits.reduce((n, t) => n + t.level, 0);
+    const singles = new Set<Calling>();
+    for (const l of waiting) {
+      let post: number | undefined;
+      if (CALLING_DEFS[l.calling].single) {
+        const there = postedLeader(state, faction, l.calling);
+        if (singles.has(l.calling) || (there && levels(there) >= levels(l))) {
+          orders.push({ type: 'dismiss', leader: l.id });
+          continue;
+        }
+        singles.add(l.calling);
+        post = 0;
+      } else if (l.calling === 'commander')
+        post = state.fleets
+          .filter((f) => f.owner === faction && !commanded.has(f.id))
+          .map((f) => ({ id: f.id, n: state.ships.filter((x) => x.fleet === f.id).length }))
+          .sort((a, b) => b.n - a.n || a.id - b.id)[0]?.id;
+      else
+        post = mine
+          .filter((h) => h.kind === 'colony' && !taken.has(h.id))
+          .sort((a, b) => b.people - a.people || a.id - b.id)[0]?.id;
+      if (post === undefined) continue;
+      if (l.calling === 'commander') commanded.add(post);
+      else taken.add(post);
+      orders.push({ type: 'post', leader: l.id, post });
+    }
+  }
 
   // At war, a battery at the capital and at each colony with a shipyard, as the treasury allows
   // (M4_FLEETS.md §26.11).

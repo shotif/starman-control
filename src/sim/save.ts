@@ -324,6 +324,8 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, agents: [], guard: 0, intel: [] }));
     return { ...g, version: 28, powers };
   },
+  /** 28 → 29 (M5 increment 56): leaders. None hired and none offered yet. */
+  28: (g) => ({ ...g, version: 29, leaders: [], candidates: [], nextLeaderId: 1 }),
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

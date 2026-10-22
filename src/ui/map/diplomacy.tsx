@@ -27,6 +27,7 @@ import type { World } from '../../sim/world.ts';
 import { AdvisorFace, FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
 import { Agents, GuardHome } from './espionage.tsx';
+import { LeaderLine } from './leaders.tsx';
 import { give, type Play } from './play.tsx';
 import { panel } from './state.ts';
 import { WarAndPeace } from './war.tsx';
@@ -419,6 +420,8 @@ export function DiplomacyView({
   return (
     <div class={`diplomacy${table ? ' diplomacy-table' : ''}`}>
       <AdvisorBy faction={faction} department="envoy" />
+      <LeaderLine game={game} faction={faction} calling="ambassador" />
+      <LeaderLine game={game} faction={faction} calling="spymaster" />
       {heard.length > 0 && <GuardHome game={game} faction={faction} play={play} />}
       {/* The Assembly (M4_FLEETS.md §29.4): its own screen, first from here. */}
       <button type="button" class="diplomacy-power diplomacy-assembly" onClick={() => (panel.value = 'assembly')}>

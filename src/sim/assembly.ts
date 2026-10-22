@@ -5,6 +5,7 @@
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
+import { postGives } from './leaders.ts';
 import { attitudeOf } from './memory.ts';
 import type { ReportEvent } from './report.ts';
 import {
@@ -37,7 +38,9 @@ export function isMember(state: GameState, f: FactionId): boolean {
 export function votesOf(state: GameState, f: FactionId): number {
   let people = 0;
   for (const h of state.holdings) if (h.owner === f && h.kind === 'colony') people += h.people;
-  return Math.max(1, Math.floor(people / A.peoplePerVote));
+  // A Persuasive ambassador (M5_UNKNOWN.md §24.2).
+  const more = 100 + postGives(state, f, 'ambassador', 'persuasive');
+  return Math.max(1, Math.floor((people * more) / (A.peoplePerVote * 100)));
 }
 
 /** All the members' votes together. */

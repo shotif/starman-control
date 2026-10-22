@@ -37,6 +37,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 21. [Increment 53 in detail: the keys and the Answer](#21-increment-53-in-detail-the-keys-and-the-answer-written-before-building-it)
 22. [Increment 54 in detail: events and the living sky](#22-increment-54-in-detail-events-and-the-living-sky-written-before-building-it)
 23. [Increment 55 in detail: light espionage](#23-increment-55-in-detail-light-espionage-written-before-building-it)
+24. [Increment 56 in detail: leaders](#24-increment-56-in-detail-leaders-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -847,3 +848,170 @@ makes there. D-69's target stays unmet, for the proof (increment 59) and M6. The
 | How many powers each rival watches | `PERSONALITIES[…].watches` (`src/sim/ai.ts`), 0 for none |
 | What each mark shows | `knowsHoldings`, `knowsShips`, `knowsSecrets` (`src/sim/espionage.ts`) |
 | Espionage off altogether | `watches: 0` for every rival and the *Agents* and *Guard home* lines taken out of `diplomacy.tsx` |
+
+## 24. Increment 56 in detail: leaders (written before building it)
+
+**Goals.** §8 (D-73, option A): named people, all fiction, in five posts, hired from a pool, with
+traits that grow and loyalty that can fail; each post a difference the player can read where it
+applies. **Out of scope:** leaders who age and retire, leaders as characters in events, a leader's
+own story; leaders of species not yet in play (the machine heirs bring their own in increment 58).
+
+### 24.1 Callings and posts
+
+Each leader has one **calling**, and serves in its post only:
+
+| Calling | Post | How many |
+| --- | --- | --- |
+| **Commander** | a fleet of ours | one to a fleet |
+| **Steward** | a colony of ours | one to a colony |
+| **Scholar** | the power's research | one |
+| **Ambassador** | the power's dealings and its seat in the Assembly | one |
+| **Spymaster** | the power's agents (§23) | one |
+
+*Steward*, not *governor*: a colony's governor is already the automatic management of M2. The
+ambassador is not the Envoy, the advisor who speaks for the dealings; the ambassador acts.
+
+A leader **hired and not posted** waits, paid all the same. Posting one where another serves sends
+the other back to wait. A power keeps at most **8** leaders.
+
+### 24.2 Traits
+
+Each leader has one trait, sometimes two (three in ten), each at **level 1 to 3**, and sometimes a
+flaw (one in four). What each level gives:
+
+| Calling | Trait | Each level |
+| --- | --- | --- |
+| Commander | **Bold** | the fleet's weapons do 10% more damage |
+| Commander | **Sharp-eyed** | the fleet's ships hit 5 more in 100 |
+| Commander | **Steady** | the fleet's ships take 10% less damage to their hulls |
+| Steward | **Beloved** | +3 approval at the colony |
+| Steward | **Industrious** | +10% industry at the colony |
+| Steward | **Thrifty** | +2 credits a turn from the colony |
+| Scholar | **Brilliant** | +5% research |
+| Scholar | **Antiquarian** | +10% to the excavations' progress (§20) |
+| Ambassador | **Charming** | every power we know thinks 4 better of us |
+| Ambassador | **Persuasive** | +10% votes in the Assembly |
+| Spymaster | **Cunning** | our agents learn 3 more a turn |
+| Spymaster | **Vigilant** | others' agents learn 2 less of us a turn (never less than the least, §23.1) |
+
+Flaws, any calling: **Greedy** (the wage doubled) and **Restless** (twice as likely to leave).
+
+**Experience:** every **25 turns** in a post, the leader's lowest trait below 3 rises a level (the
+first on a tie). The report says so: *Commander Rook is now Bold 2.*
+
+### 24.3 The pool
+
+- **Every 10 turns** each power is offered **3** people (seeded by the game, the turn and the
+  power), each with a calling, traits and perhaps a flaw. The offers last until the next ones.
+- **Their people:** most are of the power's own people; one offer in five is of another power the
+  power has heard of, named and drawn as theirs (a leader need not share its employer's kind).
+- **The fee** is 40 credits and 20 for each trait level; **the wage** 2 credits a turn and 1 for
+  each trait level, doubled if Greedy, paid while they serve (among the treasury's upkeep, as
+  *leaders*). *Hire* pays the fee at once; *Dismiss* lets one go, with no fee back.
+- The report says when new offers come: *Three people offer to serve us.*
+
+### 24.4 Loyalty
+
+Each turn, each leader may leave:
+
+- **In debt:** while the power's treasury is below 0, 5 in 100 a turn (10 if Restless).
+- **An unhappy colony:** a steward whose colony is in unrest or revolt, 5 in 100 a turn (10 if
+  Restless).
+- **Lured away:** a rival whose agents know our secrets (75, §23.1) lures one of our leaders, 2 in
+  100 a turn for each such rival, unless we keep much guard at home; the leader joins that rival,
+  waiting for a post.
+- **Fallen:** a commander whose fleet is destroyed in battle falls with it. A fleet merged or
+  disbanded sends its commander back to wait.
+
+The report names each: *Steward Ines Barros has left our service: our treasury is empty.*
+
+### 24.5 The rivals
+
+- **Hire by character,** while their treasury is at least the fee and 60 more and their income is
+  above nothing, up to **3** leaders: the Authority a scholar, then a steward, then an ambassador;
+  the Co-op a steward, a scholar, an ambassador; the Wake a commander, a spymaster, a steward; the
+  Concord an ambassador, a steward, a scholar; the Moot an ambassador, a spymaster, a steward.
+- **Post** each at once: a commander to its largest fleet without one, a steward to its most
+  populous colony without one.
+- **Dismiss** a waiting leader while in debt.
+
+### 24.6 On the screen
+
+- **A Leaders screen** (**L** on a desktop; in the menu on a phone and a tablet), a sheet on a
+  phone and a side panel on a desktop: *Ours*, each with a face, a name, the calling, the traits
+  with their levels, the flaw, turns in post, the wage, and where they serve with the order to post
+  them (a list of fleets or colonies, or *Post*) or *Dismiss*; then *Offers*, each with *Hire* and
+  its fee, and when the next come.
+- **Where they serve:** the fleet panel names its commander, the colony card its steward, the
+  research screen its scholar, the diplomacy screen the ambassador and the spymaster, each with
+  what their traits give; the figures' parts name them too (*Steward Ines Barros (Beloved 2)*).
+
+### 24.7 Names and faces
+
+- **Names by their people:** the Authority's civic (given and family names, *Dr* for some), the
+  Co-op's plain and pastoral, the Wake's single hard words, the Concord's quiet pairs (*Still
+  Water*), the Moot's of wind and current (*Fair Wind*). All invented.
+- **Faces:** four for each people, twenty in all, painted in the advisors' style (D-27), a leader
+  wearing one chosen from the seed.
+
+### 24.8 State
+
+`leaders` (each with its id, employer, people, name, face, calling, traits, flaw, wage, where it
+serves and turns in post), `offers` (the same, with a fee, for one power) and `nextLeaderId`.
+**State version 29**; an older save has none.
+
+### 24.9 Tests
+
+- **Unit** (`leaders.test.ts`): the pool from the seed; hiring, its fee and refusals; posting and
+  the one-to-a-post rule; each trait's effect where it applies; experience; leaving in debt and in
+  an unhappy colony; lured; fallen with the fleet; the wages in the upkeep; the rivals hiring and
+  posting; the migration.
+- **Journey** (`leaders.spec.ts`, phone, tablet and desktop): hiring a steward, posting them to a
+  colony and seeing their trait in its approval.
+
+### As built (22 October 2026)
+
+As designed above, with these differences and details:
+
+- **The rivals hire from turn 70, with the fee and 20 more** (§24.5 said from the start, with 60
+  more). Hiring earlier cost the Wake the credits it gives as gifts on the way to its first treaty,
+  and M3's target for every human power to have a treaty by turn 100 failed on seeds 42 and 7
+  (with 60 more, only the Wake could ever afford one). From turn 70 every rival hires in time.
+- **One of a power's own posts takes the abler of two.** A rival that gains a second scholar,
+  ambassador or spymaster (lured, usually) posts the one with more trait levels and lets the other go;
+  before this, the two changed places every turn.
+- **Where the traits act:** a commander's in the battle itself (damage, the chance to hit, the
+  damage to hulls taken), by the fleet's task force; a steward's in the colony's approval, industry
+  and credits; a scholar's in research (Brilliant as a share of it, like thinking machines) and in the
+  excavations (Antiquarian adds to what reaches them, taking nothing from the technology); an
+  ambassador's in every power's regard (*Their Ambassador … (Charming 2)*, among the reasons) and in
+  the Assembly's votes; a spymaster's in what agents gather. Each figure names the leader in its parts.
+- **The offers** come as the first turn ends and every 10 turns after, three for each power; the
+  report says *Three people offer to serve us: see the Leaders screen.* One in five is of another
+  power the power has heard of, named and drawn as theirs.
+- **On the screen:** the Leaders screen (**L**, or *Leaders* in the menu) with *Our leaders* (a face,
+  the traits and what each level gives, the flaw, the wage and turns served, *Serves* as a list of
+  fleets or colonies, or *Post as scholar* and the like, and *Dismiss*) and *Offered to us* (*Hire:
+  80 credits*). A leader's line, face and traits where they serve: the fleet panel, the colony panel,
+  the research screen and, for the ambassador and the spymaster, the diplomacy screen.
+- **Faces:** 40 candidates, about $2.00; four for each people, chosen A but for the Authority's
+  second, the Co-op's third and the Moot's first (B).
+- **Tests:** `leaders.test.ts` (17) and `leaders.spec.ts` (phone, tablet and desktop).
+
+**Numbers** (M2_BALANCE.md): little changes by turn 100, as no rival hires before turn 70 (the
+largest save there 69.1 KB). To turn 250, three different winners, as after increment 54: the Co-op
+six, the Concord one, the Wake one. The Co-op's win on seed 5 is now by the Assembly on turn 90, with
+the Authority's votes (a knock-on effect: the Wake, paying for leaders, made fewer gifts, and regard
+shifted by a few points); D-69's target stays for the proof and M6. By turn 250 every power keeps
+leaders, most at level 3 in a trait, and on seed 42 five were lured away. The deepest debt was −76
+and the longest 42 turns; the slowest turn took 124 ms and the largest save 131.6 KB.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| Fees, wages, offers, growth, loyalty and what each trait gives | `RULES.leaders` (`src/content/rules.ts`) |
+| The callings and their traits, the flaws, the names | `src/content/leaders.ts` |
+| When and what the rivals hire | `RULES.leaders.rivalsFrom`, `rivalsMost`, `rivalsSpare`; `PERSONALITIES[…].leaders` (`src/sim/ai.ts`) |
+| A trait's effect where it acts | `traitPart` or `postGives` in `economy.ts`, `relics.ts`, `memory.ts`, `assembly.ts`, `espionage.ts`; the commander's in `fight` (`battle.ts`) |
+| Leaders off altogether | `RULES.leaders.offers: 0` (no one offered) and `rivalsMost: 0`; the screen then shows none |

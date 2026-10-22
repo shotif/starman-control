@@ -82,6 +82,7 @@ import { designLine, give, type Play } from './play.tsx';
 import { lanePreview, panel, queueHover } from './state.ts';
 import './colony.css';
 import { Count } from '../count.tsx';
+import { LeaderLine } from './leaders.tsx';
 
 /** People and room are counted in tenths of a unit of about a million: "10.4", "12". */
 export function millions(tenths: number): string {
@@ -778,6 +779,7 @@ export function HoldingPanel({
       {!viewing && <ColonyStill world={world} game={game} holding={h} onOpen={onView} />}
       {h.kind === 'colony' ? (
         <>
+          {mine && <LeaderLine game={game} faction={h.owner} calling="steward" post={h.id} />}
           <dl class="facts">
             <dt>People</dt>
             <dd>

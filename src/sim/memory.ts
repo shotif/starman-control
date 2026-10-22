@@ -8,13 +8,25 @@ import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { TREATIES } from '../content/treaties.ts';
 import { keysHeld } from './keys.ts';
+import { traitPart } from './leaders.ts';
 import type { ReportEvent } from './report.ts';
 import { contactWith, type GameState, type Memory, type MemoryKind, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 /** One part of an attitude, with its reason as the regarded power reads it. */
 export interface AttitudePart {
-  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | 'war' | 'tired' | 'keys' | 'answering' | MemoryKind;
+  kind:
+    | 'kin'
+    | 'known'
+    | 'character'
+    | 'treaty'
+    | 'lawful'
+    | 'war'
+    | 'tired'
+    | 'keys'
+    | 'answering'
+    | 'ambassador'
+    | MemoryKind;
   reason: string;
   amount: number;
 }
@@ -135,6 +147,9 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
       });
     if (state.answer?.by === toward && FACTIONS[holder].war.callsForPeace)
       parts.push({ kind: 'answering', reason: 'Would answer for us all', amount: RULES.keys.answering });
+    // A Charming ambassador (M5_UNKNOWN.md §24.2).
+    const charming = traitPart(state, toward, 'ambassador', 'charming', (v) => v);
+    if (charming) parts.push({ kind: 'ambassador', reason: `Their ${charming.label}`, amount: charming.value });
   }
   const sum = parts.reduce((n, p) => n + p.amount, 0);
   const total = Math.max(-r.most, Math.min(r.most, sum));

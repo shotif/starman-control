@@ -409,6 +409,49 @@ export const RULES = {
     rivalsFrom: 100,
     watchFrom: 60,
   },
+  /** Leaders (M5_UNKNOWN.md §24): the pool, fees and wages, experience, loyalty and what each trait gives. */
+  leaders: {
+    /** Leaders a power keeps at most. */
+    most: 8,
+    /** Offers come every so many turns, so many at a time. */
+    offerEvery: 10,
+    offers: 3,
+    /** In a hundred: a second trait, a flaw, and an offer of another power's people. */
+    secondTrait: 30,
+    flaw: 25,
+    otherPeople: 20,
+    /** The fee to hire, and the wage a turn: a base and so much for each trait level. Greedy doubles the wage. */
+    fee: 40,
+    feePerLevel: 20,
+    wage: 2,
+    wagePerLevel: 1,
+    /** Turns in a post for each trait level gained, up to the top level. */
+    growEvery: 25,
+    topLevel: 3,
+    /** In a hundred a turn: leaving in debt, a steward leaving an unhappy colony (doubled if Restless), lured by a rival that knows our secrets. */
+    leaveInDebt: 5,
+    leaveUnhappy: 5,
+    lured: 2,
+    /** The rivals keep at most so many, hiring from this turn with the fee and so much more in their treasury. */
+    rivalsMost: 3,
+    rivalsFrom: 70,
+    rivalsSpare: 20,
+    /** What each trait gives for each level. */
+    per: {
+      bold: 10,
+      'sharp-eyed': 5,
+      steady: 10,
+      beloved: 3,
+      industrious: 10,
+      thrifty: 2,
+      brilliant: 5,
+      antiquarian: 10,
+      charming: 4,
+      persuasive: 10,
+      cunning: 3,
+      vigilant: 2,
+    },
+  },
   /** The keys and the Answer (M5_UNKNOWN.md §21): how many, the fear of them, the Answer's turns. */
   keys: {
     count: 5,

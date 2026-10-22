@@ -58,6 +58,7 @@ import { decidedNow, EndView } from './end.tsx';
 import { EventCard } from './event.tsx';
 import { FleetPanel, fleetLine, fleetStatus, planForFleet } from './fleets.tsx';
 import { GuideCard } from './guide.tsx';
+import { LeadersView } from './leaders.tsx';
 import {
   give,
   NeedsStack,
@@ -130,6 +131,7 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['B', 'Designs: the warships you can build'],
   ['G', 'The Assembly: its members, votes and elections'],
   ['J', 'Relics: the sites of the Absent, their chapters and the journal'],
+  ['L', 'Leaders: ours, where they serve, and the people offered'],
 ];
 
 function shipMarks(game: GameState, viewer?: FactionId): ShipMark[] {
@@ -862,6 +864,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'b' && p) panel.value = panel.value === 'designs' ? null : 'designs';
       else if (k === 'g' && p && game.powers.length > 1) panel.value = panel.value === 'assembly' ? null : 'assembly';
       else if (k === 'j' && p) panel.value = panel.value === 'relics' ? null : 'relics';
+      else if (k === 'l' && p) panel.value = panel.value === 'leaders' ? null : 'leaders';
       else if (k === 'm' && p && selectedFleet.value !== null)
         targeting.value = { fleet: selectedFleet.value, blind: false, to: null };
       else if (k === 'm' && p && selectedShip.value !== null)
@@ -1024,6 +1027,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       }}
     />
   );
+  // Leaders (M5_UNKNOWN.md §24.6).
+  const leaders = play && <LeadersView world={world} game={game} faction={play.faction} play={play} />;
   // The end of the game (M4_FLEETS.md §30.3): play on, unless our power has left the game.
   const outcome = play ? outcomeFor(game, play.faction) : null;
   const end = play && outcome && (
@@ -1211,6 +1216,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && relics && panel.value === 'relics' && (
           <div class="popover relics-popover" role="dialog" aria-label="Relics" data-keep-clear>
             {relics}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
+        {desktop && leaders && panel.value === 'leaders' && (
+          <div class="popover leaders-popover" role="dialog" aria-label="Leaders" data-keep-clear>
+            {leaders}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
             </button>
@@ -1447,6 +1460,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'relics')}>
               Relics
             </button>
+            <button type="button" class="button button-quiet" onClick={() => (panel.value = 'leaders')}>
+              Leaders
+            </button>
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
               Legend
             </button>
@@ -1605,6 +1621,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           if (diplomacy && panel.value === 'diplomacy') return sheet('Diplomacy', diplomacy, close, 'diplomacy');
           if (assembly && panel.value === 'assembly') return sheet('The Assembly', assembly, close, 'assembly');
           if (relics && panel.value === 'relics') return sheet('Relics', relics, close, 'relics');
+          if (leaders && panel.value === 'leaders') return sheet('Leaders', leaders, close, 'leaders');
           if (end && panel.value === 'end') return sheet('The end of the game', end, close, 'end');
           if (play && panel.value === 'designs') return sheet('Designs', designs, close, 'designs');
           if (play && panel.value === 'menu')
@@ -1636,6 +1653,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 )}
                 <button type="button" class="button button-quiet" onClick={() => (panel.value = 'relics')}>
                   Relics
+                </button>
+                <button type="button" class="button button-quiet" onClick={() => (panel.value = 'leaders')}>
+                  Leaders
                 </button>
                 {outcome && (
                   <button type="button" class="button button-quiet" onClick={() => (panel.value = 'end')}>
