@@ -68,7 +68,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-14 | Victory and defeat ([M4 §13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | Decided 2026-10-22 | **A, conquest, the vote, a score at a turn limit** (250 turns by default), as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
-| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--open)) | **Open** | recommended: A, leave it, and look again after the owner's try |
+| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--open)) | **Open** | the owner wants more than one winner; trials of D, C, F and G recorded; recommended: B, a brake and a road to victory for each faction |
 | D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -649,19 +649,57 @@ within the $24.45 of D-27 left; ships and battles are drawn in code.
 ### D-69 · Who wins by the Assembly's vote — **Open**
 
 In the headless games of increment 50 (M4_FLEETS.md §30, M2_BALANCE.md), six of eight games were won
-by the Assembly's choice between turns 157 and 234, and **every one by the Frontier Co-op**: it is
-the most populous power, and every other regards it warmly (kin to the other human powers, a
-peaceful neighbour to the aliens), so their votes go to it. With the player in the game, the player can vote against it,
-stand when among the two largest, and win by conquest or score first, but a rival Cooperative is
-the power to watch.
+by the Assembly's choice between turns 157 and 234, and **every one by the Frontier Co-op**. The
+owner does not want one faction to win every time (22 October 2026), and asked to explore other
+options; the owner chose to try D, C, F and G.
 
-- **A. Leave it (recommended).** The Cooperative's way to win is the vote, as befits it; the race
-  against it is part of the game. Look again after the owner has played.
-- **B. Rivals hand victory only to a power they love** (friendly, 40): built and measured in
-  increment 50, and no game was won before the limit.
-- **C. Members tire of a long-serving leader:** after two terms in a row, each further term costs
-  the leader 10 of every member's regard, so the vote turns to others in time. Vote victories
-  later, and by more than one power.
+**Why.** The Co-op grows fastest (+20%), so it is always one of the two candidates, and no power
+has a reason to dislike it: it never declares war, the human powers count it as kin, and no
+faction's character holds anything against it. Every other faction has someone who does. And no
+rival reacts to a power about to win, as a human player would.
+
+**The trials** (each the eight seeds, five rival powers and no player, to turn 250; built in a
+scratch copy, not in the game):
+
+| Trial | Won by the vote | Won on score at turn 250 |
+| --- | --- | --- |
+| Today | Co-op 6 | Concord 2 |
+| D: members fear a power that won its last election with more than half the votes (−2 a point over half, at most −30) | Co-op 5 | Concord 3 |
+| C: members tire of a leader after two terms (−10 a term) | Co-op 4 | Concord 3, Co-op 1 |
+| F: three votes a colony as well as one a million | Co-op 8 | — |
+| G: a candidate sends envoys (a gift of 100) to the largest wavering member, and a power that wins with 55% is denounced (−15 from every member) if the Assembly agrees | Co-op 4 | Co-op 2, Concord 2 |
+| D, C and G together | Co-op 3 | Concord 3, Co-op 2 |
+| K: fear at the deciding vote itself: when the votes would choose a power outright, each member that is not its ally thinks 20 less of it, and votes for the other candidate if it likes that one | Co-op 3 | Concord 3, Co-op 2 |
+| K and G | Co-op 2 | Co-op 3, Concord 3 |
+| K and C | Co-op 2 | Concord 4, Co-op 2 |
+| B (increment 50): only a power's friends vote it into victory | — | Concord 5, Co-op 3 |
+
+**What they show.** Every brake turns the Co-op's wins by vote into wins on score, and only two
+factions ever win. The others have no road to victory: the **Transit Authority** leads in research
+but holds few colonies, and research counts little in the score; the **Hollow Wake** is disliked by
+every lawful power, so it can never have two thirds, and no rival ever finishes a conquest (no power
+left the game or surrendered in any trial); the **Drift Moot** is small and joins the Assembly late.
+With a player in the game there is a sixth contender, but the rivals should not leave it a race
+between two of them.
+
+**Options now:**
+
+- **A. A brake alone (K, with C):** rivals fear a power about to rule the Assembly, as a human would,
+  and tire of a long-serving leader. Fewer and later wins by the vote; still only the Co-op and the
+  Concord win the games without a player.
+- **B. A brake and a road for each faction (recommended):** K and C, and
+  - **the Wake and the Concord see a conquest through** (H): at war with a beaten neighbour, they
+    press on to its capital and take its surrender, rather than making peace;
+  - **the Moot buys votes:** envoys (G's half that is not the denouncing) for every power, the
+    player too, and the Moot, rich and a broker, uses them most;
+  - **the Authority's road is the keys** (M5's victory by the precursor mystery, D-14), and until
+    then research counts for more in the score (10 a technology rather than 5).
+
+  Measured as the others were, and built only if it shows at least four different winners in the
+  eight games, none winning more than three.
+- **C. Change the factions instead:** take the Co-op's growth down and give it a quarrel (the
+  Wake's raids, say), so it is not loved by all. Simple, but it blunts the faction rather than
+  giving the others a way to win.
 
 ## Made without waiting
 
