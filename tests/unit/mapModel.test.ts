@@ -49,7 +49,7 @@ describe('star classes', () => {
 
 describe('what the map draws', () => {
   it('has one glyph per system at its real position, and every old lane', () => {
-    expect(content.systems).toHaveLength(207);
+    expect(content.systems).toHaveLength(SKY.systems.length);
     expect(content.lanes).toHaveLength(271);
     const sol = content.systems.find((s) => s.id === 'sol');
     expect(sol?.pos).toEqual([0, 0, -0]);

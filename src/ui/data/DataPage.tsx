@@ -74,7 +74,7 @@ export function DataPage({ world, game, buildId }: Props) {
           Codex <span>the real neighbourhood</span>
         </h1>
         <p class="data-sub">
-          What astronomers know of every system within 27 light-years of the Sun, with its sources, and the old lanes as
+          What astronomers know of every system within 33 light-years of the Sun, with its sources, and the old lanes as
           they stand in {formatDate(game.turn)}.
         </p>
         <ul class="data-facts" aria-label="What the dataset holds">
@@ -385,7 +385,8 @@ function Methods() {
         <a href="https://github.com/shotif/starman-reborn" target="_blank" rel="noreferrer">
           Starman Reborn
         </a>
-        ’s sky snapshot of 30 September 2026; see{' '}
+        ’s sky snapshot of 30 September 2026, and beyond about 27 light-years by the same pipeline on 22 October 2026;
+        see{' '}
         <a
           href="https://github.com/shotif/starman-control/blob/main/src/data/NOTICE.md"
           target="_blank"

@@ -29,6 +29,7 @@ them, and the first aliens, powers you deal with.
 15. [Tests and budgets](#15-tests-and-budgets)
 16. [Art and its cost (D-57)](#16-art-and-its-cost-d-57)
 17. [Decisions for the owner](#17-decisions-for-the-owner)
+18. [Increment 33 in detail: the shell](#18-increment-33-in-detail-the-shell-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -230,3 +231,106 @@ Answer *as recommended* to take every recommendation, or name what to change.
 | **D-55** | Memory and attitude (§7) | A remembered acts with reasons · B one number | **A** |
 | **D-56** | The Wake's dealings (§11) | A in M3 · B later | **A** |
 | **D-57** | Art for M3 (§16) | raise D-27 to $50 · keep $35 | **raise to $50** |
+
+## 18. Increment 33 in detail: the shell (written before building it)
+
+**Goals.** D-51 as decided (A): every real system out to 33 light-years is in the game, each value
+with its source, as the 207 of the census are. The shell between about 27 and 33 ly starts dark
+and laneless, reached by survey ships' blind jumps and new lanes. The map, the codex and the
+budgets hold at the larger size, on a phone too. Games saved before go on as they were.
+
+**Out of scope.** The aliens' homes in the shell (increments 38 and 39). Old lanes in the shell:
+there were none. Starman Reborn itself: its game and its repository are not changed; the fetch
+runs on a copy. A 40 ly map (D-02). Flare stars in the shell (below).
+
+### 18.1 The census out to 33 ly
+
+- **Fetched with Reborn's own pipeline** (D-02, D-10) on a copy of Reborn at the commit the census
+  came from, with its limits lowered: SIMBAD and Hipparcos to a parallax of at least **99 mas**
+  (about 32.9 ly; 120 mas, about 27.2 ly, before), the NASA Exoplanet Archive to 10.2 pc and the
+  Extrasolar Planets Encyclopaedia to 10.3 pc. Then Reborn's processing and dataset build as
+  always: stars grouped into systems by SIMBAD's multiple-star links and by being close on the sky
+  at the same distance; Gaia DR3 astrometry where it passes Reborn's quality cuts, SIMBAD's
+  otherwise, each cited.
+- `scripts/data/prepare-shell.ts` makes the copy and lists every change made in it;
+  **`npm run data:shell -- --from <copy>`** (`scripts/data/import-shell.ts`) writes
+  **`src/data/shell.json`**: every system the copy holds that the census lacks, with its stars,
+  planets and belts in sky.json's form, nearest first, each marked `shell`, with the day the
+  archives were asked and the changes. A system sharing a star with the census is left out and
+  listed with its reason.
+- **`sky.json` is unchanged:** its 207 systems from the snapshot of 30 September 2026 and its 271
+  lanes. Every world, anomaly and observation is seeded system by system, so the census's are
+  exactly as before, and a saved game loads and plays on.
+- `SKY` joins the two, the census first. The codex says where each part came from.
+
+### 18.2 The shell in play
+
+- **No old lane reaches it** (fiction): the network the Lapse left never ran past the census. The
+  system panel says so: "No lane ran here before the Lapse: it lies beyond the old network."
+- It is reached as any star off the lanes: a survey ship's **blind jump** (6 ly, more with
+  research), then a **new lane** from a held system within reach (6 ly and 2 more for each Lane
+  engineering). Colony and outpost ships follow the lanes. No new rule.
+- Its worlds are made as any star's, from its real type and the game's seed (D-03); anomalies and
+  observations are found there as anywhere. The rivals explore and settle it by the same rules.
+- **Flare stars:** the census marks the ten Reborn chose; the shell marks none for now, though
+  some of its red dwarfs flare in reality (AU Microscopii, AP Columbae). Choosing them is left for
+  when flares matter more (a choice made without waiting).
+
+### 18.3 On the screen
+
+- The map draws every system; the shell's are stars like the rest, with no lanes, and the camera
+  can centre any of them (its limit 36 ly from Sol, 30 before). Labels are placed by priority, as
+  now, so the phone's map stays readable.
+- The title: "356 real star systems, free to explore"; the codex: "every system within 33
+  light-years of the Sun"; the map's help: "… and the old lanes between the nearer ones".
+
+### 18.4 Numbers and budgets
+
+About 340 systems (D-02). The first load to the map stays under its 900 KB; a turn after 50 turns
+under 200 ms and a save after 50 turns under 200 KB (M1_PROOF.md §4); M2b's targets at turn 100
+(`npm run balance`) still met.
+
+### 18.5 State
+
+No change: the world is the data, not the save (state version 11).
+
+### 18.6 Tests
+
+`sky.test.ts` (the census as it was; the shell's count, distances, sources, the one left out, no
+lane into it), `world.test.ts` (inside 27 and 33 ly; no catalogue lane in the shell),
+`planets.test.ts` (the census's 716 bodies of seed 1 pinned to their old fingerprint, the shell's
+pinned too), `shell.test.ts` (a blind jump into the shell and its survey; a new lane to it, never
+relit; a game saved on the census alone loads with the same worlds and plays on), the counts in
+`discoveries`, `anomalies`, `mapModel` and `ui` tests; `data.spec.ts` (356 systems; Chara,
+laneless) on the phone, tablet and desktop.
+
+
+### Increment 33: the shell (22 October 2026)
+
+- **The archives were asked on 22 October 2026 from this container**, which can reach them now, so
+  GitHub's runners (D-51's leave) were not needed; `prepare-shell.ts` and the commands in its
+  header do the same anywhere that reaches the archives.
+- **149 systems** join the census's 207: **356** in all. They hold 170 stars, from 27.2 to 32.9 ly:
+  101 red dwarfs, 12 orange, 7 yellow and 4 yellow-white stars, 8 white dwarfs, 32 brown dwarfs
+  (in 28 systems) and 6 whose type no catalogue gives; 21 of the systems are pairs. Among them are Chara, 61 Virginis with its three planets, Zeta
+  Tucanae, Chi¹ Orionis and AU Microscopii with its four planets and its debris disc. **37
+  planets** (33 confirmed, 4 contested and kept) and **1 belt**. 104 stars' positions come from
+  Gaia DR3 and the rest from SIMBAD, each with its source.
+- **One left out:** Mu Herculis. Mu¹ Herculis (GJ 695 A), 27.20 ly away, just past the census's
+  120 mas, belongs with the census's Mu² Herculis, which saved games know as it is; joining it is
+  left for a later import.
+- **Two archive answers needed care**, listed in `shell.json`: the Encyclopaedia wrote one value as
+  `Infinity`, which is not JSON (read as no value); and a batch of 300 Gaia identifiers timed out.
+  Three of them had been read with the "3" of "DR3" kept (20 digits, more than any Gaia source
+  has): Proxima Centauri's, Barnard's Star's and Epsilon Eridani's, all in the census. The batch
+  was asked again without them; `prepare-shell.ts` mends the reading. **Reborn's own fetch has the
+  same slip** (its snapshot of 30 September took 17 minutes on that batch): worth mending there.
+- `scripts/data/rebornSky.ts` now holds the reading of Reborn's sky that both imports share;
+  `npm run data:import` still writes a byte-identical `sky.json`.
+- **As §18.2 and §18.3**, with one more line on the map's help. The camera's limit is 36 ly.
+- **Numbers:** the first load to the map 358 KB of 900 KB (331 KB before); `npm run balance` at turn
+  100 on its eight seeds: the Authority 37.1 technologies (35 to 39), the Cooperative 21.6 (19 to
+  24), the Wake 22.0 (20 to 24), so M2b's targets still hold; the slowest headless turn 136 ms (128
+  before), the largest save at turn 100 40.6 KB. A turn's median, measured alone, went from 26 ms to
+  31 ms.
+- **Tests:** as §18.6; 432 unit tests.

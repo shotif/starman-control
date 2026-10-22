@@ -392,6 +392,9 @@ export function SystemPanel({
       <h3>
         Lanes <Badge kind="fiction" />
       </h3>
+      {world.catalogueAt(id).length === 0 && (
+        <p class="lanes-none">No lane ran here before the Lapse: it lies beyond the old network.</p>
+      )}
       <ul class="lanes">
         {lanes.map((l) => {
           const to = otherEnd(l.id, id);

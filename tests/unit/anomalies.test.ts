@@ -31,8 +31,8 @@ describe('where anomalies are', () => {
   it('is about one system in six, never a capital, the same every time for a seed', () => {
     for (const seed of [1, 42, 777, 4242]) {
       const found = world.systems.filter((s) => anomalyAt(seed, s.id) !== null);
-      expect(found.length).toBeGreaterThan(207 / 9);
-      expect(found.length).toBeLessThan(207 / 4);
+      expect(found.length).toBeGreaterThan(world.systems.length / 9);
+      expect(found.length).toBeLessThan(world.systems.length / 4);
       for (const f of Object.values(FACTIONS)) expect(anomalyAt(seed, f.capital.systemId)).toBeNull();
       expect(world.systems.map((s) => anomalyAt(seed, s.id))).toEqual(world.systems.map((s) => anomalyAt(seed, s.id)));
     }

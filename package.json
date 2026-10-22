@@ -31,6 +31,7 @@
     "music:approve": "node scripts/music/approve.ts",
     "music:check": "node scripts/music/check.ts",
     "data:import": "node scripts/data/import-reborn.ts",
+    "data:shell": "node scripts/data/import-shell.ts",
     "data:import-dwarfs": "node scripts/data/import-dwarfs.ts",
     "lint": "biome check .",
     "format": "biome check --write .",

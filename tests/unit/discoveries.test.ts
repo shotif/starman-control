@@ -245,9 +245,11 @@ describe('inspirations (§17.1)', () => {
 describe('observations of the real sky (§17.2)', () => {
   it('as many systems as the sky data holds, each worth its points', () => {
     const count = (k: string) => world.systems.filter((s) => observationsAt(world, s.id).includes(k as never)).length;
-    // 45 with a brown dwarf: 44 of type L, T or Y, and CWISE 1055+5443, a subdwarf of type T; 47 with
-    // planets: the 46 the archives list, and Sol's eight.
-    expect(OBSERVATION_KINDS.map(count)).toEqual([11, 8, 45, 9, 47, 8]);
+    // The census: 45 with a brown dwarf (44 of type L, T or Y, and CWISE 1055+5443, a subdwarf of
+    // type T), 47 with planets (the 46 the archives list, and Sol's eight). The shell (§18 of
+    // M3_NEIGHBOURS.md) adds 8 white dwarfs, AU Microscopii's disc, 28 brown dwarfs and 20 systems
+    // with planets; its flare stars are not marked (Reborn's ten are), nor has it three stars together.
+    expect(OBSERVATION_KINDS.map(count)).toEqual([19, 9, 73, 9, 67, 8]);
     expect(observationsAt(world, 'sirius')).toEqual(['white-dwarf']);
     expect(observationsAt(world, 'alpha-centauri')).toEqual(['disc', 'flare-star', 'planets', 'many-stars']);
     expect(observationPoints(start(), 'sta', observationsAt(world, 'alpha-centauri'))).toBe(45);

@@ -110,6 +110,28 @@ export interface SkySystem {
   stars: SkyStar[];
   planets: SkyPlanet[];
   belts: SkyBelt[];
+  /**
+   * Beyond the census of 27 ly, from the shell's own snapshot (M3_NEIGHBOURS.md §18): no old lane
+   * ever reached it.
+   */
+  shell?: true;
+}
+
+/** The shell out to 33 ly (src/data/shell.json, made by `npm run data:shell`). */
+export interface ShellDataset {
+  format: 'starman-control-shell';
+  version: 1;
+  /** The Reborn copy the systems were read from, and what was changed in it. */
+  importedFrom: { repository: string; commit: string; changes: string[] };
+  /** The day the archives were asked. */
+  retrieved: string;
+  /** The parallax floor of the census, in milliarcseconds. */
+  parallaxFloorMas: number;
+  description: string;
+  /** Reborn systems left out, each with its reason. */
+  leftOut: { id: string; name: string; reason: string }[];
+  /** Nearest Sol first. */
+  systems: SkySystem[];
 }
 
 export interface SkyDataset {
@@ -124,4 +146,6 @@ export interface SkyDataset {
   lanes: [SystemId, SystemId][];
   /** laneFingerprint(lanes) when imported, so a changed network is noticed. */
   laneFingerprint: string;
+  /** Where the shell's systems came from, when they are joined to the census. */
+  shell?: Omit<ShellDataset, 'systems'>;
 }

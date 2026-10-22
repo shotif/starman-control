@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { FACTION_IDS } from '../../src/content/factions.ts';
 import { SKY } from '../../src/data/sky.ts';
@@ -46,7 +47,11 @@ describe('the data preview', () => {
   const rows = systemRows(world, game);
 
   it('lists every system with its lanes, open or dark', () => {
-    expect(rows).toHaveLength(207);
+    expect(rows).toHaveLength(SKY.systems.length);
+    // The title counts them without loading the sky.
+    expect(readFileSync('src/ui/Title.tsx', 'utf8')).toContain(
+      `'${SKY.systems.length} real star systems, free to explore'`,
+    );
     const sol = rows.find((r) => r.id === 'sol');
     expect(sol?.web).toBe('sta');
     expect(sol?.lanes.filter((l) => l.owner === 'sta')).toHaveLength(4);

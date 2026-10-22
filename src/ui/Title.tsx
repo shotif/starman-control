@@ -130,7 +130,7 @@ export function Title({ buildId }: { buildId: string }) {
     {
       href: '#/map',
       title: 'Explore the neighbourhood',
-      line: '207 real star systems, free to explore',
+      line: '356 real star systems, free to explore',
       glyph: 'explore',
     },
     { href: '#/codex', title: 'Codex', line: 'Every star and world, with its sources', glyph: 'codex' },

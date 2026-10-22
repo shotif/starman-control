@@ -90,8 +90,8 @@ export const ORBIT_LIMITS: OrbitLimits = {
   maxDistance: 80,
   minPitch: -1.45,
   maxPitch: 1.45,
-  // Past the far shell (about 27 ly), so every system can be brought to the centre.
-  maxTargetRadius: 30,
+  // Past the shell (about 33 ly, M3_NEIGHBOURS.md §18), so every system can be brought to the centre.
+  maxTargetRadius: 36,
 };
 
 export function cloneOrbit(s: OrbitState): OrbitState {

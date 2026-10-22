@@ -171,13 +171,19 @@ describe('generated worlds', () => {
     expect(JSON.stringify(all(2))).not.toBe(one);
   });
 
-  it('are pinned: the bodies of seed 1 never change by accident', () => {
+  it('are pinned: the bodies of seed 1 never change by accident, the census’s as before the shell', () => {
     // If this fails, every saved game's worlds would change: only update it on purpose.
-    const lines = all(1).map(
-      (b) => [b.id, `${b.kind}:${b.orbitMilliAu}:${b.massCenti}:${b.atmosphere}:${b.water}`] as [string, string],
-    );
-    expect(lines).toHaveLength(716);
-    expect(laneFingerprint(lines)).toBe(PINNED);
+    const pin = (shell: boolean) =>
+      world.systems
+        .filter((s) => (s.sky.shell === true) === shell)
+        .flatMap((s) => bodiesOf(world, 1, s.id))
+        .map(
+          (b) => [b.id, `${b.kind}:${b.orbitMilliAu}:${b.massCenti}:${b.atmosphere}:${b.water}`] as [string, string],
+        );
+    expect(pin(false)).toHaveLength(716);
+    expect(laneFingerprint(pin(false))).toBe(PINNED);
+    expect(pin(true)).toHaveLength(SHELL_BODIES);
+    expect(laneFingerprint(pin(true))).toBe(PINNED_SHELL);
   });
 
   it('hold whole numbers only', () => {
@@ -259,3 +265,5 @@ describe('generated worlds', () => {
 });
 
 const PINNED = '9f4f8318';
+const SHELL_BODIES = 474;
+const PINNED_SHELL = 'fd9b5f5e';

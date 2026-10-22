@@ -89,6 +89,11 @@ way in.
   At turn 100 of the headless games the Authority knows about 37 technologies, the Cooperative 22
   and the Wake 22, on every seed within §2's targets; no power learns all it can before turn 180.
   **M2b is complete** and waits for the owner's try.
+- **M3 "Neighbours"** ([design/M3_NEIGHBOURS.md](design/M3_NEIGHBOURS.md)), decided 22 October
+  2026. **Increment 33 is built:** the shell, 149 real systems between 27 and 33 ly from the
+  archives on 22 October 2026 (356 in all), in `src/data/shell.json` beside the unchanged census;
+  no old lane reaches them, so they are reached by blind jumps and new lanes. The map's first
+  load is 358 KB; a game's map, turns and saves stay within their budgets.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
   the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
   loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
@@ -127,7 +132,9 @@ answered *as recommended* on 22 October 2026 ([DECISIONS.md Round 6](DECISIONS.m
 which gives leave to run the sky fetch on GitHub's runners (D-51) and raises the art budget to
 about $50 (D-57). As in M2b: write each increment's detailed design section (§18 onwards) before
 building it, and send each increment's pictures as lettered sheets, recorded in DECISIONS.md with
-their cost.
+their cost. **Done: increment 33, the shell** (§18): 149 real systems between 27 and 33 ly
+(356 in all), laneless, from the archives on 22 October 2026 (`npm run data:shell`); the census
+and saved games unchanged. **Next: increment 34, contact.**
 
 The art and music spend: about $24.45 of $50 (raised on 22 October 2026; about $25.55 left). M3's
 art is about 65 pictures (about $6.50).

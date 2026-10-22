@@ -12,7 +12,7 @@ test.describe('the codex', () => {
     await press(page.getByRole('link', { name: 'Codex', exact: true }), info.project.name);
     await expect(page.getByRole('heading', { name: /Codex/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /How the game works out/ })).toBeVisible();
-    await expect(page.locator('.count')).toHaveText('207 of 207');
+    await expect(page.locator('.count')).toHaveText('356 of 356');
     await expect(page.locator('.web-card')).toHaveCount(3);
   });
 
@@ -23,10 +23,10 @@ test.describe('the codex', () => {
       isDesktop(info.project.name) ? 'desktop' : 'phone',
     );
     if (isDesktop(info.project.name)) {
-      await expect(page.locator('.system-table tbody tr')).toHaveCount(207);
+      await expect(page.locator('.system-table tbody tr')).toHaveCount(356);
       await expect(page.locator('.system-cards')).toHaveCount(0);
     } else {
-      await expect(page.locator('.system-card')).toHaveCount(207);
+      await expect(page.locator('.system-card')).toHaveCount(356);
       await expect(page.locator('.system-table')).toHaveCount(0);
     }
   });
@@ -34,7 +34,7 @@ test.describe('the codex', () => {
   test('finds a system and shows its real data', async ({ page }, info) => {
     await page.goto('./#/codex');
     await page.getByPlaceholder(/Find a system/).fill('barnards');
-    await expect(page.locator('.count')).toHaveText('1 of 207');
+    await expect(page.locator('.count')).toHaveText('1 of 356');
     if (isDesktop(info.project.name)) {
       await page.locator('.system-table tbody th button').first().click();
       const inspector = page.locator('.inspector');
@@ -52,10 +52,24 @@ test.describe('the codex', () => {
     }
   });
 
+  test('reaches the shell beyond 27 ly: Chara, real and laneless', async ({ page }, info) => {
+    await page.goto('./#/codex');
+    await expect(page.getByText(/every system within 33 light-years of the Sun/)).toBeVisible();
+    await page.getByPlaceholder(/Find a system/).fill('chara');
+    await expect(page.locator('.count')).toHaveText('1 of 356');
+    if (isDesktop(info.project.name)) await page.locator('.system-table tbody th button').first().click();
+    else await page.locator('.system-card').first().tap();
+    const detail = isDesktop(info.project.name)
+      ? page.locator('.inspector')
+      : page.getByRole('dialog', { name: 'Chara' });
+    await expect(detail.getByRole('heading', { name: 'Chara' })).toBeVisible();
+    await expect(detail.getByText('No lane ran here before the Lapse: it lies beyond the old network.')).toBeVisible();
+  });
+
   test('shows the home webs: seven systems each, the rest dark', async ({ page }, info) => {
     await page.goto('./#/codex');
     await press(page.getByLabel('Home webs only'), info.project.name);
-    await expect(page.locator('.count')).toHaveText('21 of 207');
+    await expect(page.locator('.count')).toHaveText('21 of 356');
     await press(page.getByRole('button', { name: 'Show Tau Ceti' }), info.project.name);
     const detail = isDesktop(info.project.name) ? page.locator('.inspector') : page.getByRole('dialog');
     await expect(detail.getByRole('heading', { name: 'Tau Ceti' })).toBeVisible();

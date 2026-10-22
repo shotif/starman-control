@@ -1,4 +1,4 @@
-// The title's live scene (docs/design/FIRST_IMPRESSION.md §2): the 207 real systems as glowing
+// The title's live scene (docs/design/FIRST_IMPRESSION.md §2): the 356 real systems as glowing
 // points in their true places, Reborn's old lanes as faint threads, each power's home web lit in
 // its colour with light running out from the capital, and each capital ringed by its mark, slowly
 // turning under the Milky Way. Loaded after the menu is up; it holds still when motion is reduced.

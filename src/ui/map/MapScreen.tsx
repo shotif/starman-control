@@ -1098,8 +1098,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               ) : (
                 <>
                   <p>
-                    {world.systems.length} real star systems within 27 light-years of the Sun, and the old lanes between
-                    them. Click a star to see what astronomers know of it; double-click to centre it.
+                    {world.systems.length} real star systems within 33 light-years of the Sun, and the old lanes between
+                    the nearer ones. Click a star to see what astronomers know of it; double-click to centre it.
                   </p>
                   <p class="dim">
                     Drag to turn the map, Shift-drag or the right button to move it, the wheel to zoom. Press ? for

@@ -25,8 +25,9 @@ describe('distances', () => {
     expect(world.distanceDeci('tau-ceti', 'sol')).toBe(world.distanceDeci('sol', 'tau-ceti'));
   });
 
-  it('keep every system inside the 27 ly census', () => {
-    for (const s of world.systems) expect(s.fromSolDeci, s.id).toBeLessThanOrEqual(275);
+  it('keep the census inside 27 ly and the shell inside 33 ly', () => {
+    for (const s of world.systems) expect(s.fromSolDeci, s.id).toBeLessThanOrEqual(s.sky.shell ? 330 : 275);
+    expect(world.systems.filter((s) => s.sky.shell).every((s) => s.fromSolDeci >= 272)).toBe(true);
   });
 });
 
@@ -63,10 +64,11 @@ describe('the lane catalogue', () => {
     expect(world.catalogueLane('sol', 'tau-ceti')).toBeUndefined();
   });
 
-  it('lists the lanes at a system shortest first', () => {
+  it('lists the lanes at a system shortest first; none reaches the shell', () => {
     for (const s of world.systems) {
       const at = world.catalogueAt(s.id);
-      expect(at.length, s.id).toBeGreaterThan(0);
+      if (s.sky.shell) expect(at, s.id).toEqual([]);
+      else expect(at.length, s.id).toBeGreaterThan(0);
       for (let i = 1; i < at.length; i++)
         expect((at[i] as { lengthDeci: number }).lengthDeci).toBeGreaterThanOrEqual(
           (at[i - 1] as { lengthDeci: number }).lengthDeci,

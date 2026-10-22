@@ -4,7 +4,16 @@
 `npm run data:import` (scripts/data/import-reborn.ts); the commit it was copied from is recorded in
 the file. Every value carries its source. Most come from the archives directly (Gaia DR3, SIMBAD,
 the NASA Exoplanet Archive, the Extrasolar Planets Encyclopaedia) as Reborn's sky snapshot of
-30 September 2026 holds them. Two inputs carry licences of their own, as in Reborn's
+30 September 2026 holds them.
+
+`shell.json` holds the shell beyond the census, out to 33 light-years (a parallax of at least
+99 mas), made by `npm run data:shell` (scripts/data/import-shell.ts) from a copy of Reborn whose
+sky pipeline was run with the shell's limits on 22 October 2026 (scripts/data/prepare-shell.ts);
+the changes made in the copy are listed in the file. Every value comes from the archives directly
+(Gaia DR3, SIMBAD, the NASA Exoplanet Archive, the Extrasolar Planets Encyclopaedia), each with its
+source; none comes from the two inputs below.
+
+Two inputs of the census carry licences of their own, as in Reborn's
 `data/provisional/NOTICE.md`:
 
 ## HYG star database v4.0
