@@ -373,6 +373,10 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `The Watch: ${withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`)} is at ${name(e.system)}.`;
     case 'rival-tech':
       return `The Watch: word from the lanes is that the ${FACTIONS[e.faction].shortName} has mastered ${TECHS[e.tech].name}.`;
+    case 'gift-sent':
+      return `The Envoy took our gift of ${e.credits} credits to the ${FACTIONS[e.faction].shortName}.`;
+    case 'gift-received':
+      return `The ${FACTIONS[e.faction].shortName} sent us a gift of ${e.credits} credits.`;
     case 'contact':
       if (!e.first)
         return `The Envoy has learnt the ${FACTIONS[e.faction].shortName}’s tongue: we can talk with them now.`;
@@ -441,6 +445,9 @@ function eventPlace(
       return { event: true };
     case 'contact':
       return { system: e.system ?? playerPower(game)?.capital ?? 'sol' };
+    case 'gift-sent':
+    case 'gift-received':
+      return { system: playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -481,6 +488,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'rival-ship': { icon: 'ship', tone: 'news' },
   'rival-tech': { icon: 'research', tone: 'news' },
   contact: { icon: 'empire', tone: 'news' },
+  'gift-sent': { icon: 'empire', tone: 'news' },
+  'gift-received': { icon: 'growth', tone: 'growth' },
   'great-work': { icon: 'colony', tone: 'news' },
   'great-work-begun': { icon: 'colony', tone: 'news' },
   'great-work-lost': { icon: 'refused', tone: 'wrong' },

@@ -114,6 +114,14 @@ const PATHS = {
       <path d="M15.5 8H19v3.5" />
     </>
   ),
+  // Diplomacy (M3_NEIGHBOURS.md §20.3): two rings that meet, and a diamond where they do.
+  diplomacy: (
+    <>
+      <circle cx="8.5" cy="12" r="5.5" />
+      <circle cx="15.5" cy="12" r="5.5" />
+      <path d="M12 10l1.5 2-1.5 2-1.5-2z" fill="currentColor" />
+    </>
+  ),
 } satisfies Record<string, ComponentChildren>;
 
 export type IconName = keyof typeof PATHS;

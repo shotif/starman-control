@@ -158,6 +158,34 @@ export const RULES = {
     /** Translation gained in a turn when anything of theirs is in sight. */
     wordsSeen: 1,
   },
+  /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
+  memory: {
+    /** Attitude is held between these. */
+    most: 100,
+    /** For a power of one's own species. */
+    kin: 10,
+    /** 1 for every so many turns since first contact, up to `knownMost`. */
+    knownEvery: 10,
+    knownMost: 10,
+    /** A memory fades a point towards nothing every so many turns. */
+    fadeEvery: 4,
+    /** A gift is remembered at 1 for every so many credits. */
+    giftCredits: 5,
+    /** The gifts a power may send. */
+    gifts: [20, 50, 100],
+    /** A great work they finished that it was building. */
+    greatWorkLost: -15,
+    /** A colony or outpost of theirs founded in a system where it holds one. */
+    settledBeside: -5,
+    /** The attitude's words: each the least it takes, the first that fits. */
+    words: [
+      { word: 'friendly', least: 40 },
+      { word: 'warm', least: 10 },
+      { word: 'neutral', least: -9 },
+      { word: 'cold', least: -39 },
+      { word: 'hostile', least: -100 },
+    ],
+  },
   /** Discoveries (M2B_SCIENCE.md §17, D-45). */
   discoveries: {
     /** An inspiration gives this share of its technology's cost, in percent. */

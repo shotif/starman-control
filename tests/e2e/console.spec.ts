@@ -28,7 +28,7 @@ async function endTurn(page: Page, project: string) {
 test('the desktop’s top bar fits from 1024 px up', async ({ page }, info) => {
   test.skip(!isDesktop(info.project.name), 'the desktop layout');
   await newGame(page, info.project.name);
-  for (const width of [1024, 1280, 1440, 1920]) {
+  for (const width of [1024, 1280, 1380, 1440, 1520, 1600, 1760, 1840, 1920]) {
     await page.setViewportSize({ width, height: 800 });
     await expect
       .poll(() =>

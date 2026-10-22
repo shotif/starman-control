@@ -10,7 +10,7 @@ export const selectedShip = signal<number | null>(null);
 export const selectedHolding = signal<number | null>(null);
 export const mode = signal<ViewMode | null>(null);
 export const panel = signal<
-  'search' | 'legend' | 'keys' | 'menu' | 'empire' | 'research' | 'report' | 'needs' | 'event' | null
+  'search' | 'legend' | 'keys' | 'menu' | 'empire' | 'research' | 'diplomacy' | 'report' | 'needs' | 'event' | null
 >(null);
 export const hover = signal<{ id: SystemId; x: number; y: number } | null>(null);
 export const query = signal('');

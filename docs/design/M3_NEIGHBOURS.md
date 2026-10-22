@@ -31,6 +31,7 @@ them, and the first aliens, powers you deal with.
 17. [Decisions for the owner](#17-decisions-for-the-owner)
 18. [Increment 33 in detail: the shell](#18-increment-33-in-detail-the-shell-written-before-building-it)
 19. [Increment 34 in detail: contact](#19-increment-34-in-detail-contact-written-before-building-it)
+20. [Increment 35 in detail: memory and the diplomacy screen](#20-increment-35-in-detail-memory-and-the-diplomacy-screen-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -430,3 +431,87 @@ tablet and desktop.
   contact step takes under 1 ms a turn; the slowest headless turn 115 ms.
 - **Tests:** `contact.test.ts` as §19.7, the doctrines', great works' and research tests moved from
   *met* to contact; 442 unit tests; `contact.spec.ts` on the phone, tablet and desktop.
+
+## 20. Increment 35 in detail: memory and the diplomacy screen (written before building it)
+
+**Goals.** D-55 as decided (A): every power holds an **attitude** to each power it is in contact
+with, from −100 to +100: the sum of what it remembers and what it is, each part with its reason.
+A screen of its own, **Diplomacy**, the Envoy's, shows how each power regards you and why, on a
+phone and a desktop, and lets you send the first thing one power can do for another: a **gift**.
+The rules are the same for every power; nothing assumes the player is human.
+
+**Out of scope.** Offers, treaties and what attitude makes a power accept or refuse (increment
+36); claims, trade and the Wake's dealings (37). The rivals send gifts from increment 36, when they
+deal; until then their attitudes are kept but act on nothing.
+
+### 20.1 Attitude
+
+A power's attitude to another is the sum of these parts, held between −100 and +100:
+
+| Part | Amount | Fades |
+| --- | --- | --- |
+| **Kin:** of one species | +10 | never |
+| **Known:** for each 10 turns since first contact | +1, at most +10 | never |
+| **Character** (the power's own view of the other's ways, fiction) | the Authority of the Wake −15; the Cooperative of the Wake −5; the Wake of the Authority −10 | never |
+| **A gift** received | 1 for every 5 credits | 1 point every 4 turns |
+| **A great work lost** to them (they finished one it was building) | −15 | 1 point every 4 turns |
+| **Settled beside** it (a colony or outpost founded in a system where it holds one) | −5 | 1 point every 4 turns |
+
+The last three are **memories**, kept in the state with their reason, their amount now and when
+they began; each fades one point towards nothing every 4 turns, and is forgotten at nothing. The
+first three are worked out from the state when needed. The numbers are in `RULES.memory`.
+
+The attitude is named in words: **hostile** (−40 or less), **cold** (−39 to −10), **neutral** (−9 to
++9), **warm** (+10 to +39), **friendly** (+40 or more).
+
+### 20.2 A gift
+
+- **Order `gift`:** credits from the treasury to a power you can talk with: 20, 50 or 100, at most
+  one gift to each power a turn, and never into debt. The credits arrive as the turn ends; the
+  receiver remembers the gift (1 for every 5 credits: +4, +10 or +20).
+- The report: *The Envoy took our gift of 50 credits to the Hollow Wake.* The receiver's: *The
+  Transit Authority sent us a gift of 50 credits.*
+
+### 20.3 The diplomacy screen
+
+- Opened from the bar (*Diplomacy*, beside *Empire*) and, on a desktop, with **Y**.
+- **Every power you are in contact with:** its mark and name, your contact (*we can talk*, or
+  *learning their tongue: 12 of 20*), and **its regard for you**: the word and the number.
+- **The chosen power:** its regard with every reason, in plain words from its side ("Remembers our
+  gift of 50 credits: +9"; "Of our own kind: +10"; "Holds us for raiders: −15"), and what you can do
+  (a gift; treaties from increment 36). The Envoy's face and name head it.
+- **A phone:** a card for each power, and a sheet for the chosen one. **A desktop:** the list of
+  powers with the chosen one beside it.
+- Powers not heard yet: "Not yet heard: …". With no other power in play, the bar has no
+  *Diplomacy*.
+
+### 20.4 State
+
+`PowerState.memories`: each with the power remembered, its kind, its amount now and the turn it
+began. **State version 13**; a save from before remembers nothing yet.
+
+### 20.5 Tests
+
+`memory.test.ts`: each part of an attitude and its reason; memories fading one point every 4 turns
+and forgotten at nothing; the words; a gift (its refusals: not in talk, into debt, twice in a turn;
+paid and remembered as the turn ends; reported to both); a great work lost and a colony beside,
+remembered; attitude held to ±100; the migration from version 12. `diplomacy.spec.ts`: a gift sent
+from the diplomacy screen and the regard rising with its reason, on the phone, tablet and desktop.
+
+### Increment 35: memory and the diplomacy screen (22 October 2026)
+
+- **Attitude as §20.1** (`src/sim/memory.ts`): `attitudeOf` sums kin, how long known, character
+  (`FACTIONS[…].regard`, fiction) and memories (`PowerState.memories`), each part with its reason
+  as the regarded power reads it; `fadeMemories` takes a point off each every 4 turns (step 12b of
+  the turn); a colony or outpost founded beside one is remembered as it is founded, and a great work
+  lost as the race is lost.
+- **Gifts as §20.2:** the order `gift` (0 takes one back), paid when given, delivered and remembered
+  in step 7b; the report and the Envoy say so to both powers.
+- **The diplomacy screen** (`src/ui/map/diplomacy.tsx`) as §20.3: the Envoy at its head, a card
+  for each power in contact with its contact and its regard, and the chosen one with every reason
+  and the gifts; on a desktop the list with the chosen one beside it, opened with **Y** or the
+  *Diplomacy* chip; on a phone and a tablet the chosen card opens beneath itself, and the screen
+  opens from the **menu** and the **Powers tab** (the dock keeps its four buttons). Its icon is
+  two rings that meet.
+- **State version 13**, as §20.4.
+- **Tests:** `memory.test.ts` as §20.5; `diplomacy.spec.ts` on the phone, tablet and desktop.

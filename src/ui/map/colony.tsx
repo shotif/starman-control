@@ -74,7 +74,7 @@ import { AdvisorBy } from './advisor.tsx';
 import { ColonyStill } from './ColonyStill.tsx';
 import { eventTitle } from './event.tsx';
 import { give, type Play } from './play.tsx';
-import { lanePreview, queueHover } from './state.ts';
+import { lanePreview, panel, queueHover } from './state.ts';
 import './colony.css';
 import { Count } from '../count.tsx';
 
@@ -1284,9 +1284,12 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
         Yours in full; the others’ only as far as you can see: in systems you have surveyed. You have researched{' '}
         {rows[0]?.technologies ?? 0} technolog{rows[0]?.technologies === 1 ? 'y' : 'ies'}; the Watch hears whether each
         power you are in contact with is ahead of you, level or behind. Under each power, your contact with it: you talk
-        at once with a power that shares your tongue, and learn another’s word by word. The score counts 10 for each
-        colony, 1 for each million people, 5 for each technology, 3 for each lane and 50 for each great work; there is
-        no victory yet.
+        at once with a power that shares your tongue, and learn another’s word by word.{' '}
+        <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = 'diplomacy')}>
+          Diplomacy
+        </button>{' '}
+        The score counts 10 for each colony, 1 for each million people, 5 for each technology, 3 for each lane and 50
+        for each great work; there is no victory yet.
       </p>
       {unmet.length > 0 && (
         <p class="dim">

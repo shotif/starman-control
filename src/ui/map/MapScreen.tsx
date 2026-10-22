@@ -46,6 +46,7 @@ import { SystemView } from '../system/SystemPanel.tsx';
 import { ColonyCard } from './ColonyCard.tsx';
 import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
+import { DiplomacyView } from './diplomacy.tsx';
 import { EventCard } from './event.tsx';
 import { GuideCard } from './guide.tsx';
 import {
@@ -112,6 +113,7 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['Right click', 'Send the selected ship there (Shift: add a waypoint)'],
   ['R', 'The report'],
   ['P', 'Your power: colonies, outposts and ships'],
+  ['Y', 'Diplomacy: the other powers, and how they regard you'],
 ];
 
 function shipMarks(game: GameState): ShipMark[] {
@@ -717,6 +719,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'r' && p) panel.value = panel.value === 'report' ? null : 'report';
       else if (k === 'p' && p) panel.value = panel.value === 'empire' ? null : 'empire';
       else if (k === 't' && p) panel.value = panel.value === 'research' ? null : 'research';
+      else if (k === 'y' && p && game.powers.length > 1) panel.value = panel.value === 'diplomacy' ? null : 'diplomacy';
       else if (k === 'm' && p && selectedShip.value !== null)
         targeting.value = { ship: selectedShip.value, blind: false, to: null };
       else if (k === 'v' && selected.value) insideSystem.value = insideSystem.value ? null : selected.value;
@@ -829,6 +832,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   );
   const research = play && (
     <ResearchView world={world} game={game} faction={play.faction} play={play} table={desktop} />
+  );
+  // Diplomacy (M3_NEIGHBOURS.md §20.3), only with another power in play.
+  const others = game.powers.length > 1;
+  const diplomacy = play && others && (
+    <DiplomacyView world={world} game={game} faction={play.faction} play={play} table={desktop} />
   );
   const empire = play && (
     <EmpireView
@@ -945,6 +953,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             </button>
           </div>
         )}
+        {desktop && diplomacy && panel.value === 'diplomacy' && (
+          <div class="popover diplomacy-popover" role="dialog" aria-label="Diplomacy" data-keep-clear>
+            {diplomacy}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
         {desktop && play && <TargetBar world={world} game={game} play={play} />}
         {play && colony === null && (
           // On a phone and a tablet, under the view switch (40 px at the top bar's foot).
@@ -1016,6 +1032,18 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   <Icon name="research" />
                   <span class="chip-word">Research</span>
                 </button>
+                {others && (
+                  <button
+                    type="button"
+                    class="chip"
+                    aria-pressed={panel.value === 'diplomacy'}
+                    title="Diplomacy (Y)"
+                    onClick={() => (panel.value = panel.value === 'diplomacy' ? null : 'diplomacy')}
+                  >
+                    <Icon name="diplomacy" />
+                    <span class="chip-word">Diplomacy</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   class="chip"
@@ -1294,6 +1322,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             return sheet(EVENTS[waiting.id].name, eventView, close, 'event');
           if (play && panel.value === 'empire') return sheet('Empire', empire, close, 'empire');
           if (play && panel.value === 'research') return sheet('Research', research, close, 'research');
+          if (diplomacy && panel.value === 'diplomacy') return sheet('Diplomacy', diplomacy, close, 'diplomacy');
           if (play && panel.value === 'menu')
             return sheet(
               'Menu',
@@ -1311,6 +1340,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 >
                   Guide me
                 </button>
+                {others && (
+                  <button type="button" class="button button-quiet" onClick={() => (panel.value = 'diplomacy')}>
+                    Diplomacy
+                  </button>
+                )}
                 <button type="button" class="button button-quiet" onClick={() => (panel.value = 'search')}>
                   Find a system
                 </button>

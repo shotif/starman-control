@@ -187,6 +187,8 @@ export function adviceFor(
       );
     } else if (e.kind === 'rival-tech') {
       say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
+    } else if (e.kind === 'gift-sent' || e.kind === 'gift-received') {
+      say('envoy', 3, e.kind, { power: FACTIONS[e.faction].shortName, credits: String(e.credits) });
     } else if (e.kind === 'contact') {
       const power = FACTIONS[e.faction].shortName;
       const place = e.system ? world.system(e.system).name : 'a distance';

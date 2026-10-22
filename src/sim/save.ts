@@ -202,6 +202,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     });
     return { ...g, version: 12, powers };
   },
+  /** 12 → 13 (M3 increment 35): memory. Nothing remembered yet, and no gift on its way. */
+  12: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, memories: [], gifts: [] }));
+    return { ...g, version: 13, powers };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

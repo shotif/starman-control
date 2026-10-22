@@ -62,6 +62,21 @@ export function shapeProblems(raw: unknown): string[] {
         )
       )
         out.push(`power ${i} contacts are not a list of contacts`);
+      if (
+        !Array.isArray(p.memories) ||
+        !p.memories.every(
+          (m) =>
+            isRecord(m) &&
+            isFactionId(m.faction) &&
+            (m.kind === 'gift' || m.kind === 'great-work-lost' || m.kind === 'settled-beside') &&
+            typeof m.amount === 'number' &&
+            Number.isInteger(m.amount) &&
+            isWhole(m.turn, 1),
+        )
+      )
+        out.push(`power ${i} memories are not a list of memories`);
+      if (!Array.isArray(p.gifts) || !p.gifts.every((g) => isRecord(g) && isFactionId(g.to) && isWhole(g.credits, 1)))
+        out.push(`power ${i} gifts are not a list of gifts`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -243,6 +258,22 @@ export function stateProblems(world: World, state: GameState): string[] {
       if (c.since > state.turn) out.push(`${p.faction} heard ${c.faction} after this turn`);
       if (c.words > RULES.contact.wordsToTalk || (c.stage === 'talk') !== (c.words === RULES.contact.wordsToTalk))
         out.push(`${p.faction}'s words with ${c.faction} do not match its stage`);
+    }
+    // Memories and gifts (M3_NEIGHBOURS.md §20): of other powers in play, never nothing, never more than the most.
+    const inPlay = (f: string) => f !== p.faction && state.powers.some((x) => x.faction === f);
+    for (const m of p.memories) {
+      if (!inPlay(m.faction)) out.push(`${p.faction} remembers ${m.faction}, which is not another power in play`);
+      if (m.amount === 0 || Math.abs(m.amount) > RULES.memory.most)
+        out.push(`${p.faction}'s memory of ${m.faction} counts ${m.amount}`);
+      if (m.turn > state.turn) out.push(`${p.faction} remembers ${m.faction} from after this turn`);
+    }
+    const given = new Set<string>();
+    for (const g of p.gifts) {
+      if (!inPlay(g.to)) out.push(`${p.faction} sends a gift to ${g.to}, which is not another power in play`);
+      if (given.has(g.to)) out.push(`${p.faction} sends ${g.to} two gifts in a turn`);
+      given.add(g.to);
+      if (!(RULES.memory.gifts as readonly number[]).includes(g.credits))
+        out.push(`${p.faction} sends a gift of ${g.credits} credits`);
     }
     for (const [id, v] of Object.entries(p.techProgress))
       if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId, false))

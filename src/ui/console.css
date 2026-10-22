@@ -285,8 +285,8 @@
 }
 
 /* The desktop's top bar at every width (§6): nothing in it shrinks but the search box; below
-   1600 px the resources keep only their symbols and numbers, and below 1280 px the chips only their
-   icons. The words stay for screen readers and as tips. */
+   1840 px the resources keep only their symbols and numbers, and below 1520 px the chips only their
+   icons (since M3's Diplomacy chip). The words stay for screen readers and as tips. */
 .layout-desktop .map-top > * {
   flex-shrink: 0;
 }
@@ -296,7 +296,7 @@
   min-width: 8rem;
 }
 
-@media (max-width: 1759px) {
+@media (max-width: 1839px) {
   .layout-desktop .map-top .res-name {
     position: absolute;
     width: 1px;
@@ -307,7 +307,7 @@
   }
 }
 
-@media (max-width: 1379px) {
+@media (max-width: 1519px) {
   .layout-desktop .map-top .chip-word {
     position: absolute;
     width: 1px;

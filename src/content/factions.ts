@@ -50,6 +50,11 @@ export interface FactionDef {
   traits: TraitDef[];
   /** Its shipbuilding traditions, from Reborn's makers. */
   shipmakers: string[];
+  /**
+   * How it regards others for their ways (M3_NEIGHBOURS.md §20.1), fiction: an amount, and the
+   * reason as the other power reads it ("holds us for outlaws").
+   */
+  regard: Partial<Record<FactionId, { amount: number; reason: string }>>;
 }
 
 export const FACTIONS: Record<FactionId, FactionDef> = {
@@ -73,6 +78,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       },
     ],
     shipmakers: ['Halden Orbital Works', 'Ares Foundry'],
+    regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
   },
   frontier: {
     id: 'frontier',
@@ -94,6 +100,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       },
     ],
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
+    regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
   },
   'hollow-wake': {
     id: 'hollow-wake',
@@ -115,6 +122,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       },
     ],
     shipmakers: ['Wake Salvage'],
+    regard: { sta: { amount: -10, reason: 'Sees in us the law it runs from' } },
   },
 };
 

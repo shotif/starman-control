@@ -113,6 +113,8 @@ export type LineKind =
   | 'contact-talk'
   | 'contact-words'
   | 'contact-understood'
+  | 'gift-sent'
+  | 'gift-received'
   | 'event';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
@@ -244,6 +246,17 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, I can now speak the tongue of the {power}. We may talk.',
     warm: 'Control, I’ve got it: I can speak with the {power} now!',
     blunt: 'I can talk to the {power} now.',
+  },
+  // Gifts (M3_NEIGHBOURS.md §20.2).
+  'gift-sent': {
+    formal: 'Control, I have delivered our gift of {credits} credits to the {power}. It will be remembered.',
+    warm: 'Control, our gift of {credits} credits reached the {power}. They were touched, I think.',
+    blunt: 'Took the {power} their {credits} credits. They’ll remember.',
+  },
+  'gift-received': {
+    formal: 'Control, the {power} has sent us a gift of {credits} credits.',
+    warm: 'Control, the {power} sent us {credits} credits, as a gift! How kind.',
+    blunt: 'The {power} sent us {credits} credits. Free money. Wonder what they want.',
   },
   // Events (M2_WORLDS.md §27.6): the department the event belongs to speaks.
   event: {

@@ -12,6 +12,7 @@ import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.t
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
 import { choiceRefusal } from './events.ts';
 import { formatLy } from './geometry.ts';
+import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
 import { type GameState, powerOf, type ShipState, type TaxRate } from './state.ts';
@@ -53,7 +54,9 @@ export type Order =
   /** Take a technology out of the research queue, with anything later that needs it. */
   | { type: 'unresearch'; tech: TechId }
   /** The answer to the event waiting (M2_WORLDS.md §27), taken as the turn ends; it may be changed until then. */
-  | { type: 'answer'; choice: 0 | 1 };
+  | { type: 'answer'; choice: 0 | 1 }
+  /** A gift of credits to another power, sent as the turn ends; 0 takes it back (M3_NEIGHBOURS.md §20.2). */
+  | { type: 'gift'; to: FactionId; credits: number };
 
 type HoldingOrder = Extract<Order, { holding: number }>;
 type ResearchOrder = Extract<Order, { tech: TechId }>;
@@ -131,6 +134,7 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
       ? null
       : 'There is no such tax rate.';
   if (order.type === 'answer') return choiceRefusal(state, faction, order.choice);
+  if (order.type === 'gift') return giftRefusal(state, faction, order.to, order.credits);
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -194,6 +198,10 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   if (order.type === 'answer') {
     const ev = powerOf(next, faction).event;
     if (ev) ev.answer = order.choice;
+    return { ok: true, state: next };
+  }
+  if (order.type === 'gift') {
+    giveGift(next, faction, order.to, order.credits);
     return { ok: true, state: next };
   }
   if (order.type === 'edict') {

@@ -94,6 +94,9 @@ export type ReportEvent =
    * at once at talk; or, `first` false, talk reached after words.
    */
   | { kind: 'contact'; faction: FactionId; stage: 'words' | 'talk'; first: boolean; system: SystemId | null }
+  /** A gift arrived (M3_NEIGHBOURS.md §20.2): the one this power sent to `faction`, or one `faction` sent it. */
+  | { kind: 'gift-sent'; faction: FactionId; credits: number }
+  | { kind: 'gift-received'; faction: FactionId; credits: number }
   /** The Watch hears that a rival in contact has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
   | { kind: 'rival-tech'; faction: FactionId; tech: TechId }
   /** A great work finished by another power (all hear of it, M2B_SCIENCE.md §20.2). */

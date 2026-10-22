@@ -36,6 +36,7 @@ import { resolveEvents } from './events.ts';
 import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
+import { deliverGifts, fadeMemories, remember } from './memory.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
 import { applyInPlace } from './orders.ts';
 import type { ReportEvent } from './report.ts';
@@ -219,6 +220,11 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     if (h.kind === 'colony' && powerOf(state, h.owner).governNew) h.governor = 'balance';
     usedUp.add(ship.id);
     log(ship).push({ kind: 'founded', holding: h.id, shipName: ship.name, system: ship.at, body: f.body });
+    // Settling beside another power is remembered (M3_NEIGHBOURS.md §20.1).
+    const at = ship.at;
+    for (const p of state.powers)
+      if (p.faction !== h.owner && state.holdings.some((o) => o.owner === p.faction && o.system === at))
+        remember(state, p.faction, h.owner, { kind: 'settled-beside', amount: RULES.memory.settledBeside, system: at });
   }
   state.ships = state.ships.filter((s) => !usedUp.has(s.id));
 
@@ -324,6 +330,13 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
             o.queue.splice(at, 1);
             const kept = at === 0 ? Math.floor((o.industry * RULES.greatWorks.lostKeepsPercent) / 100) : o.industry;
             o.industry = kept;
+            // Remembered of the power that finished it (M3_NEIGHBOURS.md §20.1).
+            remember(state, o.owner, h.owner, {
+              kind: 'great-work-lost',
+              amount: RULES.memory.greatWorkLost,
+              system: h.system,
+              project: first.project,
+            });
             (events.get(o.owner) as ReportEvent[]).push({
               kind: 'great-work-lost',
               holding: o.id,
@@ -423,6 +436,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     if (p.treasury < 0 && before >= 0) (events.get(p.faction) as ReportEvent[]).push({ kind: 'debt' });
   }
 
+  // 7b. Gifts (M3_NEIGHBOURS.md §20.2): paid when given, they arrive now and are remembered.
+  deliverGifts(state, events);
+
   // 8. Governors (M2_WORLDS.md §25.1): what each governed colony does as the turn ends, so the
   // report shows it and the player can undo it before the next.
   for (const [faction, said] of governAll(world, state)) (events.get(faction) as ReportEvent[]).push(...said);
@@ -450,6 +466,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 12. Inspirations (M2B_SCIENCE.md §17.1): deeds done this turn, or standing now, teach each power
   // something towards a technology it has not yet researched.
   resolveInspirations(world, state, events);
+
+  // 12b. Memories fade a point every few turns (M3_NEIGHBOURS.md §20.1).
+  fadeMemories(state);
 
   // 13. Reports.
   const reports = state.powers.map((p) => ({

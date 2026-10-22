@@ -17,7 +17,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 12;
+export const STATE_VERSION = 13;
 
 export interface Stockpile {
   metals: number;
@@ -65,6 +65,27 @@ export interface PowerState {
   lasting: Lasting[];
   /** The other powers it has heard, in the order heard (M3_NEIGHBOURS.md §19.1). */
   contacts: Contact[];
+  /** What it remembers of the others, oldest first (M3_NEIGHBOURS.md §20.1). */
+  memories: Memory[];
+  /** Gifts it is sending this turn, paid already and delivered as the turn ends (§20.2). */
+  gifts: { to: FactionId; credits: number }[];
+}
+
+/** What a memory is of (M3_NEIGHBOURS.md §20.1). */
+export type MemoryKind = 'gift' | 'great-work-lost' | 'settled-beside';
+
+/** A memory of another power: its amount now, fading a point towards nothing every few turns. */
+export interface Memory {
+  faction: FactionId;
+  kind: MemoryKind;
+  /** What it counts for in the attitude now; never 0 (forgotten then). */
+  amount: number;
+  /** The turn it began. */
+  turn: number;
+  /** For a gift, the credits; for the rest, the system where it happened, and the great work lost. */
+  credits?: number;
+  system?: SystemId;
+  project?: ProjectId;
 }
 
 /**
@@ -317,6 +338,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       techProgress: {},
       inspired: [],
       contacts: [],
+      memories: [],
+      gifts: [],
       investigated: [],
       food: RULES.food.start,
       treasury: RULES.credits.start,
