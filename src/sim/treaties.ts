@@ -7,6 +7,7 @@
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import { SOLD, TREATIES, type TreatyKind } from '../content/treaties.ts';
+import { callBetween, heeds, notePeaceOffered, sanctionRefusal } from './assembly.ts';
 import { hear } from './contact.ts';
 import { attitudeOf, attitudeWord, remember } from './memory.ts';
 import type { ReportEvent } from './report.ts';
@@ -130,6 +131,11 @@ export function offerRefusal(
     return null;
   }
   if (warring(state, from, to)) return `We are at war with the ${name}: offer peace first.`;
+  // Sanctions (M4_FLEETS.md §29.3): no member trades with a sanctioned power.
+  if (kind === 'trade' || kind === 'exchange') {
+    const sanctions = sanctionRefusal(state, from, to);
+    if (sanctions) return sanctions;
+  }
   if (kind === 'exchange') return exchangeRefusal(state, from, to, give, get);
   if (!(kind in TREATIES)) return 'There is no such treaty.';
   const treaty = TREATIES[kind].words;
@@ -278,6 +284,7 @@ export function makeOffer(
   get?: Amount,
 ): void {
   state.offers.push({ kind, from, to, turn: state.turn, ...(give ? { give } : {}), ...(get ? { get } : {}) });
+  if (kind === 'peace') notePeaceOffered(state, from, to, give !== undefined || get !== undefined);
 }
 
 /**
@@ -359,6 +366,8 @@ export function wouldMakePeace(state: GameState, receiver: FactionId, from: Fact
   if (war === undefined) return false;
   // Terms it cannot pay are refused.
   if (o?.get && powerOf(state, receiver).treasury < o.get.amount) return false;
+  // Called to peace by the Assembly (§29.3), a rival that heeds it accepts peace that asks nothing of it.
+  if (o && !o.get && callBetween(state, receiver, from) && heeds(receiver)) return true;
   // By its character (M4_FLEETS.md §28.4), or at once when the war goes badly.
   const after = FACTIONS[receiver].war.acceptsAfter;
   return state.turn - war.since >= after || powerOf(state, receiver).weariness >= RULES.war.badly;

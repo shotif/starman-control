@@ -41,6 +41,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 26. [Increment 46 in detail: defences and invasion](#26-increment-46-in-detail-defences-and-invasion-written-before-building-it)
 27. [Increment 47 in detail: raids](#27-increment-47-in-detail-raids-written-before-building-it)
 28. [Increment 48 in detail: rivals at war](#28-increment-48-in-detail-rivals-at-war-written-before-building-it)
+29. [Increment 49 in detail: the Assembly](#29-increment-49-in-detail-the-assembly-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -1441,3 +1442,125 @@ with its reason, and later surrenders, on the phone, tablet and desktop.
   desktop: the Authority declares war on the player's Cooperative for its raids, with its reason,
   and the player surrenders. (The design had a rival surrender to the player. The journey shows the
   player's own surrender, as only it has a screen; a rival's surrender has a unit test.)
+
+## 29. Increment 49 in detail: the Assembly (written before building it)
+
+**Goals.** D-67 as decided (A): **the Assembly** (fiction) forms once enough powers know each other;
+its members' votes are weighed by their people; every 20 turns it elects a leader, and a leader
+elected by two thirds of all the votes is chosen (the victory itself comes with increment 50);
+between elections a member may propose *sanctions* or *a call for peace*. The rivals vote and
+propose by their regard and their character, through the same orders as the player's.
+
+**Out of scope.** Victory and defeat, and a power leaving the game (50). More resolutions (D-67 C).
+
+### 29.1 Forming and members
+
+- **Forms** at the end of the first turn on which three powers can each talk with the other two
+  (each in contact at the *talk* stage with both others). Those three are its first members.
+- **Joins:** at the end of each turn, any power that can talk with a member joins. A member never
+  leaves it while it holds a colony.
+- **Votes:** each member has **a vote for every million of its people** (its colonies' people, at
+  least 1), counted as each vote is counted.
+
+### 29.2 Elections
+
+- **When:** the first 20 turns after it forms, then every 20 turns. On the turn before, the report
+  names the **candidates**: the two members with the most votes (the earlier member first on a tie).
+- **The vote:** on election turn every member votes for one candidate or abstains, and the votes are
+  counted as the turn ends. A candidate votes for itself. The player votes on the Assembly's screen
+  (abstaining unless it chooses). A rival votes for the candidate it regards better, if it regards
+  it at least **warm**, and abstains otherwise; at war with one candidate, it never votes for it. A
+  subdued power's votes go as its victor's do.
+- **The result:** the candidate with more votes **leads the Assembly** until the next election (a
+  tie keeps the leader there was). A candidate with **two thirds of all the members' votes**,
+  abstainers counted, is **chosen**: from increment 50 that wins the game. Until then the report says
+  so, and the game goes on.
+- **The leader:** a tie in a resolution's vote goes the leader's way.
+
+### 29.3 Resolutions
+
+One resolution is open at a time, never while an election is: proposed during a turn, voted on
+during the next, counted as that turn ends. A member proposes at most one in 10 turns.
+
+| Resolution | Proposed on | If passed |
+| --- | --- | --- |
+| **Sanctions** | a member at war with another member | Every member's trade treaty with it ends (no breach, no memory); no member may agree trade or an exchange with it. Lifted as the first turn ends on which it is at war with no member. |
+| **A call for peace** | two members at war with each other | Each has 5 turns to make peace. If they have not, sanctions fall on each of the two that has not offered peace without terms in that time. |
+
+- **Passed** with more votes for than against (abstainers not counted).
+- **The rivals' votes:** on sanctions, the sanctioned and its allies vote against, its enemies for;
+  every other rival votes for if it regards the proposer better than the sanctioned, against if
+  worse, and abstains if equal. On a call for peace, the two at war vote for it if they would make
+  peace now (§28.4) and against if not; every other rival votes for it.
+- **The rivals propose:** a rival at war proposes sanctions on the power that declared the war on
+  it. The Cooperative and the Moot propose a call for peace to two members whose war has lasted 5
+  turns. Each every 10 turns at most.
+- **A call heeded:** rivals called to peace offer it, and accept it, without terms, at once; the
+  Wake only when it would make peace anyway (§28.4).
+
+### 29.4 On the screen
+
+- **The Assembly's screen**, a screen of its own: on a phone a sheet, opened from Diplomacy (its
+  first row) and the menu; on a desktop a popover, also with **G** (*A* pans the map). Before it
+  forms it says when it will. Formed: its chamber's picture; the members with their votes as a
+  bar of the whole, the leader and any sanctions marked; the next election and its candidates;
+  the open resolution with **For**, **Against** and **Abstain**; how each rival leans, where the
+  Watch can tell (its regard decides it, so it is shown as *leans to the Cooperative*,
+  *undecided*); *Propose* sanctions or a call for peace, with who could be named; the last
+  results.
+- **The election turn:** **For the X**, **For the Y** and **Abstain**, with the votes each
+  candidate can count on and two thirds of the whole marked.
+- **The report:** the Assembly formed (with its picture), a member joined, the candidates named,
+  the result with the votes, a resolution proposed, passed or failed, sanctions laid and lifted.
+  *What needs you:* an election or a resolution to vote on this turn.
+
+### 29.5 Art
+
+Two pictures (§19), each from two candidates, about $0.20: **the Assembly's chamber** for its
+screen and **the report's Assembly**, a vote being taken. Every chamber, person and power in them
+is fiction.
+
+### 29.6 State
+
+`GameState.assembly`: when it formed, its members, its leader, the next election and its
+candidates, the votes cast this turn, the open resolution, sanctions and calls in force, and who is
+chosen. Orders `vote` and `propose`. Report events `assembly-formed`, `assembly-joined`,
+`candidates`, `elected`, `resolution-proposed`, `resolution-voted`, `sanctions`. **State version
+23.**
+
+### 29.7 Tests
+
+`assembly.test.ts`: forming at three and joining; votes by people; the candidates; the rivals'
+votes by regard and war, a subdued power's with its victor's; a leader elected and two thirds
+chosen; a resolution proposed, voted and counted; sanctions ending trade and refusing it, then
+lifted; a call heeded, and sanctions on the power that refuses; the rivals' proposals; the
+migration. `assembly.spec.ts`, on the phone, tablet and desktop: the Assembly formed, the player
+votes in an election and a leader is elected, and proposes sanctions on a power at war.
+
+### Increment 49: the Assembly (22 October 2026)
+
+- **As §29.1 to §29.3,** in `src/sim/assembly.ts`, counted at step 10d of the turn, after the
+  treaties. Votes and proposals are the orders `vote` and `propose`, the rivals' alike
+  (`assemblyOrders` in `src/sim/ai.ts`). A rival called to peace offers peace without terms and
+  accepts it (`wouldMakePeace`); the Wake does neither.
+- **One addition to the state: the roll.** Each member's votes, as counted at the end of each
+  turn, are kept in `Assembly.roll`. The screens see only what the player knows of the others'
+  colonies, which once put every rival at one vote; the roll is public, as the Assembly announces
+  it.
+- **A resolution lapses** when the war it was about is over before it is voted on (the report says
+  so), rather than passing to no effect.
+- **On the screen as §29.4,** with **G** on a desktop, a row at the top of Diplomacy and a line in
+  the menu. Every report line about the Assembly opens its screen. The last results are told in the
+  report, not kept on the screen. *What needs you* asks for our vote; its button for an offer now
+  says *Open Diplomacy* (it said *Open the colony*).
+- **Pictures as §29.5:** 4 candidates, about $0.20. Chosen the chamber B, whose Duskfolk delegate
+  has the four legs and tail of its brief, and the report's vote B, its arcs still filling.
+- **Numbers:** in the eight games of 100 turns the Assembly formed in six, between turns 50 and 77,
+  and held 7 elections and passed 9 resolutions; every power still within M3's targets. In two
+  games of 200 turns, sanctions fell on powers that declared war and were lifted at peace, and the
+  Cooperative's calls for peace were heeded. The Cooperative, the most populous and the warmest
+  regarded, led from the first election in both, and was chosen by two thirds on turn 157 in one.
+  Increment 50, which makes that a victory, must weigh it.
+- **Tests:** `assembly.test.ts` (14 tests). `assembly.spec.ts`, on the phone, tablet and desktop:
+  the Assembly forms, the player votes in an election and a leader is elected, then proposes
+  sanctions on the Wake at war, votes for them, and sees them passed.

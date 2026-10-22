@@ -787,6 +787,32 @@
       "aiGenerated": true
     },
     {
+      "briefId": "assembly-chamber",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A great round assembly hall aboard an orbital station: tiers of curved benches rising round a low central floor where one delegate stands to speak, delegates in many different kinds of dress, a high domed window above showing the curve of a planet and the stars; among the human delegates, one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T16:02:38.047Z",
+      "note": "Here is the widescreen illustration for your sci-fi game event:",
+      "id": "assembly-chamber",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T16:03:33.488Z",
+      "candidate": "art/out/assembly-chamber/20261022-160150-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/assembly-chamber-640.webp",
+          "bytes": 34320
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/assembly-chamber-1280.webp",
+          "bytes": 98896
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "authority-arcology",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6345,6 +6371,31 @@
           "width": 1280,
           "path": "art/illustration/dispatch-anomaly-1280.webp",
           "bytes": 62688
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dispatch-assembly",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A vote being taken in an assembly hall aboard a station, seen from behind the back benches: rows of delegates in different dress, each before a small glowing panel, and above the central floor a great ring of light filling with two arcs of colour, cyan and amber, as the votes come in.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T16:03:19.137Z",
+      "id": "dispatch-assembly",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T16:03:34.216Z",
+      "candidate": "art/out/dispatch-assembly/20261022-160150-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/dispatch-assembly-640.webp",
+          "bytes": 30754
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/dispatch-assembly-1280.webp",
+          "bytes": 83988
         }
       ],
       "aiGenerated": true

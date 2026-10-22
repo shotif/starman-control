@@ -12,6 +12,7 @@ import { isTechId, type TechId } from '../content/techs.ts';
 import { isTreatyKind, type TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
+import { castVote, propose, proposeRefusal, voteRefusal } from './assembly.ts';
 import { designRefusal, makeDesign, retireRefusal } from './designs.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
 import { choiceRefusal } from './events.ts';
@@ -36,11 +37,13 @@ import {
   type Mission,
   type OfferKind,
   powerOf,
+  type ResolutionKind,
   type RetreatPoint,
   type ShipState,
   type Stance,
   type TargetPriority,
   type TaxRate,
+  type VoteChoice,
 } from './state.ts';
 import {
   answerOffer,
@@ -98,6 +101,9 @@ export type Order =
   | { type: 'answer-offer'; from: FactionId; treaty: OfferKind; accept: boolean }
   /** War declared on a power, at once (M4_FLEETS.md §23.1); a rival gives its reason (§28.1). */
   | { type: 'declare-war'; on: FactionId; reason?: WarReason }
+  /** The Assembly (M4_FLEETS.md §29): a vote on what is before it this turn, and a resolution proposed. */
+  | { type: 'vote'; choice: VoteChoice }
+  | { type: 'propose'; resolution: ResolutionKind; on: FactionId; and?: FactionId }
   | { type: 'end-treaty'; with: FactionId; treaty: TreatyKind }
   | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind }
   /** A warship design of the power's own (M4_FLEETS.md §21.3), and one taken off the build lists. */
@@ -277,6 +283,11 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     if (order.reason !== undefined && !(order.reason in WAR_REASONS)) return 'There is no such reason.';
     return declareRefusal(state, faction, order.on);
   }
+  if (order.type === 'vote') return voteRefusal(state, faction, order.choice);
+  if (order.type === 'propose') {
+    if (order.resolution !== 'sanctions' && order.resolution !== 'peace-call') return 'There is no such resolution.';
+    return proposeRefusal(state, faction, { kind: order.resolution, on: order.on, and: order.and });
+  }
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -385,6 +396,14 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'declare-war') {
     declareWar(next, faction, order.on, order.reason);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'vote') {
+    castVote(next, faction, order.choice);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'propose') {
+    propose(next, faction, { kind: order.resolution, on: order.on, ...(order.and ? { and: order.and } : {}) });
     return { ok: true, state: next };
   }
   if (order.type === 'edict') {

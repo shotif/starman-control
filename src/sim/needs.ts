@@ -6,6 +6,7 @@ import type { FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
+import { onTheFloor, voteRefusal } from './assembly.ts';
 import {
   approvalOf,
   capacityOf,
@@ -51,7 +52,9 @@ export type Need =
   /** Districts zoned with no one to work them. */
   | { kind: 'unworked'; holding: number; system: SystemId; districts: number }
   /** A treaty or an exchange offered, waiting for an answer before this turn ends (M3_NEIGHBOURS.md §21.2, §23.1). */
-  | { kind: 'offer'; from: FactionId; treaty: OfferKind };
+  | { kind: 'offer'; from: FactionId; treaty: OfferKind }
+  /** An election or a resolution before the Assembly this turn, and no vote of ours cast (M4_FLEETS.md §29.4). */
+  | { kind: 'vote'; floor: 'election' | 'resolution' };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
@@ -66,6 +69,13 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
     });
   for (const o of state.offers)
     if (o.to === faction && o.turn < state.turn) out.push({ kind: 'offer', from: o.from, treaty: o.kind });
+  const floor = onTheFloor(state);
+  if (
+    floor &&
+    voteRefusal(state, faction, 'abstain') === null &&
+    !state.assembly?.cast.some((c) => c.faction === faction)
+  )
+    out.push({ kind: 'vote', floor });
   for (const s of state.ships) {
     if (
       s.owner !== faction ||

@@ -12,6 +12,7 @@ import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import { TREATY_KINDS } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
+import { callBetween, electionLean, heeds, isMember, onTheFloor, proposeRefusal, resolutionLean } from './assembly.ts';
 import { buildable } from './designs.ts';
 import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
@@ -23,7 +24,15 @@ import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
-import { type Amount, contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
+import {
+  type Amount,
+  contactWith,
+  type GameState,
+  type Holding,
+  powerOf,
+  type ResolutionKind,
+  type TaxRate,
+} from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
 import { atWar, enemiesOf, isArmed } from './war.ts';
 import { beaten, invasionTarget, readyFor, strengthOf, warshipsWanted, warTarget } from './warAi.ts';
@@ -455,6 +464,7 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   // talk with, offered when the other's regard reaches what the other asks, or a gift when it falls
   // a little short; and notice given on a treaty with a power it has turned against.
   orders.push(...dealings(world, state, faction));
+  orders.push(...assemblyOrders(world, state, faction));
 
   // Taxes: its own rate while the treasury allows; a step higher while it runs low and falls;
   // low while a colony is in unrest and the treasury holds plenty.
@@ -536,6 +546,11 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
     for (const war of state.wars) {
       if (war.a !== faction && war.b !== faction) continue;
       const other = war.a === faction ? war.b : war.a;
+      // Called to peace by the Assembly (§29.3), it offers peace without terms, unless an outlaw.
+      if (callBetween(state, faction, other) && heeds(faction)) {
+        if (!offerRefusal(state, faction, other, 'peace')) orders.push({ type: 'offer', to: other, treaty: 'peace' });
+        continue;
+      }
       const lasted = state.turn - war.since;
       if (!(lasted >= terms.offersAfter || lostOne) || lasted % w.offerPeaceEvery !== 0) continue;
       const credits = terms.credits;
@@ -585,6 +600,38 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
     if (attitudeOf(world, state, faction, other).total < Math.min(0, asks - 10) || (treaty.payer === faction && short))
       orders.push({ type: 'end-treaty', with: other, treaty: treaty.kind });
   }
+  return orders;
+}
+
+/**
+ * A rival in the Assembly (M4_FLEETS.md §29.2, §29.3): its vote on what is before it, by its regard;
+ * at war, sanctions proposed on the power that declared it; the Cooperative and the Moot, a call for
+ * peace to two members whose war has lasted a while.
+ */
+export function assemblyOrders(world: World, state: GameState, faction: FactionId): Order[] {
+  if (!isMember(state, faction)) return [];
+  const orders: Order[] = [];
+  const floor = onTheFloor(state);
+  if (floor && !powerOf(state, faction).subduedBy) {
+    const choice = floor === 'election' ? electionLean(world, state, faction) : resolutionLean(world, state, faction);
+    orders.push({ type: 'vote', choice });
+  }
+  const wanted: { resolution: ResolutionKind; on: FactionId; and?: FactionId }[] = [];
+  for (const war of state.wars) {
+    if ((war.a === faction || war.b === faction) && war.by !== faction)
+      wanted.push({ resolution: 'sanctions', on: war.by });
+    if (
+      FACTIONS[faction].war.callsForPeace &&
+      war.a !== faction &&
+      war.b !== faction &&
+      state.turn - war.since >= RULES.assembly.callAfter
+    )
+      wanted.push({ resolution: 'peace-call', on: war.a, and: war.b });
+  }
+  const first = wanted.find(
+    (r) => proposeRefusal(state, faction, { kind: r.resolution, on: r.on, and: r.and }) === null,
+  );
+  if (first) orders.push({ type: 'propose', ...first });
   return orders;
 }
 

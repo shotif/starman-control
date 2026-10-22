@@ -206,9 +206,12 @@ plunder, protection bought keeps them off, and an outlaw's raiders may sail the 
 may raid. **Done: increment 48, rivals at war** (§28): the rivals declare war by character and say
 why, arm against their neighbours, gather strikes with troop transports and invade, make peace on
 their own terms, and surrender when beaten; any power may surrender and pay tribute; state version
-22.
+22. **Done: increment 49, the Assembly** (§29): it forms once three powers can each talk with the
+other two; votes by people; an election every 20 turns, two thirds choosing a leader; sanctions and
+calls for peace proposed and voted on, by the player and the rivals; its own screen (**G**), with
+its chamber's picture; state version 23.
 
-The art and music spend: about $27.15 of $50 (raised on 22 October 2026; about $22.85 left). M3's
+The art and music spend: about $27.35 of $50 (raised on 22 October 2026; about $22.65 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

@@ -241,6 +241,26 @@ const FIRST: ArtBrief[] = [
       'a station, a great window onto a calm blue planet, a signed document on the table between them.',
     purpose: 'Report: peace made (M4).',
   },
+  // The Assembly (M4_FLEETS.md §29.5): its chamber for its screen, and a vote for the report. Every
+  // chamber, delegate and power is fiction.
+  {
+    id: 'assembly-chamber',
+    series: 'illustration',
+    subject:
+      'A great round assembly hall aboard an orbital station: tiers of curved benches rising round a low central ' +
+      'floor where one delegate stands to speak, delegates in many different kinds of dress, a high domed window ' +
+      `above showing the curve of a planet and the stars; among the human delegates, ${DUSKFOLK}.`,
+    purpose: 'The Assembly’s screen: its chamber (M4).',
+  },
+  {
+    id: 'dispatch-assembly',
+    series: 'illustration',
+    subject:
+      'A vote being taken in an assembly hall aboard a station, seen from behind the back benches: rows of ' +
+      'delegates in different dress, each before a small glowing panel, and above the central floor a great ' +
+      'ring of light filling with two arcs of colour, cyan and amber, as the votes come in.',
+    purpose: 'Report: the Assembly formed, or a vote taken (M4).',
+  },
   // The colony view's style slice (COLONY_VIEW.md §6, increment 14): one landscape, the
   // Cooperative's buildings for its capital, the shared scaffold, and homes in the other two
   // architectures, so the owner sees all three before the rest is made.

@@ -12,7 +12,7 @@ import type { TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ObservationKind } from './discoveries.ts';
-import type { Amount } from './state.ts';
+import type { Amount, ResolutionKind } from './state.ts';
 import type { LaneId } from './world.ts';
 
 export type ReportEvent =
@@ -207,7 +207,35 @@ export type ReportEvent =
   /** Tribute paid by a subdued power to its victor this turn. */
   | { kind: 'tribute'; faction: FactionId; credits: number; paid: boolean }
   /** A power's capital moved to another colony, its old one taken. */
-  | { kind: 'capital-moved'; faction: FactionId; holding: number; system: SystemId };
+  | { kind: 'capital-moved'; faction: FactionId; holding: number; system: SystemId }
+  /** The Assembly formed (M4_FLEETS.md §29.1), with its first members. */
+  | { kind: 'assembly-formed'; members: FactionId[] }
+  /** A power joined the Assembly. */
+  | { kind: 'assembly-joined'; faction: FactionId }
+  /** The candidates named for the election next turn (§29.2). */
+  | { kind: 'candidates'; a: FactionId; b: FactionId; election: number }
+  /** An election counted: who leads, with how many votes of the whole; chosen with two thirds. */
+  | {
+      kind: 'elected';
+      faction: FactionId | null;
+      votes: number;
+      against: number;
+      total: number;
+      chosen: boolean;
+    }
+  /** A resolution proposed, or counted (§29.3). */
+  | {
+      kind: 'resolution';
+      resolution: ResolutionKind;
+      by: FactionId;
+      on: FactionId;
+      and?: FactionId;
+      stage: 'proposed' | 'passed' | 'failed' | 'lapsed';
+      for?: number;
+      against?: number;
+    }
+  /** Sanctions laid on a member, or lifted. */
+  | { kind: 'sanctions'; faction: FactionId; laid: boolean };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

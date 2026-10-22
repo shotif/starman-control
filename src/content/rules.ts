@@ -312,6 +312,25 @@ export const RULES = {
     /** After a peace, so many turns more before it goes back to war with the same power. */
     rest: 30,
   },
+  /** The Assembly (M4_FLEETS.md §29): its elections, its resolutions and the rivals' votes. */
+  assembly: {
+    /** It forms when so many powers can each talk with the others. */
+    forms: 3,
+    /** An election every so many turns, the first so many after it forms. */
+    every: 20,
+    /** A vote for every so many tenths of a million people (a million). */
+    peoplePerVote: 10,
+    /** Chosen with two thirds of all the votes: so many parts in so many. */
+    chosenParts: 2,
+    chosenOf: 3,
+    /** A member proposes at most one resolution in so many turns. */
+    proposeEvery: 10,
+    /** A call for peace gives so many turns; the Cooperative and the Moot call once a war has lasted so many. */
+    callTurns: 5,
+    callAfter: 5,
+    /** A rival votes for a candidate it regards at least this well (warm). */
+    warm: 10,
+  },
   /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
   raid: {
     raided: -10,

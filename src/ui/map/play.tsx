@@ -35,6 +35,7 @@ import { amountWords, offerWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
+import { assemblyText } from './assembly.tsx';
 import { BattleWhy, battleText } from './battle.tsx';
 import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
@@ -632,6 +633,14 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       const me = playerPower(game)?.faction ?? e.by;
       return raidedText(world, game, e, me);
     }
+    // The Assembly (M4_FLEETS.md §29.4).
+    case 'assembly-formed':
+    case 'assembly-joined':
+    case 'candidates':
+    case 'elected':
+    case 'resolution':
+    case 'sanctions':
+      return assemblyText(e, playerPower(game)?.faction) ?? '';
   }
 }
 
@@ -645,7 +654,13 @@ export function designLine(d: { hull: HullId; modules: readonly ModuleId[] }): s
 function eventPlace(
   game: GameState,
   e: ReportEvent,
-): { holding: number } | { system: SystemId } | { research: true } | { event: true } | { designs: true } {
+):
+  | { holding: number }
+  | { system: SystemId }
+  | { research: true }
+  | { event: true }
+  | { designs: true }
+  | { assembly: true } {
   switch (e.kind) {
     case 'researched':
     case 'inspired':
@@ -708,6 +723,14 @@ function eventPlace(
     case 'subdued':
     case 'tribute':
       return { system: playerPower(game)?.capital ?? 'sol' };
+    // The Assembly's events open its screen (M4_FLEETS.md §29.4).
+    case 'assembly-formed':
+    case 'assembly-joined':
+    case 'candidates':
+    case 'elected':
+    case 'resolution':
+    case 'sanctions':
+      return { assembly: true };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -785,6 +808,12 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   raided: { icon: 'refused', tone: 'needs' },
   subdued: { icon: 'diplomacy', tone: 'needs' },
   tribute: { icon: 'diplomacy', tone: 'news' },
+  'assembly-formed': { icon: 'diplomacy', tone: 'news' },
+  'assembly-joined': { icon: 'diplomacy', tone: 'news' },
+  candidates: { icon: 'diplomacy', tone: 'needs' },
+  elected: { icon: 'diplomacy', tone: 'news' },
+  resolution: { icon: 'diplomacy', tone: 'news' },
+  sanctions: { icon: 'diplomacy', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -795,6 +824,7 @@ export function dispatchPicture(events: readonly ReportEvent[]): DispatchPicture
   if (has('battle')) return 'dispatch-battle';
   if (has('war-declared')) return 'dispatch-war';
   if (has('peace-made')) return 'dispatch-peace';
+  if (has('assembly-formed') || has('elected')) return 'dispatch-assembly';
   if (has('investigated') || events.some((e) => e.kind === 'surveyed' && e.anomaly)) return 'dispatch-anomaly';
   if (has('founded')) return 'dispatch-colony';
   if (has('researched')) return 'dispatch-research';
@@ -809,6 +839,7 @@ export type DispatchPicture =
   | 'dispatch-battle'
   | 'dispatch-war'
   | 'dispatch-peace'
+  | 'dispatch-assembly'
   | 'dispatch-anomaly'
   | 'dispatch-colony'
   | 'dispatch-research'
@@ -824,6 +855,8 @@ const PICTURE_TEXT: Record<DispatchPicture, string> = {
   'dispatch-war':
     'Officers round a holographic star map with one border glowing red, warships leaving a station behind them.',
   'dispatch-peace': 'Two delegations meeting across a long table aboard a station, a signed document between them.',
+  'dispatch-assembly':
+    'Delegates in an assembly hall aboard a station, seen from the back benches, a great ring of light above them filling with two colours as the votes come in.',
   'dispatch-anomaly': 'An ancient ring of dark stone floating in deep space, a small survey ship approaching it.',
   'dispatch-colony': 'The first habitat domes set down on the rocky plain of an alien world at dusk.',
   'dispatch-research': 'Scientists round a glowing model of a lane beacon in a research station.',
@@ -938,6 +971,7 @@ export function ReportView({
                   else if ('research' in place) onResearch();
                   else if ('event' in place) onEvent?.();
                   else if ('designs' in place) onDesigns?.();
+                  else if ('assembly' in place) panel.value = 'assembly';
                   else onGo(place.system);
                 }}
               >
@@ -1016,7 +1050,11 @@ export function NeedsStack({
                       ? 'Answer'
                       : need.kind === 'debt'
                         ? 'Open the empire'
-                        : 'Open the colony'}
+                        : need.kind === 'offer'
+                          ? 'Open Diplomacy'
+                          : need.kind === 'vote'
+                            ? 'Open the Assembly'
+                            : 'Open the colony'}
               </button>
               <button type="button" class="button button-quiet" onClick={() => setAt(at + 1)}>
                 Skip

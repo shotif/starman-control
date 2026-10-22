@@ -27,6 +27,7 @@ import type { World } from '../../sim/world.ts';
 import { AdvisorFace, FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
 import { give, type Play } from './play.tsx';
+import { panel } from './state.ts';
 import { WarAndPeace } from './war.tsx';
 
 const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');
@@ -416,6 +417,15 @@ export function DiplomacyView({
   return (
     <div class={`diplomacy${table ? ' diplomacy-table' : ''}`}>
       <AdvisorBy faction={faction} department="envoy" />
+      {/* The Assembly (M4_FLEETS.md §29.4): its own screen, first from here. */}
+      <button type="button" class="diplomacy-power diplomacy-assembly" onClick={() => (panel.value = 'assembly')}>
+        <b>The Assembly</b>
+        <span class="dim">
+          {game.assembly
+            ? `${game.assembly.members.length} members${game.assembly.members.includes(faction) ? ', us among them' : ''}; next election on turn ${game.assembly.election}`
+            : 'Not yet formed'}
+        </span>
+      </button>
       {heard.length === 0 ? (
         <p class="dim">We have heard no other power yet. The Watch and our survey ships will find them.</p>
       ) : (

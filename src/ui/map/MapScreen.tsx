@@ -46,6 +46,7 @@ import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
 import { SystemView } from '../system/SystemPanel.tsx';
+import { AssemblyView } from './assembly.tsx';
 import { ColonyCard } from './ColonyCard.tsx';
 import { stillScene } from './ColonyStill.tsx';
 import { EmpireView, HoldingPanel, holdingKind, holdingName, millions, needText, Resources } from './colony.tsx';
@@ -123,6 +124,7 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['P', 'Your power: colonies, outposts and ships'],
   ['Y', 'Diplomacy: the other powers, and how they regard you'],
   ['B', 'Designs: the warships you can build'],
+  ['G', 'The Assembly: its members, votes and elections'],
 ];
 
 function shipMarks(game: GameState, viewer?: FactionId): ShipMark[] {
@@ -271,6 +273,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       } else if (n.kind === 'offer') {
         targeting.value = null;
         panel.value = 'diplomacy';
+      } else if (n.kind === 'vote') {
+        targeting.value = null;
+        panel.value = 'assembly';
       } else if (n.kind === 'debt') {
         targeting.value = null;
         panel.value = 'empire';
@@ -763,7 +768,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
               ? panel.value === 'event'
               : n.kind === 'offer'
                 ? panel.value === 'diplomacy'
-                : n.holding === selectedHolding.value,
+                : n.kind === 'vote'
+                  ? panel.value === 'assembly'
+                  : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -823,6 +830,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 't' && p) panel.value = panel.value === 'research' ? null : 'research';
       else if (k === 'y' && p && game.powers.length > 1) panel.value = panel.value === 'diplomacy' ? null : 'diplomacy';
       else if (k === 'b' && p) panel.value = panel.value === 'designs' ? null : 'designs';
+      else if (k === 'g' && p && game.powers.length > 1) panel.value = panel.value === 'assembly' ? null : 'assembly';
       else if (k === 'm' && p && selectedFleet.value !== null)
         targeting.value = { fleet: selectedFleet.value, blind: false, to: null };
       else if (k === 'm' && p && selectedShip.value !== null)
@@ -958,6 +966,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const diplomacy = play && others && (
     <DiplomacyView world={world} game={game} faction={play.faction} play={play} table={desktop} />
   );
+  // The Assembly (M4_FLEETS.md §29.4).
+  const assembly = play && others && <AssemblyView world={world} game={game} faction={play.faction} play={play} />;
   // The designs (M4_FLEETS.md §21.7).
   const designs = play && <DesignsView game={game} faction={play.faction} play={play} table={desktop} />;
   const empire = play && (
@@ -1122,6 +1132,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && play && panel.value === 'designs' && (
           <div class="popover designs-popover" role="dialog" aria-label="Designs" data-keep-clear>
             {designs}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
+        {desktop && assembly && panel.value === 'assembly' && (
+          <div class="popover assembly-popover" role="dialog" aria-label="The Assembly" data-keep-clear>
+            {assembly}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
             </button>
@@ -1503,6 +1521,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           if (play && panel.value === 'empire') return sheet('Empire', empire, close, 'empire');
           if (play && panel.value === 'research') return sheet('Research', research, close, 'research');
           if (diplomacy && panel.value === 'diplomacy') return sheet('Diplomacy', diplomacy, close, 'diplomacy');
+          if (assembly && panel.value === 'assembly') return sheet('The Assembly', assembly, close, 'assembly');
           if (play && panel.value === 'designs') return sheet('Designs', designs, close, 'designs');
           if (play && panel.value === 'menu')
             return sheet(
@@ -1524,6 +1543,11 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                 {others && (
                   <button type="button" class="button button-quiet" onClick={() => (panel.value = 'diplomacy')}>
                     Diplomacy
+                  </button>
+                )}
+                {others && (
+                  <button type="button" class="button button-quiet" onClick={() => (panel.value = 'assembly')}>
+                    The Assembly
                   </button>
                 )}
                 <button type="button" class="button button-quiet" onClick={() => (panel.value = 'search')}>
@@ -1751,7 +1775,7 @@ function PlayOutliner({
               key={
                 n.kind === 'idle-ship'
                   ? `s${n.ship}`
-                  : n.kind === 'no-research' || n.kind === 'debt' || n.kind === 'event'
+                  : n.kind === 'no-research' || n.kind === 'debt' || n.kind === 'event' || n.kind === 'vote'
                     ? n.kind
                     : n.kind === 'offer'
                       ? `offer-${n.from}-${n.treaty}`

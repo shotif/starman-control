@@ -71,6 +71,8 @@ export function shapeProblems(raw: unknown): string[] {
     out.push('wars are not a list of wars');
   if (!Array.isArray(raw.truces) || !raw.truces.every((t) => pairOf(t) && isRecord(t) && isWhole(t.until, 1)))
     out.push('truces are not a list of truces');
+  // The Assembly (M4_FLEETS.md §29.6), once it has formed.
+  if (raw.assembly !== null && !assemblyShape(raw.assembly)) out.push('the Assembly is not an assembly');
   // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
   if (
     !Array.isArray(raw.battles) ||
@@ -432,6 +434,30 @@ export function stateProblems(world: World, state: GameState): string[] {
   }
   for (const t of state.truces)
     if (!(t.a < t.b) || !playing.has(t.a) || !playing.has(t.b)) out.push(`a truce is not between two powers in play`);
+  // The Assembly (M4_FLEETS.md §29): its members in play, once each; whom it names among them.
+  const assembly = state.assembly;
+  if (assembly) {
+    const members = new Set(assembly.members);
+    if (members.size !== assembly.members.length) out.push('a member of the Assembly is listed twice');
+    if (assembly.members.length < RULES.assembly.forms) out.push('the Assembly has too few members');
+    for (const f of assembly.members) if (!playing.has(f)) out.push(`the Assembly's member ${f} is not in play`);
+    if (assembly.roll.map((r) => r.faction).join() !== assembly.members.join())
+      out.push('the Assembly’s roll is not of its members');
+    const named = [
+      assembly.leader,
+      assembly.chosen,
+      ...(assembly.candidates ?? []),
+      ...assembly.cast.map((c) => c.faction),
+      ...assembly.sanctions.map((x) => x.on),
+      ...assembly.calls.flatMap((c) => [c.a, c.b]),
+      ...(assembly.resolution ? [assembly.resolution.by, assembly.resolution.on] : []),
+    ];
+    for (const f of named) if (f !== null && !members.has(f)) out.push(`the Assembly names ${f}, not a member`);
+    if (assembly.formed > state.turn) out.push('the Assembly forms after this turn');
+    if (assembly.election <= state.turn - 1) out.push('the Assembly’s election is past');
+    if (assembly.candidates && assembly.election !== state.turn)
+      out.push('the Assembly names candidates for an election not this turn');
+  }
   for (const o of state.offers) {
     if (o.from === o.to || !playing.has(o.from) || !playing.has(o.to))
       out.push(`an offer of ${o.kind} is not between two powers in play`);
@@ -537,4 +563,39 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (m && !state.holdings.some((h) => h.id === m.holding)) out.push(`fleet ${f.name}'s mission is to no holding`);
   }
   return out;
+}
+
+/** The Assembly's shape (M4_FLEETS.md §29.6). */
+function assemblyShape(a: unknown): boolean {
+  if (!isRecord(a)) return false;
+  const factions = (x: unknown) => Array.isArray(x) && x.every(isFactionId);
+  const choice = (x: unknown) => x === 'for' || x === 'against' || x === 'abstain' || isFactionId(x);
+  const r = a.resolution;
+  return (
+    isWhole(a.formed, 1) &&
+    factions(a.members) &&
+    Array.isArray(a.roll) &&
+    a.roll.every((r) => isRecord(r) && isFactionId(r.faction) && isWhole(r.votes, 1)) &&
+    (a.leader === null || isFactionId(a.leader)) &&
+    (a.chosen === null || isFactionId(a.chosen)) &&
+    isWhole(a.election, 1) &&
+    (a.candidates === null || (factions(a.candidates) && (a.candidates as unknown[]).length === 2)) &&
+    Array.isArray(a.cast) &&
+    a.cast.every((c) => isRecord(c) && isFactionId(c.faction) && choice(c.choice)) &&
+    (r === null ||
+      (isRecord(r) &&
+        (r.kind === 'sanctions' || r.kind === 'peace-call') &&
+        isFactionId(r.by) &&
+        isFactionId(r.on) &&
+        (r.and === undefined || isFactionId(r.and)) &&
+        isWhole(r.turn, 1))) &&
+    Array.isArray(a.proposed) &&
+    a.proposed.every((p) => isRecord(p) && isFactionId(p.faction) && isWhole(p.turn, 1)) &&
+    Array.isArray(a.sanctions) &&
+    a.sanctions.every((x) => isRecord(x) && isFactionId(x.on) && isWhole(x.since, 1)) &&
+    Array.isArray(a.calls) &&
+    a.calls.every(
+      (c) => isRecord(c) && isFactionId(c.a) && isFactionId(c.b) && isWhole(c.until, 1) && factions(c.offered),
+    )
+  );
 }

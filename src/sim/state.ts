@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 22;
+export const STATE_VERSION = 23;
 
 export interface Stockpile {
   metals: number;
@@ -102,6 +102,50 @@ export interface Truce {
   a: FactionId;
   b: FactionId;
   until: number;
+}
+
+/** A resolution before the Assembly (M4_FLEETS.md §29.3). */
+export type ResolutionKind = 'sanctions' | 'peace-call';
+
+export interface Resolution {
+  kind: ResolutionKind;
+  by: FactionId;
+  /** Sanctions: the member named; a call for peace: one of the two at war, and `and` the other. */
+  on: FactionId;
+  and?: FactionId;
+  /** The turn it is voted on, counted as that turn ends. */
+  turn: number;
+}
+
+/** A vote cast in the Assembly: for a candidate, or on a resolution. */
+export type VoteChoice = FactionId | 'for' | 'against' | 'abstain';
+
+/** The Assembly (fiction, M4_FLEETS.md §29). */
+export interface Assembly {
+  /** The turn it formed. */
+  formed: number;
+  /** Its members, in the order they joined. */
+  members: FactionId[];
+  /** Each member's votes as last counted, as the turn ended: public, so every screen shows them. */
+  roll: { faction: FactionId; votes: number }[];
+  /** Who leads it, elected; none before the first election. */
+  leader: FactionId | null;
+  /** The turn of the next election, counted as that turn ends. */
+  election: number;
+  /** The two candidates, named the turn before the election. */
+  candidates: [FactionId, FactionId] | null;
+  /** The votes cast this turn, by order. */
+  cast: { faction: FactionId; choice: VoteChoice }[];
+  /** The resolution proposed, voted on the turn after. */
+  resolution: Resolution | null;
+  /** The turn each member last proposed one. */
+  proposed: { faction: FactionId; turn: number }[];
+  /** Sanctions in force, and since when. */
+  sanctions: { on: FactionId; since: number }[];
+  /** Calls for peace in force: until when, and which of the two have offered peace without terms since. */
+  calls: { a: FactionId; b: FactionId; until: number; offered: FactionId[] }[];
+  /** Elected by two thirds of all the votes (§29.2): from increment 50 this wins the game. */
+  chosen: FactionId | null;
 }
 
 /** How a fleet fights (M4_FLEETS.md §6, §22.1): the range it seeks. */
@@ -385,6 +429,8 @@ export interface GameState {
   truces: Truce[];
   /** The last turn's battles, kept for its report and replay (M4_FLEETS.md §24.8). */
   battles: BattleLog[];
+  /** The Assembly (M4_FLEETS.md §29), once it has formed. */
+  assembly: Assembly | null;
 }
 
 export interface NewGameSetup {
@@ -549,6 +595,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     wars: [],
     truces: [],
     battles: [],
+    assembly: null,
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

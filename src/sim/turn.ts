@@ -11,6 +11,7 @@ import { isHull, SHIPS } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
+import { resolveAssembly } from './assembly.ts';
 import { repairShips, resolveBattles } from './battle.ts';
 import { bodiesOf } from './bodies.ts';
 import { claimantsAt, tradeIncome } from './borders.ts';
@@ -557,6 +558,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   reportWars(state, events);
   resolveTreaties(world, state, events);
   resolveWeariness(state);
+  // 10d. The Assembly (M4_FLEETS.md §29): formed or joined, its election or resolution counted.
+  resolveAssembly(state, events);
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);

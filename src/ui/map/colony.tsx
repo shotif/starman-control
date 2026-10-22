@@ -922,6 +922,10 @@ export function needText(world: World, game: GameState, need: Need): string {
   if (need.kind === 'no-research') return 'Nothing is being researched.';
   if (need.kind === 'offer')
     return `The ${FACTIONS[need.from].shortName} offers us ${offerWords(need.treaty)}: it needs your answer before this turn ends.`;
+  if (need.kind === 'vote')
+    return need.floor === 'election'
+      ? 'The Assembly elects its leader this turn: cast our vote, or we abstain.'
+      : 'A resolution is before the Assembly this turn: cast our vote, or we abstain.';
   if (need.kind === 'debt')
     return need.turns === 0
       ? 'The treasury is in debt: every colony is unhappier until it is paid off.'

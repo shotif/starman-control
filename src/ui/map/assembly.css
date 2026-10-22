@@ -1,0 +1,116 @@
+/* The Assembly (M4_FLEETS.md §29.4): its chamber, its members' votes as bars, and its floor. */
+.assembly {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.assembly p {
+  margin: 0;
+}
+
+.assembly-art {
+  margin: 0;
+}
+
+.assembly-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+}
+
+.assembly-members {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.assembly-members li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.2rem 0.6rem;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+  background: rgba(10, 18, 34, 0.6);
+}
+
+.assembly-members li.assembly-us {
+  border-color: var(--accent);
+}
+
+.assembly-who {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.5rem;
+  align-items: baseline;
+}
+
+.assembly-votes {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.assembly-bar {
+  grid-column: 1 / -1;
+  display: block;
+  height: 4px;
+  background: rgba(126, 170, 255, 0.12);
+}
+
+.assembly-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.assembly-lean {
+  grid-column: 1 / -1;
+  font-size: 0.85rem;
+}
+
+.assembly-tag {
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.assembly-floor,
+.assembly-propose {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.assembly-floor h3,
+.assembly-propose h3 {
+  margin: 0;
+}
+
+.assembly-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.assembly-buttons .button {
+  min-height: 44px;
+}
+
+.assembly-chosen {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.popover.assembly-popover {
+  top: 12px;
+  right: auto;
+  left: 12px;
+  width: min(720px, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}

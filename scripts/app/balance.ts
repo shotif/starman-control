@@ -44,6 +44,10 @@ let raids = 0;
 let battles = 0;
 let wars = 0;
 let taken = 0;
+/** The Assembly (M4_FLEETS.md §29): the turn it formed in each game, its elections and resolutions passed. */
+const formedOn: number[] = [];
+let elections = 0;
+let passed = 0;
 /** The turn each power finished the whole tree, in each game. */
 const finished: string[] = [];
 
@@ -68,6 +72,10 @@ for (const seed of SEEDS) {
         if (e.kind === 'war-declared' && e.by === rep.faction) wars++;
         if (e.kind === 'invasion' && e.won && e.by === rep.faction) taken++;
       }
+    // The Assembly's events go to every member: each counted once.
+    if (g.assembly && turn === 100) formedOn.push(g.assembly.formed);
+    if (r.reports.some((rep) => rep.events.some((e) => e.kind === 'elected'))) elections++;
+    if (r.reports.some((rep) => rep.events.some((e) => e.kind === 'resolution' && e.stage === 'passed'))) passed++;
     battles += g.battles.length;
     for (const p of g.powers) {
       const d = p.treasury < 0 ? (debt.get(p.faction) ?? 0) + 1 : 0;
@@ -148,6 +156,7 @@ The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; t
 was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
 
 In all ${SEEDS.length} games: ${many(raids, 'turn', 'turns')} of plunder by raids, ${many(battles, 'battle', 'battles')}, ${many(wars, 'war', 'wars')} declared and ${many(taken, 'colony or outpost', 'colonies or outposts')} taken by invasion (M4).
+The Assembly formed in ${formedOn.length} of them${formedOn.length > 0 ? `, on turn ${Math.min(...formedOn)} at the earliest and ${Math.max(...formedOn)} at the latest` : ''}; it held ${many(elections, 'election', 'elections')} and passed ${many(passed, 'resolution', 'resolutions')} by turn 100.
 
 The tree has ${TECH_IDS.length} technologies, of which a power can learn ${LEARNABLE} (one of each pair of doctrines). ${finished.length === 0 ? 'No power learnt them all in 100 turns.' : `All learnt by: ${finished.join('; ')}.`}
 
