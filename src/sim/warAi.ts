@@ -9,10 +9,12 @@ import type { SystemId } from '../data/types.ts';
 import { designStats, shipDesign } from './designs.ts';
 import { fleetAt, fleetLanes, fleetShips } from './fleets.ts';
 import { bestWeapon, garrisonOf, hasBattery, troopsOf } from './invasion.ts';
+import { laneTargets } from './lanes.ts';
 import { attitudeOf } from './memory.ts';
+import { lanesFor } from './movement.ts';
 import { contactWith, type Fleet, type GameState, type Holding, powerOf } from './state.ts';
 import { declareRefusal, enemiesOf, isArmed } from './war.ts';
-import type { World } from './world.ts';
+import { laneEnds, type World } from './world.ts';
 
 /** A power's warships' attack in all (§28.1), as the Watch sees it. */
 export function strengthOf(state: GameState, f: FactionId): number {
@@ -28,17 +30,6 @@ export function strengthOf(state: GameState, f: FactionId): number {
 /** A power's armed ships. */
 export function warshipsOf(state: GameState, f: FactionId): number {
   return state.ships.filter((s) => s.owner === f && isArmed(state, s)).length;
-}
-
-/** Whether another power holds a colony near one of a power's own (§28.1). */
-function neighbours(world: World, state: GameState, f: FactionId, other: FactionId): boolean {
-  const mine = state.holdings.filter((h) => h.owner === f && h.kind === 'colony');
-  return state.holdings.some(
-    (h) =>
-      h.owner === other &&
-      h.kind === 'colony' &&
-      mine.some((m) => world.distanceDeci(m.system, h.system) <= RULES.rivalsWar.nearDeci),
-  );
 }
 
 /** Whether a rival made peace with another lately (§28.1): it does not go back to war so soon. */
@@ -72,11 +63,12 @@ function reasonHolds(
     case 'hostile':
       return attitudeOf(world, state, f, other).total <= w.hostile && stronger();
     case 'weak':
+      // The conquerors' reason (§31.2): any power they know and their fleets could reach.
       return (
         state.turn >= w.choiceFrom &&
-        neighbours(world, state, f, other) &&
         attitudeOf(world, state, f, other).total <= w.notWarm &&
-        stronger()
+        stronger() &&
+        reachable(world, state, f, other)
       );
     case 'claim':
       return (
@@ -119,6 +111,8 @@ export function warshipsWanted(world: World, state: GameState, f: FactionId): nu
   let wanted = Math.min(colonies, Math.floor(most / 2));
   const enemy = grievance(world, state, f);
   if (enemy) wanted = Math.max(wanted, RULES.rivalsWar.warships, Math.ceil((warshipsOf(state, enemy) * 3) / 2) + 1);
+  // A conqueror arms in earnest (§31.2): a warship for every colony, from the turn wars of choice begin.
+  if (FACTIONS[f].war.conqueror && state.turn >= RULES.rivalsWar.choiceFrom) wanted = Math.max(wanted, colonies);
   return wanted;
 }
 
@@ -170,9 +164,10 @@ function fleetAttack(state: GameState, fleet: Fleet): number {
 }
 
 /**
- * What a rival at war would invade with a fleet (§28.3): the nearest enemy colony or outpost by the
- * lanes the fleet may use, within a few jumps, where the fleet's attack is at least twice what
- * defends it; and the troops it needs: the garrison and two more.
+ * What a rival at war would invade with a fleet (§28.3, §31.1): an enemy holding anywhere the lanes
+ * it may sail reach, where the fleet's attack is at least twice what defends it; the enemy's capital
+ * first, as its loss beats a power, else the nearest; and the troops it needs: the garrison and two
+ * more.
  */
 export function invasionTarget(
   world: World,
@@ -186,7 +181,7 @@ export function invasionTarget(
   const graph = fleetLanes(world, state, fleet);
   const jumps = new Map<SystemId, number>([[at, 0]]);
   let ring: SystemId[] = [at];
-  for (let d = 1; d <= RULES.rivalsWar.invadeJumps && ring.length > 0; d++) {
+  for (let d = 1; ring.length > 0; d++) {
     const next: SystemId[] = [];
     for (const from of ring)
       for (const hop of graph.get(from) ?? [])
@@ -203,8 +198,11 @@ export function invasionTarget(
     if (j === undefined || !enemies.includes(h.owner)) continue;
     if (attack < defenceAt(state, h) * 2) continue;
     const troops = garrisonOf(h).total + RULES.rivalsWar.spareTroops;
-    if (!best || j < best.jumps || (j === best.jumps && h.id < best.holding.id))
-      best = { holding: h, troops, jumps: j };
+    const better =
+      !best ||
+      (h.capital && !best.holding.capital) ||
+      (h.capital === best.holding.capital && (j < best.jumps || (j === best.jumps && h.id < best.holding.id)));
+    if (better) best = { holding: h, troops, jumps: j };
   }
   return best;
 }
@@ -230,4 +228,108 @@ export function countColonies(state: GameState): void {
     const n = state.holdings.filter((h) => h.owner === p.faction && h.kind === 'colony').length;
     if (n > p.mostColonies) p.mostColonies = n;
   }
+}
+
+/**
+ * Whether a conqueror sees its war with an enemy through (§31.2): while not beaten, with warships whose
+ * attack is at least the enemy's, and its war weariness under the limit, it neither offers nor accepts
+ * peace, and ignores the Assembly's calls for it.
+ */
+export function pressesOn(state: GameState, f: FactionId, enemy: FactionId): boolean {
+  if (!FACTIONS[f].war.conqueror || beaten(state, f)) return false;
+  const mine = strengthOf(state, f);
+  return mine > 0 && mine >= strengthOf(state, enemy) && powerOf(state, f).weariness < RULES.rivalsWar.pressOnWeariness;
+}
+
+/**
+ * Whether a power's fleets could reach another's holdings (§31.2): from its capital by its own lanes,
+ * those it may sail, and the other's, which it may sail at war.
+ */
+export function reachable(world: World, state: GameState, f: FactionId, other: FactionId): boolean {
+  const theirs = new Set(state.holdings.filter((h) => h.owner === other).map((h) => h.system));
+  if (theirs.size === 0) return false;
+  const graph = lanesFor(world, state, f, true, [other]);
+  const start = powerOf(state, f).capital;
+  const seen = new Set<SystemId>([start]);
+  let ring: SystemId[] = [start];
+  while (ring.length > 0) {
+    const next: SystemId[] = [];
+    for (const at of ring) {
+      if (theirs.has(at)) return true;
+      for (const hop of graph.get(at) ?? [])
+        if (!seen.has(hop.to)) {
+          seen.add(hop.to);
+          next.push(hop.to);
+        }
+    }
+    ring = next;
+  }
+  return false;
+}
+
+/**
+ * A conqueror's lane toward a weak power it cannot yet reach (§31.1, as built): the power it would
+ * fall on but for the distance, and, from the holding of its own nearest that power, the lane it may
+ * queue that brings it nearest, if that is nearer than it is; or null.
+ */
+export function bridgeLane(world: World, state: GameState, f: FactionId): { holding: Holding; to: SystemId } | null {
+  const w = RULES.rivalsWar;
+  if (!FACTIONS[f].war.conqueror || state.turn < w.choiceFrom) return null;
+  const power = powerOf(state, f);
+  if (power.subduedBy || enemiesOf(state, f).length > 0) return null;
+  const mine = state.holdings.filter((h) => h.owner === f);
+  const mineAttack = strengthOf(state, f);
+  let best: { holding: Holding; to: SystemId; d: number } | null = null;
+  for (const p of state.powers) {
+    const other = p.faction;
+    if (other === f || p.left !== null || !contactWith(power, other) || declareRefusal(state, f, other) !== null)
+      continue;
+    if (lately(state, f, other) || attitudeOf(world, state, f, other).total > w.notWarm) continue;
+    if (mineAttack === 0 || mineAttack * 2 < strengthOf(state, other) * 3) continue;
+    if (reachable(world, state, f, other)) continue;
+    // Its holdings, and every star its open lanes touch: a lane to any of them opens the way at war.
+    const theirs = new Set(state.holdings.filter((h) => h.owner === other).map((h) => h.system));
+    for (const l of state.lanes)
+      if (l.owner === other && l.status === 'open') for (const e of laneEnds(l.id)) theirs.add(e);
+    const nearest = (s: SystemId) => Math.min(...[...theirs].map((t) => world.distanceDeci(s, t)));
+    // From the nearest of its holdings that can bring it nearer: one lane at a time from each.
+    for (const from of [...mine].sort((a, b) => nearest(a.system) - nearest(b.system) || a.id - b.id)) {
+      if (from.queue.some((q) => q.kind === 'lane')) break;
+      const here = nearest(from.system);
+      let found: { holding: Holding; to: SystemId; d: number } | null = null;
+      for (const t of laneTargets(world, state, f, from.system)) {
+        if (t.refusal !== null) continue;
+        const d = nearest(t.quote.to);
+        if (d < here && (!found || d < found.d)) found = { holding: from, to: t.quote.to, d };
+      }
+      if (found) {
+        if (!best || found.d < best.d) best = found;
+        break;
+      }
+    }
+  }
+  return best ? { holding: best.holding, to: best.to } : null;
+}
+
+/**
+ * The pact an outlaw conqueror breaks to fall on easy prey (§31.2, as built): a non-aggression pact
+ * with a power it would otherwise go to war on, on the turns it looks for a war; or null. A lawful
+ * conqueror keeps its word.
+ */
+export function pactToBreak(world: World, state: GameState, f: FactionId): FactionId | null {
+  const w = RULES.rivalsWar;
+  const def = FACTIONS[f].war;
+  if (!def.conqueror || FACTIONS[f].lawful || state.turn % w.every !== 0) return null;
+  const power = powerOf(state, f);
+  if (power.subduedBy || enemiesOf(state, f).length > 0 || warshipsOf(state, f) < w.warships) return null;
+  for (const p of state.powers) {
+    const other = p.faction;
+    if (other === f || p.left !== null || !contactWith(power, other)) continue;
+    const [a, b] = f < other ? [f, other] : [other, f];
+    const pact = state.treaties.some((t) => t.a === a && t.b === b && t.kind === 'non-aggression');
+    const bound = state.treaties.some((t) => t.a === a && t.b === b && t.kind === 'alliance');
+    if (!pact || bound || lately(state, f, other) || state.truces.some((t) => t.a === a && t.b === b)) continue;
+    if (reasonHolds(world, state, f, other, 'weak')) return other;
+  }
+  return null;
 }

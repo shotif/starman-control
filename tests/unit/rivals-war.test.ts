@@ -84,7 +84,7 @@ describe('reasons for war (§28.1)', () => {
     expect(warTarget(world, g, 'dusk-concord')).toBeNull();
   });
 
-  it('the Wake goes to war on a weak neighbour it is not warm to, much the stronger, from turn 80', () => {
+  it('the Wake goes to war on a weak power it is not warm to, much the stronger, from turn 80', () => {
     const g = five('frontier');
     const home = powerOf(g, 'hollow-wake').capital;
     const body = bodiesOf(world, g.seed, home).find((b) => !g.holdings.some((h) => h.body === b.id));
@@ -95,8 +95,16 @@ describe('reasons for war (§28.1)', () => {
     expect(warTarget(world, g, 'hollow-wake')).toBeNull();
     g.turn = RULES.rivalsWar.choiceFrom;
     expect(warTarget(world, g, 'hollow-wake')).toEqual({ on: 'sta', reason: 'weak' });
-    // Not when the Authority is as strong, nor on the Cooperative, kin it is warm to.
+    // Not on the Authority once it is as strong. Not on the Cooperative, which it thinks soft and
+    // easy pickings (M4_FLEETS.md §31.4), while its fleets cannot reach it; at once when they can.
     warships(g, 'sta', powerOf(g, 'sta').capital, 3);
+    expect(warTarget(world, g, 'hollow-wake')).toBeNull();
+    const next = bodiesOf(world, g.seed, home).find((b) => !g.holdings.some((h) => h.body === b.id));
+    if (!next) throw new Error('no body');
+    makeHolding(g, { owner: 'frontier', kind: 'colony', system: home, body: next.id, capital: false, people: 10 });
+    expect(warTarget(world, g, 'hollow-wake')).toEqual({ on: 'frontier', reason: 'weak' });
+    // And so on, until every power it is not warm to is as strong.
+    for (const f of ['frontier', 'dusk-concord', 'drift-moot'] as const) warships(g, f, powerOf(g, f).capital, 3);
     expect(warTarget(world, g, 'hollow-wake')).toBeNull();
   });
 

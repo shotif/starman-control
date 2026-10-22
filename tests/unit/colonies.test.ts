@@ -132,13 +132,13 @@ describe('growth', () => {
     expect(growthOf(world, g, { ...h, kind: 'outpost', people: 0 })).toBe(0);
   });
 
-  it('is 20% faster for the Cooperative', () => {
+  it('is 10% faster for the Cooperative (M4_FLEETS.md §31.4)', () => {
     const sta = capital(start('sta'), 'sta');
     const coop = capital(start('frontier'), 'frontier');
     expect(growthOf(world, start('frontier'), { ...coop, people: 50 })).toBeGreaterThan(
       growthOf(world, start('sta'), { ...sta, people: 50 }),
     );
-    expect(growthOf(world, start('frontier'), coop)).toBe(2);
+    expect(growthOf(world, start('frontier'), coop)).toBe(1);
   });
 
   it('stops when the colony is full, and says so once', () => {

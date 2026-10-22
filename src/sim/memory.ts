@@ -13,7 +13,7 @@ import type { World } from './world.ts';
 
 /** One part of an attitude, with its reason as the regarded power reads it. */
 export interface AttitudePart {
-  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | 'war' | MemoryKind;
+  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | 'war' | 'tired' | MemoryKind;
   reason: string;
   amount: number;
 }
@@ -114,6 +114,16 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
       parts.push({ kind: 'war', reason: 'At war with us', amount: RULES.war.atWar });
     for (const m of power.memories)
       if (m.faction === toward) parts.push({ kind: m.kind, reason: memoryReason(world, m), amount: m.amount });
+    // Tiring of the Assembly's leader (M4_FLEETS.md §31.3), unless allied with it.
+    const assembly = state.assembly;
+    const past = (assembly?.terms ?? 0) - RULES.assembly.tireAfter;
+    if (
+      assembly?.leader === toward &&
+      past > 0 &&
+      assembly.members.includes(holder) &&
+      !state.treaties.some((t) => t.a === a && t.b === b && t.kind === 'alliance')
+    )
+      parts.push({ kind: 'tired', reason: 'Tired of our leading the Assembly', amount: RULES.assembly.tired * past });
   }
   const sum = parts.reduce((n, p) => n + p.amount, 0);
   const total = Math.max(-r.most, Math.min(r.most, sum));

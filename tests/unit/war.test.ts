@@ -105,6 +105,11 @@ describe('peace (§23.2)', () => {
     g = turn(g);
     expect(atWar(g, 'sta', 'hollow-wake')).toBe(true);
     while (g.turn - (g.wars.find((w) => w.a === 'hollow-wake')?.since ?? g.turn) < 5) g = turn(g);
+    // The Wake, a conqueror, sees a war through while it is the stronger (M4_FLEETS.md §31.2): our
+    // warships outmatch it.
+    const d = powerOf(g, 'sta').designs.find((x) => !x.retired);
+    if (!d) throw new Error('no design');
+    for (let i = 0; i < 8; i++) makeShip(g, 'sta', d.hull, powerOf(g, 'sta').capital, d.id);
     g = order(g, { type: 'offer', to: 'hollow-wake', treaty: 'peace' });
     g = turn(g);
     expect(atWar(g, 'sta', 'hollow-wake')).toBe(false);

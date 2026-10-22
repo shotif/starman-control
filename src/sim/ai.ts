@@ -35,7 +35,17 @@ import {
 } from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
 import { atWar, enemiesOf, isArmed } from './war.ts';
-import { beaten, invasionTarget, readyFor, strengthOf, warshipsWanted, warTarget } from './warAi.ts';
+import {
+  beaten,
+  bridgeLane,
+  invasionTarget,
+  pactToBreak,
+  pressesOn,
+  readyFor,
+  strengthOf,
+  warshipsWanted,
+  warTarget,
+} from './warAi.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -398,6 +408,9 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   let habitats = mine.filter((h) =>
     h.queue.some((q) => q.kind === 'project' && q.project === 'orbital-habitat'),
   ).length;
+  // A conqueror builds toward a weak power it cannot yet reach (M4_FLEETS.md §31.1).
+  const bridge = bridgeLane(world, state, faction);
+  if (bridge) orders.push({ type: 'queue', holding: bridge.holding.id, item: { kind: 'lane', to: bridge.to } });
   for (const h of mine) {
     if (h.queue.length > 0 || (h.kind === 'colony' && !me.laneBuilder)) continue;
     const lane = nearestLane(world, state, faction, h.system);
@@ -456,9 +469,14 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     if (next) orders.push({ type: 'research', tech: next });
   }
 
-  // War, by its character and for a reason it gives (§28.1).
+  // War, by its character and for a reason it gives (§28.1); an outlaw conqueror first breaks a pact
+  // that stands between it and easy prey (§31.2).
   const war = warTarget(world, state, faction);
   if (war) orders.push({ type: 'declare-war', on: war.on, reason: war.reason });
+  else {
+    const pact = pactToBreak(world, state, faction);
+    if (pact) orders.push({ type: 'break-treaty', with: pact, treaty: 'non-aggression' });
+  }
 
   // Dealing (M3_NEIGHBOURS.md §21.4): every few turns, each treaty it wants with each power it can
   // talk with, offered when the other's regard reaches what the other asks, or a gift when it falls
@@ -546,6 +564,8 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
     for (const war of state.wars) {
       if (war.a !== faction && war.b !== faction) continue;
       const other = war.a === faction ? war.b : war.a;
+      // A conqueror that is winning offers no peace (§31.2).
+      if (pressesOn(state, faction, other)) continue;
       // Called to peace by the Assembly (§29.3), it offers peace without terms, unless an outlaw.
       if (callBetween(state, faction, other) && heeds(faction)) {
         if (!offerRefusal(state, faction, other, 'peace')) orders.push({ type: 'offer', to: other, treaty: 'peace' });

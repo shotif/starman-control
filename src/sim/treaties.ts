@@ -22,6 +22,7 @@ import {
   type Treaty,
   treatyOf,
 } from './state.ts';
+import { pressesOn } from './warAi.ts';
 import type { World } from './world.ts';
 
 /** The two powers of a treaty in id order. */
@@ -44,13 +45,18 @@ export function treatiesOf(state: GameState, f: FactionId): Treaty[] {
 
 /**
  * The powers whose open lanes a power's ships may use (§21.1): its open lanes partners and allies,
- * those it buys passage from (§23.2), and those it is at war with (forced passage, M4_FLEETS.md §23.4).
+ * those it buys passage from (§23.2), those it is at war with (forced passage, M4_FLEETS.md §23.4),
+ * and its victor and those it has subdued (§31.2: a subdued power's lanes are open to its victor).
  */
 export function passageWith(state: GameState, f: FactionId): FactionId[] {
   const out = treatiesOf(state, f)
     .filter((t) => t.kind === 'open-lanes' || t.kind === 'alliance' || (t.kind === 'passage' && t.payer === f))
     .map((t) => partnerOf(t, f));
   for (const w of state.wars) if (w.a === f || w.b === f) out.push(w.a === f ? w.b : w.a);
+  for (const p of state.powers) {
+    if (p.subduedBy === f) out.push(p.faction);
+    if (p.faction === f && p.subduedBy) out.push(p.subduedBy);
+  }
   return out;
 }
 
@@ -366,6 +372,8 @@ export function wouldMakePeace(state: GameState, receiver: FactionId, from: Fact
   if (war === undefined) return false;
   // Terms it cannot pay are refused.
   if (o?.get && powerOf(state, receiver).treasury < o.get.amount) return false;
+  // A conqueror that is winning sees the war through, calls for peace or not (M4_FLEETS.md §31.2).
+  if (pressesOn(state, receiver, from)) return false;
   // Called to peace by the Assembly (§29.3), a rival that heeds it accepts peace that asks nothing of it.
   if (o && !o.get && callBetween(state, receiver, from) && heeds(receiver)) return true;
   // By its character (M4_FLEETS.md §28.4), or at once when the war goes badly.

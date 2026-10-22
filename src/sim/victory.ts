@@ -46,7 +46,10 @@ export function leaveGame(state: GameState, f: FactionId, events: Map<FactionId,
     a.members = a.members.filter((m) => m !== f);
     a.roll = a.roll.filter((r) => r.faction !== f);
     a.cast = a.cast.filter((c) => c.faction !== f && c.choice !== f);
-    if (a.leader === f) a.leader = null;
+    if (a.leader === f) {
+      a.leader = null;
+      a.terms = 0;
+    }
     if (a.candidates?.includes(f)) a.candidates = null;
     if (a.resolution && [a.resolution.by, a.resolution.on, a.resolution.and].includes(f)) a.resolution = null;
     a.sanctions = a.sanctions.filter((s) => s.on !== f);

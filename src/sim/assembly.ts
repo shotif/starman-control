@@ -183,9 +183,26 @@ export function propose(state: GameState, f: FactionId, r: Pick<Resolution, 'kin
 
 /**
  * How a rival votes in an election (§29.2): a candidate for itself; otherwise for the candidate it
- * regards better, if it regards it at least warm and is not at war with it; else it abstains.
+ * regards better, if it regards it at least warm and is not at war with it; else it abstains. And
+ * fear at the deciding vote (M4_FLEETS.md §31.3): when the votes as they lean would choose a power
+ * outright, a member that is not its ally thinks so much less of it, and votes for it only if it
+ * still regards it warmly, else for the other candidate if it regards that one warmly.
  */
 export function electionLean(world: World, state: GameState, f: FactionId): VoteChoice {
+  const lean = warmLean(world, state, f);
+  const c = state.assembly?.candidates;
+  if (!c || lean === 'abstain' || lean === f || !c.includes(lean as FactionId)) return lean;
+  const choice = lean as FactionId;
+  if (treatyOf(state, f, choice, 'alliance') || !wouldChoose(world, state, choice)) return choice;
+  const other = c[0] === choice ? c[1] : c[0];
+  const feared = attitudeOf(world, state, f, choice).total - A.fear;
+  const them = atWar(state, f, other) ? -Infinity : attitudeOf(world, state, f, other).total;
+  if (feared >= A.warm && feared > them) return choice;
+  return them >= A.warm ? other : 'abstain';
+}
+
+/** A member's vote by regard alone (§29.2). */
+function warmLean(world: World, state: GameState, f: FactionId): VoteChoice {
   const c = state.assembly?.candidates;
   if (!c) return 'abstain';
   if (c.includes(f)) return f;
@@ -194,6 +211,23 @@ export function electionLean(world: World, state: GameState, f: FactionId): Vote
   const best = regard(a) >= regard(b) ? a : b;
   if (regard(a) === regard(b) || regard(best) < A.warm) return 'abstain';
   return best;
+}
+
+/** Whether a candidate would be chosen by the votes as they lean by regard alone, the player's as cast. */
+function wouldChoose(world: World, state: GameState, candidate: FactionId): boolean {
+  const a = state.assembly;
+  if (!a) return false;
+  let votes = 0;
+  for (const m of a.members) {
+    const victor = powerOf(state, m).subduedBy;
+    const who = victor && a.members.includes(victor) ? victor : m;
+    const choice =
+      powerOf(state, who).controller === 'ai'
+        ? warmLean(world, state, who)
+        : (a.cast.find((c) => c.faction === who)?.choice ?? 'abstain');
+    if (choice === candidate) votes += votesOf(state, m);
+  }
+  return isTwoThirds(votes, totalVotes(state));
 }
 
 /**
@@ -277,6 +311,7 @@ export function resolveAssembly(state: GameState, events: Map<FactionId, ReportE
       members: founders,
       roll: [],
       leader: null,
+      terms: 0,
       election: turn + A.every,
       candidates: null,
       cast: [],
@@ -313,7 +348,10 @@ export function resolveAssembly(state: GameState, events: Map<FactionId, ReportE
     const forY = tally(state, votes, y);
     const total = totalVotes(state);
     const winner = forX > forY ? x : forY > forX ? y : null;
-    if (winner) assembly.leader = winner;
+    if (winner) {
+      assembly.terms = winner === assembly.leader ? assembly.terms + 1 : 1;
+      assembly.leader = winner;
+    }
     const won = winner === x ? forX : winner === y ? forY : forX;
     const chosen = winner !== null && isTwoThirds(won, total);
     if (chosen && assembly.chosen === null) assembly.chosen = winner;

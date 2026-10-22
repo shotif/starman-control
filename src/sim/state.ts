@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 24;
+export const STATE_VERSION = 25;
 
 export interface Stockpile {
   metals: number;
@@ -134,6 +134,8 @@ export interface Assembly {
   roll: { faction: FactionId; votes: number }[];
   /** Who leads it, elected; none before the first election. */
   leader: FactionId | null;
+  /** How many elections in a row its leader has won (M4_FLEETS.md §31.3). */
+  terms: number;
   /** The turn of the next election, counted as that turn ends. */
   election: number;
   /** The two candidates, named the turn before the election. */

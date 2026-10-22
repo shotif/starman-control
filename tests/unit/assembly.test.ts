@@ -120,9 +120,10 @@ describe('elections (§29.2)', () => {
     expect(electionLean(world, g, 'dusk-concord')).toBe('abstain');
   });
 
-  it('elects a leader; two thirds of all the votes choose it', () => {
+  it('elects a leader; two thirds of all the votes choose it, from members who like it even then', () => {
     let g = election();
-    for (const f of ['hollow-wake', 'dusk-concord'] as const) warm(g, f, 'frontier');
+    // Fear at the deciding vote (M4_FLEETS.md §31.3): they still vote for it, liking it well enough.
+    for (const f of ['hollow-wake', 'dusk-concord'] as const) warm(g, f, 'frontier', 45);
     g = order(g, { type: 'vote', choice: 'frontier' });
     const next = resolveTurn(world, g).state;
     expect(next.assembly?.leader).toBe('frontier');
@@ -133,6 +134,7 @@ describe('elections (§29.2)', () => {
     expect(elected).toMatchObject({ faction: 'frontier', chosen: true });
     // Short of two thirds: led, not chosen.
     let h = election();
+    for (const f of ['hollow-wake', 'dusk-concord'] as const) warm(h, f, 'frontier', 45);
     h = order(h, { type: 'vote', choice: 'drift-moot' });
     const led = resolveTurn(world, h).state;
     expect(led.assembly?.leader).toBe('frontier');

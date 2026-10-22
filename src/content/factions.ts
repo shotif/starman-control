@@ -47,7 +47,7 @@ export type WarReason = 'raided' | 'hostile' | 'weak' | 'claim';
 export const WAR_REASONS: Record<WarReason, string> = {
   raided: 'you raided us',
   hostile: 'you have made yourselves our enemy',
-  weak: 'you are weak, and near',
+  weak: 'you are weak',
   claim: 'you would not stop settling in our claim',
 };
 
@@ -91,6 +91,8 @@ export interface FactionDef {
     peaceOnLoss: boolean;
     /** Whether it calls on the Assembly for peace between members at war (§29.3). */
     callsForPeace: boolean;
+    /** A conqueror (§31.2): it arms in earnest, falls on the weak and sees a war through. */
+    conqueror: boolean;
   };
   /**
    * How it regards others for their ways (M3_NEIGHBOURS.md §20.1), fiction: an amount, and the
@@ -146,6 +148,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       credits: 0,
       peaceOnLoss: true,
       callsForPeace: false,
+      conqueror: false,
     },
     regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
     // Law: open lanes once warm, its research only with friends.
@@ -180,14 +183,22 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       {
         id: 'frontier-settlers',
         name: 'Settlers',
-        text: 'Colonies grow 20% faster.',
-        effect: { kind: 'growth-percent', percent: 20 },
+        text: 'Colonies grow 10% faster.',
+        effect: { kind: 'growth-percent', percent: 10 },
       },
     ],
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
     fleetWord: 'Flotilla',
     weary: 2,
-    war: { declares: [], acceptsAfter: 0, offersAfter: 5, credits: 0, peaceOnLoss: false, callsForPeace: true },
+    war: {
+      declares: [],
+      acceptsAfter: 0,
+      offersAfter: 5,
+      credits: 0,
+      peaceOnLoss: false,
+      callsForPeace: true,
+      conqueror: false,
+    },
     regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
     // Trade and peace once warm; its research a little warmer (20, tuned in M3's proof: at 10 its
     // shared research with the Wake took it past 25 technologies by turn 100 on three seeds).
@@ -236,8 +247,13 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       credits: 50,
       peaceOnLoss: false,
       callsForPeace: false,
+      conqueror: true,
     },
-    regard: { sta: { amount: -10, reason: 'Sees in us the law it runs from' } },
+    regard: {
+      sta: { amount: -10, reason: 'Sees in us the law it runs from' },
+      // M4_FLEETS.md §31.4: the Cooperative, rich and seldom armed, is prey to it.
+      frontier: { amount: -10, reason: 'Thinks us soft, and easy pickings' },
+    },
     // Tolls and profit: it sells passage rather than opening its lanes (increment 37), and buys
     // its way into shared research.
     // It sells passage and protection to any power that regards it at −10 or more (§23.6), and takes bribes.
@@ -282,14 +298,19 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     fleetWord: 'Circle',
     weary: 1,
     war: {
-      declares: ['claim'],
+      declares: ['claim', 'weak'],
       acceptsAfter: 15,
       offersAfter: 20,
       credits: 0,
       peaceOnLoss: false,
       callsForPeace: false,
+      conqueror: true,
     },
-    regard: { 'hollow-wake': { amount: -5, reason: 'Takes what is not given' } },
+    regard: {
+      'hollow-wake': { amount: -5, reason: 'Takes what is not given' },
+      // M4_FLEETS.md §31.4: the Cooperative settles fastest, and the Concord guards its claim.
+      frontier: { amount: -5, reason: 'Fears our settlers will crowd its claim' },
+    },
     // Slow to trust (§24.6): a clear border sooner than open lanes, and research only with friends.
     asks: {
       'open-lanes': 20,
@@ -336,7 +357,15 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['the Slow Hands'],
     fleetWord: 'Drift',
     weary: 2,
-    war: { declares: [], acceptsAfter: 0, offersAfter: 5, credits: -30, peaceOnLoss: false, callsForPeace: true },
+    war: {
+      declares: [],
+      acceptsAfter: 0,
+      offersAfter: 5,
+      credits: -30,
+      peaceOnLoss: false,
+      callsForPeace: true,
+      conqueror: false,
+    },
     regard: { 'hollow-wake': { amount: -10, reason: 'Sells the lanes that should be open' } },
     // Brokers (§25.6): trade with anyone, open lanes once known, and peace bought from those who sell it.
     asks: {

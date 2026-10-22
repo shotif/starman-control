@@ -616,6 +616,7 @@ function assemblyShape(a: unknown): boolean {
     Array.isArray(a.roll) &&
     a.roll.every((r) => isRecord(r) && isFactionId(r.faction) && isWhole(r.votes, 1)) &&
     (a.leader === null || isFactionId(a.leader)) &&
+    isWhole(a.terms) &&
     (a.chosen === null || isFactionId(a.chosen)) &&
     isWhole(a.election, 1) &&
     (a.candidates === null || (factions(a.candidates) && (a.candidates as unknown[]).length === 2)) &&

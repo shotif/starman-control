@@ -296,8 +296,6 @@ export const RULES = {
     /** It looks for a war every so many turns, with at least so many warships. */
     every: 5,
     warships: 3,
-    /** A neighbour's colony within this many tenths of a light-year of one of its own. */
-    nearDeci: 120,
     /** Raided within so many turns; hostile as the attitude's word; not warm (neutral or worse); claims crossed. */
     raidedWithin: 10,
     hostile: -40,
@@ -305,10 +303,11 @@ export const RULES = {
     claims: 2,
     /** A war of choice (on the weak) not before this turn: the first years are for settling and meeting. */
     choiceFrom: 80,
-    /** At war: a strike of at least so many warships, at most so many jumps, with troops to spare. */
+    /** At war: a strike of at least so many warships, anywhere the lanes reach (§31.1), with troops to spare. */
     strike: 4,
-    invadeJumps: 6,
     spareTroops: 2,
+    /** A conqueror (§31.2) sees a war through while its war weariness is under this. */
+    pressOnWeariness: 60,
     /** After a peace, so many turns more before it goes back to war with the same power. */
     rest: 30,
   },
@@ -330,6 +329,11 @@ export const RULES = {
     callAfter: 5,
     /** A rival votes for a candidate it regards at least this well (warm). */
     warm: 10,
+    /** Fear at the deciding vote (§31.3): so much less regard for a power about to be chosen. */
+    fear: 20,
+    /** Tiring of a leader (§31.3): so much less regard for each election won past so many in a row. */
+    tireAfter: 2,
+    tired: -10,
   },
   /** Victory (M4_FLEETS.md §30): the turn limits a new game offers, and the default; the story's pace. */
   victory: {
