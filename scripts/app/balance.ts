@@ -136,6 +136,9 @@ const avg = (turn: number, f: FactionId) => {
 const streak = (turns: number, what: string, never: string) =>
   turns === 0 ? `${never}.` : `The longest time ${what} was ${turns} turn${turns === 1 ? '' : 's'} in a row.`;
 
+/** "1 battle", "3 battles". */
+const many = (n: number, one: string, more: string) => `${n} ${n === 1 ? one : more}`;
+
 const out = `# The headless games
 
 *Written by \`npm run balance\` (scripts/app/balance.ts, M2_WORLDS.md §29.2, M2B_SCIENCE.md §2): ${FACTION_ORDER.length}
@@ -144,7 +147,7 @@ rivals, ${SEEDS.length} seeds, 100 turns each. Regenerate it after any change to
 The slowest turn took ${slowest.toFixed(0)} ms on the machine that wrote this; the largest save at turn 100
 was ${(biggest / 1024).toFixed(1)} KB. ${streak(longestDebt, 'in debt', 'No power fell into debt')} ${streak(longestHunger, 'hungry', 'No colony went hungry')}
 
-In all ${SEEDS.length} games: ${raids} turns of plunder by raids, ${battles} battles, ${wars} wars declared and ${taken} colonies or outposts taken by invasion (M4).
+In all ${SEEDS.length} games: ${many(raids, 'turn', 'turns')} of plunder by raids, ${many(battles, 'battle', 'battles')}, ${many(wars, 'war', 'wars')} declared and ${many(taken, 'colony or outpost', 'colonies or outposts')} taken by invasion (M4).
 
 The tree has ${TECH_IDS.length} technologies, of which a power can learn ${LEARNABLE} (one of each pair of doctrines). ${finished.length === 0 ? 'No power learnt them all in 100 turns.' : `All learnt by: ${finished.join('; ')}.`}
 

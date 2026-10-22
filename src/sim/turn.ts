@@ -58,9 +58,10 @@ import {
   powerOf,
   type ShipState,
 } from './state.ts';
-import { payForSold, resolveTreaties } from './treaties.ts';
+import { payForSold, payTribute, resolveTreaties } from './treaties.ts';
 import { watchNews } from './visibility.ts';
 import { interceptedBy, reportWars, resolveWeariness } from './war.ts';
+import { countColonies } from './warAi.ts';
 import { laneId, type World } from './world.ts';
 
 /** Whether a survey ship should stop to survey where it now is. */
@@ -515,6 +516,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // Trade agreements (M3_NEIGHBOURS.md §22.4), and passage and protection paid for (§23.2, §23.4).
   for (const p of state.powers) for (const t of tradeIncome(state, p.faction)) p.treasury += t.credits;
   payForSold(state, events);
+  // Tribute from the subdued (M4_FLEETS.md §28.5).
+  payTribute(state, events);
 
   for (const p of state.powers) {
     const before = p.treasury;
@@ -566,6 +569,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 12b. Memories fade a point every few turns (M3_NEIGHBOURS.md §20.1); a colony taken settles a turn (§26.4).
   fadeMemories(state);
   settleTaken(state);
+  // The most colonies each power has held, to tell when it is beaten (M4_FLEETS.md §28.5).
+  countColonies(state);
 
   // 13. Reports.
   const reports = state.powers.map((p) => ({

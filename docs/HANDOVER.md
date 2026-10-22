@@ -203,7 +203,10 @@ invasion as a fleet's mission with the commanders' radio traffic, bombardment, b
 and capitals changing hands, rivals building batteries at war; turns made about twice as fast;
 state version 21. **Done: increment 47, raids** (§27): the Wake's fleets raid without war and take
 plunder, protection bought keeps them off, and an outlaw's raiders may sail the lanes of those they
-may raid.
+may raid. **Done: increment 48, rivals at war** (§28): the rivals declare war by character and say
+why, arm against their neighbours, gather strikes with troop transports and invade, make peace on
+their own terms, and surrender when beaten; any power may surrender and pay tribute; state version
+22.
 
 The art and music spend: about $27.15 of $50 (raised on 22 October 2026; about $22.85 left). M3's
 art is about 65 pictures (about $6.50).

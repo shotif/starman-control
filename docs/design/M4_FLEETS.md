@@ -40,6 +40,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 25. [Increment 45 in detail: the replay](#25-increment-45-in-detail-the-replay-written-before-building-it)
 26. [Increment 46 in detail: defences and invasion](#26-increment-46-in-detail-defences-and-invasion-written-before-building-it)
 27. [Increment 47 in detail: raids](#27-increment-47-in-detail-raids-written-before-building-it)
+28. [Increment 48 in detail: rivals at war](#28-increment-48-in-detail-rivals-at-war-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -1305,3 +1306,138 @@ and desktop.
   others 19.8 to 23.5); in the eight games 76 turns of plunder and 4 battles. `npm run balance`
   now counts raids, battles, wars and colonies taken.
 - **Tests:** `raids.test.ts` (7 tests); `raids.spec.ts` on the phone, tablet and desktop.
+
+## 28. Increment 48 in detail: rivals at war (written before building it)
+
+**Goals.** D-68 as decided (A): the rivals go to war **by character**, through the same orders as
+the player's, and always for a reason the player can read; they arm when their neighbours arm,
+defend, invade where they are stronger, make peace by character, and **capitulate** when beaten
+(D-64 A). A power may surrender to another and be **subdued**.
+
+**Out of scope.** The Assembly (49); a power leaving the game, victory and defeat (50).
+
+### 28.1 Reasons for war
+
+Every 5 turns, a rival that may (§28.2) looks for a war worth declaring, by its character. It
+declares at most one war at a time, and never on a power it has a truce, a pact or an alliance
+with. The reason goes with the declaration, and the attacked reads it.
+
+| Rival | Declares war on | The reason it gives (fiction) |
+| --- | --- | --- |
+| The Transit Authority | a power that raided it in the last 10 turns, or one it holds **hostile** | *you raided us* · *you have made yourselves our enemy* |
+| The Frontier Co-op | never | |
+| The Hollow Wake | a neighbour it holds **cold** or worse, when it is much the stronger | *you are weak, and near* |
+| The Dusk Concord | a power that has settled in its claim twice or more, when it is the stronger | *you would not stop settling in our claim* |
+| The Drift Moot | never | |
+
+- **May:** it holds at least 3 warships, it is not at war already, and (but for the Authority
+  answering a raid) its warships' attack is at least **one and a half times** the target's. A
+  *neighbour* holds a colony within 4 jumps of one of its own.
+
+### 28.2 Arming
+
+- **In peace,** a rival keeps as many warships as half the most any power in contact with it holds
+  (the Watch sees them), up to its colonies, and the Wake its raiding squadron (§27.3): when a
+  neighbour arms, it arms.
+- **At war,** as §24.9, and batteries as §26.11.
+
+### 28.3 Invading
+
+At war, a rival with at least 4 warships picks a **target**: the enemy colony or outpost nearest its
+capital by lanes (at most 6 jumps), where its largest fleet's attack is at least twice what defends
+it (the enemy's armed ships there, and its battery). It builds **troop transports** at its capital
+for that target's garrison and 2 more troops; they join the fleet waiting there. With troops
+enough, the fleet makes for the target and, arrived, invades it (§26.4).
+
+### 28.4 Peace, by character
+
+| Rival | Accepts peace after | Offers peace | With peace |
+| --- | --- | --- | --- |
+| The Transit Authority | 5 turns | after 10 turns, or once it has lost a colony | nothing |
+| The Frontier Co-op | at once | after 5 turns | nothing |
+| The Hollow Wake | 5 turns | after 10 turns | asks 50 credits |
+| The Dusk Concord | 15 turns | after 20 turns | nothing |
+| The Drift Moot | at once | after 5 turns | gives 30 credits |
+
+A rival whose war goes badly (weariness 30 or more) accepts at once.
+
+### 28.5 Capitulation
+
+- **Offered** by a power at war to its enemy, as a treaty: *capitulation* (the offerer surrenders).
+  The player may offer it, and answer a rival's.
+- **Subdued:** the war ends (with a truce of 10 turns); the subdued power keeps what it holds, pays
+  **a fifth of its taxes** to its victor each turn as **tribute**, cannot declare war, and is at war
+  with whoever its victor fights (as an ally). It counts as beaten for conquest (§13, 50). It ends
+  only if its victor is itself subdued or leaves the game.
+- **The rivals surrender** when they have lost their capital or half the colonies they ever held;
+  a rival accepts any surrender offered.
+
+### 28.6 On the screen
+
+- **War declared on us:** the report says who and why (*The Dusk Concord declared war on us: you
+  would not stop settling in our claim*), with its picture.
+- **Diplomacy:** at war, *Offer peace* and *Surrender*, with what surrender costs said first; a
+  subdued power marked as such, its tribute in the treasury's lines.
+- **The headless games** report the wars, battles, colonies taken and surrenders.
+
+### 28.7 State
+
+`War.reason`; `PowerState.subduedBy` and `PowerState.mostColonies`; the treaty kind
+`capitulation` for its offer; the report events `subdued` and `tribute`. **State version 22.**
+
+### 28.8 Tests
+
+`rivals-war.test.ts`: each rival's reason for war, and the ones that never declare; *may* (warships,
+strength, one war at a time, no truce or pact); arming to match a neighbour; the target and the
+transports for it; the march and the invasion; peace by character, with credits asked or given;
+capitulation offered, accepted, the tribute, the subdued at war with its victor's enemies; the
+rivals surrendering when beaten; the migration. `rivals-war.spec.ts`: a rival declares war on us
+with its reason, and later surrenders, on the phone, tablet and desktop.
+
+### Increment 48: rivals at war (22 October 2026)
+
+- **Reasons for war as §28.1,** given through the player's own order, the reason carried with the
+  declaration and read by the attacked (`warTarget` in `src/sim/warAi.ts`). Four changes found in
+  the headless games:
+  - The Wake's *cold or worse* became **not warm** (neutral or worse): the Wake was never cold
+    towards anyone, so it never went to war.
+  - A *neighbour* holds a colony **within 12 light-years** of one of its own (the design said 4
+    jumps): a distance is the same for both powers, whatever lanes each may sail.
+  - **The Wake's war on the weak waits for turn 80.** Before, it went to war on its first neighbour
+    between turns 31 and 51, before either had agreed any treaty, and M3's target (every human power
+    has agreed a treaty by turn 100) failed on two seeds.
+  - **After a peace, 30 turns before war on the same power again** (the truce itself is 10): without
+    it the Wake went back to war on the Authority every 10 turns.
+- **Arming as §28.2,** with one addition: a rival with a reason for war it is not yet strong enough
+  for arms to be the stronger by half again, and to at least 3 warships. Without it no rival ever
+  held the warships to declare.
+- **Invading as §28.3:** at war, a rival gathers its fleets at the capital into one once they hold 4
+  warships, picks the nearest enemy holding within 6 jumps (by the lanes it may sail) that it
+  outmatches twice over, builds transports at the capital for the garrison and 2 more troops, sails,
+  and invades on arrival. At war it researches ground forces after its batteries.
+- **Peace by character as §28.4** (`wouldMakePeace` in `src/sim/treaties.ts`). The credits asked or
+  given are the offer's terms, paid when it is accepted. A war going badly (weariness 30) is ended at
+  once.
+- **Capitulation as §28.5:** offered as a treaty; the subdued pays a fifth of its taxes as tribute
+  each turn (a line in both treasuries), may not declare war, and is at war with its victor's
+  enemies. The rivals surrender when beaten and accept any surrender.
+- **Two changes outside the design:** a power asked to buy the Wake's protection no longer counts
+  the Wake's raids against it when it decides, as protection is what it buys against them (without
+  this the Wake sold nothing in a hundred turns). And a system taken by invasion may anchor more
+  lanes than its new owner's beacon holds, so the check on a game's lanes now refuses only more
+  than any beacon could ever hold.
+- **The screen as §28.6:** the declaration and its reason in the report, with the war picture;
+  in Diplomacy, the war's reason, the terms of peace offered, *Surrender* with its cost said first,
+  and a subdued power marked.
+- **State version 22** as §28.7.
+- **Numbers:** at turn 100 every power within M3's targets (the Authority 40.4 technologies, the
+  others 19.8 to 23.4). In the eight games, by turn 100: 5 wars, 1 battle, 52 turns of plunder and
+  1 colony taken. In four games of 200 turns, the Wake and the Authority went to war in three, and
+  colonies changed hands both ways. The Cooperative and the Moot never declare war. The Concord
+  declares only on a power that settles in its claim twice, which the rivals never do, so only the
+  player can provoke it. Turns grow slower as powers grow: the slowest near turn 200 took about
+  440 ms, which increment 50's games of 250 turns will need to bring down.
+- **Tests:** `rivals-war.test.ts` (12 tests). `rivals-war.spec.ts`, on the phone, tablet and
+  desktop: the Authority declares war on the player's Cooperative for its raids, with its reason,
+  and the player surrenders. (The design had a rival surrender to the player. The journey shows the
+  player's own surrender, as only it has a screen; a rival's surrender has a unit test.)

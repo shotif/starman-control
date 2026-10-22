@@ -2,7 +2,7 @@
 // allies called; peace offered and answered, and a truce after it; war weariness. The same orders
 // for the player and the rivals. Pure and in whole numbers.
 
-import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId, type WarReason } from '../content/factions.ts';
 import { MODULES } from '../content/modules.ts';
 import { RULES } from '../content/rules.ts';
 import { TREATIES } from '../content/treaties.ts';
@@ -16,13 +16,27 @@ import { pair } from './treaties.ts';
 /** Whether two powers are at war. */
 export function atWar(state: GameState, x: FactionId, y: FactionId): boolean {
   if (x === y) return false;
+  if (declared(state, x, y)) return true;
+  // A subdued power fights its victor's wars (M4_FLEETS.md §28.5).
+  const vx = subduedBy(state, x);
+  const vy = subduedBy(state, y);
+  return (vx !== null && vx !== y && declared(state, vx, y)) || (vy !== null && vy !== x && declared(state, x, vy));
+}
+
+/** A war declared between the two (not one a subdued power fights for its victor). */
+function declared(state: GameState, x: FactionId, y: FactionId): boolean {
   const [a, b] = pair(x, y);
   return state.wars.some((w) => w.a === a && w.b === b);
 }
 
-/** The powers a power is at war with. */
+/** The power a power has capitulated to, or null (§28.5). */
+export function subduedBy(state: GameState, f: FactionId): FactionId | null {
+  return state.powers.find((p) => p.faction === f)?.subduedBy ?? null;
+}
+
+/** The powers a power is at war with, its victor's wars too if it is subdued. */
 export function enemiesOf(state: GameState, f: FactionId): FactionId[] {
-  return state.wars.filter((w) => w.a === f || w.b === f).map((w) => (w.a === f ? w.b : w.a));
+  return state.powers.map((p) => p.faction).filter((x) => atWar(state, f, x));
 }
 
 /** The war between two powers, if they are at war. */
@@ -51,6 +65,8 @@ export function declareRefusal(state: GameState, me: FactionId, other: FactionId
   if (other === me || !state.powers.some((p) => p.faction === other)) return 'There is no such power.';
   const name = FACTIONS[other].shortName;
   if (!contactWith(powerOf(state, me), other)) return `We have not heard the ${name}.`;
+  const victor = subduedBy(state, me);
+  if (victor) return `We are subdued by the ${FACTIONS[victor].shortName}: we may not declare war.`;
   if (atWar(state, me, other)) return `We are at war with the ${name} already.`;
   const until = truceUntil(state, me, other);
   if (until !== null) return `We made peace with the ${name}: no war before turn ${until}.`;
@@ -65,9 +81,9 @@ export function warWith(state: GameState, me: FactionId, other: FactionId): Fact
 }
 
 /** Starts a war between two powers, ending their treaties and offers. */
-function begin(state: GameState, by: FactionId, other: FactionId, via?: FactionId): void {
+function begin(state: GameState, by: FactionId, other: FactionId, via?: FactionId, reason?: WarReason): void {
   const [a, b] = pair(by, other);
-  state.wars.push({ a, b, since: state.turn, by, ...(via ? { via } : {}) });
+  state.wars.push({ a, b, since: state.turn, by, ...(via ? { via } : {}), ...(reason ? { reason } : {}) });
   state.wars.sort((p, q) => (`${p.a}~${p.b}` < `${q.a}~${q.b}` ? -1 : 1));
   state.treaties = state.treaties.filter((t) => !(t.a === a && t.b === b));
   state.offers = state.offers.filter((o) => !((o.from === a && o.to === b) || (o.from === b && o.to === a)));
@@ -78,11 +94,11 @@ function begin(state: GameState, by: FactionId, other: FactionId, via?: FactionI
  * two ends; the other remembers it, and every power in contact with the declarer hears of it; the
  * other's allies are at war with the declarer too. The report tells it as the turn ends.
  */
-export function declareWar(state: GameState, me: FactionId, other: FactionId): void {
+export function declareWar(state: GameState, me: FactionId, other: FactionId, reason?: WarReason): void {
   const w = RULES.war;
   const sides = warWith(state, me, other);
   for (const enemy of sides) {
-    begin(state, me, enemy, enemy === other ? undefined : other);
+    begin(state, me, enemy, enemy === other ? undefined : other, enemy === other ? reason : undefined);
     remember(state, enemy, me, { kind: 'war-declared', amount: w.declared });
   }
   for (const p of state.powers)
@@ -100,8 +116,9 @@ export function reportWars(state: GameState, events: Map<FactionId, ReportEvent[
     if (war.since !== state.turn) continue;
     const other = war.a === war.by ? war.b : war.a;
     const ally = war.via ? { ally: war.via } : {};
-    events.get(war.by)?.push({ kind: 'war-declared', faction: other, by: war.by, ...ally });
-    events.get(other)?.push({ kind: 'war-declared', faction: war.by, by: war.by, ...ally });
+    const reason = war.reason ? { reason: war.reason } : {};
+    events.get(war.by)?.push({ kind: 'war-declared', faction: other, by: war.by, ...ally, ...reason });
+    events.get(other)?.push({ kind: 'war-declared', faction: war.by, by: war.by, ...ally, ...reason });
   }
 }
 
@@ -140,7 +157,8 @@ export function resolveWeariness(state: GameState): void {
     if (enemiesOf(state, p.faction).length > 0) p.weariness += FACTIONS[p.faction].weary;
     else p.weariness = Math.max(0, p.weariness - RULES.war.wearyRest);
   }
-  state.truces = state.truces.filter((t) => t.until > state.turn);
+  // A truce is kept on record a while after it ends: the rivals do not go back to war so soon (§28.1).
+  state.truces = state.truces.filter((t) => t.until + RULES.rivalsWar.rest > state.turn);
 }
 
 /** What war weariness costs every colony's approval (§23.4): −1 for every 5, at most −15. */

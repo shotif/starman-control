@@ -163,6 +163,8 @@ export function shapeProblems(raw: unknown): string[] {
         out.push(`power ${i} gifts are not a list of gifts`);
       if (!isWhole(p.fleetsMade)) out.push(`power ${i} fleets made is not a whole number`);
       if (!isWhole(p.weariness)) out.push(`power ${i} weariness is not a whole number`);
+      if (p.subduedBy !== null && !isFactionId(p.subduedBy)) out.push(`power ${i} is subdued by no power`);
+      if (!isWhole(p.mostColonies)) out.push(`power ${i}'s most colonies is not a whole number`);
       // Designs (M4_FLEETS.md §21.3).
       if (
         !Array.isArray(p.designs) ||
@@ -448,10 +450,11 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (!factions.has(lane.owner)) out.push(`lane ${lane.id} belongs to ${lane.owner}, who is not in play`);
     for (const end of [a, b]) used.set(end, (used.get(end) ?? 0) + 1);
   }
-  for (const [system, n] of used) {
-    const slots = beaconSlots(state, system);
-    if (n > slots) out.push(`${system} anchors ${n} lanes but has ${slots} beacon slots`);
-  }
+  // A system may anchor more lanes than it has slots once war has taken a station or a world there
+  // (M4_FLEETS.md §26): the lanes stand, and no new one is built there (lanes.ts) until a slot is free.
+  for (const [system, n] of used)
+    if (n > beaconSlots(state, system) + RULES.beacons.slotsWithStation)
+      out.push(`${system} anchors ${n} lanes, more than it could ever hold`);
   let lastHolding = 0;
   const bodiesHeld = new Set<string>();
   for (const h of state.holdings) {

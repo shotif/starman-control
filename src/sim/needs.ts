@@ -4,7 +4,6 @@
 import type { EventId } from '../content/events.ts';
 import type { FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
-import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
 import {
@@ -21,7 +20,7 @@ import {
 import { fleetById } from './fleets.ts';
 import { blockadedBy } from './invasion.ts';
 import { canResearch } from './research.ts';
-import { type GameState, powerOf } from './state.ts';
+import { type GameState, type OfferKind, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 export type Need =
@@ -52,7 +51,7 @@ export type Need =
   /** Districts zoned with no one to work them. */
   | { kind: 'unworked'; holding: number; system: SystemId; districts: number }
   /** A treaty or an exchange offered, waiting for an answer before this turn ends (M3_NEIGHBOURS.md §21.2, §23.1). */
-  | { kind: 'offer'; from: FactionId; treaty: TreatyKind | 'exchange' | 'peace' };
+  | { kind: 'offer'; from: FactionId; treaty: OfferKind };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];

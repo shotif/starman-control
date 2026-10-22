@@ -7,7 +7,7 @@ import type { Priority } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { isHull } from '../content/ships.ts';
+import { isHull, SHIPS } from '../content/ships.ts';
 import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import { TREATY_KINDS } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
@@ -15,9 +15,9 @@ import { investigateRefusal } from './anomalies.ts';
 import { buildable } from './designs.ts';
 import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
 import { rivalChoice } from './events.ts';
-import { fleetAt, fleetLanes } from './fleets.ts';
+import { fleetAt, fleetLanes, fleetShips } from './fleets.ts';
 import { habitability } from './habitability.ts';
-import { holdsOrbit, missionRefusal, raidRefusal } from './invasion.ts';
+import { garrisonOf, holdsOrbit, missionRefusal, raidRefusal, troopsOf } from './invasion.ts';
 import { laneTargets } from './lanes.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
@@ -26,6 +26,7 @@ import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { type Amount, contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
 import { atWar, enemiesOf, isArmed } from './war.ts';
+import { beaten, invasionTarget, readyFor, strengthOf, warshipsWanted, warTarget } from './warAi.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -224,7 +225,10 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const raider = !FACTIONS[faction].lawful;
   const colonyCount = mine.filter((h) => h.kind === 'colony').length;
   const raiding = raider && state.turn >= RULES.raid.from && colonyCount >= RULES.raid.colonies;
-  const wanted = atWarNow ? colonyCount + 2 : raiding ? RULES.raid.squadron : 0;
+  // In peace it arms when its neighbours arm (M4_FLEETS.md §28.2).
+  const wanted = atWarNow
+    ? colonyCount + 2
+    : Math.max(raiding ? RULES.raid.squadron : 0, warshipsWanted(world, state, faction));
   let arming = yardDesign !== undefined && warships < wanted;
   for (const h of mine) {
     if (!h.projects.includes('shipyard') || h.queue.some((q) => q.kind === 'ship')) continue;
@@ -258,9 +262,63 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
         orders.push({ type: 'queue', holding: h.id, item: battery });
   }
 
+  // At war (§28.3): its largest fleet at the capital strikes the nearest enemy holding it outmatches,
+  // with transports for its garrison built at the capital and gathered into it; arrived, it invades.
+  const sent = new Set<number>();
+  if (atWarNow) {
+    for (const f of state.fleets) {
+      if (f.owner !== faction || f.destinations.length > 0 || f.mission) continue;
+      const at = fleetAt(state, f);
+      if (at === null || troopsOf(state, f) === 0) continue;
+      const here = state.holdings
+        .filter((h) => h.system === at && missionRefusal(state, f, { kind: 'invade', holding: h.id }) === null)
+        .sort((a, b) => garrisonOf(a).total - garrisonOf(b).total || a.id - b.id)[0];
+      if (here && readyFor(state, f, garrisonOf(here).total + RULES.rivalsWar.spareTroops)) {
+        orders.push({ type: 'fleet-mission', fleet: f.id, mission: { kind: 'invade', holding: here.id } });
+        sent.add(f.id);
+      }
+    }
+    const capitalFleets = state.fleets
+      .filter(
+        (f) =>
+          f.owner === faction &&
+          f.destinations.length === 0 &&
+          !f.mission &&
+          !sent.has(f.id) &&
+          fleetAt(state, f) === power.capital,
+      )
+      .sort((a, b) => fleetShips(state, b).length - fleetShips(state, a).length || a.id - b.id);
+    const strike = capitalFleets[0];
+    const armedIn = (f: (typeof capitalFleets)[number]) => fleetShips(state, f).filter((x) => isArmed(state, x)).length;
+    if (
+      strike &&
+      armedIn(strike) + capitalFleets.slice(1).reduce((n, f) => n + armedIn(f), 0) >= RULES.rivalsWar.strike
+    ) {
+      // Gathered into one.
+      for (const f of capitalFleets.slice(1)) {
+        orders.push({ type: 'merge-fleet', fleet: f.id, into: strike.id });
+        sent.add(f.id);
+      }
+      const target = invasionTarget(world, state, strike);
+      if (target) {
+        if (readyFor(state, strike, target.troops)) {
+          orders.push({ type: 'fleet-move', fleet: strike.id, to: target.holding.system });
+          sent.add(strike.id);
+        } else {
+          const capital = mine.find((h) => h.capital);
+          const transport: QueueItem = { kind: 'ship', ship: 'transport' };
+          const queued = capital ? capital.queue.filter((q) => q.kind === 'ship' && q.ship === 'transport').length : 0;
+          const short = target.troops - troopsOf(state, strike) - queued * (SHIPS.transport.troops ?? 5);
+          if (capital && short > 0 && queueRefusal(world, state, capital, transport) === null)
+            orders.push({ type: 'queue', holding: capital.id, item: transport });
+          sent.add(strike.id);
+        }
+      }
+    }
+  }
+
   // The outlaw's raids (§27.3): a raid begun every so many turns, lasting so many; an idle armed
   // fleet makes for the nearest holding it may raid, the least defended first, and raids it there.
-  const sent = new Set<number>();
   if (raider) {
     const window = state.turn % RULES.raid.every;
     for (const f of state.fleets) {
@@ -378,16 +436,20 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       (!armed && withNeeds(power, id).some((x) => TECHS[x].field === 'weapons'))
         ? 1
         : 0;
-    // At war, its batteries first (§26.11).
-    const defence: TechId = 'planetary-defence';
+    // At war, its batteries first (§26.11), then its troops (§28.3).
+    const warTech = (['planetary-defence', 'ground-forces'] as const).find((t) => canResearch(power).includes(t));
     const next =
-      atWarNow && canResearch(power).includes(defence)
-        ? defence
+      atWarNow && warTech
+        ? warTech
         : canResearch(power)
             .filter((id) => withNeeds(power, id).every(own))
             .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];
     if (next) orders.push({ type: 'research', tech: next });
   }
+
+  // War, by its character and for a reason it gives (§28.1).
+  const war = warTarget(world, state, faction);
+  if (war) orders.push({ type: 'declare-war', on: war.on, reason: war.reason });
 
   // Dealing (M3_NEIGHBOURS.md §21.4): every few turns, each treaty it wants with each power it can
   // talk with, offered when the other's regard reaches what the other asks, or a gift when it falls
@@ -455,19 +517,34 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
   const power = powerOf(state, faction);
   const orders: Order[] = [];
   const index = state.powers.findIndex((p) => p.faction === faction);
-  // Peace (M4_FLEETS.md §23.2): every few turns, to each power a war with has lasted long enough.
+  // Peace (M4_FLEETS.md §23.2, §28.4): every few turns, to each power a war with has lasted as long
+  // as its character waits (the Authority sooner once it has lost a colony), on its terms; or, beaten,
+  // its surrender to the strongest of them (§28.5).
   const w = RULES.war;
-  for (const war of state.wars) {
-    if (war.a !== faction && war.b !== faction) continue;
-    const other = war.a === faction ? war.b : war.a;
-    const lasted = state.turn - war.since;
-    if (
-      lasted >= w.offerPeaceAfter &&
-      lasted % w.offerPeaceEvery === 0 &&
-      !offerRefusal(state, faction, other, 'peace')
-    )
-      orders.push({ type: 'offer', to: other, treaty: 'peace' });
-  }
+  const terms = FACTIONS[faction].war;
+  const lostOne =
+    terms.peaceOnLoss &&
+    state.holdings.filter((h) => h.owner === faction && h.kind === 'colony').length < power.mostColonies;
+  if (!power.subduedBy && beaten(state, faction)) {
+    const victor = state.wars
+      .filter((x) => x.a === faction || x.b === faction)
+      .map((x) => (x.a === faction ? x.b : x.a))
+      .sort((a, b) => strengthOf(state, b) - strengthOf(state, a) || (a < b ? -1 : 1))[0];
+    if (victor && !offerRefusal(state, faction, victor, 'capitulation'))
+      orders.push({ type: 'offer', to: victor, treaty: 'capitulation' });
+  } else
+    for (const war of state.wars) {
+      if (war.a !== faction && war.b !== faction) continue;
+      const other = war.a === faction ? war.b : war.a;
+      const lasted = state.turn - war.since;
+      if (!(lasted >= terms.offersAfter || lostOne) || lasted % w.offerPeaceEvery !== 0) continue;
+      const credits = terms.credits;
+      const give =
+        credits < 0 && power.treasury >= -credits ? { resource: 'credits' as const, amount: -credits } : undefined;
+      const get = credits > 0 ? { resource: 'credits' as const, amount: credits } : undefined;
+      if (!offerRefusal(state, faction, other, 'peace', give, get))
+        orders.push({ type: 'offer', to: other, treaty: 'peace', ...(give ? { give } : {}), ...(get ? { get } : {}) });
+    }
   if ((state.turn + index) % t.offerEvery === 0) {
     let treasury = power.treasury;
     for (const other of state.powers) {

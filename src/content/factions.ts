@@ -40,6 +40,17 @@ export interface Figure {
   portrait: string;
 }
 
+/** Why a rival declares war (M4_FLEETS.md §28.1): raided by the other, holding it hostile, the other weak and near, or settling in its claim. */
+export type WarReason = 'raided' | 'hostile' | 'weak' | 'claim';
+
+/** A reason as the declarer gives it to the attacked, fiction. */
+export const WAR_REASONS: Record<WarReason, string> = {
+  raided: 'you raided us',
+  hostile: 'you have made yourselves our enemy',
+  weak: 'you are weak, and near',
+  claim: 'you would not stop settling in our claim',
+};
+
 export interface FactionDef {
   id: FactionId;
   /** Whether a new game offers it to lead (D-08): the human powers in M3, the aliens later. */
@@ -66,6 +77,19 @@ export interface FactionDef {
   fleetWord: string;
   /** How weary each turn of war makes its people (M4_FLEETS.md §23.4). */
   weary: number;
+  /**
+   * As a rival at war (M4_FLEETS.md §28.1, §28.4): the reasons it declares war for (none: never);
+   * after how many turns it accepts peace, and offers it; and credits it asks with its peace
+   * (more than 0) or gives (less than 0).
+   */
+  war: {
+    declares: readonly WarReason[];
+    acceptsAfter: number;
+    offersAfter: number;
+    credits: number;
+    /** Whether it offers peace as soon as it has lost a colony (the Authority, §28.4). */
+    peaceOnLoss: boolean;
+  };
   /**
    * How it regards others for their ways (M3_NEIGHBOURS.md §20.1), fiction: an amount, and the
    * reason as the other power reads it ("holds us for outlaws").
@@ -113,6 +137,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Halden Orbital Works', 'Ares Foundry'],
     fleetWord: 'Squadron',
     weary: 1,
+    war: { declares: ['raided', 'hostile'], acceptsAfter: 5, offersAfter: 10, credits: 0, peaceOnLoss: true },
     regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
     // Law: open lanes once warm, its research only with friends.
     asks: {
@@ -153,6 +178,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
     fleetWord: 'Flotilla',
     weary: 2,
+    war: { declares: [], acceptsAfter: 0, offersAfter: 5, credits: 0, peaceOnLoss: false },
     regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
     // Trade and peace once warm; its research a little warmer (20, tuned in M3's proof: at 10 its
     // shared research with the Wake took it past 25 technologies by turn 100 on three seeds).
@@ -194,6 +220,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Wake Salvage'],
     fleetWord: 'Pack',
     weary: 1,
+    war: { declares: ['weak'], acceptsAfter: 5, offersAfter: 10, credits: 50, peaceOnLoss: false },
     regard: { sta: { amount: -10, reason: 'Sees in us the law it runs from' } },
     // Tolls and profit: it sells passage rather than opening its lanes (increment 37), and buys
     // its way into shared research.
@@ -238,6 +265,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['the Long Hands'],
     fleetWord: 'Circle',
     weary: 1,
+    war: { declares: ['claim'], acceptsAfter: 15, offersAfter: 20, credits: 0, peaceOnLoss: false },
     regard: { 'hollow-wake': { amount: -5, reason: 'Takes what is not given' } },
     // Slow to trust (§24.6): a clear border sooner than open lanes, and research only with friends.
     asks: {
@@ -285,6 +313,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['the Slow Hands'],
     fleetWord: 'Drift',
     weary: 2,
+    war: { declares: [], acceptsAfter: 0, offersAfter: 5, credits: -30, peaceOnLoss: false },
     regard: { 'hollow-wake': { amount: -10, reason: 'Sells the lanes that should be open' } },
     // Brokers (§25.6): trade with anyone, open lanes once known, and peace bought from those who sell it.
     asks: {

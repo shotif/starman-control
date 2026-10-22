@@ -9,7 +9,7 @@ import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { ZONE_DEFS } from '../../content/districts.ts';
 import { EDICTS, PRIORITY_DEFS } from '../../content/edicts.ts';
 import { EVENTS } from '../../content/events.ts';
-import { FACTIONS, type FactionId } from '../../content/factions.ts';
+import { FACTIONS, type FactionId, WAR_REASONS } from '../../content/factions.ts';
 import type { ModuleId } from '../../content/modules.ts';
 import { itemName, PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
 import { RULES } from '../../content/rules.ts';
@@ -589,10 +589,25 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
           : `We are at war with the ${power}: we declared it.`;
       if (e.ally && e.ally !== me)
         return `The ${power} declared war on the ${FACTIONS[e.ally].shortName}, our ally: by our alliance we are at war with it too.`;
-      return `The ${power} has declared war on us.`;
+      return e.reason
+        ? `The ${power} has declared war on us: “${WAR_REASONS[e.reason]}”.`
+        : `The ${power} has declared war on us.`;
     }
     case 'peace-made':
       return `We have made peace with the ${FACTIONS[e.faction].shortName}: neither of us may declare war for ${RULES.war.truce} turns.`;
+    // Capitulation and tribute (M4_FLEETS.md §28.5).
+    case 'subdued': {
+      const me = playerPower(game)?.faction;
+      if (e.faction === me)
+        return `We have surrendered to the ${FACTIONS[e.by].shortName}: we pay them tribute and fight their wars.`;
+      if (e.by === me)
+        return `The ${FACTIONS[e.faction].shortName} has surrendered to us: it pays us tribute and fights our wars.`;
+      return `The ${FACTIONS[e.faction].shortName} has surrendered to the ${FACTIONS[e.by].shortName}.`;
+    }
+    case 'tribute':
+      return e.paid
+        ? `We paid the ${FACTIONS[e.faction].shortName} ${e.credits} credits of tribute.`
+        : `The ${FACTIONS[e.faction].shortName} paid us ${e.credits} credits of tribute.`;
     case 'intercepted':
       return `${e.fleet !== undefined ? `The ${fleetName(e.fleet)}` : shipOf(e.ship)} was stopped at ${name(e.system)} by the ${FACTIONS[e.by].shortName}’s warships.`;
     case 'battle': {
@@ -690,6 +705,8 @@ function eventPlace(
     case 'exchange-refused':
     case 'war-declared':
     case 'peace-made':
+    case 'subdued':
+    case 'tribute':
       return { system: playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
@@ -766,6 +783,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   blockaded: { icon: 'refused', tone: 'needs' },
   'capital-moved': { icon: 'colony', tone: 'wrong' },
   raided: { icon: 'refused', tone: 'needs' },
+  subdued: { icon: 'diplomacy', tone: 'needs' },
+  tribute: { icon: 'diplomacy', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

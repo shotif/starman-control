@@ -221,6 +221,8 @@ export const RULES = {
     /** A rival makes peace once a war has lasted so many turns, and offers it every so many turns once it has lasted so many. */
     peaceAfter: 5,
     offerPeaceAfter: 10,
+    /** Weariness at which a rival takes any peace offered (M4_FLEETS.md §28.4). */
+    badly: 30,
     offerPeaceEvery: 5,
     /** Weariness: each turn at peace rests so much; every so much costs a point of approval, at most so many. */
     wearyRest: 2,
@@ -289,6 +291,27 @@ export const RULES = {
   },
   /** A blockaded colony's credits, in percent. */
   blockadeCreditsPercent: 50,
+  /** The rivals at war (M4_FLEETS.md §28). */
+  rivalsWar: {
+    /** It looks for a war every so many turns, with at least so many warships. */
+    every: 5,
+    warships: 3,
+    /** A neighbour's colony within this many tenths of a light-year of one of its own. */
+    nearDeci: 120,
+    /** Raided within so many turns; hostile as the attitude's word; not warm (neutral or worse); claims crossed. */
+    raidedWithin: 10,
+    hostile: -40,
+    notWarm: 9,
+    claims: 2,
+    /** A war of choice (on the weak) not before this turn: the first years are for settling and meeting. */
+    choiceFrom: 80,
+    /** At war: a strike of at least so many warships, at most so many jumps, with troops to spare. */
+    strike: 4,
+    invadeJumps: 6,
+    spareTroops: 2,
+    /** After a peace, so many turns more before it goes back to war with the same power. */
+    rest: 30,
+  },
   /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
   raid: {
     raided: -10,

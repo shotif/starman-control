@@ -1,12 +1,13 @@
-// War and peace on the diplomacy screen (M4_FLEETS.md §23.5, D-64): at peace, what declaring war
-// would cost, said before it is done; at war, since when and our weariness, and peace offered; in a
-// truce, until when.
+// War and peace on the diplomacy screen (M4_FLEETS.md §23.5, §28.6, D-64): at peace, what declaring
+// war would cost, said before it is done; at war, since when, why and our weariness, peace offered
+// (on terms) and surrender; in a truce, until when; who is subdued by whom.
 
-import { FACTIONS, type FactionId } from '../../content/factions.ts';
+import { FACTIONS, type FactionId, WAR_REASONS } from '../../content/factions.ts';
 import { RULES } from '../../content/rules.ts';
 import { TREATIES } from '../../content/treaties.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { contactWith, type GameState, powerOf } from '../../sim/state.ts';
+import { tributeOf } from '../../sim/treaties.ts';
 import {
   atWar,
   declareRefusal,
@@ -19,6 +20,25 @@ import {
 import { give, type Play } from './play.tsx';
 
 const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');
+
+/** What a power would pay a turn, subdued (M4_FLEETS.md §28.5): a fifth of its taxes. */
+function tributeIf(game: GameState, f: FactionId): number {
+  const power = powerOf(game, f);
+  let taxes = 0;
+  for (const h of game.holdings)
+    if (h.owner === f && h.kind === 'colony') taxes += Math.floor(h.people / RULES.credits.taxPer[power.taxes]);
+  return Math.floor(taxes / 5);
+}
+
+/** Who is subdued by whom between the two, in a line, or null. */
+function subduedNote(game: GameState, me: FactionId, other: FactionId): string | null {
+  const name = FACTIONS[other].shortName;
+  if (powerOf(game, me).subduedBy === other)
+    return `We are subdued by the ${name}: we pay them ${tributeOf(game, me)} credits a turn as tribute, and fight their wars.`;
+  if (powerOf(game, other).subduedBy === me)
+    return `The ${name} is subdued by us: it pays us ${tributeOf(game, other)} credits a turn, and fights our wars.`;
+  return null;
+}
 
 /** "the Frontier Co-op and the Drift Moot". */
 function names(fs: readonly FactionId[]): string {
@@ -42,25 +62,57 @@ export function WarAndPeace({
   const me = powerOf(game, faction);
   const weary = wearinessApproval(game, faction);
   const war = warBetween(game, faction, other);
+  const subdued = subduedNote(game, faction, other);
   if (war) {
     const offered = game.offers.find((o) => o.kind === 'peace' && o.from === faction && o.to === other);
     const theirs = game.offers.find(
       (o) => o.kind === 'peace' && o.from === other && o.to === faction && o.turn < game.turn,
     );
+    const yielding = game.offers.find(
+      (o) => o.kind === 'capitulation' && o.from === other && o.to === faction && o.turn < game.turn,
+    );
+    const surrendering = game.offers.some((o) => o.kind === 'capitulation' && o.from === faction && o.to === other);
+    const terms = theirs?.get
+      ? `, for ${theirs.get.amount} credits from us`
+      : theirs?.give
+        ? `, and ${theirs.give.amount} credits with it`
+        : '';
+    const owed = tributeIf(game, faction);
     return (
       <section class="diplomacy-war" aria-label="War and peace">
         <h4>War and peace</h4>
         <p class="war-state">
           <b>At war</b> since {formatDate(war.since)}, declared by{' '}
-          {war.by === faction ? 'us' : `the ${FACTIONS[war.by].shortName}`}.
+          {war.by === faction ? 'us' : `the ${FACTIONS[war.by].shortName}`}
+          {war.reason && war.by !== faction ? `: “${WAR_REASONS[war.reason]}”` : ''}.
         </p>
         <p class="dim">
           Our war weariness is {me.weariness}:{' '}
           {weary === 0 ? 'no cost yet' : `approval ${signed(weary)} at every colony`}.
         </p>
+        {yielding && (
+          <p>
+            They offer their surrender: they would pay us a fifth of their taxes as tribute, fight our wars, and declare
+            none of their own.{' '}
+            <button
+              type="button"
+              class="button button-small"
+              onClick={() => give(play, { type: 'answer-offer', from: other, treaty: 'capitulation', accept: true })}
+            >
+              Accept their surrender
+            </button>{' '}
+            <button
+              type="button"
+              class="button button-quiet button-small"
+              onClick={() => give(play, { type: 'answer-offer', from: other, treaty: 'capitulation', accept: false })}
+            >
+              Refuse
+            </button>
+          </p>
+        )}
         {theirs ? (
           <p>
-            They offer peace.{' '}
+            They offer peace{terms}.{' '}
             <button
               type="button"
               class="button button-small"
@@ -98,6 +150,24 @@ export function WarAndPeace({
             </span>
           </p>
         )}
+        {surrendering ? (
+          <p class="dim">Our surrender reaches them as the turn ends.</p>
+        ) : (
+          <p>
+            <button
+              type="button"
+              class="button button-quiet button-small button-danger"
+              aria-label={`Surrender to the ${name}`}
+              onClick={() => give(play, { type: 'offer', to: other, treaty: 'capitulation' })}
+            >
+              Surrender
+            </button>{' '}
+            <span class="dim">
+              The war ends, but we would be subdued: a fifth of our taxes to them as tribute (about {owed} credits a
+              turn), their wars ours, and no war of our own.
+            </span>
+          </p>
+        )}
       </section>
     );
   }
@@ -112,6 +182,7 @@ export function WarAndPeace({
   return (
     <section class="diplomacy-war" aria-label="War and peace">
       <h4>War and peace</h4>
+      {subdued && <p class="war-state">{subdued}</p>}
       {until !== null ? <p>At peace by treaty: no war before {formatDate(until)}.</p> : <p class="dim">At peace.</p>}
       {refusal === null ? (
         <>

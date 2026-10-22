@@ -4,7 +4,7 @@
 
 import type { AnomalyId } from '../content/anomalies.ts';
 import { EDICTS, type EdictId, isEdictId, isPriority, type Priority } from '../content/edicts.ts';
-import type { FactionId } from '../content/factions.ts';
+import { type FactionId, WAR_REASONS, type WarReason } from '../content/factions.ts';
 import type { ModuleId } from '../content/modules.ts';
 import type { QueueItem } from '../content/projects.ts';
 import type { HullId } from '../content/ships.ts';
@@ -34,6 +34,7 @@ import {
   type Amount,
   type GameState,
   type Mission,
+  type OfferKind,
   powerOf,
   type RetreatPoint,
   type ShipState,
@@ -93,10 +94,10 @@ export type Order =
   /** A gift of credits to another power, sent as the turn ends; 0 takes it back (M3_NEIGHBOURS.md §20.2). */
   | { type: 'gift'; to: FactionId; credits: number }
   /** A treaty or an exchange offered, answered, ended with notice or broken (M3_NEIGHBOURS.md §21, §23). */
-  | { type: 'offer'; to: FactionId; treaty: TreatyKind | 'exchange' | 'peace'; give?: Amount; get?: Amount }
-  | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind | 'exchange' | 'peace'; accept: boolean }
-  /** War declared on a power, at once (M4_FLEETS.md §23.1). */
-  | { type: 'declare-war'; on: FactionId }
+  | { type: 'offer'; to: FactionId; treaty: OfferKind; give?: Amount; get?: Amount }
+  | { type: 'answer-offer'; from: FactionId; treaty: OfferKind; accept: boolean }
+  /** War declared on a power, at once (M4_FLEETS.md §23.1); a rival gives its reason (§28.1). */
+  | { type: 'declare-war'; on: FactionId; reason?: WarReason }
   | { type: 'end-treaty'; with: FactionId; treaty: TreatyKind }
   | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind }
   /** A warship design of the power's own (M4_FLEETS.md §21.3), and one taken off the build lists. */
@@ -260,7 +261,9 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     order.type === 'break-treaty'
   ) {
     const exchange = order.treaty === 'exchange' && (order.type === 'offer' || order.type === 'answer-offer');
-    const peace = order.treaty === 'peace' && (order.type === 'offer' || order.type === 'answer-offer');
+    const peace =
+      (order.treaty === 'peace' || order.treaty === 'capitulation') &&
+      (order.type === 'offer' || order.type === 'answer-offer');
     if (!exchange && !peace && !isTreatyKind(order.treaty)) return 'There is no such treaty.';
     if (order.type === 'offer') return offerRefusal(state, faction, order.to, order.treaty, order.give, order.get);
     if (order.type === 'answer-offer')
@@ -270,7 +273,10 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
       );
     return endRefusal(state, faction, order.with, order.treaty as TreatyKind, order.type === 'break-treaty');
   }
-  if (order.type === 'declare-war') return declareRefusal(state, faction, order.on);
+  if (order.type === 'declare-war') {
+    if (order.reason !== undefined && !(order.reason in WAR_REASONS)) return 'There is no such reason.';
+    return declareRefusal(state, faction, order.on);
+  }
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
   const ship = shipOf(state, faction, order.ship);
   if (typeof ship === 'string') return ship;
@@ -378,7 +384,7 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
     return { ok: true, state: next };
   }
   if (order.type === 'declare-war') {
-    declareWar(next, faction, order.on);
+    declareWar(next, faction, order.on, order.reason);
     return { ok: true, state: next };
   }
   if (order.type === 'edict') {

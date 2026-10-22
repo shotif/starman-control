@@ -6,7 +6,7 @@
 import type { District } from '../content/districts.ts';
 import type { EdictId, Priority } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
-import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId, type WarReason } from '../content/factions.ts';
 import type { ModuleId } from '../content/modules.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 21;
+export const STATE_VERSION = 22;
 
 export interface Stockpile {
   metals: number;
@@ -79,6 +79,10 @@ export interface PowerState {
   fleetsMade: number;
   /** How weary its people are of war (M4_FLEETS.md §23.4): every 5 costs a point of approval. */
   weariness: number;
+  /** The power it has capitulated to, if any (M4_FLEETS.md §28.5): it pays tribute and fights its wars. */
+  subduedBy: FactionId | null;
+  /** The most colonies it has ever held, to tell when it is beaten (§28.5). */
+  mostColonies: number;
 }
 
 /** A war between two powers (M4_FLEETS.md §23.1): `a` before `b` in id order; `by` declared it. */
@@ -89,6 +93,8 @@ export interface War {
   by: FactionId;
   /** The power whose alliance brought this war about, when it was declared on another. */
   via?: FactionId;
+  /** Why a rival declared it (M4_FLEETS.md §28.1); the player gives no reason. */
+  reason?: WarReason;
 }
 
 /** A truce after peace (§23.2): neither may declare war on the other before turn `until`. */
@@ -214,9 +220,15 @@ export interface Amount {
  * A treaty, or an exchange of resources (§23.1), offered: on its way as the turn it was made ends,
  * then waiting for the player's answer.
  */
+/** What may be offered (M3_NEIGHBOURS.md §21.2, M4_FLEETS.md §23.2, §28.5). */
+export type OfferKind = TreatyKind | 'exchange' | 'peace' | 'capitulation';
+
 export interface Offer {
-  /** A treaty, an exchange, or peace to a power at war with the offerer (M4_FLEETS.md §23.2). */
-  kind: TreatyKind | 'exchange' | 'peace';
+  /**
+   * A treaty, an exchange, peace to a power at war with the offerer (M4_FLEETS.md §23.2), or the
+   * offerer's capitulation to it (§28.5).
+   */
+  kind: OfferKind;
   from: FactionId;
   to: FactionId;
   turn: number;
@@ -521,6 +533,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       designs: [],
       fleetsMade: 0,
       weariness: 0,
+      subduedBy: null,
+      mostColonies: 1,
     })),
     lanes,
     ships: [],

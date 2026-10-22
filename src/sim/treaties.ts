@@ -11,7 +11,16 @@ import { hear } from './contact.ts';
 import { attitudeOf, attitudeWord, remember } from './memory.ts';
 import type { ReportEvent } from './report.ts';
 import { rng } from './rng.ts';
-import { type Amount, contactWith, type GameState, type Offer, powerOf, type Treaty, treatyOf } from './state.ts';
+import {
+  type Amount,
+  contactWith,
+  type GameState,
+  type Offer,
+  type OfferKind,
+  powerOf,
+  type Treaty,
+  treatyOf,
+} from './state.ts';
 import type { World } from './world.ts';
 
 /** The two powers of a treaty in id order. */
@@ -82,7 +91,14 @@ export function priceOf(state: GameState, t: Pick<Treaty, 'kind' | 'a' | 'b' | '
  */
 export function wouldAccept(world: World, state: GameState, receiver: FactionId, from: FactionId, kind: TreatyKind) {
   const asks = FACTIONS[receiver].asks[kind];
-  if (asks === null || attitudeOf(world, state, receiver, from).total < asks) return false;
+  if (asks === null) return false;
+  const attitude = attitudeOf(world, state, receiver, from);
+  let total = attitude.total;
+  // Raided, a power buys protection all the same (M4_FLEETS.md §27.2): the seller's raids do not
+  // count against it.
+  if (kind === 'protection' && sellerOf(kind, receiver, from) === from)
+    for (const p of attitude.parts) if (p.kind === 'raided' || p.kind === 'raided-heard') total -= p.amount;
+  if (total < asks) return false;
   if (!isSold(kind)) return true;
   const buyer = sellerOf(kind, receiver, from) === receiver ? from : receiver;
   return powerOf(state, buyer).treasury >= RULES.treaties.afford;
@@ -93,17 +109,24 @@ export function offerRefusal(
   state: GameState,
   from: FactionId,
   to: FactionId,
-  kind: TreatyKind | 'exchange' | 'peace',
+  kind: OfferKind,
   give?: Amount,
   get?: Amount,
 ): string | null {
   if (!state.powers.some((p) => p.faction === to) || to === from) return 'There is no such power.';
   const name = FACTIONS[to]?.shortName ?? 'others';
-  // At war, only peace may be offered; peace only at war (M4_FLEETS.md §23.2).
-  if (kind === 'peace') {
+  // At war, only peace or surrender may be offered; each only at war (M4_FLEETS.md §23.2, §28.5).
+  if (kind === 'peace' || kind === 'capitulation') {
     if (!warring(state, from, to)) return `We are not at war with the ${name}.`;
-    if (state.offers.some((o) => o.kind === 'peace' && o.from === from && o.to === to))
-      return `Our offer of peace to the ${name} is on its way already.`;
+    if (state.offers.some((o) => o.kind === kind && o.from === from && o.to === to))
+      return kind === 'peace'
+        ? `Our offer of peace to the ${name} is on its way already.`
+        : `Our surrender to the ${name} is on its way already.`;
+    // Peace on terms: credits given or asked with it (§28.4).
+    for (const a of [give, get])
+      if (a !== undefined && (a.resource !== 'credits' || !Number.isInteger(a.amount) || a.amount < 1))
+        return 'Peace is made for credits or for nothing.';
+    if (give && holdingOf(state, from, 'credits') < give.amount) return `We do not have ${amountWords(give)}.`;
     return null;
   }
   if (warring(state, from, to)) return `We are at war with the ${name}: offer peace first.`;
@@ -129,8 +152,14 @@ export function amountWords(a: Amount): string {
 }
 
 /** What an offer is of, in a sentence ("the Wake offers us …"). */
-export function offerWords(kind: TreatyKind | 'exchange' | 'peace'): string {
-  return kind === 'exchange' ? 'an exchange' : kind === 'peace' ? 'peace' : TREATIES[kind].words;
+export function offerWords(kind: OfferKind): string {
+  return kind === 'exchange'
+    ? 'an exchange'
+    : kind === 'peace'
+      ? 'peace'
+      : kind === 'capitulation'
+        ? 'surrender'
+        : TREATIES[kind].words;
 }
 
 /** What a power has of a resource or of credits. */
@@ -195,12 +224,7 @@ function exchange(state: GameState, o: Offer): void {
 }
 
 /** Why an offer cannot be answered (§21.2), or null if it can. */
-export function answerRefusal(
-  state: GameState,
-  me: FactionId,
-  from: FactionId,
-  kind: TreatyKind | 'exchange' | 'peace',
-): string | null {
+export function answerRefusal(state: GameState, me: FactionId, from: FactionId, kind: OfferKind): string | null {
   const offer = state.offers.find((o) => o.to === me && o.from === from && o.kind === kind);
   if (!offer || offer.turn >= state.turn) return 'No such offer is waiting for an answer.';
   return null;
@@ -249,30 +273,74 @@ export function makeOffer(
   state: GameState,
   from: FactionId,
   to: FactionId,
-  kind: TreatyKind | 'exchange' | 'peace',
+  kind: OfferKind,
   give?: Amount,
   get?: Amount,
 ): void {
-  state.offers.push({ kind, from, to, turn: state.turn, ...(give && get ? { give, get } : {}) });
+  state.offers.push({ kind, from, to, turn: state.turn, ...(give ? { give } : {}), ...(get ? { get } : {}) });
 }
 
 /**
  * The player's answer to an offer waiting (order `answer-offer`, checked): yes, and the treaty holds
  * from now, or the exchange is made at once.
  */
-export function answerOffer(
-  state: GameState,
-  me: FactionId,
-  from: FactionId,
-  kind: TreatyKind | 'exchange' | 'peace',
-  accept: boolean,
-) {
+export function answerOffer(state: GameState, me: FactionId, from: FactionId, kind: OfferKind, accept: boolean) {
   const offer = state.offers.find((o) => o.to === me && o.from === from && o.kind === kind);
   state.offers = state.offers.filter((o) => o !== offer);
   if (!accept || !offer) return;
   if (kind === 'exchange') exchange(state, offer);
-  else if (kind === 'peace') endWar(state, me, from);
+  else if (kind === 'peace') {
+    payTerms(state, offer);
+    endWar(state, me, from);
+  } else if (kind === 'capitulation') capitulate(state, from, me);
   else begin(state, me, from, kind, state.turn);
+}
+
+/** Peace's terms (§28.4): credits the offerer gives, or asks of the one who accepts. */
+function payTerms(state: GameState, o: Offer): void {
+  const from = powerOf(state, o.from);
+  const to = powerOf(state, o.to);
+  if (o.give) {
+    from.treasury -= o.give.amount;
+    to.treasury += o.give.amount;
+  }
+  if (o.get) {
+    to.treasury -= o.get.amount;
+    from.treasury += o.get.amount;
+  }
+}
+
+/**
+ * Capitulation (M4_FLEETS.md §28.5): the war ends with a truce, and the loser is subdued by its
+ * victor; any power the loser had subdued goes free.
+ */
+export function capitulate(state: GameState, loser: FactionId, victor: FactionId): void {
+  endWar(state, loser, victor);
+  powerOf(state, loser).subduedBy = victor;
+  for (const p of state.powers) if (p.subduedBy === loser) p.subduedBy = null;
+}
+
+/** The tribute a subdued power owes its victor a turn (§28.5): a fifth of its taxes. */
+export function tributeOf(state: GameState, f: FactionId): number {
+  const power = powerOf(state, f);
+  if (!power.subduedBy) return 0;
+  let taxes = 0;
+  for (const h of state.holdings)
+    if (h.owner === f && h.kind === 'colony') taxes += Math.floor(h.people / RULES.credits.taxPer[power.taxes]);
+  return Math.floor(taxes / 5);
+}
+
+/** Tribute paid as the turn ends, from the treasury's credits; both told. */
+export function payTribute(state: GameState, events: Map<FactionId, ReportEvent[]>): void {
+  for (const p of state.powers) {
+    const victor = p.subduedBy;
+    const t = tributeOf(state, p.faction);
+    if (!victor || t <= 0) continue;
+    p.treasury -= t;
+    powerOf(state, victor).treasury += t;
+    events.get(p.faction)?.push({ kind: 'tribute', faction: victor, credits: t, paid: true });
+    events.get(victor)?.push({ kind: 'tribute', faction: p.faction, credits: t, paid: false });
+  }
 }
 
 /** Peace made (M4_FLEETS.md §23.2): the war ends, and a truce follows in which neither may declare war. */
@@ -285,10 +353,15 @@ export function endWar(state: GameState, x: FactionId, y: FactionId): void {
 }
 
 /** Whether a rival would make peace with a power it is at war with (§23.2): once the war has lasted a while. */
-export function wouldMakePeace(state: GameState, receiver: FactionId, from: FactionId): boolean {
+export function wouldMakePeace(state: GameState, receiver: FactionId, from: FactionId, o?: Offer): boolean {
   const [a, b] = pair(receiver, from);
   const war = state.wars.find((w) => w.a === a && w.b === b);
-  return war !== undefined && state.turn - war.since >= RULES.war.peaceAfter;
+  if (war === undefined) return false;
+  // Terms it cannot pay are refused.
+  if (o?.get && powerOf(state, receiver).treasury < o.get.amount) return false;
+  // By its character (M4_FLEETS.md §28.4), or at once when the war goes badly.
+  const after = FACTIONS[receiver].war.acceptsAfter;
+  return state.turn - war.since >= after || powerOf(state, receiver).weariness >= RULES.war.badly;
 }
 
 /**
@@ -417,13 +490,28 @@ export function resolveTreaties(world: World, state: GameState, events: Map<Fact
         keep.push(o);
         say(o.to, { kind: 'offer-received', faction: o.from, treaty: 'peace' });
       } else {
-        const yes = wouldMakePeace(state, o.to, o.from);
+        const yes = wouldMakePeace(state, o.to, o.from, o);
         say(o.from, { kind: 'offer-answered', faction: o.to, treaty: 'peace', accepted: yes });
         if (yes) {
+          payTerms(state, o);
           endWar(state, o.from, o.to);
           say(o.from, { kind: 'peace-made', faction: o.to });
           say(o.to, { kind: 'peace-made', faction: o.from });
         }
+      }
+      continue;
+    }
+    // Surrender (M4_FLEETS.md §28.5): a rival always accepts it.
+    if (o.kind === 'capitulation') {
+      if (!warring(state, o.from, o.to)) continue;
+      if (o.turn < state.turn)
+        say(o.from, { kind: 'offer-answered', faction: o.to, treaty: 'capitulation', accepted: false });
+      else if (receiver.controller === 'player') {
+        keep.push(o);
+        say(o.to, { kind: 'offer-received', faction: o.from, treaty: 'capitulation' });
+      } else {
+        capitulate(state, o.from, o.to);
+        for (const f of [o.from, o.to]) say(f, { kind: 'subdued', faction: o.from, by: o.to });
       }
       continue;
     }

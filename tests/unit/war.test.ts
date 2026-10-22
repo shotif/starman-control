@@ -97,23 +97,28 @@ describe('war (§23.1)', () => {
 });
 
 describe('peace (§23.2)', () => {
-  it('offered and accepted ends the war, with a truce of 10 turns', () => {
+  it('offered and accepted ends the war, with a truce of 10 turns; each rival ready by its character', () => {
     let g = three();
-    g = order(g, { type: 'declare-war', on: 'frontier' });
-    // Too soon: the rival is not yet ready.
-    g = order(g, { type: 'offer', to: 'frontier', treaty: 'peace' });
+    g = order(g, { type: 'declare-war', on: 'hollow-wake' });
+    // Too soon: the Wake is not yet ready (M4_FLEETS.md §28.4).
+    g = order(g, { type: 'offer', to: 'hollow-wake', treaty: 'peace' });
     g = turn(g);
-    expect(atWar(g, 'sta', 'frontier')).toBe(true);
-    for (let i = 0; i < RULES.war.peaceAfter; i++) g = turn(g);
+    expect(atWar(g, 'sta', 'hollow-wake')).toBe(true);
+    while (g.turn - (g.wars.find((w) => w.a === 'hollow-wake')?.since ?? g.turn) < 5) g = turn(g);
+    g = order(g, { type: 'offer', to: 'hollow-wake', treaty: 'peace' });
+    g = turn(g);
+    expect(atWar(g, 'sta', 'hollow-wake')).toBe(false);
+    expect(g.reports.find((r) => r.faction === 'sta')?.events).toContainEqual({
+      kind: 'peace-made',
+      faction: 'hollow-wake',
+    });
+    expect(truceUntil(g, 'sta', 'hollow-wake')).toBeGreaterThan(g.turn);
+    expect(refused(g, { type: 'declare-war', on: 'hollow-wake' })).toMatch(/We made peace with the Hollow Wake/);
+    // The Cooperative takes peace at once.
+    g = order(g, { type: 'declare-war', on: 'frontier' });
     g = order(g, { type: 'offer', to: 'frontier', treaty: 'peace' });
     g = turn(g);
     expect(atWar(g, 'sta', 'frontier')).toBe(false);
-    expect(g.reports.find((r) => r.faction === 'sta')?.events).toContainEqual({
-      kind: 'peace-made',
-      faction: 'frontier',
-    });
-    expect(truceUntil(g, 'sta', 'frontier')).toBeGreaterThan(g.turn);
-    expect(refused(g, { type: 'declare-war', on: 'frontier' })).toMatch(/We made peace with the Frontier Co-op/);
   });
 
   it('a rival offers peace once the war has lasted ten turns', () => {

@@ -31,7 +31,7 @@ import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile, treatyOf } from './state.ts';
-import { soldParts } from './treaties.ts';
+import { soldParts, tributeOf } from './treaties.ts';
 import { wearinessApproval } from './war.ts';
 import type { World } from './world.ts';
 
@@ -731,6 +731,15 @@ export function treasuryOf(world: World, state: GameState, faction: FactionId): 
     parts.push({ label: `trade with the ${FACTIONS[t.faction].shortName}`, value: t.credits });
   // Passage and protection, paid or sold (§23).
   parts.push(...soldParts(state, faction));
+  // Tribute, paid by a subdued power or to its victor (M4_FLEETS.md §28.5).
+  const paid = tributeOf(state, faction);
+  const victor = powerOf(state, faction).subduedBy;
+  if (paid > 0 && victor) parts.push({ label: `tribute to the ${FACTIONS[victor].shortName}`, value: -paid });
+  for (const p of state.powers)
+    if (p.subduedBy === faction) {
+      const t = tributeOf(state, p.faction);
+      if (t > 0) parts.push({ label: `tribute from the ${FACTIONS[p.faction].shortName}`, value: t });
+    }
   const upkeep = upkeepOf(state, faction).total;
   if (upkeep > 0) parts.push({ label: 'upkeep', value: -upkeep });
   if (overdrive > 0) parts.push({ label: 'overdrive', value: -overdrive });

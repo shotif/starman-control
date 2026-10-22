@@ -438,6 +438,9 @@ export function DiplomacyView({
                       {regard.word} ({signed(regard.total)})
                     </span>
                     {atWar(game, faction, f) && <b class="at-war">at war</b>}
+                    {powerOf(game, f).subduedBy && (
+                      <b class="at-war">subdued by the {FACTIONS[powerOf(game, f).subduedBy as FactionId].shortName}</b>
+                    )}
                   </button>
                   {!table && pick === f && detail(f)}
                 </li>

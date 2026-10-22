@@ -97,8 +97,22 @@ describe('state checks', () => {
     expect(stateProblems(world, { ...g, lanes: [{ id: 'barnard~sol', owner: 'frontier', status: 'open' }] })).toEqual([
       'lane barnard~sol belongs to frontier, who is not in play',
     ]);
+    // A station lost in a war leaves its lanes standing (M4_FLEETS.md §26); more than any system could hold is wrong.
     const crowded = { ...g, holdings: g.holdings.map((h) => ({ ...h, projects: [] })) };
-    expect(stateProblems(world, crowded)).toEqual(['sol anchors 4 lanes but has 3 beacon slots']);
+    expect(stateProblems(world, crowded)).toEqual([]);
+    const ids = ['alpha-centauri', 'barnards-star', 'wolf-359', 'luhman-16', 'sirius', 'tau-ceti', 'epsilon-eridani'];
+    const packed = {
+      ...crowded,
+      lanes: [
+        ...crowded.lanes,
+        ...ids.map((x) => ({
+          id: x < 'sol' ? `${x}~sol` : `sol~${x}`,
+          owner: 'sta' as const,
+          status: 'open' as const,
+        })),
+      ].sort((a, b) => (a.id < b.id ? -1 : 1)),
+    };
+    expect(stateProblems(world, packed).join('; ')).toMatch(/sol anchors \d+ lanes, more than it could ever hold/);
     expect(shapeProblems({ ...g, turn: 1.5 })).toEqual(['turn is not a whole number from 1']);
     expect(shapeProblems({ ...g, seed: 0 })).toHaveLength(1);
     expect(shapeProblems('a game')).toEqual(['the game is not a record']);

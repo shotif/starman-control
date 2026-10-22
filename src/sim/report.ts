@@ -5,7 +5,7 @@ import type { AnomalyId } from '../content/anomalies.ts';
 import type { Zone } from '../content/districts.ts';
 import type { EdictId } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
-import type { FactionId } from '../content/factions.ts';
+import type { FactionId, WarReason } from '../content/factions.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
 import type { HullId, ShipType } from '../content/ships.ts';
 import type { TechId } from '../content/techs.ts';
@@ -100,8 +100,8 @@ export type ReportEvent =
   | { kind: 'gift-sent'; faction: FactionId; credits: number }
   | { kind: 'gift-received'; faction: FactionId; credits: number }
   /** Treaties (M3_NEIGHBOURS.md §21): an offer waiting for this power's answer, or its own answered or misread. */
-  | { kind: 'offer-received'; faction: FactionId; treaty: TreatyKind | 'peace' }
-  | { kind: 'offer-answered'; faction: FactionId; treaty: TreatyKind | 'peace'; accepted: boolean }
+  | { kind: 'offer-received'; faction: FactionId; treaty: TreatyKind | 'peace' | 'capitulation' }
+  | { kind: 'offer-answered'; faction: FactionId; treaty: TreatyKind | 'peace' | 'capitulation'; accepted: boolean }
   | { kind: 'offer-misread'; faction: FactionId; treaty: TreatyKind; ours: boolean }
   /** A treaty agreed with `faction`; notice given by `by`, ending on turn `ends`; ended, or broken by `by`. */
   | { kind: 'treaty-begun'; faction: FactionId; treaty: TreatyKind }
@@ -152,7 +152,7 @@ export type ReportEvent =
    * War (M4_FLEETS.md §23.1): declared between this power and `faction` by `by`; `ally` is the power
    * whose alliance brought this war about. Peace made with `faction` (§23.2).
    */
-  | { kind: 'war-declared'; faction: FactionId; by: FactionId; ally?: FactionId }
+  | { kind: 'war-declared'; faction: FactionId; by: FactionId; ally?: FactionId; reason?: WarReason }
   | { kind: 'peace-made'; faction: FactionId }
   /** A ship or fleet stopped where a power at war with it has warships (§23.4). */
   | { kind: 'intercepted'; ship?: number; fleet?: number; system: SystemId; by: FactionId }
@@ -202,6 +202,10 @@ export type ReportEvent =
       volatiles: number;
       fuel: number;
     }
+  /** A power capitulated to another (M4_FLEETS.md §28.5): `faction` is subdued by `by`. */
+  | { kind: 'subdued'; faction: FactionId; by: FactionId }
+  /** Tribute paid by a subdued power to its victor this turn. */
+  | { kind: 'tribute'; faction: FactionId; credits: number; paid: boolean }
   /** A power's capital moved to another colony, its old one taken. */
   | { kind: 'capital-moved'; faction: FactionId; holding: number; system: SystemId };
 

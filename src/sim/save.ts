@@ -272,6 +272,17 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const holdings = (g.holdings as Raw[]).map((h) => ({ ...h, taken: 0 }));
     return { ...g, version: 21, fleets, holdings };
   },
+  /** 21 → 22 (M4 increment 48): rivals at war. No power is subdued; the most colonies it held are those it holds. */
+  21: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.holdings)) throw new SaveError(DAMAGED);
+    const holdings = g.holdings as Raw[];
+    const powers = (g.powers as Raw[]).map((p) => ({
+      ...p,
+      subduedBy: null,
+      mostColonies: Math.max(1, holdings.filter((h) => h.owner === p.faction && h.kind === 'colony').length),
+    }));
+    return { ...g, version: 22, powers };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
