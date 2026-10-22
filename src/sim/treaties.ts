@@ -1,15 +1,17 @@
-// Treaties (M3_NEIGHBOURS.md §21, D-53): offered by one power to another, answered, held, ended with
-// notice or broken, through the same orders for the player and the rivals. A rival answers by its
-// attitude and its character; the player answers in the next turn.
+// Treaties (M3_NEIGHBOURS.md §21, §23, D-53, D-56): offered by one power to another, answered, held,
+// ended with notice or broken, through the same orders for the player and the rivals. A rival
+// answers by its attitude and its character; the player answers in the next turn. Passage and
+// protection are sold by a power whose character sells them, and paid for every turn; resources
+// are exchanged once, by the same offers.
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
-import { TREATIES, type TreatyKind } from '../content/treaties.ts';
+import { SOLD, TREATIES, type TreatyKind } from '../content/treaties.ts';
 import { hear } from './contact.ts';
-import { attitudeOf, remember } from './memory.ts';
+import { attitudeOf, attitudeWord, remember } from './memory.ts';
 import type { ReportEvent } from './report.ts';
 import { rng } from './rng.ts';
-import { contactWith, type GameState, type Offer, powerOf, type Treaty, treatyOf } from './state.ts';
+import { type Amount, contactWith, type GameState, type Offer, powerOf, type Treaty, treatyOf } from './state.ts';
 import type { World } from './world.ts';
 
 /** The two powers of a treaty in id order. */
@@ -30,26 +32,67 @@ export function treatiesOf(state: GameState, f: FactionId): Treaty[] {
   return state.treaties.filter((t) => t.a === f || t.b === f);
 }
 
-/** The powers whose open lanes a power's ships may use (§21.1). */
+/** The powers whose open lanes a power's ships may use (§21.1): its open lanes partners, and those it buys passage from (§23.2). */
 export function passageWith(state: GameState, f: FactionId): FactionId[] {
   return treatiesOf(state, f)
-    .filter((t) => t.kind === 'open-lanes')
+    .filter((t) => t.kind === 'open-lanes' || (t.kind === 'passage' && t.payer === f))
     .map((t) => partnerOf(t, f));
 }
 
-/** Whether a power would accept a treaty from another now: its attitude reaches what its character asks (§21.4). */
-export function wouldAccept(world: World, state: GameState, receiver: FactionId, from: FactionId, kind: TreatyKind) {
-  const asks = FACTIONS[receiver].asks[kind];
-  return asks !== null && attitudeOf(world, state, receiver, from).total >= asks;
+/** Whether a treaty is sold (§23): passage and protection. */
+export function isSold(kind: TreatyKind): boolean {
+  return SOLD.includes(kind);
 }
 
-/** Why an offer cannot be made (§21.2), or null if it can. */
-export function offerRefusal(state: GameState, from: FactionId, to: FactionId, kind: TreatyKind): string | null {
+/** The power that sells a sold treaty between two, if one of them does. */
+export function sellerOf(kind: TreatyKind, x: FactionId, y: FactionId): FactionId | null {
+  const sells = (f: FactionId) => FACTIONS[f].sells.includes(kind);
+  if (sells(x) && !sells(y)) return x;
+  if (sells(y) && !sells(x)) return y;
+  return null;
+}
+
+/** Passage's toll a turn (§23.2): 1 for each of the seller's open lanes, from 2 to 8. */
+export function tollOf(state: GameState, seller: FactionId): number {
+  const t = RULES.treaties;
+  const lanes = state.lanes.filter((l) => l.owner === seller && l.status === 'open').length;
+  return Math.min(t.tollMost, Math.max(t.tollLeast, lanes * t.tollPerLane));
+}
+
+/** What a sold treaty costs its buyer a turn. */
+export function priceOf(state: GameState, t: Pick<Treaty, 'kind' | 'a' | 'b' | 'payer'>): number {
+  if (!t.payer) return 0;
+  return t.kind === 'passage' ? tollOf(state, t.payer === t.a ? t.b : t.a) : RULES.treaties.protection;
+}
+
+/**
+ * Whether a power would accept a treaty from another now (§21.4, §23.6): its attitude reaches what
+ * its character asks; a buyer must have a few turns' price in hand.
+ */
+export function wouldAccept(world: World, state: GameState, receiver: FactionId, from: FactionId, kind: TreatyKind) {
+  const asks = FACTIONS[receiver].asks[kind];
+  if (asks === null || attitudeOf(world, state, receiver, from).total < asks) return false;
+  if (!isSold(kind)) return true;
+  const buyer = sellerOf(kind, receiver, from) === receiver ? from : receiver;
+  return powerOf(state, buyer).treasury >= RULES.treaties.afford;
+}
+
+/** Why an offer cannot be made (§21.2, §23), or null if it can. */
+export function offerRefusal(
+  state: GameState,
+  from: FactionId,
+  to: FactionId,
+  kind: TreatyKind | 'exchange',
+  give?: Amount,
+  get?: Amount,
+): string | null {
   if (!state.powers.some((p) => p.faction === to) || to === from) return 'There is no such power.';
+  if (kind === 'exchange') return exchangeRefusal(state, from, to, give, get);
   if (!(kind in TREATIES)) return 'There is no such treaty.';
   const name = FACTIONS[to].shortName;
   const treaty = TREATIES[kind].words;
   if (!contactWith(powerOf(state, from), to)) return `We have not heard the ${name}.`;
+  if (isSold(kind) && !sellerOf(kind, from, to)) return `Neither of us sells ${treaty}.`;
   if (treatyBetween(state, from, to, kind)) return `We have ${treaty} with the ${name} already.`;
   if (
     state.offers.some((o) => o.kind === kind && ((o.from === from && o.to === to) || (o.from === to && o.to === from)))
@@ -58,10 +101,99 @@ export function offerRefusal(state: GameState, from: FactionId, to: FactionId, k
   return null;
 }
 
+/** What can be exchanged (§23.1). */
+export const RESOURCES: readonly Amount['resource'][] = ['credits', 'metals', 'volatiles', 'fuel'];
+
+/** An amount in words: "40 credits", "20 fusion fuel". */
+export function amountWords(a: Amount): string {
+  return `${a.amount} ${a.resource === 'fuel' ? 'fusion fuel' : a.resource}`;
+}
+
+/** What an offer is of, in a sentence ("the Wake offers us …"). */
+export function offerWords(kind: TreatyKind | 'exchange'): string {
+  return kind === 'exchange' ? 'an exchange' : TREATIES[kind].words;
+}
+
+/** What a power has of a resource or of credits. */
+export function holdingOf(state: GameState, f: FactionId, resource: Amount['resource']): number {
+  const p = powerOf(state, f);
+  return resource === 'credits' ? p.treasury : p.stockpile[resource];
+}
+
+/** Why an exchange cannot be offered (§23.1): at talk, two different things in steps of 10 up to 100, which the offerer has. */
+function exchangeRefusal(state: GameState, from: FactionId, to: FactionId, give?: Amount, get?: Amount): string | null {
+  const x = RULES.exchanges;
+  const name = FACTIONS[to].shortName;
+  if (contactWith(powerOf(state, from), to)?.stage !== 'talk') return `We cannot talk with the ${name} yet.`;
+  const ok = (a?: Amount) =>
+    a !== undefined && RESOURCES.includes(a.resource) && a.amount > 0 && a.amount <= x.most && a.amount % x.step === 0;
+  if (!give || !get || !ok(give) || !ok(get))
+    return `An exchange is ${x.step} to ${x.most} of one thing for ${x.step} to ${x.most} of another, in steps of ${x.step}.`;
+  if (give.resource === get.resource) return 'An exchange is of two different things.';
+  if (holdingOf(state, from, give.resource) < give.amount) return `We do not have ${amountWords(give)}.`;
+  if (state.offers.some((o) => o.kind === 'exchange' && o.from === from && o.to === to))
+    return `An exchange with the ${name} is waiting already.`;
+  return null;
+}
+
+/** What a power thinks an amount worth (§23.1): 1 a credit, 2 a unit, twice that for what it is short of. */
+export function worth(state: GameState, f: FactionId, a: Amount): number {
+  const x = RULES.exchanges;
+  const each = a.resource === 'credits' ? x.credit : x.unit;
+  return a.amount * each * (holdingOf(state, f, a.resource) < x.short ? 2 : 1);
+}
+
+/** Whether a power would accept an exchange offered to it (§23.1): what it gets against what it gives, by its regard. */
+export function wouldExchange(world: World, state: GameState, receiver: FactionId, o: Offer): boolean {
+  if (!o.give || !o.get) return false;
+  const ask = RULES.exchanges.asks[attitudeWord(attitudeOf(world, state, receiver, o.from).total)];
+  if (ask === undefined) return false;
+  return worth(state, receiver, o.give) * 100 >= worth(state, receiver, o.get) * ask;
+}
+
+/** Whether both sides of an exchange still have what they would give. */
+function bothHave(state: GameState, o: Offer): boolean {
+  const { give, get } = o as Required<Offer>;
+  return holdingOf(state, o.from, give.resource) >= give.amount && holdingOf(state, o.to, get.resource) >= get.amount;
+}
+
+/** An exchange accepted: both amounts change hands at once. */
+function exchange(state: GameState, o: Offer): void {
+  const { give, get } = o as Required<Offer>;
+  const move = (from: FactionId, to: FactionId, a: Amount) => {
+    const p = powerOf(state, from);
+    const q = powerOf(state, to);
+    if (a.resource === 'credits') {
+      p.treasury -= a.amount;
+      q.treasury += a.amount;
+    } else {
+      p.stockpile[a.resource] -= a.amount;
+      q.stockpile[a.resource] += a.amount;
+    }
+  };
+  move(o.from, o.to, give);
+  move(o.to, o.from, get);
+}
+
 /** Why an offer cannot be answered (§21.2), or null if it can. */
-export function answerRefusal(state: GameState, me: FactionId, from: FactionId, kind: TreatyKind): string | null {
+export function answerRefusal(
+  state: GameState,
+  me: FactionId,
+  from: FactionId,
+  kind: TreatyKind | 'exchange',
+): string | null {
   const offer = state.offers.find((o) => o.to === me && o.from === from && o.kind === kind);
   if (!offer || offer.turn >= state.turn) return 'No such offer is waiting for an answer.';
+  return null;
+}
+
+/** Why an exchange offered cannot be accepted now (§23.1): one side no longer has what it would give. */
+export function exchangeShort(state: GameState, me: FactionId, from: FactionId): string | null {
+  const o = state.offers.find((x) => x.to === me && x.from === from && x.kind === 'exchange');
+  if (!o?.give || !o.get) return null;
+  if (holdingOf(state, me, o.get.resource) < o.get.amount) return `We do not have ${amountWords(o.get)}.`;
+  if (holdingOf(state, from, o.give.resource) < o.give.amount)
+    return `The ${FACTIONS[from].shortName} no longer has ${amountWords(o.give)}.`;
   return null;
 }
 
@@ -75,23 +207,92 @@ export function endRefusal(state: GameState, me: FactionId, other: FactionId, ki
   return null;
 }
 
-/** Makes a treaty from now. */
+/** Makes a treaty from now; a sold one with its buyer, who pays. */
 function begin(state: GameState, x: FactionId, y: FactionId, kind: TreatyKind, since: number): void {
   const [a, b] = pair(x, y);
-  state.treaties.push({ kind, a, b, since, ends: null, endedBy: null, broken: false });
+  const seller = isSold(kind) ? sellerOf(kind, x, y) : null;
+  state.treaties.push({
+    kind,
+    a,
+    b,
+    since,
+    ends: null,
+    endedBy: null,
+    broken: false,
+    ...(seller ? { payer: seller === a ? b : a } : {}),
+  });
   const key = (t: Treaty) => `${t.a}~${t.b}~${t.kind}`;
   state.treaties.sort((p, q) => (key(p) < key(q) ? -1 : 1));
 }
 
 /** An offer on its way (order `offer`, checked). */
-export function makeOffer(state: GameState, from: FactionId, to: FactionId, kind: TreatyKind): void {
-  state.offers.push({ kind, from, to, turn: state.turn });
+export function makeOffer(
+  state: GameState,
+  from: FactionId,
+  to: FactionId,
+  kind: TreatyKind | 'exchange',
+  give?: Amount,
+  get?: Amount,
+): void {
+  state.offers.push({ kind, from, to, turn: state.turn, ...(give && get ? { give, get } : {}) });
 }
 
-/** The player's answer to an offer waiting (order `answer-offer`, checked): yes, and the treaty holds from now. */
-export function answerOffer(state: GameState, me: FactionId, from: FactionId, kind: TreatyKind, accept: boolean) {
-  state.offers = state.offers.filter((o) => !(o.to === me && o.from === from && o.kind === kind));
-  if (accept) begin(state, me, from, kind, state.turn);
+/**
+ * The player's answer to an offer waiting (order `answer-offer`, checked): yes, and the treaty holds
+ * from now, or the exchange is made at once.
+ */
+export function answerOffer(
+  state: GameState,
+  me: FactionId,
+  from: FactionId,
+  kind: TreatyKind | 'exchange',
+  accept: boolean,
+) {
+  const offer = state.offers.find((o) => o.to === me && o.from === from && o.kind === kind);
+  state.offers = state.offers.filter((o) => o !== offer);
+  if (!accept || !offer) return;
+  if (kind === 'exchange') exchange(state, offer);
+  else begin(state, me, from, kind, state.turn);
+}
+
+/**
+ * Passage and protection paid for (§23.2, §23.4), with the turn's credits: the buyer pays the
+ * seller; one that cannot pay loses it now, with no memory of it on either side.
+ */
+export function payForSold(state: GameState, events: Map<FactionId, ReportEvent[]>): void {
+  const lapsed = new Set<Treaty>();
+  for (const t of state.treaties) {
+    if (!t.payer || t.since >= state.turn) continue;
+    const price = priceOf(state, t);
+    const payer = powerOf(state, t.payer);
+    const seller = partnerOf(t, t.payer);
+    if (payer.treasury < price) {
+      lapsed.add(t);
+      events.get(t.payer)?.push({ kind: 'treaty-lapsed', faction: seller, treaty: t.kind, ours: true });
+      events.get(seller)?.push({ kind: 'treaty-lapsed', faction: t.payer, treaty: t.kind, ours: false });
+      continue;
+    }
+    payer.treasury -= price;
+    powerOf(state, seller).treasury += price;
+  }
+  state.treaties = state.treaties.filter((t) => !lapsed.has(t));
+}
+
+/** What sold treaties cost and bring a power a turn, for its treasury's lines. */
+export function soldParts(state: GameState, f: FactionId): { label: string; value: number }[] {
+  const out: { label: string; value: number }[] = [];
+  for (const t of treatiesOf(state, f)) {
+    if (!t.payer || t.since >= state.turn) continue;
+    const other = FACTIONS[partnerOf(t, f)].shortName;
+    const price = priceOf(state, t);
+    const what = t.kind === 'passage' ? 'toll' : 'protection';
+    out.push(
+      t.payer === f
+        ? { label: `${what} paid to the ${other}`, value: -price }
+        : { label: `${what} from the ${other}`, value: price },
+    );
+  }
+  return out;
 }
 
 /**
@@ -136,6 +337,7 @@ export function misread(state: GameState, o: Offer): boolean {
  */
 export function resolveTreaties(world: World, state: GameState, events: Map<FactionId, ReportEvent[]>): void {
   const say = (f: FactionId, e: ReportEvent) => events.get(f)?.push(e);
+  const otherOf = (o: Offer, f: FactionId) => (o.from === f ? o.to : o.from);
   // Treaties the player agreed this turn, answering an offer.
   for (const t of state.treaties)
     if (t.since === state.turn)
@@ -163,6 +365,21 @@ export function resolveTreaties(world: World, state: GameState, events: Map<Fact
   const keep: Offer[] = [];
   for (const o of state.offers) {
     const receiver = powerOf(state, o.to);
+    if (o.kind === 'exchange') {
+      if (o.turn < state.turn) say(o.from, { kind: 'exchange-refused', faction: o.to });
+      else if (receiver.controller === 'player') {
+        keep.push(o);
+        say(o.to, { kind: 'exchange-received', faction: o.from, give: o.give as Amount, get: o.get as Amount });
+      } else if (!wouldExchange(world, state, o.to, o)) say(o.from, { kind: 'exchange-refused', faction: o.to });
+      else if (!bothHave(state, o))
+        for (const f of [o.from, o.to]) say(f, { kind: 'exchange-failed', faction: otherOf(o, f) });
+      else {
+        exchange(state, o);
+        say(o.from, { kind: 'exchange-made', faction: o.to, gave: o.give as Amount, got: o.get as Amount });
+        say(o.to, { kind: 'exchange-made', faction: o.from, gave: o.get as Amount, got: o.give as Amount });
+      }
+      continue;
+    }
     if (o.turn < state.turn) {
       say(o.from, { kind: 'offer-answered', faction: o.to, treaty: o.kind, accepted: false });
       continue;

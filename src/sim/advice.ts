@@ -27,6 +27,7 @@ import { eventWords } from './events.ts';
 import type { Need } from './needs.ts';
 import type { ReportEvent } from './report.ts';
 import { type GameState, powerOf } from './state.ts';
+import { offerWords } from './treaties.ts';
 import { laneEnds, type World } from './world.ts';
 
 export interface AdviceLine {
@@ -104,10 +105,7 @@ export function adviceFor(
       else say('treasury', 1, 'debt-coming', { when: when(n.turns) });
     } else if (n.kind === 'no-research') say('science', 2, 'no-research', {});
     else if (n.kind === 'offer')
-      say('envoy', 1, 'offer-waiting', {
-        power: FACTIONS[n.from].shortName,
-        treaty: TREATIES[n.treaty].words,
-      });
+      say('envoy', 1, 'offer-waiting', { power: FACTIONS[n.from].shortName, treaty: offerWords(n.treaty) });
     else if (n.kind === 'event') {
       const ev = powerOf(state, faction).event;
       if (!ev) continue;

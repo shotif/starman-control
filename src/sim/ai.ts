@@ -15,12 +15,12 @@ import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf
 import { rivalChoice } from './events.ts';
 import { habitability } from './habitability.ts';
 import { laneTargets } from './lanes.ts';
-import { attitudeOf } from './memory.ts';
+import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { contactWith, type GameState, type Holding, powerOf, type TaxRate } from './state.ts';
-import { offerRefusal, partnerOf, treatiesOf } from './treaties.ts';
+import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
 import type { World } from './world.ts';
 
 /** A rival's character (§26.2): what its governors run for, where it settles, what it researches, how it taxes. */
@@ -306,7 +306,11 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   return orders;
 }
 
-/** A rival's offers, gifts and notices this turn (M3_NEIGHBOURS.md §21.4). */
+/**
+ * A rival's offers, gifts and notices this turn (M3_NEIGHBOURS.md §21.4, §23): a treaty to each
+ * power it can talk with when both would have it (passage and protection only where one sells
+ * them and the buyer can pay), a gift where that would nearly do, and an exchange when it runs short.
+ */
 export function dealings(world: World, state: GameState, faction: FactionId): Order[] {
   const t = RULES.treaties;
   const power = powerOf(state, faction);
@@ -316,18 +320,21 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
     let treasury = power.treasury;
     for (const other of state.powers) {
       if (other.faction === faction || contactWith(power, other.faction)?.stage !== 'talk') continue;
-      const mine = attitudeOf(world, state, faction, other.faction).total;
       const theirs = attitudeOf(world, state, other.faction, faction).total;
       const lastGift = other.memories.some(
         (m) => m.faction === faction && m.kind === 'gift' && m.turn > state.turn - t.giftEvery,
       );
       let gave = false;
       for (const kind of TREATY_KINDS) {
-        const want = FACTIONS[faction].asks[kind];
         const asks = FACTIONS[other.faction].asks[kind];
-        if (want === null || asks === null || mine < want || offerRefusal(state, faction, other.faction, kind))
+        if (
+          asks === null ||
+          !wouldAccept(world, state, faction, other.faction, kind) ||
+          offerRefusal(state, faction, other.faction, kind)
+        )
           continue;
-        if (theirs >= asks) orders.push({ type: 'offer', to: other.faction, treaty: kind });
+        if (wouldAccept(world, state, other.faction, faction, kind))
+          orders.push({ type: 'offer', to: other.faction, treaty: kind });
         else if (!gave && !lastGift && theirs >= asks - t.giftWithin && treasury > t.giftAbove) {
           orders.push({ type: 'gift', to: other.faction, credits: t.gift });
           treasury -= t.gift;
@@ -335,12 +342,40 @@ export function dealings(world: World, state: GameState, faction: FactionId): Or
         }
       }
     }
+    const trade = exchangeWanted(world, state, faction);
+    if (trade) orders.push(trade);
   }
+  // Notice when its regard falls below nothing, or ten below what it asked of a treaty it was glad
+  // of at less; and on what it pays for, when its treasury runs low and falls.
+  const short = power.treasury < t.keep && treasuryOf(world, state, faction).total < 0;
   for (const treaty of treatiesOf(state, faction)) {
     if (treaty.ends !== null) continue;
     const other = partnerOf(treaty, faction);
-    if (attitudeOf(world, state, faction, other).total < 0)
+    const asks = FACTIONS[faction].asks[treaty.kind] ?? 0;
+    if (attitudeOf(world, state, faction, other).total < Math.min(0, asks - 10) || (treaty.payer === faction && short))
       orders.push({ type: 'end-treaty', with: other, treaty: treaty.kind });
   }
   return orders;
+}
+
+/**
+ * A rival short of a resource, with credits to spare, offers credits for it (§23.1): to the power
+ * it can talk with that regards it best, at least neutrally.
+ */
+function exchangeWanted(world: World, state: GameState, faction: FactionId): Order | null {
+  const x = RULES.exchanges;
+  const power = powerOf(state, faction);
+  if (power.treasury <= x.offerAbove) return null;
+  const short = (['metals', 'volatiles', 'fuel'] as const).find((r) => power.stockpile[r] < x.short);
+  if (!short) return null;
+  const give = { resource: 'credits', amount: x.offerCredits } as const;
+  const get = { resource: short, amount: x.offerAmount };
+  let best: { to: FactionId; regard: number } | null = null;
+  for (const other of state.powers) {
+    if (other.faction === faction || offerRefusal(state, faction, other.faction, 'exchange', give, get)) continue;
+    const regard = attitudeOf(world, state, other.faction, faction).total;
+    if (x.asks[attitudeWord(regard)] === undefined || attitudeWord(regard) === 'cold') continue;
+    if (!best || regard > best.regard) best = { to: other.faction, regard };
+  }
+  return best ? { type: 'offer', to: best.to, treaty: 'exchange', give, get } : null;
 }

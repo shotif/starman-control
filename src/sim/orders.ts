@@ -16,8 +16,16 @@ import { formatLy } from './geometry.ts';
 import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
-import { type GameState, powerOf, type ShipState, type TaxRate } from './state.ts';
-import { answerOffer, answerRefusal, endRefusal, endTreaty, makeOffer, offerRefusal } from './treaties.ts';
+import { type Amount, type GameState, powerOf, type ShipState, type TaxRate } from './state.ts';
+import {
+  answerOffer,
+  answerRefusal,
+  endRefusal,
+  endTreaty,
+  exchangeShort,
+  makeOffer,
+  offerRefusal,
+} from './treaties.ts';
 import type { World } from './world.ts';
 
 export type Order =
@@ -59,9 +67,9 @@ export type Order =
   | { type: 'answer'; choice: 0 | 1 }
   /** A gift of credits to another power, sent as the turn ends; 0 takes it back (M3_NEIGHBOURS.md §20.2). */
   | { type: 'gift'; to: FactionId; credits: number }
-  /** A treaty offered, answered, ended with notice or broken (M3_NEIGHBOURS.md §21). */
-  | { type: 'offer'; to: FactionId; treaty: TreatyKind }
-  | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind; accept: boolean }
+  /** A treaty or an exchange offered, answered, ended with notice or broken (M3_NEIGHBOURS.md §21, §23). */
+  | { type: 'offer'; to: FactionId; treaty: TreatyKind | 'exchange'; give?: Amount; get?: Amount }
+  | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind | 'exchange'; accept: boolean }
   | { type: 'end-treaty'; with: FactionId; treaty: TreatyKind }
   | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind };
 
@@ -148,9 +156,14 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
     order.type === 'end-treaty' ||
     order.type === 'break-treaty'
   ) {
-    if (!isTreatyKind(order.treaty)) return 'There is no such treaty.';
-    if (order.type === 'offer') return offerRefusal(state, faction, order.to, order.treaty);
-    if (order.type === 'answer-offer') return answerRefusal(state, faction, order.from, order.treaty);
+    const exchange = order.treaty === 'exchange' && (order.type === 'offer' || order.type === 'answer-offer');
+    if (!exchange && !isTreatyKind(order.treaty)) return 'There is no such treaty.';
+    if (order.type === 'offer') return offerRefusal(state, faction, order.to, order.treaty, order.give, order.get);
+    if (order.type === 'answer-offer')
+      return (
+        answerRefusal(state, faction, order.from, order.treaty) ??
+        (exchange && order.accept ? exchangeShort(state, faction, order.from) : null)
+      );
     return endRefusal(state, faction, order.with, order.treaty, order.type === 'break-treaty');
   }
   if (!('ship' in order)) return holdingRefusal(world, state, faction, order);
@@ -223,7 +236,7 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
     return { ok: true, state: next };
   }
   if (order.type === 'offer') {
-    makeOffer(next, faction, order.to, order.treaty);
+    makeOffer(next, faction, order.to, order.treaty, order.give, order.get);
     return { ok: true, state: next };
   }
   if (order.type === 'answer-offer') {

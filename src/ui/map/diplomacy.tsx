@@ -1,6 +1,7 @@
-// The diplomacy screen, the Envoy's (M3_NEIGHBOURS.md §20.3): every power you are in contact with,
-// how it regards you and why, and what you can do for it. On a desktop the powers in a list with
-// the chosen one beside it; on a phone a card for each, the chosen one opened under its card.
+// The diplomacy screen, the Envoy's (M3_NEIGHBOURS.md §20.3, §23.7): every power you are in
+// contact with, how it regards you and why, and what you can do for it: treaties, exchanges and
+// gifts. On a desktop the powers in a list with the chosen one beside it; on a phone a card for
+// each, the chosen one opened under its card.
 
 import { useSignal } from '@preact/signals';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
@@ -8,8 +9,18 @@ import { RULES } from '../../content/rules.ts';
 import { TREATIES, TREATY_KINDS } from '../../content/treaties.ts';
 import { tradeOf } from '../../sim/borders.ts';
 import { attitudeOf, giftRefusal } from '../../sim/memory.ts';
-import { contactWith, type GameState, inContact, powerOf, treatyOf } from '../../sim/state.ts';
-import { offerRefusal } from '../../sim/treaties.ts';
+import { type Amount, contactWith, type GameState, inContact, powerOf, treatyOf } from '../../sim/state.ts';
+import {
+  amountWords,
+  exchangeShort,
+  isSold,
+  offerRefusal,
+  priceOf,
+  RESOURCES,
+  sellerOf,
+  wouldAccept,
+  wouldExchange,
+} from '../../sim/treaties.ts';
 import type { World } from '../../sim/world.ts';
 import { FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
@@ -25,14 +36,19 @@ export function contactText(game: GameState, faction: FactionId, other: FactionI
   return `learning their tongue: ${c.words} of ${RULES.contact.wordsToTalk}`;
 }
 
-/** The treaties with a power (§21.5): those in force, offers both ways, and what can be offered. */
+/**
+ * The treaties with a power (§21.5, §23.7): those in force, offers both ways, and what can be
+ * offered. Passage and protection only where one of us sells them, with their price a turn.
+ */
 function Treaties({
+  world,
   game,
   faction,
   other,
   play,
   regard,
 }: {
+  world: World;
   game: GameState;
   faction: FactionId;
   other: FactionId;
@@ -48,15 +64,29 @@ function Treaties({
       <ul class="diplomacy-treaties" aria-label={`Treaties with the ${name}`}>
         {TREATY_KINDS.map((kind) => {
           const t = TREATIES[kind];
+          const seller = isSold(kind) ? sellerOf(kind, faction, other) : null;
+          if (isSold(kind) && !seller) return null;
           const held = treatyOf(game, faction, other, kind);
           const theirs = game.offers.find((o) => o.from === other && o.to === faction && o.kind === kind);
           const ours = game.offers.find((o) => o.from === faction && o.to === other && o.kind === kind);
           const asks = FACTIONS[other].asks[kind];
+          const price = seller
+            ? priceOf(game, { kind, a: faction, b: other, payer: seller === faction ? other : faction })
+            : 0;
+          const verb = seller === faction ? 'Sell' : seller ? 'Buy' : 'Offer';
           return (
             <li key={kind}>
               <b>{t.name}</b> <span class="dim">{t.does}</span>
               {kind === 'trade' && (
                 <span class="dim"> Now it would bring {tradeOf(game, faction, other)} credits a turn each.</span>
+              )}
+              {seller && (
+                <span class="dim">
+                  {' '}
+                  {seller === faction
+                    ? `It brings us ${price} credits a turn.`
+                    : `It costs us ${price} credits a turn.`}
+                </span>
               )}
               {held ? (
                 held.ends !== null ? (
@@ -84,7 +114,7 @@ function Treaties({
                 )
               ) : theirs && theirs.turn < game.turn ? (
                 <p>
-                  They offer it.{' '}
+                  {seller === other ? 'They offer to sell it.' : seller ? 'They offer to buy it.' : 'They offer it.'}{' '}
                   <button
                     type="button"
                     class="button button-small"
@@ -107,18 +137,26 @@ function Treaties({
                   <button
                     type="button"
                     class="button button-small"
-                    aria-label={`Offer the ${name} ${t.words}`}
+                    aria-label={
+                      verb === 'Sell'
+                        ? `Sell the ${name} ${t.words}`
+                        : verb === 'Buy'
+                          ? `Buy ${t.words} from the ${name}`
+                          : `Offer the ${name} ${t.words}`
+                    }
                     disabled={offerRefusal(game, faction, other, kind) !== null}
                     onClick={() => give(play, { type: 'offer', to: other, treaty: kind })}
                   >
-                    Offer it
+                    {verb} it
                   </button>{' '}
                   <span class="dim">
                     {asks === null
                       ? 'They never agree to it.'
-                      : regard >= asks
+                      : wouldAccept(world, game, other, faction, kind)
                         ? 'Their regard is enough: likely yes.'
-                        : `Likely no: they ask for a regard of ${signed(asks)}.`}
+                        : regard >= asks
+                          ? `Likely no: the buyer must have ${RULES.treaties.afford} credits in hand.`
+                          : `Likely no: they ask for a regard of ${signed(asks)}.`}
                   </span>
                 </p>
               )}
@@ -126,6 +164,139 @@ function Treaties({
           );
         })}
       </ul>
+    </>
+  );
+}
+
+const RESOURCE_NAME: Record<Amount['resource'], string> = {
+  credits: 'credits',
+  metals: 'metals',
+  volatiles: 'volatiles',
+  fuel: 'fusion fuel',
+};
+
+/** One side of an exchange: how much of what. */
+function AmountPicker({ label, value, set }: { label: string; value: Amount; set: (a: Amount) => void }) {
+  const x = RULES.exchanges;
+  const steps = Array.from({ length: x.most / x.step }, (_, i) => (i + 1) * x.step);
+  return (
+    <span class="diplomacy-amount">
+      <select
+        aria-label={`How much ${label}`}
+        value={value.amount}
+        onChange={(e) => set({ ...value, amount: Number((e.target as HTMLSelectElement).value) })}
+      >
+        {steps.map((n) => (
+          <option key={n} value={n}>
+            {n}
+          </option>
+        ))}
+      </select>
+      <select
+        aria-label={`What ${label}`}
+        value={value.resource}
+        onChange={(e) => set({ ...value, resource: (e.target as HTMLSelectElement).value as Amount['resource'] })}
+      >
+        {RESOURCES.map((r) => (
+          <option key={r} value={r}>
+            {RESOURCE_NAME[r]}
+          </option>
+        ))}
+      </select>
+    </span>
+  );
+}
+
+/** Exchanges with a power (§23.1, §23.7): one waiting for our answer, ours on its way, or a new one. */
+function Exchange({
+  world,
+  game,
+  faction,
+  other,
+  play,
+}: {
+  world: World;
+  game: GameState;
+  faction: FactionId;
+  other: FactionId;
+  play: Play;
+}) {
+  const x = RULES.exchanges;
+  const ours = useSignal<Amount>({ resource: 'credits', amount: x.offerCredits });
+  const wanted = useSignal<Amount>({ resource: 'metals', amount: x.offerAmount });
+  const name = FACTIONS[other].shortName;
+  const theirs = game.offers.find(
+    (o) => o.kind === 'exchange' && o.from === other && o.to === faction && o.turn < game.turn,
+  );
+  const sent = game.offers.find((o) => o.kind === 'exchange' && o.from === faction && o.to === other);
+  const offer = {
+    kind: 'exchange' as const,
+    from: faction,
+    to: other,
+    turn: game.turn,
+    give: ours.value,
+    get: wanted.value,
+  };
+  const refusal = offerRefusal(game, faction, other, 'exchange', ours.value, wanted.value);
+  const short = theirs ? exchangeShort(game, faction, other) : null;
+  return (
+    <>
+      <h4>An exchange</h4>
+      {theirs?.give && theirs.get && (
+        <p>
+          They offer {amountWords(theirs.give)} for {amountWords(theirs.get)}.{' '}
+          <button
+            type="button"
+            class="button button-small"
+            aria-label={`Accept the ${name}’s exchange`}
+            disabled={short !== null}
+            title={short ?? undefined}
+            onClick={() => give(play, { type: 'answer-offer', from: other, treaty: 'exchange', accept: true })}
+          >
+            Accept
+          </button>{' '}
+          <button
+            type="button"
+            class="button button-quiet button-small"
+            aria-label={`Refuse the ${name}’s exchange`}
+            onClick={() => give(play, { type: 'answer-offer', from: other, treaty: 'exchange', accept: false })}
+          >
+            Refuse
+          </button>
+          {short && <span class="dim"> {short}</span>}
+        </p>
+      )}
+      {sent?.give && sent.get ? (
+        <p class="dim">
+          Our offer of {amountWords(sent.give)} for {amountWords(sent.get)} reaches them as the turn ends.
+        </p>
+      ) : (
+        <>
+          <p class="diplomacy-exchange">
+            We give <AmountPicker label="we give" value={ours.value} set={(a) => (ours.value = a)} /> for{' '}
+            <AmountPicker label="we ask for" value={wanted.value} set={(a) => (wanted.value = a)} />
+          </p>
+          <p>
+            <button
+              type="button"
+              class="button button-small"
+              aria-label={`Offer the ${name} this exchange`}
+              disabled={refusal !== null}
+              onClick={() =>
+                give(play, { type: 'offer', to: other, treaty: 'exchange', give: ours.value, get: wanted.value })
+              }
+            >
+              Offer it
+            </button>{' '}
+            <span class="dim">
+              {refusal ??
+                (wouldExchange(world, game, other, offer)
+                  ? 'Fair by their measure: likely yes.'
+                  : 'Likely no: they would want more for it.')}
+            </span>
+          </p>
+        </>
+      )}
     </>
   );
 }
@@ -181,7 +352,10 @@ export function DiplomacyView({
         ) : (
           <p class="dim">They have no reason yet to think anything of us.</p>
         )}
-        <Treaties game={game} faction={faction} other={other} play={play} regard={regard.total} />
+        <Treaties world={world} game={game} faction={faction} other={other} play={play} regard={regard.total} />
+        {contactWith(me, other)?.stage === 'talk' && (
+          <Exchange world={world} game={game} faction={faction} other={other} play={play} />
+        )}
         <h4>A gift</h4>
         {waiting ? (
           <p>
@@ -218,7 +392,7 @@ export function DiplomacyView({
           <p class="dim">We cannot talk with them until the Envoy has learnt their tongue.</p>
         )}
         <p class="dim">
-          A gift is remembered at 1 for every {RULES.memory.giftCredits} credits, and fades a point every{' '}
+          A gift is remembered at 1 for every {FACTIONS[other].giftCredits} credits, and fades a point every{' '}
           {RULES.memory.fadeEvery} turns.
         </p>
       </section>

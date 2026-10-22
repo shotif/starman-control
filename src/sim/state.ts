@@ -18,7 +18,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 14;
+export const STATE_VERSION = 15;
 
 export interface Stockpile {
   metals: number;
@@ -116,14 +116,28 @@ export interface Treaty {
   /** Who gave notice or broke it, and whether it was broken. */
   endedBy: FactionId | null;
   broken: boolean;
+  /** For a treaty sold (passage, protection, §23): the buyer, who pays every turn. */
+  payer?: FactionId;
 }
 
-/** A treaty offered: on its way as the turn it was made ends, then waiting for the player's answer. */
+/** A resource or credits, and how much, in an exchange (§23.1). */
+export interface Amount {
+  resource: 'credits' | 'metals' | 'volatiles' | 'fuel';
+  amount: number;
+}
+
+/**
+ * A treaty, or an exchange of resources (§23.1), offered: on its way as the turn it was made ends,
+ * then waiting for the player's answer.
+ */
 export interface Offer {
-  kind: TreatyKind;
+  kind: TreatyKind | 'exchange';
   from: FactionId;
   to: FactionId;
   turn: number;
+  /** An exchange's terms: what the offerer gives, and what it asks for. */
+  give?: Amount;
+  get?: Amount;
 }
 
 /**

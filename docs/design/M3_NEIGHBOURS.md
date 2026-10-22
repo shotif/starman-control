@@ -34,6 +34,7 @@ them, and the first aliens, powers you deal with.
 20. [Increment 35 in detail: memory and the diplomacy screen](#20-increment-35-in-detail-memory-and-the-diplomacy-screen-written-before-building-it)
 21. [Increment 36 in detail: treaties](#21-increment-36-in-detail-treaties-written-before-building-it)
 22. [Increment 37 in detail: borders and trade](#22-increment-37-in-detail-borders-and-trade-written-before-building-it)
+23. [Increment 37b in detail: exchanges and the Wake's dealings](#23-increment-37b-in-detail-exchanges-and-the-wakes-dealings-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -721,3 +722,125 @@ the treasury, on the phone, tablet and desktop.
   The slowest headless turn 127 ms.
 - **Tests:** `borders.test.ts` as §22.7; 471 unit tests; `borders.spec.ts` on the phone, tablet and
   desktop.
+
+## 23. Increment 37b in detail: exchanges and the Wake's dealings (written before building it)
+
+**Goals.** The rest of §10 and D-56 as decided (A): powers **exchange resources** once, by offer
+and answer; the Hollow Wake **sells passage** over its lanes for a toll instead of opening them,
+**takes bribes** and **sells protection**; the lawful powers remember dealing with it. Through the
+same offers and orders as §21, for the player and the rivals; nothing is the Wake's alone in the
+rules: any power whose character sells passage or protection may.
+
+**Out of scope.** What protection protects against: raids come with M4, so in M3 it is paid and
+remembered and does nothing else. Markets between powers (prices that move).
+
+### 23.1 Exchanges
+
+- **An exchange** is a one-off offer: so much of one of credits, metals, volatiles or fusion fuel
+  for so much of another, in steps of 10, at most 100 of each. Offered, it reaches the other as the
+  turn ends; a rival answers at once, the player in the next turn (§21.2). Accepted, both amounts
+  change hands at once, if both still have them; if not, it falls through and both are told.
+- **A rival values** a credit at 1 and a unit of metals, volatiles or fuel at 2, and **twice that**
+  for a resource it holds less than 20 of. It accepts when what it gets is worth at least what it
+  gives, by the measure of its regard: friendly 80%, warm or neutral 100%, cold 130%, hostile never.
+- **A rival offers** one exchange every 5 turns when it holds less than 20 of a resource and more
+  than 100 credits: 40 credits for 20 of it, to a power it can talk with that regards it at least
+  neutrally.
+
+### 23.2 Passage for a toll
+
+- **Passage** (a treaty sold, not shared): the buyer's ships may use the seller's open lanes; not
+  the other way. The buyer pays a **toll** each turn from the turn after it is agreed, as trade is
+  paid: 1 credit for each of the seller's open lanes, at least 2 and at most 8. A buyer that cannot
+  pay the toll loses passage as that turn ends; neither side remembers it.
+- Only a power whose character **sells passage** sells it (the Wake); one that does never opens
+  its lanes freely (§21.4).
+
+### 23.3 Bribes
+
+The Wake **takes bribes**: it remembers a gift at 1 for every **3** credits, not 5 (a power's
+character may say so).
+
+### 23.4 Protection
+
+- **Protection** (a treaty sold): the buyer pays **5 credits** a turn; from M4 the seller's ships
+  leave the buyer's systems alone. In M3 it is paid, and counts as any treaty in regard (+5).
+- Only a power whose character **sells protection** sells it (the Wake).
+
+### 23.5 The lawful remember
+
+A power whose character is **lawful** (the Authority and the Cooperative; not the Wake) counts **−5**
+in its regard for each power it is in contact with that **buys passage or protection** from an
+outlaw (*Deals with the Hollow Wake*), while it lasts.
+
+### 23.6 What each asks
+
+| | Passage (to buy) | Protection (to buy) |
+| --- | --- | --- |
+| The Authority | regard 0 | never (the law does not pay outlaws) |
+| The Cooperative | regard −10 | regard 0 |
+
+The Wake sells to any power it can talk with that regards it at −10 or more, and offers both every
+5 turns to those that can afford a few turns of each (50 credits).
+
+### 23.7 On the screen
+
+- **The diplomacy screen:** *An exchange*: what to give and what to ask for, each an amount and a
+  resource, and *Offer it* (with how the other is likely to answer); an exchange waiting, with
+  *Accept* and *Refuse*. Passage and protection among the treaties only where one side sells them,
+  with their price a turn; *Sell it* for the seller and *Buy it* for the buyer, in place of
+  *Offer it*.
+- **The treasury:** *toll to the Hollow Wake*, *protection paid to the Hollow Wake*, and for the
+  seller *tolls from …*.
+- **The report:** exchanges made and fallen through; passage lost for want of the toll.
+
+### 23.8 State
+
+`Offer` gains an exchange's terms; a treaty records which side pays for passage and protection.
+**State version 15**; a save from before has neither.
+
+### 23.9 Tests
+
+`dealings.test.ts`: exchanges (offer, value and regard, falling through, the rivals' offers);
+passage (one way, the toll, lost when unpaid); bribes; protection; the lawful's regard; the rivals'
+offers and answers; the migration. `dealings.spec.ts`: an exchange accepted and passage bought from
+the Wake, on the phone, tablet and desktop.
+
+### Increment 37b: exchanges and the Wake's dealings (22 October 2026)
+
+- **Exchanges as §23.1** (`src/sim/treaties.ts`): an offer of kind *exchange* carries what is given
+  and what is asked for; a rival answers as the turn ends by `wouldExchange`, the player in the
+  next turn, and the player's yes changes hands at once (refused if either side no longer has its
+  part, which the screen says beside *Accept*). A rival's yes that finds a side short falls
+  through, and both are told.
+- **Passage and protection as §23.2 and §23.4**: two more kinds of treaty, sold by a power whose
+  character sells them (`sells` in `src/content/factions.ts`); a treaty records its `payer`. Each
+  turn's price is paid with trade, before upkeep, from the turn after it is agreed; a buyer that
+  cannot pay loses it then, reported as *lapsed*, with no memory on either side. Passage lets the
+  buyer's ships use the seller's open lanes, one way only. The treasury shows *toll paid to the
+  Hollow Wake* and, for the seller, *toll from the Transit Authority*.
+- **Bribes, protection's regard and the lawful as §23.3 to §23.5**: a gift is remembered by the
+  receiver's own measure (`giftCredits`: 3 for the Wake, 5 for the others); a sold treaty counts 5
+  in regard as any treaty; a lawful power counts −5 (*Deals with the Hollow Wake*) for each power
+  it knows that buys from an outlaw.
+- **The rivals as §23.6:** the same `dealings` as increment 36, with each side's ask now through
+  `wouldAccept`, so a seller offers only to a buyer that would take it and has **75 credits** in
+  hand (50 in the design: at 50 the buyers ran down to debt and bought again as soon as they
+  recovered; at 100 they seldom bought at all); the Wake sends a gift where passage nearly would do.
+  A rival short of a resource offers 40 credits for 20 of it to the power that regards it best. A
+  buyer gives notice on what it pays for when its treasury is under 40 and falling, and on any
+  treaty only when its regard falls below 0 or 10 below what it asked (so the Cooperative, which
+  buys passage at −10, does not leave it at −5).
+- **On the screen as §23.7:** passage and protection appear among the treaties only where one side
+  sells them, with their price a turn; *Buy it* for the buyer and *Sell it* for the seller; *An
+  exchange* with two amounts and two resources and the likely answer; an exchange waiting with
+  *Accept* and *Refuse*. The report words exchanges made, refused and fallen through, and lapsed
+  passage; the Envoy speaks of an exchange waiting as of any offer.
+- **State as §23.8:** version 15; a save from version 14 reads as it is. Validation checks that a
+  sold treaty is paid by its buyer and a shared one by no one, and an exchange's terms.
+- **Numbers:** `npm run balance` at turn 100: the Authority 37.6, the Cooperative 23.3, the Wake
+  22.0 technologies; the Cooperative 26 on seeds 3 and 4. In the eight games the Authority buys
+  passage from the Wake in every one, the Cooperative buys passage and protection in six, and
+  exchanges are made in six; one rival was a turn in debt once. The slowest headless turn 136 ms.
+- **Tests:** `dealings.test.ts` as §23.9 (19 tests, with 100 turns of three rivals); 490 unit tests;
+  `dealings.spec.ts` on the phone, tablet and desktop.

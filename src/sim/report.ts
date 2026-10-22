@@ -12,6 +12,7 @@ import type { TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ObservationKind } from './discoveries.ts';
+import type { Amount } from './state.ts';
 import type { LaneId } from './world.ts';
 
 export type ReportEvent =
@@ -108,6 +109,17 @@ export type ReportEvent =
   | { kind: 'treaty-ended'; faction: FactionId; treaty: TreatyKind; by: FactionId; broken: boolean }
   /** `faction` broke a treaty with `victim`, as heard by a power in contact with it. */
   | { kind: 'treaty-broken-heard'; faction: FactionId; victim: FactionId; treaty: TreatyKind }
+  /** Passage or protection lost because its buyer (this power if `ours`) could not pay (M3_NEIGHBOURS.md §23.2). */
+  | { kind: 'treaty-lapsed'; faction: FactionId; treaty: TreatyKind; ours: boolean }
+  /**
+   * Exchanges (§23.1): one waiting for this power's answer (`faction` gives `give` for `get`); one
+   * made (this power gave `gave` and got `got`); one fallen through because a side no longer had
+   * its part; this power's refused.
+   */
+  | { kind: 'exchange-received'; faction: FactionId; give: Amount; get: Amount }
+  | { kind: 'exchange-made'; faction: FactionId; gave: Amount; got: Amount }
+  | { kind: 'exchange-failed'; faction: FactionId }
+  | { kind: 'exchange-refused'; faction: FactionId }
   /** The Watch hears that a rival in contact has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
   | { kind: 'rival-tech'; faction: FactionId; tech: TechId }
   /** A great work finished by another power (all hear of it, M2B_SCIENCE.md §20.2). */

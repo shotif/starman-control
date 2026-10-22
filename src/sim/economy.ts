@@ -29,6 +29,7 @@ import { laneQuote, laneRefusal } from './lanes.ts';
 import { findRoute, lanesFor } from './movement.ts';
 import { effects, speciesFor } from './research.ts';
 import { type GameState, type Holding, holdingOn, powerOf, type Stockpile, treatyOf } from './state.ts';
+import { soldParts } from './treaties.ts';
 import type { World } from './world.ts';
 
 export type Resource = keyof Stockpile;
@@ -711,6 +712,8 @@ export function treasuryOf(world: World, state: GameState, faction: FactionId): 
   // Trade agreements (M3_NEIGHBOURS.md §22.4).
   for (const t of tradeIncome(state, faction))
     parts.push({ label: `trade with the ${FACTIONS[t.faction].shortName}`, value: t.credits });
+  // Passage and protection, paid or sold (§23).
+  parts.push(...soldParts(state, faction));
   const upkeep = upkeepOf(state, faction).total;
   if (upkeep > 0) parts.push({ label: 'upkeep', value: -upkeep });
   if (overdrive > 0) parts.push({ label: 'overdrive', value: -overdrive });

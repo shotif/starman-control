@@ -61,6 +61,12 @@ export interface FactionDef {
    * null: never.
    */
   asks: Record<TreatyKind, number | null>;
+  /** Treaties it sells rather than shares (M3_NEIGHBOURS.md §23); passage in place of open lanes. */
+  sells: TreatyKind[];
+  /** Whether it keeps the law (§23.5): a lawful power thinks less of those who pay outlaws. */
+  lawful: boolean;
+  /** Credits for each point a gift is remembered by (§23.3): fewer for a power that takes bribes. */
+  giftCredits: number;
 }
 
 export const FACTIONS: Record<FactionId, FactionDef> = {
@@ -86,7 +92,10 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Halden Orbital Works', 'Ares Foundry'],
     regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
     // Law: open lanes once warm, its research only with friends.
-    asks: { 'open-lanes': 10, 'shared-research': 40, border: 10, trade: 10 },
+    asks: { 'open-lanes': 10, 'shared-research': 40, border: 10, trade: 10, passage: 0, protection: null },
+    sells: [],
+    lawful: true,
+    giftCredits: 5,
   },
   frontier: {
     id: 'frontier',
@@ -110,7 +119,10 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     shipmakers: ['Toliman Cooperative Yards', 'Horizon Dynamics', 'Eridani Shipwrights'],
     regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
     // Trade and peace: both once warm.
-    asks: { 'open-lanes': 10, 'shared-research': 10, border: 10, trade: 0 },
+    asks: { 'open-lanes': 10, 'shared-research': 10, border: 10, trade: 0, passage: -10, protection: 0 },
+    sells: [],
+    lawful: true,
+    giftCredits: 5,
   },
   'hollow-wake': {
     id: 'hollow-wake',
@@ -135,7 +147,11 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     regard: { sta: { amount: -10, reason: 'Sees in us the law it runs from' } },
     // Tolls and profit: it sells passage rather than opening its lanes (increment 37), and buys
     // its way into shared research.
-    asks: { 'open-lanes': null, 'shared-research': 10, border: 20, trade: 15 },
+    // It sells passage and protection to any power that regards it at −10 or more (§23.6), and takes bribes.
+    asks: { 'open-lanes': null, 'shared-research': 10, border: 20, trade: 15, passage: -10, protection: -10 },
+    sells: ['passage', 'protection'],
+    lawful: false,
+    giftCredits: 3,
   },
 };
 

@@ -210,6 +210,8 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   },
   /** 13 → 14 (M3 increment 36): treaties. None held, and no offer made. */
   13: (g) => ({ ...g, version: 14, treaties: [], offers: [] }),
+  /** 14 → 15 (M3 increment 37b): exchanges and treaties sold. A save from before has neither. */
+  14: (g) => ({ ...g, version: 15 }),
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

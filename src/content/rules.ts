@@ -175,6 +175,36 @@ export const RULES = {
     tradeColonies: 4,
     tradeLane: 1,
     tradeMost: 10,
+    /** Passage's toll (§23.2): so much for each of the seller's open lanes, between these. */
+    tollPerLane: 1,
+    tollLeast: 2,
+    tollMost: 8,
+    /** Protection's price a turn (§23.4). */
+    protection: 5,
+    /**
+     * A rival sells or buys passage or protection only to or as a buyer with so many credits in
+     * hand, and gives notice on what it pays for below `keep` while its treasury falls.
+     */
+    afford: 75,
+    keep: 40,
+    /** A lawful power's regard for each power it knows that pays an outlaw (§23.5). */
+    lawfulDeals: -5,
+  },
+  /** Exchanges of resources (M3_NEIGHBOURS.md §23.1). */
+  exchanges: {
+    /** Amounts in steps of so many, at most so many. */
+    step: 10,
+    most: 100,
+    /** What a rival thinks a credit and a unit of a resource worth, and twice that when it holds less than `short`. */
+    credit: 1,
+    unit: 2,
+    short: 20,
+    /** What it must get for what it gives, in percent, by its regard (§23.1); hostile never. */
+    asks: { friendly: 80, warm: 100, neutral: 100, cold: 130 } as Record<string, number>,
+    /** A rival short of a resource offers so many credits for so much of it, every few turns, with more credits than this. */
+    offerCredits: 40,
+    offerAmount: 20,
+    offerAbove: 100,
   },
   /** Memory and attitude (M3_NEIGHBOURS.md §20.1, D-55). */
   memory: {

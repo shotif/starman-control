@@ -14,6 +14,7 @@ import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { techCost } from './research.ts';
 import { beaconSlots, contactWith, type GameState, MEMORY_KINDS, type MemoryKind, powerOf } from './state.ts';
+import { isSold, sellerOf } from './treaties.ts';
 import { laneEnds, type World } from './world.ts';
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -30,7 +31,11 @@ export function shapeProblems(raw: unknown): string[] {
   if (!isWhole(raw.turn, 1)) out.push('turn is not a whole number from 1');
   if (!isWhole(raw.nextShipId, 1)) out.push('nextShipId is not a whole number from 1');
   if (!isWhole(raw.nextHoldingId, 1)) out.push('nextHoldingId is not a whole number from 1');
-  // Treaties and offers (M3_NEIGHBOURS.md §21).
+  // Treaties and offers (M3_NEIGHBOURS.md §21, §23).
+  const isAmount = (a: unknown) =>
+    isRecord(a) &&
+    (a.resource === 'credits' || a.resource === 'metals' || a.resource === 'volatiles' || a.resource === 'fuel') &&
+    isWhole(a.amount, 1);
   if (
     !Array.isArray(raw.treaties) ||
     !raw.treaties.every(
@@ -42,14 +47,20 @@ export function shapeProblems(raw: unknown): string[] {
         isWhole(t.since, 1) &&
         (t.ends === null || isWhole(t.ends, 1)) &&
         (t.endedBy === null || isFactionId(t.endedBy)) &&
-        typeof t.broken === 'boolean',
+        typeof t.broken === 'boolean' &&
+        (t.payer === undefined || isFactionId(t.payer)),
     )
   )
     out.push('treaties are not a list of treaties');
   if (
     !Array.isArray(raw.offers) ||
     !raw.offers.every(
-      (o) => isRecord(o) && isTreatyKind(o.kind) && isFactionId(o.from) && isFactionId(o.to) && isWhole(o.turn, 1),
+      (o) =>
+        isRecord(o) &&
+        (o.kind === 'exchange' ? isAmount(o.give) && isAmount(o.get) : isTreatyKind(o.kind)) &&
+        isFactionId(o.from) &&
+        isFactionId(o.to) &&
+        isWhole(o.turn, 1),
     )
   )
     out.push('offers are not a list of offers');
@@ -317,6 +328,11 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (t.since > state.turn) out.push(`treaty ${key} begins after this turn`);
     if ((t.endedBy === null) !== (t.ends === null) || (t.broken && t.endedBy === null))
       out.push(`treaty ${key} ends without anyone ending it`);
+    // A sold treaty is paid by the one of the two that does not sell it (§23).
+    const seller = isSold(t.kind) ? sellerOf(t.kind, t.a, t.b) : null;
+    if (isSold(t.kind) && (!seller || t.payer !== (seller === t.a ? t.b : t.a)))
+      out.push(`treaty ${key} is not paid by its buyer`);
+    if (!isSold(t.kind) && t.payer !== undefined) out.push(`treaty ${key} is shared, yet paid for`);
   }
   for (const o of state.offers) {
     if (o.from === o.to || !playing.has(o.from) || !playing.has(o.to))

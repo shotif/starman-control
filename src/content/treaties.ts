@@ -1,9 +1,19 @@
 // The treaties (M3_NEIGHBOURS.md §8, §21, §22, D-53, D-54): what two powers in contact may agree.
 // Each power's own rules read these.
 
-export type TreatyKind = 'open-lanes' | 'shared-research' | 'border' | 'trade';
+export type TreatyKind = 'open-lanes' | 'shared-research' | 'border' | 'trade' | 'passage' | 'protection';
 
-export const TREATY_KINDS: readonly TreatyKind[] = ['open-lanes', 'shared-research', 'border', 'trade'];
+export const TREATY_KINDS: readonly TreatyKind[] = [
+  'open-lanes',
+  'shared-research',
+  'border',
+  'trade',
+  'passage',
+  'protection',
+];
+
+/** Treaties one side sells and the other buys (§23): the buyer pays every turn. */
+export const SOLD: readonly TreatyKind[] = ['passage', 'protection'];
 
 /**
  * Each treaty's name; its `words` in a sentence ("the Cooperative offers us a border treaty");
@@ -34,6 +44,19 @@ export const TREATIES: Record<TreatyKind, { name: string; words: string; noun: s
     words: 'a trade agreement',
     noun: 'trade agreement',
     does: 'Credits for both every turn: 1 for every 4 colonies of the smaller power, and 1 for each open lane between our systems, at most 10.',
+  },
+  // Increment 37b (§23.2, §23.4): sold by a power whose character sells them.
+  passage: {
+    name: 'Passage',
+    words: 'passage',
+    noun: 'passage',
+    does: 'The buyer’s ships may use the seller’s open lanes, for a toll every turn: 1 credit for each of its lanes, from 2 to 8.',
+  },
+  protection: {
+    name: 'Protection',
+    words: 'protection',
+    noun: 'protection',
+    does: 'The buyer pays 5 credits every turn; from M4 the seller’s ships leave the buyer’s systems alone.',
   },
 };
 

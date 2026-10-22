@@ -13,7 +13,7 @@ import type { World } from './world.ts';
 
 /** One part of an attitude, with its reason as the regarded power reads it. */
 export interface AttitudePart {
-  kind: 'kin' | 'known' | 'character' | 'treaty' | MemoryKind;
+  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | MemoryKind;
   reason: string;
   amount: number;
 }
@@ -82,6 +82,18 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
           reason: `Bound to us by ${TREATIES[t.kind].words}`,
           amount: r.treaty,
         });
+    // A lawful power thinks less of one that pays an outlaw for passage or protection (§23.5).
+    if (FACTIONS[holder].lawful)
+      for (const t of state.treaties)
+        if (t.payer === toward && t.a !== holder && t.b !== holder) {
+          const seller = t.a === toward ? t.b : t.a;
+          if (!FACTIONS[seller].lawful)
+            parts.push({
+              kind: 'lawful',
+              reason: `Deals with the ${FACTIONS[seller].shortName}`,
+              amount: RULES.treaties.lawfulDeals,
+            });
+        }
     for (const m of power.memories)
       if (m.faction === toward) parts.push({ kind: m.kind, reason: memoryReason(world, m), amount: m.amount });
   }
@@ -148,7 +160,8 @@ export function deliverGifts(state: GameState, events: Map<FactionId, ReportEven
       to.treasury += g.credits;
       remember(state, g.to, p.faction, {
         kind: 'gift',
-        amount: Math.floor(g.credits / RULES.memory.giftCredits),
+        // The receiver's own measure: fewer credits a point for one that takes bribes (§23.3).
+        amount: Math.floor(g.credits / FACTIONS[g.to].giftCredits),
         credits: g.credits,
       });
       events.get(p.faction)?.push({ kind: 'gift-sent', faction: g.to, credits: g.credits });

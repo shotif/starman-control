@@ -874,3 +874,25 @@
   padding: 0;
   list-style: none;
 }
+
+.diplomacy-exchange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.diplomacy-amount {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.diplomacy-amount select {
+  min-height: 44px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 0;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}

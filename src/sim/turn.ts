@@ -52,7 +52,7 @@ import {
   powerOf,
   type ShipState,
 } from './state.ts';
-import { resolveTreaties } from './treaties.ts';
+import { payForSold, resolveTreaties } from './treaties.ts';
 import { watchNews } from './visibility.ts';
 import { laneId, type World } from './world.ts';
 
@@ -438,8 +438,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     power.stockpile.fuel += y.fuel;
     power.treasury += income.get(h.id) ?? 0;
   }
-  // Trade agreements (M3_NEIGHBOURS.md §22.4).
+  // Trade agreements (M3_NEIGHBOURS.md §22.4), and passage and protection paid for (§23.2, §23.4).
   for (const p of state.powers) for (const t of tradeIncome(state, p.faction)) p.treasury += t.credits;
+  payForSold(state, events);
 
   for (const p of state.powers) {
     const before = p.treasury;

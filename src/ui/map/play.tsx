@@ -27,6 +27,7 @@ import { type Need, needsOf } from '../../sim/needs.ts';
 import type { Order } from '../../sim/orders.ts';
 import type { ReportEvent } from '../../sim/report.ts';
 import { type GameState, playerPower, type ShipState } from '../../sim/state.ts';
+import { amountWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
@@ -400,6 +401,18 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
         : `Our ${TREATIES[e.treaty].noun} with the ${FACTIONS[e.faction].shortName} has ended.`;
     case 'treaty-broken-heard':
       return `The ${FACTIONS[e.faction].shortName} broke its ${TREATIES[e.treaty].noun} with the ${FACTIONS[e.victim].shortName}.`;
+    case 'treaty-lapsed':
+      return e.ours
+        ? `We could not pay the ${FACTIONS[e.faction].shortName} for ${TREATIES[e.treaty].noun}, so it has lapsed.`
+        : `The ${FACTIONS[e.faction].shortName} could not pay us for ${TREATIES[e.treaty].noun}, so it has lapsed.`;
+    case 'exchange-received':
+      return `The ${FACTIONS[e.faction].shortName} offers us ${amountWords(e.give)} for ${amountWords(e.get)}: answer it in Diplomacy before this turn ends.`;
+    case 'exchange-made':
+      return `We gave the ${FACTIONS[e.faction].shortName} ${amountWords(e.gave)} for ${amountWords(e.got)}.`;
+    case 'exchange-failed':
+      return `Our exchange with the ${FACTIONS[e.faction].shortName} fell through: one of us no longer had our part.`;
+    case 'exchange-refused':
+      return `The ${FACTIONS[e.faction].shortName} refused our exchange.`;
     case 'contact':
       if (!e.first)
         return `The Envoy has learnt the ${FACTIONS[e.faction].shortName}’s tongue: we can talk with them now.`;
@@ -477,6 +490,11 @@ function eventPlace(
     case 'treaty-notice':
     case 'treaty-ended':
     case 'treaty-broken-heard':
+    case 'treaty-lapsed':
+    case 'exchange-received':
+    case 'exchange-made':
+    case 'exchange-failed':
+    case 'exchange-refused':
       return { system: playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
@@ -527,6 +545,11 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'treaty-notice': { icon: 'diplomacy', tone: 'news' },
   'treaty-ended': { icon: 'diplomacy', tone: 'news' },
   'treaty-broken-heard': { icon: 'diplomacy', tone: 'news' },
+  'treaty-lapsed': { icon: 'refused', tone: 'wrong' },
+  'exchange-received': { icon: 'diplomacy', tone: 'needs' },
+  'exchange-made': { icon: 'diplomacy', tone: 'growth' },
+  'exchange-failed': { icon: 'refused', tone: 'wrong' },
+  'exchange-refused': { icon: 'diplomacy', tone: 'news' },
   'great-work': { icon: 'colony', tone: 'news' },
   'great-work-begun': { icon: 'colony', tone: 'news' },
   'great-work-lost': { icon: 'refused', tone: 'wrong' },
