@@ -1,7 +1,7 @@
 {
   "name": "Starman Control",
   "short_name": "Starman Control",
-  "description": "A 4X strategy game of exploration, colonies and first contact among real nearby stars.",
+  "description": "A 4X strategy game of exploration, colonies, first contact and war among real nearby stars.",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

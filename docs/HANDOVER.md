@@ -228,7 +228,7 @@ art is about 65 pictures (about $6.50).
   it.** There is no OpenAI key; that is expected. If the Gemini key is missing or refused, stop and
   tell the owner exactly what you saw.
 - **Art spend (D-27):** about **$50 in all** may be spent without asking (raised on 22 October
-  2026); about **$27.15** is spent (after increment 46), so about **$22.85** is left. Nano
+  2026); about **$27.55** is spent (after increment 50), so about **$22.45** is left. Nano
   Banana (`gemini-nano-banana-2.1`, about $0.05 a picture) for everything (D-23). Record every
   batch with its cost and the running total in DECISIONS.md.
 - **Pictures:** candidates go to `art/out/`, which git ignores, so they are lost with the session.
@@ -244,7 +244,9 @@ art is about 65 pictures (about $6.50).
 - **Shipping:** each increment keeps the game playable, passes `npm run check` and the browser
   journeys, is committed (with the session's attribution lines), and is pushed to your designated
   branch **and to `main`** (D-21). Then confirm the GitHub Pages deploy, check CI on `main`, and
-  tell the owner what is live. No pull requests unless asked.
+  tell the owner what is live. No pull requests unless asked. When a milestone is done, mark it in
+  SCOPE.md and change the title screen's status line (`src/ui/Title.tsx`: *In development · M4,
+  Fleets · …*) to say so; the owner found it still saying M1 after M4.
 
 ## 4. Working in this repository
 

@@ -147,7 +147,7 @@ export function Title({ buildId }: { buildId: string }) {
             <span class="logo-starman">Starman</span> <span class="logo-control">Control</span>
           </h1>
           <p class="tagline">
-            A 4X strategy game of exploration, colonies and first contact among the real nearby stars, in the{' '}
+            A 4X strategy game of exploration, colonies, first contact and war among the real nearby stars, in the{' '}
             <a href="https://shotif.github.io/starman-reborn/">Starman Reborn</a> universe.
           </p>
         </header>
@@ -158,7 +158,7 @@ export function Title({ buildId }: { buildId: string }) {
         </nav>
       </div>
       <footer class="title-foot">
-        <p class="status">In development · M1, First light · the first turns are playable</p>
+        <p class="status">In development · M4, Fleets · a whole game can be played, won and lost</p>
         <p class="credit">
           The stars and their places are real. The lanes, the powers and the look of the sky are the game’s fiction.
         </p>
