@@ -1,9 +1,9 @@
 # M3 · Neighbours
 
-*Proposed 21 October 2026, after M2b. **Waiting for the owner's answers to D-12 and D-51 to D-57**
-([DECISIONS.md](../DECISIONS.md#round-6-neighbours-proposed-21-october-2026)); nothing here is built
-until they are given. Each increment will get a detailed design section, written before it is
-built, as M2's and M2b's did.*
+*Proposed 21 October 2026, after M2b. **D-12 and D-51 to D-57 decided on 22 October 2026, every
+one as recommended** ([DECISIONS.md](../DECISIONS.md#round-6-neighbours-decided-22-october-2026)).
+Each increment gets a detailed design section (§18 onwards), written before it is built, as M2's
+and M2b's did, with its notes as built.*
 
 SCOPE.md's M3: *the other human powers as AI, the first two or three alien species, first contact
 and translation, treaties, borders, memory of what you did.* Done when *you meet, trade with and

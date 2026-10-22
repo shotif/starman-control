@@ -120,20 +120,17 @@ notes as built. **M2b is complete.** The owner was asked to try it (a game of
 50 turns or more on a phone and a desktop) and may overrule the picture picks of increments 30
 and 32 (lettered sheets sent).
 
-**Next: M3 "Neighbours"** (SCOPE.md §5), **written and waiting for the owner's answers.**
-[design/M3_NEIGHBOURS.md](design/M3_NEIGHBOURS.md) proposes first contact and translation,
-treaties without war, borders and claims, trade, memory of what each power did, and the first two
-alien species, in increments 33 to 40. Its game-shaping questions are D-12 and D-51 to D-57
-([DECISIONS.md Round 6](DECISIONS.md#round-6-neighbours-proposed-21-october-2026)), each with a
-recommendation. **Build nothing of M3 until they are answered.** Then, as in M2b: record the
-answers, write each increment's detailed design section before building it, and send each
-increment's pictures as lettered sheets, recorded in DECISIONS.md with their cost. D-51's census
-to 33 ly needs a sky fetch on GitHub's runners (Reborn's workflow, or a copy in Control's); ask
-for it if the owner's leave is not plain in their answer.
+**Now: M3 "Neighbours"** (SCOPE.md §5), [design/M3_NEIGHBOURS.md](design/M3_NEIGHBOURS.md): first
+contact and translation, treaties without war, borders and claims, trade, memory of what each
+power did, and the first two alien species, in increments 33 to 40. D-12 and D-51 to D-57 were
+answered *as recommended* on 22 October 2026 ([DECISIONS.md Round 6](DECISIONS.md#round-6-neighbours-decided-22-october-2026)),
+which gives leave to run the sky fetch on GitHub's runners (D-51) and raises the art budget to
+about $50 (D-57). As in M2b: write each increment's detailed design section (§18 onwards) before
+building it, and send each increment's pictures as lettered sheets, recorded in DECISIONS.md with
+their cost.
 
-The art and music spend: about $24.45 of $35 (raised on 21 October 2026; about $10.55 left). M3's
-art is about 65 pictures (about $6.50); D-57 asks the owner to raise D-27 to $50 so M3 has room for
-re-rolls and M4 starts with some.
+The art and music spend: about $24.45 of $50 (raised on 22 October 2026; about $25.55 left). M3's
+art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner
 
