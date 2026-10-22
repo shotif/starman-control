@@ -69,7 +69,8 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--decided-owners-choice)) | Decided 2026-10-22 (owner's choice) | **war plans for the rivals (H), fear at the deciding vote (K), tiring of a leader (C), and a less-loved Cooperative**, built as increment 51: three different winners in eight games (the target was four), none by the vote; every part has a switch |
-| D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
+| D-13, D-70 – D-78 | The M5 design: the Absent, relic sites, the keys, guardians, leaders, espionage, events, the dying star, the species, Pyre | Assumed 2026-10-22 (owner's leave) | **as recommended**, open to the owner to overrule; see [Round 8](#round-8-the-unknown-assumed-22-october-2026) and [M5_UNKNOWN.md](design/M5_UNKNOWN.md) |
+| D-18 | Free or paid, open source or not, Steam or the web only | Open | the owner's; see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
 
@@ -552,7 +553,7 @@ people pay taxes and eat but make nothing; approval does not count them. Built i
 | ID | Question | Needed by | Recommendation in brief |
 | --- | --- | --- | --- |
 | D-12 | The alien roster: how many species in 1.0, and which concepts (drafts in [SCOPE.md §4.11](SCOPE.md#411-alien-species)) | M3 | five or six, each with a different way to play against — and, since they will become playable (D-08), each with enough to play as. **M3's two are decided in [Round 6](#round-6-neighbours-decided-22-october-2026)** |
-| D-13 | The artefacts and the vanished species behind them ([SCOPE.md §4.12](SCOPE.md#412-unknown-artefacts-and-the-precursors)) | M5 | tie them to Reborn's old derelicts and Pyre |
+| D-13 | The artefacts and the vanished species behind them ([SCOPE.md §4.12](SCOPE.md#412-unknown-artefacts-and-the-precursors)) | M5 | tie them to Reborn's old derelicts and Pyre. **Assumed for M5 in [Round 8](#round-8-the-unknown-assumed-22-october-2026)** |
 | D-14 | Victory conditions | M4 (decided) | conquest, a council vote, the artefact hunt, and a score at a turn limit. **Decided for M4 in [Round 7](#round-7-fleets-decided-22-october-2026)** |
 | D-15 | How much is automated (governors and viceroys), and whether attention is a resource ("edicts" spent on changing plans, the idea MoO3 cut) | M2 | **decided with the M2 design** ([Round 4](#round-4-the-m2-design-decided-21-october-2026)): optional governors, edicts as policies paid from attention |
 | D-17 | Live AI text while playing (for example, alien diplomats speaking through a language model) | M4 (decided) | not in 1.0: a public static site cannot hold API keys. Text can be written at build time with the same providers as the art. **Decided for M4 in [Round 7](#round-7-fleets-decided-22-october-2026)** |
@@ -731,6 +732,37 @@ the rivals' lane networks seldom meet, so the stronger cannot carry a war to the
 Co-op's economy leads. What is left is for M5 (the Authority's road through the keys) and M6
 (balance from AI-against-AI games, and a rival's road to war: settling toward its prey). The owner
 may still ask for any part to be undone.
+
+## Round 8: the unknown, assumed 22 October 2026
+
+With M4 built, M5 "The unknown" (SCOPE.md §7) is designed in
+[design/M5_UNKNOWN.md](design/M5_UNKNOWN.md): the precursor mystery, relic sites, the keys,
+guardians, leaders, espionage, events, the dying star and the next species. On 22 October 2026 the
+owner gave standing leave:
+
+> When done with your current work, continue with development according to your best judgement,
+> without asking me anything. [...] Make sure that any major impact on the game is well documented
+> and reversible, so I can maybe change directions later on.
+
+So each question was still written with its options and a recommendation, and is **assumed as
+recommended on that leave**: built that way, documented in the section named, and open to the
+owner to overrule at any time. None needs money beyond the allowance already given (D-27).
+
+| ID | Question | Options | Assumed | Why |
+| --- | --- | --- | --- | --- |
+| **D-13** | The vanished species and their artefacts ([§4](design/M5_UNKNOWN.md#4-the-absent-and-their-mystery-d-13)) | A the Absent, tied to Reborn's derelicts, tones and Pyre · B the heirs' makers · C no single story | **A** | Reborn's own threads (charts older than any, a bridge switched off carefully, a tone for a very long time, Pyre) become one quiet story, with the real white dwarfs as its places |
+| **D-70** | Relic sites ([§5](design/M5_UNKNOWN.md#5-relic-sites-d-70)) | A excavated in chapters, paid in research · B investigated like anomalies · C fixed sites | **A** | a story in chapters with choices, and a road for the power that studies most (D-69) |
+| **D-71** | The keys ([§6](design/M5_UNKNOWN.md#6-the-keys-and-the-answer-d-71)) | A all five, then the Answer · B keys add to the score · C three keys | **A** | a victory everyone can see coming and try to stop, as D-14 asked ("dangerous") |
+| **D-72** | Guardians ([§7](design/M5_UNKNOWN.md#7-guardians-d-72)) | A fixed defences at the sites · B none | **A** | the keys cost a fleet as well as research, using M4's battles |
+| **D-73** | Leaders ([§8](design/M5_UNKNOWN.md#8-leaders-d-73)) | A five posts, traits and loyalty · B admirals and governors only | **A** | SCOPE §4.14 as written, each post a difference a player can read |
+| **D-74** | Espionage ([§9](design/M5_UNKNOWN.md#9-light-espionage-d-74)) | A watching and guarding · B none in 1.0 | **A** | SCOPE §4.10's light espionage; knowing a rival's keys matters now |
+| **D-75** | Events ([§10](design/M5_UNKNOWN.md#10-events-and-the-living-sky-d-75)) | A about fourteen more · B all forty now | **A** | the events that M5's rules need, the rest with M6 |
+| **D-76** | The dying star ([§11](design/M5_UNKNOWN.md#11-the-dying-star-and-the-unhomed-d-76)) | A the arks and the star's death · B the star's death only | **A** | SCOPE's set piece and its species in one, changing the neighbourhood in mid-game |
+| **D-77** | The species ([§12](design/M5_UNKNOWN.md#12-the-machine-heirs-and-the-species-after-them-d-77)) | A the machine heirs and the unhomed · B all four · C the unhomed only | **A** | the two that belong to M5's story; the under-ice thinkers and the chorus after |
+| **D-78** | Pyre ([§13](design/M5_UNKNOWN.md#13-pyre-d-78)) | A off the map, in the story · B on the map, as in Reborn | **A** | the story's pull without a new kind of system to draw; B fits M6's wider maps |
+
+**Left to the owner: D-18** (free or paid, open source or not, Steam or the web only). SCOPE makes
+it part of M5's *done*, and money and platforms are the owner's; nothing in M5 waits on it.
 
 ## Made without waiting
 

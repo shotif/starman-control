@@ -222,6 +222,16 @@ in the score; state version 25. Three different winners in the eight headless ga
 four), none by the vote; shipped on the owner's standing leave, with a switch for every change
 (M4_FLEETS.md, *Increment 51*). The owner is asked to try it.
 
+**Now: M5 "The unknown"** ([design/M5_UNKNOWN.md](design/M5_UNKNOWN.md)): the Absent and their
+mystery, relic sites excavated in chapters, the keys and the Answer (a fourth road to victory),
+guardians, leaders, light espionage, more events, the dying star and the unhomed, and the machine
+heirs, in increments 52 to 60. On 22 October 2026 the owner gave standing leave to go on by best
+judgement without asking, as long as every major change is documented and reversible; so D-13 and
+D-70 to D-78 are **assumed as recommended** ([DECISIONS.md Round 8](DECISIONS.md#round-8-the-unknown-assumed-22-october-2026)),
+and the owner may overrule any. D-18 (Steam, money) stays the owner's. As before: write each
+increment's detailed design section (§20 onwards) before building it, note it as built, and say in
+it how to undo it.
+
 The art and music spend: about $27.55 of $50 (raised on 22 October 2026; about $22.45 left). M3's
 art is about 65 pictures (about $6.50).
 
