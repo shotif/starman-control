@@ -268,7 +268,9 @@ export type ReportEvent =
   /** A key of the Absent found, taken with its holding (from another), or lost with it to its site. */
   | { kind: 'key'; system: SystemId; stage: 'found' | 'taken' | 'lost'; by: FactionId | null; from?: FactionId }
   /** The Answer begun, a turn nearer (the turns left), or stopped. */
-  | { kind: 'answer'; by: FactionId; stage: 'begun' | 'turns' | 'stopped'; left: number };
+  | { kind: 'answer'; by: FactionId; stage: 'begun' | 'turns' | 'stopped'; left: number }
+  /** Our agents' intelligence of a power reached a mark (M5_UNKNOWN.md §23.1). */
+  | { kind: 'intel'; faction: FactionId; level: number };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {

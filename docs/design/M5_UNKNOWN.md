@@ -35,6 +35,8 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 19. [Decisions](#19-decisions)
 20. [Increment 52 in detail: relic sites](#20-increment-52-in-detail-relic-sites-written-before-building-it)
 21. [Increment 53 in detail: the keys and the Answer](#21-increment-53-in-detail-the-keys-and-the-answer-written-before-building-it)
+22. [Increment 54 in detail: events and the living sky](#22-increment-54-in-detail-events-and-the-living-sky-written-before-building-it)
+23. [Increment 55 in detail: light espionage](#23-increment-55-in-detail-light-espionage-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -761,3 +763,87 @@ and its case out of `subjectsFor` and `apply` (`src/sim/events.ts`); its numbers
 `tests/unit/rivals.test.ts`.
 
 - **Tests:** `events.test.ts` (two more: where each of the thirteen comes, and what their choices do).
+
+## 23. Increment 55 in detail: light espionage (written before building it)
+
+**Goals.** §9: agents that watch another power and agents that guard home, for credits, with what
+they learn shown where the player deals with that power. **Out of scope:** sabotage, theft and
+unrest (SCOPE §4.10, later); agents as leaders (increment 56 may give them names).
+
+### 23.1 Watching
+
+- **A power watches another it is in contact with,** for 5 credits a turn (*Watch them* on the
+  diplomacy screen; *Recall our agents* to stop).
+- **Intelligence** of that power rises 10 a turn while watched, up to 100, less 4 for each step of
+  guard the watched power keeps (never less than 2); unwatched, it fades 5 a turn.
+- **What it shows,** as it rises: at **25**, every colony and outpost of theirs, as if surveyed; at
+  **50**, their ships at their own holdings, as if watched there; at **75**, their technologies,
+  what they research now and their treasury. Below a mark again, what it showed is hidden again.
+- **The Watch reports** each mark reached: *Our agents among the Hollow Wake now know where every
+  holding of theirs lies.*
+
+### 23.2 Guarding
+
+- **Guard home:** none, some or much (0, 1 or 2 steps), for 5 credits a turn a step; each step takes
+  4 from the intelligence every other power gathers of us each turn.
+
+### 23.3 The rivals
+
+- **They watch by character:** the Wake and the Moot two powers, the Authority and the Concord one,
+  the Co-op none; the powers they watch are those with the highest scores they know, from turn 100
+  and while their treasury is at least 60 and gaining.
+- **They guard** a step while at war or holding a key of the Absent, if their treasury allows the
+  same, else not at all.
+
+### 23.4 On the screen
+
+- **Diplomacy,** under each power: *Agents* with what we know (a bar to 100 and what each mark
+  shows), *Watch them* or *Recall our agents*, and, at 75, their technologies, research and
+  treasury. At the top: *Guard home*, none, some or much, with its cost.
+- **The treasury** names the agents' cost among its parts.
+
+### 23.5 State
+
+Each power's `agents` (the powers it watches), `guard` (0 to 2) and `intel` (its intelligence of
+each other power, 1 to 100, those at 0 left out). **State version 28**; an older save has none.
+
+### 23.6 Tests
+
+- **Unit** (`espionage.test.ts`): watching and recalling; the gain, the guard and the fading; each
+  mark and what it shows in the known view; the cost in the treasury; the Watch's reports; the
+  rivals' watching and guarding; the migration.
+- **Journey** (`espionage.spec.ts`, phone, tablet and desktop): watching a power until its holdings
+  show, and guarding home.
+
+### As built (22 October 2026)
+
+As designed above, with these differences and details:
+
+- **The rivals watch later and only while they can afford it:** from turn 100, with at least 60
+  credits and income to spare (§23.3). Watching from the start, with 40 credits, cost the Wake the
+  treaty M3's target asks of it by turn 100 (seed 2176), and the Moot's watching kept seed 42's
+  Authority in debt for seven turns; both mended this way.
+- **The rivals guard only while healthy,** as above: a step at war or with a key, if the same
+  treasury rule allows it.
+- **A power's agents** sit on the diplomacy screen under each power it has heard (*Agents*, with a
+  bar and what each mark shows), and *Guard home* at the top of the list. The report names the mark:
+  *Our agents among the Hollow Wake now know where every holding of theirs lies.*
+- **What the marks show** goes through the same view as everything else: at 25 a power's holdings
+  are drawn as if surveyed (`seesHolding`), at 50 its holdings' systems are watched for ships
+  (`watchedSystems`), and at 75 the diplomacy screen shows their technologies, research and treasury.
+- **Tests:** `espionage.test.ts` (5) and `espionage.spec.ts` (phone, tablet and desktop).
+
+**Numbers** (M2_BALANCE.md): little changes by turn 100. To turn 250, two winners only, the Co-op
+seven and the Wake one: seed 3 went from the Concord to the Co-op, the kind of swing a small change
+makes there. D-69's target stays unmet, for the proof (increment 59) and M6. The deepest debt was
+−192 and the longest 49 turns; the slowest turn took 100 ms and the largest save 125.2 KB.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| The cost, gain, guard, fading and marks | `RULES.espionage` (`src/content/rules.ts`) |
+| When the rivals watch, and with what | `RULES.espionage.rivalsFrom`, `watchFrom` |
+| How many powers each rival watches | `PERSONALITIES[…].watches` (`src/sim/ai.ts`), 0 for none |
+| What each mark shows | `knowsHoldings`, `knowsShips`, `knowsSecrets` (`src/sim/espionage.ts`) |
+| Espionage off altogether | `watches: 0` for every rival and the *Agents* and *Guard home* lines taken out of `diplomacy.tsx` |

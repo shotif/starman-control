@@ -8,6 +8,7 @@ import { GREAT_WORKS, PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
+import { knowsHoldings, knowsShips } from './espionage.ts';
 import type { ReportEvent } from './report.ts';
 import { effects } from './research.ts';
 import { scoreOf } from './score.ts';
@@ -26,6 +27,8 @@ import { laneEnds, type World } from './world.ts';
 export function watchedSystems(world: World, state: GameState, faction: FactionId): Set<SystemId> {
   const mine = state.holdings.filter((h) => h.owner === faction);
   const out = new Set<SystemId>(mine.map((h) => h.system));
+  // Our agents see another power's ships at its own holdings (M5_UNKNOWN.md §23.1).
+  for (const h of state.holdings) if (h.owner !== faction && knowsShips(state, faction, h.owner)) out.add(h.system);
   const scanners = mine.filter((h) => h.projects.includes('deep-space-scanner')).map((h) => h.system);
   // Scanner arrays see further (M2B_SCIENCE.md §18.2).
   const reach = Math.max(RULES.projects.scannerDeci, ...effects(state, faction, 'scanner-deci').map((e) => e.deci));
@@ -43,7 +46,9 @@ export function seesHolding(state: GameState, faction: FactionId, h: Holding): b
   return (
     h.owner === faction ||
     powerOf(state, faction).surveyed.includes(h.system) ||
-    h.projects.some((p) => GREAT_WORKS.includes(p))
+    h.projects.some((p) => GREAT_WORKS.includes(p)) ||
+    // Our agents know where every holding of theirs lies (M5_UNKNOWN.md §23.1).
+    knowsHoldings(state, faction, h.owner)
   );
 }
 

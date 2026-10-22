@@ -15,6 +15,7 @@ import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.t
 import { castVote, propose, proposeRefusal, voteRefusal } from './assembly.ts';
 import { designRefusal, makeDesign, retireRefusal } from './designs.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
+import { isGuardStep, setWatch, watchRefusal } from './espionage.ts';
 import { choiceRefusal } from './events.ts';
 import {
   fleetAt,
@@ -38,6 +39,7 @@ import {
   DIG_SHARES,
   type DigShare,
   type GameState,
+  type GuardStep,
   type Mission,
   type OfferKind,
   powerOf,
@@ -132,7 +134,10 @@ export type Order =
   | { type: 'dig-share'; share: DigShare }
   | { type: 'chapter-choice'; system: SystemId; choice: 0 | 1 }
   /** The Answer begun (M5_UNKNOWN.md §21.3). */
-  | { type: 'begin-answer' };
+  | { type: 'begin-answer' }
+  /** Agents set to watch a power, or recalled; and the guard kept at home (M5_UNKNOWN.md §23). */
+  | { type: 'watch'; on: FactionId; watch: boolean }
+  | { type: 'guard'; level: GuardStep };
 
 type FleetOrder = Extract<
   Order,
@@ -244,6 +249,8 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'stop-excavation') return stopRefusal(state, faction, order.system);
   if (order.type === 'dig-share') return DIG_SHARES.includes(order.share) ? null : 'There is no such share.';
   if (order.type === 'begin-answer') return beginAnswerRefusal(state, faction);
+  if (order.type === 'watch') return watchRefusal(state, faction, order.on, order.watch);
+  if (order.type === 'guard') return isGuardStep(order.level) ? null : 'There is no such guard.';
   if (order.type === 'chapter-choice')
     return order.choice === 0 || order.choice === 1
       ? chapterRefusal(state, faction, order.system)
@@ -398,6 +405,14 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'begin-answer') {
     beginAnswer(next, faction);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'watch') {
+    setWatch(next, faction, order.on, order.watch);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'guard') {
+    powerOf(next, faction).guard = order.level;
     return { ok: true, state: next };
   }
   if (order.type === 'gift') {

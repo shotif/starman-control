@@ -318,6 +318,12 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   },
   /** 26 → 27 (M5 increment 53): the keys of the Absent. None found yet, and no Answer under way. */
   26: (g) => ({ ...g, version: 27, keys: [], answer: null }),
+  /** 27 → 28 (M5 increment 55): espionage. No agents watching, no guard, nothing known yet. */
+  27: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
+    const powers = (g.powers as Raw[]).map((p) => ({ ...p, agents: [], guard: 0, intel: [] }));
+    return { ...g, version: 28, powers };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

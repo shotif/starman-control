@@ -389,6 +389,26 @@ export const RULES = {
     resource: [40, 80, 120] as const,
     charts: [3, 5, 8] as const,
   },
+  /** Light espionage (M5_UNKNOWN.md §23): what agents cost, gather and show. */
+  espionage: {
+    /** Credits a turn for each power watched, and for each step of guard. */
+    watchCost: 5,
+    guardCost: 5,
+    /** Intelligence gathered a turn, less so much for each step of the other's guard, never less than the least. */
+    gain: 10,
+    guardLess: 4,
+    least: 2,
+    /** Intelligence lost a turn while not watched. */
+    fade: 5,
+    most: 100,
+    /** The marks: holdings shown, ships at them, and technologies, research and treasury. */
+    holdings: 25,
+    ships: 50,
+    secrets: 75,
+    /** A rival watches others only from this turn (the first years are for settling and meeting), with so many credits or more, and gaining. */
+    rivalsFrom: 100,
+    watchFrom: 60,
+  },
   /** The keys and the Answer (M5_UNKNOWN.md §21): how many, the fear of them, the Answer's turns. */
   keys: {
     count: 5,

@@ -27,6 +27,7 @@ import type { Order } from './orders.ts';
 import { canExcavate, digAt, excavateRefusal, knownSites } from './relics.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
 import { reachableFrom, roadStep } from './roads.ts';
+import { scoreOf } from './score.ts';
 import {
   type Amount,
   contactWith,
@@ -74,6 +75,8 @@ export interface Personality {
   /** The share of its research it gives its excavations, and whether it studies a chapter rather than take (M5_UNKNOWN.md §20.7). */
   digs: DigShare;
   studies: boolean;
+  /** How many powers its agents watch (M5_UNKNOWN.md §23.3). */
+  watches: number;
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -90,6 +93,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     greatWork: 'lapse-archive',
     digs: 50,
     studies: true,
+    watches: 1,
   },
   frontier: {
     capital: 'grow',
@@ -103,6 +107,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     greatWork: 'commons',
     digs: 25,
     studies: false,
+    watches: 0,
   },
   'hollow-wake': {
     capital: 'produce',
@@ -116,6 +121,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     greatWork: 'lanewright-foundry',
     digs: 0,
     studies: false,
+    watches: 2,
   },
   // Patient expanders far from anyone's lanes (M3_NEIGHBOURS.md §24.7).
   'dusk-concord': {
@@ -130,6 +136,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     greatWork: 'commons',
     digs: 25,
     studies: false,
+    watches: 1,
   },
   // Brokers of the giants' fuel (M3_NEIGHBOURS.md §25.7).
   'drift-moot': {
@@ -144,6 +151,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     greatWork: 'lanewright-foundry',
     digs: 25,
     studies: true,
+    watches: 2,
     broker: true,
   },
 };
@@ -341,6 +349,23 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
             : null;
     if (ship) orders.push({ type: 'queue', holding: h.id, item: ship });
   }
+
+  // Agents (M5_UNKNOWN.md §23.3): it watches the powers it knows with the highest scores, as many as
+  // its character likes, while its treasury is healthy and gaining; it guards a step at war or with a key.
+  const healthy = power.treasury >= RULES.espionage.watchFrom && income > 0;
+  const guardWanted = healthy && (atWarNow || keysHeld(state, faction).length > 0) ? 1 : 0;
+  if (power.guard !== guardWanted) orders.push({ type: 'guard', level: guardWanted });
+  const watchable =
+    state.turn >= RULES.espionage.rivalsFrom && healthy
+      ? state.powers
+          .filter((p) => p.faction !== faction && p.left === null && contactWith(power, p.faction))
+          .map((p) => ({ f: p.faction, score: scoreOf(state, p.faction).total }))
+          .sort((a, b) => b.score - a.score || (a.f < b.f ? -1 : 1))
+          .slice(0, me.watches)
+          .map((x) => x.f)
+      : [];
+  for (const f of power.agents) if (!watchable.includes(f)) orders.push({ type: 'watch', on: f, watch: false });
+  for (const f of watchable) if (!power.agents.includes(f)) orders.push({ type: 'watch', on: f, watch: true });
 
   // At war, a battery at the capital and at each colony with a shipyard, as the treasury allows
   // (M4_FLEETS.md §26.11).

@@ -236,6 +236,17 @@ export function shapeProblems(raw: unknown): string[] {
       if (p.digShare !== 0 && p.digShare !== 25 && p.digShare !== 50)
         out.push(`power ${i}'s share for excavations is not a share`);
       if (!isWhole(p.chapters)) out.push(`power ${i}'s chapters done is not a whole number`);
+      // Espionage (M5_UNKNOWN.md §23.5).
+      if (!Array.isArray(p.agents) || !p.agents.every((f) => isFactionId(f)))
+        out.push(`power ${i}'s agents are not powers`);
+      if (p.guard !== 0 && p.guard !== 1 && p.guard !== 2) out.push(`power ${i}'s guard is not a step`);
+      if (
+        !Array.isArray(p.intel) ||
+        !p.intel.every(
+          (x) => isRecord(x) && isFactionId(x.faction) && isWhole(x.level, 1) && (x.level as number) <= 100,
+        )
+      )
+        out.push(`power ${i}'s intelligence is not a list of powers known`);
       // Designs (M4_FLEETS.md §21.3).
       if (
         !Array.isArray(p.designs) ||

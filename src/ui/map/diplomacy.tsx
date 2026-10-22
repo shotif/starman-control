@@ -26,6 +26,7 @@ import { atWar } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
 import { AdvisorFace, FactionTag } from '../parts.tsx';
 import { AdvisorBy } from './advisor.tsx';
+import { Agents, GuardHome } from './espionage.tsx';
 import { give, type Play } from './play.tsx';
 import { panel } from './state.ts';
 import { WarAndPeace } from './war.tsx';
@@ -371,6 +372,7 @@ export function DiplomacyView({
         {contactWith(me, other)?.stage === 'talk' && !atWar(game, faction, other) && (
           <Exchange world={world} game={game} faction={faction} other={other} play={play} />
         )}
+        <Agents game={game} faction={faction} other={other} play={play} />
         <h4>A gift</h4>
         {waiting ? (
           <p>
@@ -417,6 +419,7 @@ export function DiplomacyView({
   return (
     <div class={`diplomacy${table ? ' diplomacy-table' : ''}`}>
       <AdvisorBy faction={faction} department="envoy" />
+      {heard.length > 0 && <GuardHome game={game} faction={faction} play={play} />}
       {/* The Assembly (M4_FLEETS.md §29.4): its own screen, first from here. */}
       <button type="button" class="diplomacy-power diplomacy-assembly" onClick={() => (panel.value = 'assembly')}>
         <b>The Assembly</b>

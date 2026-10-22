@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 27;
+export const STATE_VERSION = 28;
 
 export interface Stockpile {
   metals: number;
@@ -94,7 +94,15 @@ export interface PowerState {
   digShare: DigShare;
   /** How many chapters of excavation it has completed, which says its next revelation (§20.5). */
   chapters: number;
+  /** The powers its agents watch, the steps of its guard, and its intelligence of others (M5_UNKNOWN.md §23.5). */
+  agents: FactionId[];
+  guard: GuardStep;
+  intel: { faction: FactionId; level: number }[];
 }
+
+/** The steps of guard a power may keep at home (M5_UNKNOWN.md §23.2). */
+export const GUARD_STEPS = [0, 1, 2] as const;
+export type GuardStep = (typeof GUARD_STEPS)[number];
 
 /** The shares of research a power may give its excavations (M5_UNKNOWN.md §20.3). */
 export const DIG_SHARES = [0, 25, 50] as const;
@@ -644,6 +652,9 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       story: { wars: 0, battles: 0, taken: 0, research: 0, industry: 0 },
       digShare: RULES.relics.share as DigShare,
       chapters: 0,
+      agents: [],
+      guard: 0 as GuardStep,
+      intel: [],
     })),
     lanes,
     ships: [],

@@ -37,6 +37,7 @@ import {
   upkeepOf,
   yieldsOf,
 } from './economy.ts';
+import { resolveEspionage } from './espionage.ts';
 import { resolveEvents } from './events.ts';
 import { fleetById, moveFleet, placeBuilt, pruneFleets } from './fleets.ts';
 import { governAll } from './governor.ts';
@@ -560,6 +561,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
       (events.get(p.faction) as ReportEvent[]).push({ kind: 'edict-ended', edict: e.edict, holding: e.holding });
     p.edicts = p.edicts.filter((e) => e.left > 0);
   }
+
+  // 9b. Espionage (M5_UNKNOWN.md §23): what each power's agents have gathered this turn.
+  resolveEspionage(state, events);
 
   // 10. The Watch (M2_WORLDS.md §26.3): what each power newly sees of the others.
   for (const p of state.powers) events.get(p.faction)?.push(...watchNews(world, before, state, p.faction));

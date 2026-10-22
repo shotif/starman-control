@@ -240,7 +240,10 @@ capital, found with a site's third chapter, taken and lost with their holding, f
 for peace goes to war on it; a road for the rivals to the sites; fear at the deciding vote mended;
 state version 27. No headless game is won by the keys, and the Co-op still wins most: both for M6. **Guardians deferred to M6** (§7). **Done: increment 54, events and the living
 sky** (§22): thirteen events more, twenty-five in all, five of the relics, three of the sky (a great
-flare and a nova, real astronomy marked) and one for each power.
+flare and a nova, real astronomy marked) and one for each power. **Done: increment 55, light
+espionage** (§23): agents watch a power for credits, learning its holdings, its ships and its
+secrets as their intelligence rises; a guard at home; the rivals by character from turn 100; state
+version 28.
 
 The art and music spend: about $29.55 of $50 (raised on 22 October 2026; about $20.45 left). M3's
 art is about 65 pictures (about $6.50).

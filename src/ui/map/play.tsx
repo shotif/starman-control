@@ -41,6 +41,7 @@ import { BattleWhy, battleText } from './battle.tsx';
 import { costText, Founding, holdingName, needText } from './colony.tsx';
 import { ModuleList, StatsLine } from './designs.tsx';
 import { endText } from './end.tsx';
+import { intelText } from './espionage.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
 import { bombardedText, invasionText, RadioTraffic, raidedText } from './invasion.tsx';
@@ -662,6 +663,8 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'key':
     case 'answer':
       return relicText(world, game, e, playerPower(game)?.faction) ?? '';
+    case 'intel':
+      return intelText(e);
   }
 }
 
@@ -744,6 +747,7 @@ function eventPlace(
     case 'peace-made':
     case 'subdued':
     case 'tribute':
+    case 'intel':
       return { system: playerPower(game)?.capital ?? 'sol' };
     // The Assembly's events open its screen (M4_FLEETS.md §29.4).
     case 'assembly-formed':
@@ -855,6 +859,7 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'chapter-answered': { icon: 'anomaly', tone: 'growth' },
   key: { icon: 'anomaly', tone: 'news' },
   answer: { icon: 'anomaly', tone: 'needs' },
+  intel: { icon: 'diplomacy', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

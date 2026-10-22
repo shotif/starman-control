@@ -23,6 +23,7 @@ import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
 import { claimOf, tradeIncome } from './borders.ts';
 import { buildable, designCost, designOf, refitCost, refitRefusal } from './designs.ts';
+import { agentsCost } from './espionage.ts';
 import { lastingLabel, lastingOn } from './events.ts';
 import { ceilDiv } from './geometry.ts';
 import { type Habitability, habitability } from './habitability.ts';
@@ -712,6 +713,9 @@ export function upkeepOf(state: GameState, faction: FactionId): Figure {
   if (ships > 0) parts.push({ label: 'ships', value: ships });
   if (outposts > 0) parts.push({ label: 'outposts', value: outposts });
   if (projects > 0) parts.push({ label: 'projects', value: projects });
+  // Agents watching and guarding (M5_UNKNOWN.md §23).
+  const agents = agentsCost(state, faction);
+  if (agents > 0) parts.push({ label: 'agents', value: agents });
   return { total: sum(parts), parts };
 }
 
