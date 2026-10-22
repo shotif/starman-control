@@ -28,6 +28,21 @@ const PICTURE_ALT: Record<EventId, string> = {
   defectors: 'A small survey ship drifting towards a docking light, its crew at the lit window.',
   smugglers: 'A battered shuttle in a hidden corner of a spaceport, crates of glowing fuel cells being unloaded.',
   'founders-day': 'A colony square at night, crowds under lanterns and fireworks over the domes.',
+  // M5 (M5_UNKNOWN.md §22).
+  'dust-stirs': 'A field of fine dust swirling in slow rings round a lit excavation platform in space, crew watching.',
+  'rival-dig': 'A distant excavation seen through a telescope: work lights on a dark moon, a strange ship beside it.',
+  'key-sings':
+    'A smooth dark object on a shelf in a dim vault, faint rings of light pulsing from it, a technician covering their ears.',
+  'second-tone': 'A lane beacon with faint waves passing through it, a pilot listening with eyes closed.',
+  'charts-match': 'An astronomer at night laying an old chart of glowing points over the real sky, one point circled.',
+  'great-flare': 'A red dwarf erupting in an enormous flare above a planet, auroras blazing over shuttered domes.',
+  nova: 'One new star blazing in a colony night sky, people on rooftops looking up.',
+  'meteor-storm': 'Meteors streaking across a colony sky, a fireball breaking up above lit domes.',
+  audit: 'Two officials going through ledgers and screens in a cramped customs office at night.',
+  shareholders: 'A crowded hall of settlers raising hands to vote, a tally board behind the speaker.',
+  feud: 'Two rough crews facing each other across a dim hangar of battered ships.',
+  'long-night': 'Fields half in shadow on a twilight world, a dim red sun low on the horizon, workers with lamps.',
+  'great-storm': 'A vast storm rising in a gas giant’s clouds, floating towns drawing in their cables.',
 };
 
 /** "Turns" in words. */
@@ -66,7 +81,7 @@ export function EventCard({
   const left = Math.max(1, RULES.events.waits - (game.turn - ev.turn));
   const pic = `${base}art/illustration/event-${ev.id}`;
   const star =
-    ev.id === 'flare' && ev.system
+    (ev.id === 'flare' || ev.id === 'great-flare') && ev.system
       ? world.system(ev.system).sky.stars.find((s) => s.flareVariable !== undefined)?.flareVariable
       : undefined;
   return (
@@ -90,6 +105,12 @@ export function EventCard({
         <p class="event-real">
           {star}, in {world.system(ev.system).name}, is a catalogued flare star <Badge kind="observed" />. When it
           flares here is the game’s fiction <Badge kind="fiction" />.
+        </p>
+      )}
+      {ev.id === 'nova' && (
+        <p class="event-real">
+          Novae are real: a white dwarf drawing gas from a companion star flares up for weeks <Badge kind="observed" />.
+          Which star, and when, is the game’s fiction <Badge kind="fiction" />.
         </p>
       )}
       <fieldset class="event-choices">

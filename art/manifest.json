@@ -6706,6 +6706,32 @@
       "aiGenerated": true
     },
     {
+      "briefId": "event-audit",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Two officials in plain uniforms going through ledgers and screens in a cramped spaceport customs office at night, a single lamp.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:41:16.454Z",
+      "note": "Here is the illustration for your strategy game event, featuring two officials working diligently in a cramped spaceport office at night.",
+      "id": "event-audit",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:07.663Z",
+      "candidate": "art/out/event-audit/20261022-224046-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-audit-640.webp",
+          "bytes": 27160
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-audit-1280.webp",
+          "bytes": 74090
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "event-blight",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6726,6 +6752,31 @@
           "width": 1280,
           "path": "art/illustration/event-blight-1280.webp",
           "bytes": 93638
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-charts-match",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: An astronomer at a desk at night under an observatory dome, an old chart of glowing points laid over a screen of the real sky, one point circled in red.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:38:39.024Z",
+      "id": "event-charts-match",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:05.703Z",
+      "candidate": "art/out/event-charts-match/20261022-223758-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-charts-match-640.webp",
+          "bytes": 24668
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-charts-match-1280.webp",
+          "bytes": 69596
         }
       ],
       "aiGenerated": true
@@ -6806,6 +6857,31 @@
       "aiGenerated": true
     },
     {
+      "briefId": "event-dust-stirs",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A field of fine glittering dust swirling in slow rings round a lit excavation platform in deep space, a few crew in suits watching from its rail.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:35:23.525Z",
+      "id": "event-dust-stirs",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:03.810Z",
+      "candidate": "art/out/event-dust-stirs/20261022-223503-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-dust-stirs-640.webp",
+          "bytes": 36928
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-dust-stirs-1280.webp",
+          "bytes": 132162
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "event-epidemic",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6826,6 +6902,32 @@
           "width": 1280,
           "path": "art/illustration/event-epidemic-1280.webp",
           "bytes": 79078
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-feud",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Two rough crews facing each other across a dim hangar of battered, mismatched ships, tension in the air, one figure stepping between them.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:43:08.297Z",
+      "note": "Here is a cinematic widescreen illustration that captures the tense sci-fi standoff inside a battered hangar, utilizing a painterly style and grounded science fiction atmosphere. Let me know if you would like any adjustments to the composition or scene.",
+      "id": "event-feud",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:08.678Z",
+      "candidate": "art/out/event-feud/20261022-224220-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-feud-640.webp",
+          "bytes": 36302
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-feud-1280.webp",
+          "bytes": 100702
         }
       ],
       "aiGenerated": true
@@ -6882,6 +6984,56 @@
       "aiGenerated": true
     },
     {
+      "briefId": "event-great-flare",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A small red dwarf star erupting in an enormous flare that fills half the sky above a planet, auroras blazing over a settlement of domes with shutters closed.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:38:59.228Z",
+      "id": "event-great-flare",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:06.175Z",
+      "candidate": "art/out/event-great-flare/20261022-223839-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-great-flare-640.webp",
+          "bytes": 26902
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-great-flare-1280.webp",
+          "bytes": 71622
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-great-storm",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A vast storm rising through the banded clouds of a gas giant, lightning inside it, small floating towns drawing in their cables nearby.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:44:26.579Z",
+      "id": "event-great-storm",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:09.615Z",
+      "candidate": "art/out/event-great-storm/20261022-224348-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-great-storm-640.webp",
+          "bytes": 18030
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-great-storm-1280.webp",
+          "bytes": 52206
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "event-harvest",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6902,6 +7054,31 @@
           "width": 1280,
           "path": "art/illustration/event-harvest-1280.webp",
           "bytes": 53252
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-key-sings",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A strange smooth object of dark metal resting on a shelf in a dim stone vault, faint rings of pale light pulsing out from it, a technician nearby with hands over her ears.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:36:59.086Z",
+      "id": "event-key-sings",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:04.740Z",
+      "candidate": "art/out/event-key-sings/20261022-223639-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-key-sings-640.webp",
+          "bytes": 19080
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-key-sings-1280.webp",
+          "bytes": 51600
         }
       ],
       "aiGenerated": true
@@ -6932,6 +7109,82 @@
       "aiGenerated": true
     },
     {
+      "briefId": "event-long-night",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: The twilight band of a tidally locked world: fields of dark crops half in shadow, a dim red sun low and unmoving on the horizon, workers moving lamps.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:43:28.011Z",
+      "id": "event-long-night",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:09.131Z",
+      "candidate": "art/out/event-long-night/20261022-224308-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-long-night-640.webp",
+          "bytes": 17922
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-long-night-1280.webp",
+          "bytes": 49500
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-meteor-storm",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Meteors streaking across the night sky of a colony world, one bright fireball breaking up, domes below with their lights on.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:40:46.014Z",
+      "note": "Here is a widescreen cinematic illustration capturing the quiet, vast scale of a colony world underneath a meteor shower, with the main fireball's breakup as a clear focal point. Let me know if you would like any adjustments.",
+      "id": "event-meteor-storm",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:07.155Z",
+      "candidate": "art/out/event-meteor-storm/20261022-224000-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-meteor-storm-640.webp",
+          "bytes": 21882
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-meteor-storm-1280.webp",
+          "bytes": 70316
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-nova",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A night sky over a colony with one new star blazing brighter than all the others, people standing on rooftops and terraces looking up.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:39:59.856Z",
+      "id": "event-nova",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:06.690Z",
+      "candidate": "art/out/event-nova/20261022-223917-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-nova-640.webp",
+          "bytes": 27040
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-nova-1280.webp",
+          "bytes": 84690
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "event-petition",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -6952,6 +7205,82 @@
           "width": 1280,
           "path": "art/illustration/event-petition-1280.webp",
           "bytes": 83574
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-rival-dig",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A distant excavation seen through a long-range telescope: work lights on a small dark moon, an unfamiliar ship beside it, the view framed by a round scope.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:36:12.998Z",
+      "note": "Here is the cinematic widescreen illustration for your strategy game event, featuring the distant excavation through a telescope.",
+      "id": "event-rival-dig",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:04.257Z",
+      "candidate": "art/out/event-rival-dig/20261022-223552-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-rival-dig-640.webp",
+          "bytes": 13318
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-rival-dig-1280.webp",
+          "bytes": 39590
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-second-tone",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A ring-shaped lane beacon in space with faint concentric waves passing through it, and in a small cockpit nearby a pilot listening with eyes closed.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:37:38.770Z",
+      "id": "event-second-tone",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:05.231Z",
+      "candidate": "art/out/event-second-tone/20261022-223718-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-second-tone-640.webp",
+          "bytes": 30156
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-second-tone-1280.webp",
+          "bytes": 88072
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "event-shareholders",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A crowded meeting hall of settlers in work clothes raising their hands to vote, a simple tally board behind the speaker.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:42:01.995Z",
+      "id": "event-shareholders",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:45:08.161Z",
+      "candidate": "art/out/event-shareholders/20261022-224142-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/event-shareholders-640.webp",
+          "bytes": 38946
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/event-shareholders-1280.webp",
+          "bytes": 109140
         }
       ],
       "aiGenerated": true

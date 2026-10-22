@@ -238,9 +238,11 @@ deep debt; state version 26. **Done: increment 53, the keys and the Answer** (§
 capital, found with a site's third chapter, taken and lost with their holding, feared; the Answer
 (10 turns with all five and The instrument) and victory by the keys; every rival that does not call
 for peace goes to war on it; a road for the rivals to the sites; fear at the deciding vote mended;
-state version 27. No headless game is won by the keys, and the Co-op still wins most: both for M6.
+state version 27. No headless game is won by the keys, and the Co-op still wins most: both for M6. **Guardians deferred to M6** (§7). **Done: increment 54, events and the living
+sky** (§22): thirteen events more, twenty-five in all, five of the relics, three of the sky (a great
+flare and a nova, real astronomy marked) and one for each power.
 
-The art and music spend: about $28.25 of $50 (raised on 22 October 2026; about $21.75 left). M3's
+The art and music spend: about $29.55 of $50 (raised on 22 October 2026; about $20.45 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

@@ -222,7 +222,7 @@ describe('excavating (§20.3)', () => {
       return { g, p, d, line: ev.get('sta')?.find((e) => e.kind === 'chapter-answered'), surveyed };
     };
     const study = run('vault', 0);
-    expect(study.line).toMatchObject({ choice: 0, auto: false, research: 200 });
+    expect(study.line).toMatchObject({ choice: 0, auto: false, research: 300 });
     expect(study.d.waiting).toBeNull();
     const metals = powerOf(five(), 'sta').stockpile.metals;
     const take = run('vault', 1);
@@ -236,7 +236,7 @@ describe('excavating (§20.3)', () => {
     expect(charts.surveyed.every((s) => charts.p.surveyed.includes(s))).toBe(true);
     // Unanswered: it waits, then takes the first.
     expect(run('vault', null, 2).line).toBeUndefined();
-    expect(run('vault', null, 3).line).toMatchObject({ choice: 0, auto: true, research: 200 });
+    expect(run('vault', null, 3).line).toMatchObject({ choice: 0, auto: true, research: 300 });
   });
 
   it('stops when its power no longer holds the system, keeping its progress for another', () => {

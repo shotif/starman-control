@@ -182,6 +182,12 @@ limit adds to the score, with no victory of their own · C. three keys, for shor
 
 **Options:** **A. guardians as fixed defences at the sites (recommended)** · B. none in M5.
 
+**Deferred (22 October 2026, after increment 53).** Every battle, its replay and its report assume
+each side is a power; guardians that belong to none need a side of their own throughout, a large
+change. And in the headless games no rival yet gathers more than two keys: guardians would make the
+keys harder still. So M5 goes on without them (B, for now); they come back with M6's balance, when
+the rivals can carry the long campaign the keys need.
+
 ## 8. Leaders (D-73)
 
 - **Named people, fiction,** in five posts: an **admiral** commands a fleet, a **governor** a
@@ -307,13 +313,13 @@ Each keeps the game playable, passes CI and deploys from `main`.
 | --- | --- | --- |
 | 52 | **Relic sites** | sites placed, found and excavated in chapters with choices; research shared; Xenology I; the journal |
 | 53 | **The keys and the Answer** | keys, their fear, the Answer, victory by the keys, the rivals' hunt |
-| 54 | **Guardians** | guardians at sites, the order to clear them, their battles and replay |
-| 55 | **Leaders** | the pool, five posts, traits, loyalty |
-| 56 | **Light espionage** | agents watching and guarding, the Watch's reports |
-| 57 | **Events and the living sky** | about fourteen events more, the great flare |
-| 58 | **The dying star and the unhomed** | the arks, the star's death, a power arriving in mid-game |
-| 59 | **The machine heirs** | a new species and power |
-| 60 | **The proof** | the headless games with the unknown; the owner's try |
+| 54 | **Events and the living sky** | about fourteen events more, the great flare |
+| 55 | **Light espionage** | agents watching and guarding, the Watch's reports |
+| 56 | **Leaders** | the pool, five posts, traits, loyalty |
+| 57 | **The dying star and the unhomed** | the arks, the star's death, a power arriving in mid-game |
+| 58 | **The machine heirs** | a new species and power |
+| 59 | **The proof** | the headless games with the unknown; the owner's try |
+| — | **Guardians** | deferred to M6 (§7) |
 
 ## 17. Tests and budgets
 
@@ -698,3 +704,60 @@ longest 69 turns (126 before). The slowest turn took 110 ms (turn 233); the larg
 - **Tests:** `keys.test.ts` (10 tests), one more in `roads.test.ts` (fear within reach), and
   `keys.spec.ts` on the phone, tablet and desktop: five keys and The instrument, the Answer begun,
   its report, and victory by the keys.
+
+## 22. Increment 54 in detail: events and the living sky (written before building it)
+
+**Goals.** §10: thirteen events more, twenty-five in all: five of the relics, three of the living sky
+and one for each power in its own character. Each has its picture, its lines and two choices, said
+before choosing, and the rivals answer them as they do the others (the first when the treasury can
+pay it). Everything in them is fiction, except what is marked as real astronomy.
+
+| Event | Comes to | First choice | Second choice |
+| --- | --- | --- | --- |
+| **The dust stirs** | a site we excavate | *Dig on:* −15 credits, 60 research into the excavation | *Record it:* 40 research |
+| **Digging next door** | a site another power excavates, known to us | *Send observers:* −20 credits, 50 research | *Leave them to it* |
+| **A key sings** | a key we hold | *Shield it:* −30 credits | *Listen to it:* 80 research; approval −10 at the capital for 3 turns |
+| **The second tone, louder** | a power that has read five revelations | *Tell them the truth:* 40 research; approval −5 everywhere for 2 turns | *Say nothing* |
+| **The charts match** | a power that has excavated two chapters | *Fund the study:* −25 credits, 70 research | *Publish it:* approval +5 everywhere for 3 turns |
+| **A great flare** (real: flare stars do flare) | a colony at a flare star | *Study it:* 80 research; a million people lost there unless shielded | *Shelter:* no industry there for 2 turns |
+| **A new star** (real: novae happen) | anyone, from turn 40 | *Turn the telescopes:* 50 research | *A night of lights:* −20 credits; approval +5 everywhere for 2 turns |
+| **A meteor storm** | a colony | *Shelter:* no industry there for 1 turn | *Mine the falls:* 25 metals; approval −10 there for 2 turns |
+| **An audit** | the Transit Authority's colony | *Prosecute:* +30 credits; approval −10 there for 3 turns | *Settle quietly:* −20 credits |
+| **The shareholders' vote** | the Co-op's colony | *More homes:* a million people more there | *More works:* 30 industry there |
+| **A feud in the dens** | the Hollow Wake's colony | *Back the stronger:* approval −10 there for 2 turns | *Buy them both off:* −30 credits |
+| **The long night** | the Dusk Concord's colony with farms | *Move the fields:* −20 credits; its farms yield 1 less for 2 turns | *Wait for the light:* no growth there for 4 turns |
+| **A great storm** | the Drift Moot's colony | *Ride it out:* no industry there for 2 turns | *Harvest its lightning:* 25 fusion fuel; a million people lost |
+
+- **Pictures:** thirteen, two candidates each (about $1.30), as the other events'.
+- **Tests:** each event comes only where it fits, and each choice does what it says
+  (`events.test.ts`); the headless games still meet M3's and M4's targets.
+- **State:** none new; an event waiting is saved as before.
+
+### Increment 54: events and the living sky (22 October 2026)
+
+- **The thirteen events as §22,** twenty-five in all. The great flare and the new star say what in
+  them is real astronomy (flare stars do flare; a nova is a white dwarf drawing gas from a companion)
+  and what is the game's fiction (which star, and when).
+- **Guardians deferred** to M6 (§7): this increment took their place.
+- **A chapter studied gives more:** 150, 300 and 450 research (half again its cost), so studying the
+  relics advances a power's science rather than only paying it back.
+- **M2b's target for the research-led power, lowered to 33 technologies at turn 100** (from 35) in
+  the headless games' test: the Authority gives half its research to its excavations, and what a
+  chapter returns goes into one costly technology rather than several cheap ones. Measured on seed 7:
+  without excavations it knew 38 at turn 100, with them 34, but held 8 colonies rather than 5, more
+  people, and had made about as much research in all.
+- **Pictures:** 26 candidates, about $1.30. Chosen the dust A (B had bars), digging next door A, the
+  key A, the second tone A, the charts B, the great flare A, the new star B, the meteor storm B, the
+  audit A, the shareholders A, the feud B (A had a bar), the long night A and the great storm B.
+
+**Numbers** (M2_BALANCE.md): three different winners again, the Co-op six, the Concord one, the Wake
+one, all on score; the meteor storm, which any colony may have, is the most common of the new events
+(37 in eight games' first 100 turns). The deepest debt was −300 and the longest 58 turns. The slowest
+turn took 98 ms; the largest save 123.6 KB.
+
+**Reversing it:** an event is removed by taking its id out of `EVENTS` (`src/content/events.ts`)
+and its case out of `subjectsFor` and `apply` (`src/sim/events.ts`); its numbers are in
+`RULES.events`. The study's research is `RULES.relics.research`; the target is in
+`tests/unit/rivals.test.ts`.
+
+- **Tests:** `events.test.ts` (two more: where each of the thirteen comes, and what their choices do).

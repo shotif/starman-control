@@ -7,6 +7,8 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodyOf, capacityOf, networkFood, networksOf, worked } from './economy.ts';
+import { keysHeld } from './keys.ts';
+import { siteKnown } from './relics.ts';
 import type { ReportEvent } from './report.ts';
 import { grantResearch } from './research.ts';
 import { rng } from './rng.ts';
@@ -102,6 +104,56 @@ export function subjectsFor(world: World, state: GameState, faction: FactionId, 
       return [NONE];
     case 'founders-day':
       return [NONE];
+    // M5 (M5_UNKNOWN.md §22): the relics.
+    case 'dust-stirs':
+      return state.digs
+        .filter((d) => d.by === faction && d.waiting === null && d.chapters < RULES.relics.chapterCost.length)
+        .map((d) => ({ ...NONE, system: d.system }));
+    case 'rival-dig':
+      return state.digs
+        .filter((d) => d.by !== null && d.by !== faction && siteKnown(world, state, power, d.system))
+        .map((d) => ({ ...NONE, system: d.system }));
+    case 'key-sings':
+      return keysHeld(state, faction).flatMap((k) => {
+        const h = state.holdings.find((x) => x.id === k.holding);
+        return h ? [ofColony(h)] : [];
+      });
+    case 'second-tone':
+      return power.chapters >= E.toneChapters ? [NONE] : [];
+    case 'charts-match':
+      return power.chapters >= E.chartsChapters
+        ? colonies(state, faction)
+            .filter((h) => h.capital)
+            .map(ofColony)
+        : [];
+    // The living sky.
+    case 'great-flare':
+      return colonies(state, faction)
+        .filter((h) => world.system(h.system).flare)
+        .map(ofColony);
+    case 'nova':
+      return state.turn + 1 >= E.novaFrom ? [NONE] : [];
+    case 'meteor-storm':
+      return colonies(state, faction).map(ofColony);
+    // Each power's own.
+    case 'audit':
+      return faction === 'sta'
+        ? colonies(state, faction)
+            .filter((h) => !h.capital)
+            .map(ofColony)
+        : [];
+    case 'shareholders':
+      return faction === 'frontier' ? colonies(state, faction).map(ofColony) : [];
+    case 'feud':
+      return faction === 'hollow-wake' ? colonies(state, faction).map(ofColony) : [];
+    case 'long-night':
+      return faction === 'dusk-concord'
+        ? colonies(state, faction)
+            .filter((h) => worked(h, 'farms') > 0)
+            .map(ofColony)
+        : [];
+    case 'great-storm':
+      return faction === 'drift-moot' ? colonies(state, faction).map(ofColony) : [];
   }
 }
 
@@ -178,6 +230,9 @@ export function eventWords(
     words.ship = ship.name;
     words.power = FACTIONS[ship.owner].shortName;
   }
+  // Another power's excavation (M5_UNKNOWN.md §22).
+  const digger = ev.system ? state.digs.find((d) => d.system === ev.system)?.by : undefined;
+  if (ev.id === 'rival-dig' && digger) words.power = FACTIONS[digger].shortName;
   words.years = String(Math.floor((ev.turn - 1) / 4));
   return words;
 }
@@ -269,6 +324,72 @@ function apply(
     }
     case 'founders-day':
       if (choice === 0) last('approval', E.foundersTurns, E.foundersApproval, null);
+      return;
+    // M5 (M5_UNKNOWN.md §22).
+    case 'dust-stirs': {
+      const d = state.digs.find((x) => x.system === ev.system && x.by === faction);
+      if (choice === 0 && d) d.progress += E.dustProgress;
+      else if (choice === 1) research(E.dustResearch);
+      return;
+    }
+    case 'rival-dig':
+      if (choice === 0) research(E.rivalDigResearch);
+      return;
+    case 'key-sings':
+      if (choice === 1) {
+        research(E.keyResearch);
+        const capital = state.holdings.find((x) => x.owner === faction && x.capital);
+        if (capital) last('approval', E.keyTurns, E.keyApproval, capital.id);
+      }
+      return;
+    case 'second-tone':
+      if (choice === 0) {
+        research(E.toneResearch);
+        last('approval', E.toneTurns, E.toneApproval, null);
+      }
+      return;
+    case 'charts-match':
+      if (choice === 0) research(E.chartsResearch);
+      else last('approval', E.chartsTurns, E.chartsApproval, null);
+      return;
+    case 'great-flare':
+      if (choice === 0) {
+        research(E.greatFlareResearch);
+        if (h && !h.projects.includes('flare-shield')) h.people = Math.max(1, h.people - E.greatFlarePeople);
+      } else last('no-industry', E.greatFlareTurns);
+      return;
+    case 'nova':
+      if (choice === 0) research(E.novaResearch);
+      else last('approval', E.novaTurns, E.novaApproval, null);
+      return;
+    case 'meteor-storm':
+      if (choice === 0) last('no-industry', 1);
+      else {
+        power.stockpile.metals += E.meteorMetals;
+        last('approval', E.meteorTurns, E.meteorApproval);
+      }
+      return;
+    case 'audit':
+      if (choice === 0) last('approval', E.auditTurns, E.auditApproval);
+      return;
+    case 'shareholders':
+      if (!h) return;
+      if (choice === 0) h.people += E.shareholdersPeople;
+      else h.industry += E.shareholdersIndustry;
+      return;
+    case 'feud':
+      if (choice === 0) last('approval', E.feudTurns, E.feudApproval);
+      return;
+    case 'long-night':
+      if (choice === 0) last('blight', E.nightBlight);
+      else last('no-growth', E.nightTurns);
+      return;
+    case 'great-storm':
+      if (choice === 0) last('no-industry', E.stormTurns);
+      else {
+        power.stockpile.fuel += E.stormFuel;
+        if (h) h.people = Math.max(1, h.people - E.stormPeople);
+      }
       return;
   }
 }

@@ -1363,6 +1363,58 @@ function events(): ArtBrief[] {
       "A colony's central square at night, crowds celebrating under strings of warm lanterns and bursts of fireworks over plain domes, " +
         'a simple stone monument in the middle; joyful.',
     ],
+    [
+      'dust-stirs',
+      'A field of fine glittering dust swirling in slow rings round a lit excavation platform in deep space, a few crew in suits watching from its rail.',
+    ],
+    [
+      'rival-dig',
+      'A distant excavation seen through a long-range telescope: work lights on a small dark moon, an unfamiliar ship beside it, the view framed by a round scope.',
+    ],
+    [
+      'key-sings',
+      'A strange smooth object of dark metal resting on a shelf in a dim stone vault, faint rings of pale light pulsing out from it, a technician nearby with hands over her ears.',
+    ],
+    [
+      'second-tone',
+      'A ring-shaped lane beacon in space with faint concentric waves passing through it, and in a small cockpit nearby a pilot listening with eyes closed.',
+    ],
+    [
+      'charts-match',
+      'An astronomer at a desk at night under an observatory dome, an old chart of glowing points laid over a screen of the real sky, one point circled in red.',
+    ],
+    [
+      'great-flare',
+      'A small red dwarf star erupting in an enormous flare that fills half the sky above a planet, auroras blazing over a settlement of domes with shutters closed.',
+    ],
+    [
+      'nova',
+      'A night sky over a colony with one new star blazing brighter than all the others, people standing on rooftops and terraces looking up.',
+    ],
+    [
+      'meteor-storm',
+      'Meteors streaking across the night sky of a colony world, one bright fireball breaking up, domes below with their lights on.',
+    ],
+    [
+      'audit',
+      'Two officials in plain uniforms going through ledgers and screens in a cramped spaceport customs office at night, a single lamp.',
+    ],
+    [
+      'shareholders',
+      'A crowded meeting hall of settlers in work clothes raising their hands to vote, a simple tally board behind the speaker.',
+    ],
+    [
+      'feud',
+      'Two rough crews facing each other across a dim hangar of battered, mismatched ships, tension in the air, one figure stepping between them.',
+    ],
+    [
+      'long-night',
+      'The twilight band of a tidally locked world: fields of dark crops half in shadow, a dim red sun low and unmoving on the horizon, workers moving lamps.',
+    ],
+    [
+      'great-storm',
+      'A vast storm rising through the banded clouds of a gas giant, lightning inside it, small floating towns drawing in their cables nearby.',
+    ],
   ];
   return each.map(([id, subject]) => ({
     id: `event-${id}`,

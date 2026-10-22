@@ -484,8 +484,10 @@ describe('the headless games (§26.6), with every power (M3_NEIGHBOURS.md §26.1
           p.faction,
         ).toBe(true);
         // M2b's targets at turn 100 (M2B_SCIENCE.md §2, §20.4): the research-led Authority 35 to 45
-        // technologies, each other rival 15 to 25, the alien powers too (M3_NEIGHBOURS.md §26.1).
-        const [least, most] = p.faction === 'sta' ? [35, 45] : [15, 25];
+        // technologies, each other rival 15 to 25, the alien powers too (M3_NEIGHBOURS.md §26.1). Since
+        // M5 the Authority gives half its research to its excavations, and what a chapter returns goes
+        // into one costly technology rather than several cheap ones: 33 at least (M5_UNKNOWN.md §22).
+        const [least, most] = p.faction === 'sta' ? [33, 45] : [15, 25];
         expect(p.researched.length, p.faction).toBeGreaterThanOrEqual(least);
         expect(p.researched.length, p.faction).toBeLessThanOrEqual(most);
         // Discoveries come from play, for rivals too (M2B_SCIENCE.md §17).

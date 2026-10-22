@@ -139,6 +139,7 @@ describe('the twelve (§27.2)', () => {
       'lane-drift',
       'smugglers',
       'founders-day',
+      'meteor-storm',
     ]);
     powerOf(g, 'sta').food = 0;
     expect(fits('harvest')).toBe(true);
@@ -315,6 +316,77 @@ describe('the twelve (§27.2)', () => {
     settle(g);
     for (const h of [capital(g), g.holdings.find((x) => x.id === p.id) as Holding])
       expect(approvalOf(world, g, h).parts).toContainEqual({ label: 'Founders’ Day', value: E.foundersApproval });
+  });
+});
+
+describe('the thirteen of M5 (M5_UNKNOWN.md §22)', () => {
+  const all = () =>
+    newGame(world, {
+      seed: 42,
+      powers: (['sta', 'frontier', 'hollow-wake', 'dusk-concord', 'drift-moot'] as FactionId[]).map((faction) => ({
+        faction,
+        controller: faction === 'sta' ? ('player' as const) : ('ai' as const),
+      })),
+    });
+  const fits = (g: GameState, f: FactionId, id: EventId) => subjectsFor(world, g, f, id).length > 0;
+
+  it('each comes only where it fits: the relics, the sky, and each power’s own', () => {
+    const g = all();
+    // Each power's own, to its own colonies only.
+    expect(fits(g, 'frontier', 'shareholders')).toBe(true);
+    expect(fits(g, 'sta', 'shareholders')).toBe(false);
+    expect(fits(g, 'hollow-wake', 'feud')).toBe(true);
+    expect(fits(g, 'drift-moot', 'great-storm')).toBe(true);
+    expect(fits(g, 'dusk-concord', 'long-night')).toBe(true);
+    expect(fits(g, 'sta', 'audit')).toBe(false);
+    proxima(g);
+    expect(subjectsFor(world, g, 'sta', 'audit').map((s) => s.system)).toEqual(['alpha-centauri']);
+    // A great flare at a colony of a flare star's system; a new star from turn 40.
+    expect(subjectsFor(world, g, 'sta', 'great-flare').map((s) => s.system)).toEqual(['alpha-centauri']);
+    expect(fits(g, 'sta', 'nova')).toBe(false);
+    g.turn = E.novaFrom;
+    expect(fits(g, 'sta', 'nova')).toBe(true);
+    // The relics: none without excavations, revelations or keys.
+    for (const id of ['dust-stirs', 'rival-dig', 'key-sings', 'second-tone', 'charts-match'] as const)
+      expect(fits(g, 'sta', id), id).toBe(false);
+    const p = powerOf(g, 'sta');
+    p.chapters = E.chartsChapters;
+    expect(subjectsFor(world, g, 'sta', 'charts-match').map((s) => s.holding)).toEqual([capital(g).id]);
+    p.chapters = E.toneChapters;
+    expect(fits(g, 'sta', 'second-tone')).toBe(true);
+    g.digs.push({ system: 'sirius', by: 'sta', chapters: 1, progress: 0, waiting: null, answer: null });
+    expect(subjectsFor(world, g, 'sta', 'dust-stirs').map((s) => s.system)).toEqual(['sirius']);
+    expect(fits(g, 'frontier', 'rival-dig')).toBe(false);
+    markSurveyed(powerOf(g, 'frontier'), 'sirius');
+    expect(subjectsFor(world, g, 'frontier', 'rival-dig').map((s) => s.system)).toEqual(['sirius']);
+  });
+
+  it('their choices do what they say', () => {
+    let g = all();
+    g.digs.push({ system: 'sirius', by: 'sta', chapters: 1, progress: 10, waiting: null, answer: null });
+    const credits = powerOf(g, 'sta').treasury;
+    g = answer(waiting(g, 'dust-stirs', { system: 'sirius' }), 0);
+    settle(g);
+    expect(g.digs[0]?.progress).toBe(10 + E.dustProgress);
+    expect(powerOf(g, 'sta').treasury).toBe(credits - E.dustCredits);
+    // A great flare studied loses a million people where no shield stands.
+    const p = proxima(g, 30);
+    g = answer(waiting(g, 'great-flare', { holding: p.id, system: 'alpha-centauri' }), 0);
+    settle(g);
+    expect(g.holdings.find((x) => x.id === p.id)?.people).toBe(30 - E.greatFlarePeople);
+    // A meteor storm mined: metals, and unrest there.
+    const metals = powerOf(g, 'sta').stockpile.metals;
+    g = answer(waiting(g, 'meteor-storm', { holding: p.id, system: 'alpha-centauri' }), 1);
+    settle(g);
+    expect(powerOf(g, 'sta').stockpile.metals).toBe(metals + E.meteorMetals);
+    expect(powerOf(g, 'sta').lasting).toContainEqual(
+      expect.objectContaining({ event: 'meteor-storm', kind: 'approval', amount: E.meteorApproval }),
+    );
+    // An audit prosecuted recovers credits.
+    const before = powerOf(g, 'sta').treasury;
+    g = answer(waiting(g, 'audit', { holding: p.id, system: 'alpha-centauri' }), 0);
+    settle(g);
+    expect(powerOf(g, 'sta').treasury).toBe(before + E.auditCredits);
   });
 });
 
