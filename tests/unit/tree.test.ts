@@ -361,7 +361,7 @@ describe('saves', () => {
     };
     const loaded = parseSave(world, JSON.stringify(raw));
     expect(loaded.version).toBe(STATE_VERSION);
-    expect(STATE_VERSION).toBe(11);
+    expect(STATE_VERSION).toBeGreaterThanOrEqual(11);
     expect(loaded.holdings.every((h) => h.terraform === 0)).toBe(true);
   });
 });

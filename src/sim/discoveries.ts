@@ -211,6 +211,8 @@ export function deedDone(
       );
     case 'investigations':
       return power.investigated.length >= deed.n;
+    case 'contacts':
+      return power.contacts.length >= deed.n;
   }
 }
 

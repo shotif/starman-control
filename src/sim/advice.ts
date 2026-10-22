@@ -187,6 +187,12 @@ export function adviceFor(
       );
     } else if (e.kind === 'rival-tech') {
       say('watch', 3, 'rival-tech', { power: FACTIONS[e.faction].shortName, tech: TECHS[e.tech].name });
+    } else if (e.kind === 'contact') {
+      const power = FACTIONS[e.faction].shortName;
+      const place = e.system ? world.system(e.system).name : 'a distance';
+      const at = e.system ? { system: e.system } : {};
+      if (!e.first) say('envoy', 2, 'contact-understood', { power });
+      else say('envoy', 2, e.stage === 'talk' ? 'contact-talk' : 'contact-words', { power, place }, at);
     } else if (e.kind === 'rival-ship') {
       const ship = withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`);
       say('watch', 3, 'rival-ship', { ship, place: world.system(e.system).name }, e);

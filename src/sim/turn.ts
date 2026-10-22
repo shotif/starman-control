@@ -11,6 +11,7 @@ import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
+import { resolveContacts } from './contact.ts';
 import { observationPoints, observationsAt, resolveInspirations } from './discoveries.ts';
 import {
   capacityOf,
@@ -438,6 +439,10 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 10. The Watch (M2_WORLDS.md §26.3): what each power newly sees of the others.
   for (const p of state.powers) events.get(p.faction)?.push(...watchNews(world, before, state, p.faction));
+
+  // 10b. Contact (M3_NEIGHBOURS.md §19.1): each power hears those it sees for the first time, and
+  // learns the tongues it has words of.
+  resolveContacts(world, state, events);
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);

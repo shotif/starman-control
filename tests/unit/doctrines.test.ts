@@ -11,8 +11,16 @@ import { laneQuote } from '../../src/sim/lanes.ts';
 import { blindReachDeci, jumpPoints } from '../../src/sim/movement.ts';
 import { applyOrder, type Order, refuse } from '../../src/sim/orders.ts';
 import type { ReportEvent } from '../../src/sim/report.ts';
-import { canResearch, closedBy, hasMet, knownBy, spendResearch, techCost } from '../../src/sim/research.ts';
-import { beaconSlots, type GameState, type Holding, makeHolding, newGame, powerOf } from '../../src/sim/state.ts';
+import { canResearch, closedBy, knownBy, spendResearch, techCost } from '../../src/sim/research.ts';
+import {
+  beaconSlots,
+  type GameState,
+  type Holding,
+  inContact,
+  makeHolding,
+  newGame,
+  powerOf,
+} from '../../src/sim/state.ts';
 import { resolveTurn } from '../../src/sim/turn.ts';
 import { stateProblems } from '../../src/sim/validate.ts';
 import { knownView, standings, watchNews } from '../../src/sim/visibility.ts';
@@ -42,10 +50,15 @@ const order = (g: GameState, o: Order) => {
   return r.state;
 };
 /** The Authority meets the Wake: it has surveyed Wolf 1061, the Wake's capital. */
+/** The Authority in contact with another power (M3_NEIGHBOURS.md §19), at talk, as humans are. */
+const meet = (g: GameState, f: FactionId) => {
+  powerOf(g, 'sta').contacts.push({ faction: f, stage: 'talk', since: g.turn, words: RULES.contact.wordsToTalk });
+  return g;
+};
 const meetWake = (g: GameState) => {
   powerOf(g, 'sta').surveyed.push('wolf-1061');
   powerOf(g, 'sta').surveyed.sort();
-  return g;
+  return meet(g, 'hollow-wake');
 };
 
 describe('doctrines (§19.1)', () => {
@@ -165,19 +178,19 @@ describe('doctrines (§19.1)', () => {
 });
 
 describe('knowledge spreads (§19.2)', () => {
-  it('15% less for each power met that knows it, at most 30%; nothing for a power not met', () => {
+  it('15% less for each power in contact that knows it, at most 30%; nothing for a power not heard', () => {
     const g = three();
     const p = powerOf(g, 'sta');
     expect(techCost(g, p, 'magnetics')).toBe(60);
     powerOf(g, 'hollow-wake').researched.push('magnetics');
     powerOf(g, 'frontier').researched.push('magnetics');
-    expect(hasMet(g, p, 'hollow-wake')).toBe(false);
+    expect(inContact(p, 'hollow-wake')).toBe(false);
     expect(techCost(g, p, 'magnetics')).toBe(60);
     meetWake(g);
-    expect(hasMet(g, p, 'hollow-wake')).toBe(true);
+    expect(inContact(p, 'hollow-wake')).toBe(true);
     expect(knownBy(g, p, 'magnetics')).toEqual(['hollow-wake']);
     expect(techCost(g, p, 'magnetics')).toBe(51);
-    p.surveyed.push('tau-ceti');
+    meet(g, 'frontier');
     expect(techCost(g, p, 'magnetics')).toBe(42);
     expect(techCost(g, p, 'magnetics', false)).toBe(60);
   });
@@ -196,7 +209,7 @@ describe('knowledge spreads (§19.2)', () => {
 });
 
 describe('the Watch’s rumours and the standings (§19.3, §19.4)', () => {
-  it('a met rival’s tier 4 or 5 technology or doctrine, and nothing smaller, nor of a rival not met', () => {
+  it('a rival’s tier 4 or 5 technology or doctrine, once in contact, and nothing smaller, nor of a rival not heard', () => {
     const before = three();
     const after = structuredClone(before);
     powerOf(after, 'hollow-wake').researched.push('soil-science', 'terraforming', 'open-frontier');
@@ -212,7 +225,7 @@ describe('the Watch’s rumours and the standings (§19.3, §19.4)', () => {
     expect(said[0]?.text).toBe('Control, word from the lanes: the Hollow Wake has mastered Terraforming.');
   });
 
-  it('the standings: yours as a count, each met rival ahead, level or behind', () => {
+  it('the standings: yours as a count, each rival in contact ahead, level or behind', () => {
     const g = meetWake(three());
     powerOf(g, 'sta').researched.push(...TECH_IDS.slice(0, 5));
     powerOf(g, 'hollow-wake').researched.push(...TECH_IDS.slice(0, 8));

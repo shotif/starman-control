@@ -85,7 +85,8 @@ export type TechId =
   | 'industrial-worlds'
   | 'garden-worlds'
   // M2b's great works (M2B_SCIENCE.md §20.1).
-  | 'great-engineering';
+  | 'great-engineering'
+  | 'translation';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -158,7 +159,10 @@ export type TechEffect =
   /** Beacon slots in every system where the power holds a colony, more. */
   | { kind: 'colony-slots'; slots: number }
   /** Approval at colonies with this many works districts or more, changed. */
-  | { kind: 'works-unrest'; works: number; approval: number };
+  | { kind: 'works-unrest'; works: number; approval: number }
+  // M3's contact (M3_NEIGHBOURS.md §19.4).
+  /** Translation of another species' tongue, this much more each turn, seen or not. */
+  | { kind: 'translation'; perTurn: number };
 
 /**
  * A deed that teaches a power something towards a technology: its inspiration (M2B_SCIENCE.md §17.1,
@@ -225,7 +229,9 @@ export type Deed =
   /** Systems surveyed that hold something astronomers have observed, besides the capital. */
   | { kind: 'observed'; n: number }
   /** Anomalies investigated. */
-  | { kind: 'investigations'; n: number };
+  | { kind: 'investigations'; n: number }
+  /** In contact with this many other powers (M3_NEIGHBOURS.md §19.4). */
+  | { kind: 'contacts'; n: number };
 
 export interface TechDef {
   id: TechId;
@@ -870,6 +876,18 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'anomaly-percent', percent: 50 },
     text: 'Anomalies’ rewards +50%.',
     inspiration: { deed: { kind: 'investigations', n: 5 }, text: 'five anomalies investigated' },
+  },
+  // M3's contact (M3_NEIGHBOURS.md §19.4).
+  translation: {
+    id: 'translation',
+    name: 'Translation',
+    field: 'xenology',
+    tier: 2,
+    cost: 60,
+    needs: [],
+    effect: { kind: 'translation', perTurn: 1 },
+    text: 'Learning another species’ tongue goes faster: 1 more a turn, seen or not.',
+    inspiration: { deed: { kind: 'contacts', n: 2 }, text: 'contact with two other powers' },
   },
   // M2b's doctrines (M2B_SCIENCE.md §19.1): each pair a fork.
   'open-frontier': {

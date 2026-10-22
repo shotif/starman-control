@@ -235,9 +235,13 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       withNeeds(power, id).reduce((n, x) => n + TECHS[x].cost * (me.fields.includes(TECHS[x].field) ? 1 : 2), 0);
     // Of each pair of doctrines, only its own (§19.1).
     const own = (id: TechId) => !TECHS[id].fork || me.doctrines.includes(id);
+    // Translation only while it learns a tongue (M3_NEIGHBOURS.md §19.4), as it does nothing else.
+    const learning = power.contacts.some((c) => c.stage === 'words');
+    const idle = (id: TechId) =>
+      !learning && withNeeds(power, id).some((x) => TECHS[x].effect.kind === 'translation') ? 1 : 0;
     const next = canResearch(power)
       .filter((id) => withNeeds(power, id).every(own))
-      .sort((a, b) => price(a) - price(b) || (a < b ? -1 : 1))[0];
+      .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];
     if (next) orders.push({ type: 'research', tech: next });
   }
 

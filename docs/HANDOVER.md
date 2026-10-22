@@ -94,6 +94,9 @@ way in.
   archives on 22 October 2026 (356 in all), in `src/data/shell.json` beside the unchanged census;
   no old lane reaches them, so they are reached by blind jumps and new lanes. The map's first
   load is 358 KB; a game's map, turns and saves stay within their budgets.
+  **Increment 34 is built:** contact kept in the state (a signal, words while a tongue is learnt,
+  talk; humans talk at once), in place of M2b's *met*; the Envoy, a seventh advisor with a face for
+  each power; Translation in Xenology (62 technologies); state version 12.
 - **Numbers (after M2b):** 425 unit tests and about 230 browser journeys pass; state version 11;
   the tree has 61 technologies (58 for any one power), 22 projects; a colony's still on a phone
   loads 761 KB of pictures at most (1 MB) and its diorama 2.04 MB (2.25 MB, raised from 2 MB for
@@ -134,9 +137,11 @@ about $50 (D-57). As in M2b: write each increment's detailed design section (§1
 building it, and send each increment's pictures as lettered sheets, recorded in DECISIONS.md with
 their cost. **Done: increment 33, the shell** (§18): 149 real systems between 27 and 33 ly
 (356 in all), laneless, from the archives on 22 October 2026 (`npm run data:shell`); the census
-and saved games unchanged. **Next: increment 34, contact.**
+and saved games unchanged. **Done: increment 34, contact** (§19): signal, words and talk between
+powers, the Envoy (a seventh advisor), Translation; state version 12. **Next: increment 35,
+memory** (attitudes with their reasons, and the diplomacy screen).
 
-The art and music spend: about $24.45 of $50 (raised on 22 October 2026; about $25.55 left). M3's
+The art and music spend: about $24.75 of $50 (raised on 22 October 2026; about $25.25 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

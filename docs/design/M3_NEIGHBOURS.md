@@ -30,6 +30,7 @@ them, and the first aliens, powers you deal with.
 16. [Art and its cost (D-57)](#16-art-and-its-cost-d-57)
 17. [Decisions for the owner](#17-decisions-for-the-owner)
 18. [Increment 33 in detail: the shell](#18-increment-33-in-detail-the-shell-written-before-building-it)
+19. [Increment 34 in detail: contact](#19-increment-34-in-detail-contact-written-before-building-it)
 
 ## 1. Where M3 starts
 
@@ -334,3 +335,98 @@ laneless) on the phone, tablet and desktop.
   before), the largest save at turn 100 40.6 KB. A turn's median, measured alone, went from 26 ms to
   31 ms.
 - **Tests:** as §18.6; 432 unit tests.
+
+## 19. Increment 34 in detail: contact (written before building it)
+
+**Goals.** D-52 as decided (A): contact is a process, kept in the state. With every other power a
+power is *unaware*, then hears a **signal**, then has **words** while it learns their tongue, then
+can **talk**. Powers of one species share a tongue and go from the signal to talk at once.
+Contact takes the place of M2b's *met* wherever it counted. The **Envoy**, a seventh advisor for
+each power, speaks for its dealings with the others. Xenology's **Translation** speeds the words.
+No rule assumes a power is human: contact reads each power's species.
+
+**Out of scope.** Attitudes and the diplomacy screen (increment 35); offers, treaties and offers
+misread before talk (36); trade, borders and Xenology's trade protocols and cultural exchange (36,
+37); the alien powers themselves (38, 39). Until they come every power is human, so in play
+contact goes from the signal to talk; the words are tested with a species made for the tests.
+
+### 19.1 Contact
+
+- A power **hears a signal** from another the first turn it sees anything of theirs: a colony or
+  outpost in a system it has surveyed, a lane with an end in one, a ship in a system it watches
+  (M2's Watch, §26.3), or a great work, which every power sees (M2B_SCIENCE.md §20.2).
+- **Of one species: talk** at once. **Of another: words**, with translation at 0 of **20**.
+- Each turn in words, translation grows by **1 if it sees anything of theirs** that turn, and by
+  **1 more with Translation**, seen or not (its scholars study what was recorded). At 20: talk.
+  So about 20 turns of sight without Translation, 10 with it, or 20 out of sight.
+- Contact is never lost, and each side has its own: one power may hear another before it is heard.
+- The numbers are in `RULES.contact`.
+
+### 19.2 What contact changes
+
+- **M2b's *met*** (M2B_SCIENCE.md §19.2) becomes *in contact*: a signal or more. Spreading
+  knowledge, the Watch's rumours and the score as seen count the powers in contact; a ship seen
+  now counts too, where M2b counted only colonies, outposts and lanes.
+- **The standings** list every power in contact, whether or not anything of theirs is in sight
+  this turn, with a *Contact* column: *talk*, or *words 12 of 20*.
+- **The report** says when contact changes, in the Envoy's words: a first contact (with the
+  power, where it was seen and whether we can talk), and talk reached after words.
+
+### 19.3 The Envoy
+
+A seventh department, **the Envoy**, one advisor for each power, with a name in its tradition,
+a voice and a face (3 portraits): Isabel Achterberg, Envoy of the Authority (formal); Kofi Mensah,
+of the Welcome table (warm); Hush, who does the talking (blunt). They speak on contact, and from
+increment 35 on attitudes and offers. All fiction.
+
+### 19.4 Translation
+
+**Translation** (Xenology, tier 2, 60): translation grows 1 more a turn, seen or not. Its
+inspiration: *contact with two other powers*. The tree has 62 technologies, 59 for any one power.
+The rivals research it only while words are under way with someone, as it does nothing else.
+
+### 19.5 State
+
+`PowerState.contacts`, one for each power heard, in the order heard: its faction, its stage
+(`words` or `talk`), the turn first heard and the translation so far. **State version 12**; a save
+from before gains the contacts M2b's *met* gives it, at talk from its current turn.
+
+### 19.6 Art and its cost
+
+The three Envoys' faces: 6 candidates, about **$0.30**, a lettered sheet to the owner.
+
+### 19.7 Tests
+
+`contact.test.ts`: the signal from a colony, a lane, a ship and a great work; talk at once between
+humans; words with a species made for the test, 1 a turn in sight, 1 more with Translation, talk
+at 20; contact kept and one-sided; spreading knowledge and rumours from contact; the standings'
+column; the migration from version 11; the rivals and Translation. `contact.spec.ts`: a Wake ship
+reaches Sol, and the Envoy reports first contact and the standings show *talk*, on the phone,
+tablet and desktop.
+
+
+### Increment 34: contact (22 October 2026)
+
+- **Contact as §19.1** (`src/sim/contact.ts`, step 10b of the turn): a signal from a colony,
+  outpost or lane where the power has surveyed, a ship where it watches, or a great work; talk at
+  once between powers of one species, words otherwise, 1 a turn in sight and 1 more with
+  Translation, talk at 20 (`RULES.contact`). `contactWith` and `inContact` (in `state.ts`) take the
+  place of M2b's `hasMet` for spreading knowledge, rumours and the score as seen.
+- **The report** says *First contact: the Hollow Wake, seen at Sol. They share our tongue, so we
+  can talk.* (or that the Envoy has begun to learn their tongue), and later that the Envoy can
+  talk with them; **the Envoy** speaks it in the power's voice.
+- **The Envoy:** Isabel Achterberg (the Authority), **Rafael Quispe** (the Cooperative; Kofi Mensah
+  in the design, renamed as the Cooperative's Survey advisor is Ghanaian already) and Hush (the
+  Wake), with their faces (6 candidates, about $0.30; $24.75 of $50 spent in all). The codex lists
+  seven advisors for each power.
+- **The standings** show the contact **under each power's name** (*we can talk*, or *learning their
+  tongue: 12 of 20*) rather than in a column of its own, so the phone's table keeps its width.
+- **Translation** as §19.4; the rivals put it last until they learn a tongue. The tree has 62
+  technologies, 59 for any one power.
+- **State version 12**, with the migration of §19.5.
+- **Numbers:** `npm run balance` at turn 100 on its eight seeds: the Authority 37.6 technologies (35
+  to 40), the Cooperative 22.6 (20 to 25), the Wake 22.0 (20 to 24), within M2b's targets; the
+  Cooperative learns a little faster, as a ship seen now counts for spreading knowledge. The
+  contact step takes under 1 ms a turn; the slowest headless turn 115 ms.
+- **Tests:** `contact.test.ts` as §19.7, the doctrines', great works' and research tests moved from
+  *met* to contact; 442 unit tests; `contact.spec.ts` on the phone, tablet and desktop.

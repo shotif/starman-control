@@ -1232,6 +1232,13 @@ export function EmpireView({
   );
 }
 
+/** Your contact with a power in the standings (M3_NEIGHBOURS.md §19.2). */
+function contactWords(r: Standing): string {
+  if (!r.contact) return 'just seen';
+  if (r.contact.stage === 'talk') return 'we can talk';
+  return `learning their tongue: ${r.contact.words} of ${RULES.contact.wordsToTalk}`;
+}
+
 /** The standings (M2_WORLDS.md §26.5): your power in full, the others as far as you can see them. */
 function Standings({ game, faction, rows }: { game: GameState; faction: FactionId; rows: readonly Standing[] }) {
   const unmet = game.powers.filter((p) => !rows.some((r) => r.faction === p.faction)).map((p) => p.faction);
@@ -1255,6 +1262,7 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
               <th scope="row">
                 <FactionTag faction={r.faction} />
                 {r.faction === faction && <span class="dim"> · you</span>}
+                {r.faction !== faction && <span class="standing-contact">{contactWords(r)}</span>}
               </th>
               <td>{r.colonies}</td>
               <td>{r.outposts}</td>
@@ -1275,8 +1283,10 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
       <p class="dim">
         Yours in full; the others’ only as far as you can see: in systems you have surveyed. You have researched{' '}
         {rows[0]?.technologies ?? 0} technolog{rows[0]?.technologies === 1 ? 'y' : 'ies'}; the Watch hears whether each
-        power you have met is ahead of you, level or behind. The score counts 10 for each colony, 1 for each million
-        people, 5 for each technology, 3 for each lane and 50 for each great work; there is no victory yet.
+        power you are in contact with is ahead of you, level or behind. Under each power, your contact with it: you talk
+        at once with a power that shares your tongue, and learn another’s word by word. The score counts 10 for each
+        colony, 1 for each million people, 5 for each technology, 3 for each lane and 50 for each great work; there is
+        no victory yet.
       </p>
       {unmet.length > 0 && (
         <p class="dim">

@@ -193,15 +193,22 @@ describe('the score (§20.3)', () => {
     expect(scoreOf(g, 'sta').total).toBe(38 + 2 * 5 + 50);
   });
 
-  it('a rival’s as far as you see it: its technologies only once met, its great works always', () => {
+  it('a rival’s as far as you see it: its technologies once in contact, its great works always', () => {
     const g = three();
     knowing(g, 'hollow-wake', 'deep-survey', 'habitat-domes', 'soil-science');
     capital(g, 'hollow-wake').projects.push('lanewright-foundry');
     let rows = standings(knownView(world, g, 'sta'), 'sta');
     const wake = () => rows.find((r) => r.faction === 'hollow-wake');
-    // Seen by its great work alone: its capital, its people, its great work; not its lanes nor its technologies.
+    // Seen by its great work alone, before contact: its capital, its people, its great work; not its
+    // lanes nor its technologies.
     expect(wake()?.score).toBe(10 + 10 + 50);
     powerOf(g, 'sta').surveyed.push('wolf-1061');
+    powerOf(g, 'sta').contacts.push({
+      faction: 'hollow-wake',
+      stage: 'talk',
+      since: 1,
+      words: RULES.contact.wordsToTalk,
+    });
     rows = standings(knownView(world, g, 'sta'), 'sta');
     expect(wake()?.score).toBe(
       10 + 10 + 3 * 5 + 50 + 3 * knownView(world, g, 'sta').lanes.filter((l) => l.owner === 'hollow-wake').length,

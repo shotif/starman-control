@@ -5,8 +5,7 @@
 import type { FactionId } from '../content/factions.ts';
 import { GREAT_WORKS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { hasMet } from './research.ts';
-import { type GameState, powerOf } from './state.ts';
+import { type GameState, inContact, powerOf } from './state.ts';
 
 /** A power's score, with its parts. */
 export interface Score {
@@ -40,11 +39,11 @@ function scored(colonies: number, people: number, technologies: number, lanes: n
 /**
  * A power's score from a state: in full from the whole state, or from a viewer's `knownView`, where
  * a rival's colonies, people and lanes are those the viewer sees, its great works are known to all,
- * and its technologies count once the viewer has met it.
+ * and its technologies count once the viewer is in contact with it (M3_NEIGHBOURS.md §19.2).
  */
 export function scoreOf(state: GameState, faction: FactionId, viewer: FactionId = faction): Score {
   const held = state.holdings.filter((h) => h.owner === faction);
-  const knows = faction === viewer || hasMet(state, powerOf(state, viewer), faction);
+  const knows = faction === viewer || inContact(powerOf(state, viewer), faction);
   return scored(
     held.filter((h) => h.kind === 'colony').length,
     held.reduce((n, h) => n + h.people, 0),

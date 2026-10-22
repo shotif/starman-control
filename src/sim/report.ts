@@ -89,7 +89,12 @@ export type ReportEvent =
   | { kind: 'edict-ended'; edict: EdictId; holding: number | null }
   /** The Watch (M2_WORLDS.md §26.3): another power founded a colony or outpost where the power can see it. */
   | { kind: 'rival-founded'; faction: FactionId; holding: number; system: SystemId; body: string; colony: boolean }
-  /** The Watch hears that a rival met has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
+  /**
+   * Contact (M3_NEIGHBOURS.md §19.1): first contact with another power, seen at `system`, at words or
+   * at once at talk; or, `first` false, talk reached after words.
+   */
+  | { kind: 'contact'; faction: FactionId; stage: 'words' | 'talk'; first: boolean; system: SystemId | null }
+  /** The Watch hears that a rival in contact has mastered a technology of tier 4 or 5, or a doctrine (M2B_SCIENCE.md §19.3). */
   | { kind: 'rival-tech'; faction: FactionId; tech: TechId }
   /** A great work finished by another power (all hear of it, M2B_SCIENCE.md §20.2). */
   | { kind: 'great-work'; faction: FactionId; project: ProjectId; holding: number; system: SystemId }

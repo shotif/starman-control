@@ -16,7 +16,7 @@ const advise = (g: GameState, faction: FactionId = 'sta', events = g.reports[0]?
   adviceFor(world, g, faction, events, needsOf(world, g, faction));
 
 describe('the advisors', () => {
-  it('are six for every power, one a department, each with a face in the art records', () => {
+  it('are seven for every power, one a department, each with a face in the art records', () => {
     const portraits = new Set(manifest.images.map((i) => i.id));
     for (const f of FACTION_IDS) {
       const people = Object.values(ADVISORS[f].people);

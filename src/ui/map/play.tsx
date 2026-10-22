@@ -373,6 +373,12 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `The Watch: ${withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`)} is at ${name(e.system)}.`;
     case 'rival-tech':
       return `The Watch: word from the lanes is that the ${FACTIONS[e.faction].shortName} has mastered ${TECHS[e.tech].name}.`;
+    case 'contact':
+      if (!e.first)
+        return `The Envoy has learnt the ${FACTIONS[e.faction].shortName}’s tongue: we can talk with them now.`;
+      return e.stage === 'talk'
+        ? `First contact: the ${FACTIONS[e.faction].name}, seen at ${e.system ? name(e.system) : 'a distance'}. They share our tongue, so we can talk.`
+        : `First contact: the ${FACTIONS[e.faction].name}, seen at ${e.system ? name(e.system) : 'a distance'}. Their tongue is not ours: the Envoy has begun to learn it.`;
     case 'great-work':
       return `The ${FACTIONS[e.faction].shortName} has finished the ${PROJECTS[e.project].name} at ${name(e.system)}: a great work, the only one in the neighbourhood.`;
     case 'great-work-begun':
@@ -433,6 +439,8 @@ function eventPlace(
       return { system: laneEnds(e.lane)[1] };
     case 'event':
       return { event: true };
+    case 'contact':
+      return { system: e.system ?? playerPower(game)?.capital ?? 'sol' };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -472,6 +480,7 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'rival-lane': { icon: 'lane', tone: 'news' },
   'rival-ship': { icon: 'ship', tone: 'news' },
   'rival-tech': { icon: 'research', tone: 'news' },
+  contact: { icon: 'empire', tone: 'news' },
   'great-work': { icon: 'colony', tone: 'news' },
   'great-work-begun': { icon: 'colony', tone: 'news' },
   'great-work-lost': { icon: 'refused', tone: 'wrong' },

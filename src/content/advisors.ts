@@ -1,13 +1,21 @@
-// The advisors (M2_WORLDS.md §9, §24): six for each power, one for each department, each with a
+// The advisors (M2_WORLDS.md §9, §24): seven for each power, one for each department, each with a
 // name in its power's tradition, a face and a voice. All of them are fiction. What they say is
 // written here as sentences with blanks, filled from the game's state (no live AI text, D-17).
 
 import type { FactionId } from './factions.ts';
 
-export type Department = 'colonies' | 'works' | 'treasury' | 'science' | 'survey' | 'watch';
+export type Department = 'colonies' | 'works' | 'treasury' | 'science' | 'survey' | 'watch' | 'envoy';
 
 /** In the order they speak when two have news of the same weight. */
-export const DEPARTMENTS: readonly Department[] = ['colonies', 'treasury', 'science', 'works', 'survey', 'watch'];
+export const DEPARTMENTS: readonly Department[] = [
+  'colonies',
+  'treasury',
+  'science',
+  'works',
+  'survey',
+  'watch',
+  'envoy',
+];
 
 export const DEPARTMENT_NAMES: Record<Department, string> = {
   colonies: 'Colonies',
@@ -16,6 +24,7 @@ export const DEPARTMENT_NAMES: Record<Department, string> = {
   science: 'Science',
   survey: 'Survey',
   watch: 'the Watch',
+  envoy: 'the Envoy',
 };
 
 export type Voice = 'formal' | 'warm' | 'blunt';
@@ -41,6 +50,8 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       science: { name: 'Dr Kenji Albrecht', role: 'Chief Scientist', portrait: 'advisor-sta-science' },
       survey: { name: 'Lucia Ferreira', role: 'Commander of the Survey', portrait: 'advisor-sta-survey' },
       watch: { name: 'Owen Hale', role: 'Inspector of the Watch', portrait: 'advisor-sta-watch' },
+      // M3's Envoy (M3_NEIGHBOURS.md §19.3).
+      envoy: { name: 'Isabel Achterberg', role: 'Envoy of the Authority', portrait: 'advisor-sta-envoy' },
     },
   },
   frontier: {
@@ -52,6 +63,7 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       science: { name: 'Priya Nandakumar', role: 'of the Learning table', portrait: 'advisor-frontier-science' },
       survey: { name: 'Sefa Owusu', role: 'of the Pathfinders', portrait: 'advisor-frontier-survey' },
       watch: { name: 'Mara Kowal', role: 'of the Lookouts', portrait: 'advisor-frontier-watch' },
+      envoy: { name: 'Rafael Quispe', role: 'of the Welcome table', portrait: 'advisor-frontier-envoy' },
     },
   },
   'hollow-wake': {
@@ -63,6 +75,7 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       science: { name: 'Doc Marrow', role: 'doctor and scientist', portrait: 'advisor-wake-science' },
       survey: { name: 'Farcast', role: 'navigator', portrait: 'advisor-wake-survey' },
       watch: { name: 'Lantern', role: 'who keeps watch', portrait: 'advisor-wake-watch' },
+      envoy: { name: 'Hush', role: 'who does the talking', portrait: 'advisor-wake-envoy' },
     },
   },
 };
@@ -97,6 +110,9 @@ export type LineKind =
   | 'rival-ship'
   | 'rival-tech'
   | 'great-work'
+  | 'contact-talk'
+  | 'contact-words'
+  | 'contact-understood'
   | 'event';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
@@ -211,6 +227,23 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     formal: 'Control, the {power} has opened a lane {place}. It is closed to our ships.',
     warm: 'Control, the {power} have a new lane {place}. Not one we can use, mind.',
     blunt: 'The {power} lit a lane {place}. Ours can’t use it.',
+  },
+  // Contact (M3_NEIGHBOURS.md §19.3): the Envoy speaks.
+  'contact-talk': {
+    formal: 'Control, we have made contact with the {power} at {place}. They share our tongue, so we may talk.',
+    warm: 'Control, we’ve met the {power}, at {place}! We speak the same tongue, so we can talk whenever you like.',
+    blunt: 'Found the {power}, at {place}. Same tongue as ours. We can talk.',
+  },
+  'contact-words': {
+    formal:
+      'Control, we have heard the {power} at {place}, but cannot understand them yet. I have begun to learn their tongue.',
+    warm: 'Control, there’s someone new out there: the {power}, at {place}. We can’t understand them yet, but I’m learning.',
+    blunt: 'The {power}, at {place}. Can’t make sense of them yet. I’m working on it.',
+  },
+  'contact-understood': {
+    formal: 'Control, I can now speak the tongue of the {power}. We may talk.',
+    warm: 'Control, I’ve got it: I can speak with the {power} now!',
+    blunt: 'I can talk to the {power} now.',
   },
   // Events (M2_WORLDS.md §27.6): the department the event belongs to speaks.
   event: {

@@ -151,6 +151,13 @@ export const RULES = {
   },
   /** The score (M2B_SCIENCE.md §20.3, D-50). */
   score: { colony: 10, millionPeople: 1, technology: 5, lane: 3, greatWork: 50 },
+  /** Contact (M3_NEIGHBOURS.md §19.1, D-52). */
+  contact: {
+    /** Translation needed before powers of different species can talk. */
+    wordsToTalk: 20,
+    /** Translation gained in a turn when anything of theirs is in sight. */
+    wordsSeen: 1,
+  },
   /** Discoveries (M2B_SCIENCE.md §17, D-45). */
   discoveries: {
     /** An inspiration gives this share of its technology's cost, in percent. */

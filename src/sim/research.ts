@@ -7,8 +7,7 @@ import { FACTIONS } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import { SPECIES, type SpeciesDef } from '../content/species.ts';
 import { TECH_IDS, TECHS, type TechEffect, type TechId } from '../content/techs.ts';
-import { type GameState, type PowerState, powerOf } from './state.ts';
-import { laneEnds } from './world.ts';
+import { type GameState, inContact, type PowerState, powerOf } from './state.ts';
 
 /** The effects of every technology a power has researched, of one kind. */
 export function effects<K extends TechEffect['kind']>(
@@ -43,29 +42,16 @@ export function speciesFor(state: GameState, faction: FactionId): SpeciesDef {
   return { ...base, costs: costs as unknown as SpeciesDef['costs'] };
 }
 
-/**
- * Whether one power has met another (M2B_SCIENCE.md §19.2): it sees a colony or outpost of theirs in
- * a system it has surveyed, or a lane of theirs with an end in one.
- */
-export function hasMet(state: GameState, viewer: PowerState, other: FactionId): boolean {
-  if (other === viewer.faction) return false;
-  const surveyed = new Set(viewer.surveyed);
-  return (
-    state.holdings.some((h) => h.owner === other && surveyed.has(h.system)) ||
-    state.lanes.some((l) => l.owner === other && laneEnds(l.id).some((end) => surveyed.has(end)))
-  );
-}
-
-/** The powers a power has met that know a technology already. */
+/** The powers a power is in contact with that know a technology already (M3_NEIGHBOURS.md §19.2). */
 export function knownBy(state: GameState, power: PowerState, tech: TechId): FactionId[] {
   return state.powers
-    .filter((p) => p.faction !== power.faction && p.researched.includes(tech) && hasMet(state, power, p.faction))
+    .filter((p) => p.faction !== power.faction && p.researched.includes(tech) && inContact(power, p.faction))
     .map((p) => p.faction);
 }
 
 /**
  * What a technology costs a power now (M2B_SCIENCE.md §18.1, §19.2): its base cost, and 8% of it for
- * every technology the power already knows; then 15% less for each power it has met that knows it,
+ * every technology the power already knows; then 15% less for each power in contact that knows it,
  * at most 30% (unless `spread` is false). Rounded down.
  */
 export function techCost(state: GameState, power: PowerState, tech: TechId, spread = true): number {

@@ -32,6 +32,36 @@
       "aiGenerated": true
     },
     {
+      "briefId": "advisor-frontier-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The envoy of the welcome table of the Frontier Cooperative, in practical blue work clothes with a small round pin, a woven shawl over one shoulder: a Peruvian man in his sixties with a broad, warm face and grey hair tied back; open, patient.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T06:00:52.009Z",
+      "id": "advisor-frontier-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T06:02:03.882Z",
+      "candidate": "art/out/advisor-frontier-envoy/20261022-055938-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-envoy-128.webp",
+          "bytes": 4470
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-envoy-384.webp",
+          "bytes": 24856
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-envoy-768.webp",
+          "bytes": 77346
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-frontier-science",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -208,6 +238,36 @@
           "width": 768,
           "path": "art/portrait/advisor-sta-colonies-768.webp",
           "bytes": 50854
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-sta-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Envoy of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia, a dark green sash of office across it: a Dutch woman in her forties with straight auburn hair cut at the jaw and an attentive half-smile; poised, diplomatic.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T05:59:57.379Z",
+      "id": "advisor-sta-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T06:02:02.981Z",
+      "candidate": "art/out/advisor-sta-envoy/20261022-055938-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-envoy-128.webp",
+          "bytes": 3316
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-envoy-384.webp",
+          "bytes": 17910
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-envoy-768.webp",
+          "bytes": 57256
         }
       ],
       "aiGenerated": true
@@ -390,6 +450,36 @@
           "width": 768,
           "path": "art/portrait/advisor-wake-colonies-768.webp",
           "bytes": 75888
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raider who does the talking of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels: a sharp-featured woman in her thirties with dark braided hair, a row of silver rings in one ear and a knowing look; smooth, persuasive.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T06:01:10.451Z",
+      "id": "advisor-wake-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T06:02:05.090Z",
+      "candidate": "art/out/advisor-wake-envoy/20261022-055938-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-envoy-128.webp",
+          "bytes": 4444
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-envoy-384.webp",
+          "bytes": 23538
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-envoy-768.webp",
+          "bytes": 60918
         }
       ],
       "aiGenerated": true

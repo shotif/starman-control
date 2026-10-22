@@ -17,7 +17,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 11;
+export const STATE_VERSION = 12;
 
 export interface Stockpile {
   metals: number;
@@ -63,6 +63,21 @@ export interface PowerState {
   lastEvent: number;
   /** What its events left behind, each until it runs out. */
   lasting: Lasting[];
+  /** The other powers it has heard, in the order heard (M3_NEIGHBOURS.md §19.1). */
+  contacts: Contact[];
+}
+
+/**
+ * A power's contact with another (D-52): words while it learns their tongue, then talk. A power not
+ * listed is unaware of the other. Contact is never lost.
+ */
+export interface Contact {
+  faction: FactionId;
+  stage: 'words' | 'talk';
+  /** The turn it first heard them. */
+  since: number;
+  /** Translation so far, up to `RULES.contact.wordsToTalk`. */
+  words: number;
 }
 
 /** An event that has come to a power, with its subject, and the answer given (taken as the turn ends). */
@@ -301,6 +316,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       researchQueue: [],
       techProgress: {},
       inspired: [],
+      contacts: [],
       investigated: [],
       food: RULES.food.start,
       treasury: RULES.credits.start,
@@ -354,6 +370,16 @@ export function powerOf(state: GameState, faction: FactionId): PowerState {
   const p = state.powers.find((x) => x.faction === faction);
   if (!p) throw new RangeError(`${faction} is not in play`);
   return p;
+}
+
+/** A power's contact with another, if it has heard them (M3_NEIGHBOURS.md §19.1). */
+export function contactWith(power: PowerState, other: FactionId): Contact | undefined {
+  return power.contacts.find((c) => c.faction === other);
+}
+
+/** Whether a power is in contact with another: it has heard a signal from them, or more (§19.2). */
+export function inContact(power: PowerState, other: FactionId): boolean {
+  return other !== power.faction && power.contacts.some((c) => c.faction === other);
 }
 
 /** The power the player controls, if there is one. */

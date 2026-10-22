@@ -6,10 +6,11 @@
 
 import { FACTIONS, type FactionId, isFactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
+import { sharesTongue } from './contact.ts';
 import { startZoning } from './economy.ts';
 import { capitalHolding, type GameState, type Holding, STATE_VERSION } from './state.ts';
 import { shapeProblems, stateProblems } from './validate.ts';
-import type { World } from './world.ts';
+import { laneEnds, type World } from './world.ts';
 
 export const SAVE_FORMAT = 'starman-control-save';
 
@@ -168,6 +169,38 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     if (!Array.isArray(g.holdings)) throw new SaveError(DAMAGED);
     const holdings = (g.holdings as Raw[]).map((h) => ({ ...h, terraform: 0 }));
     return { ...g, version: 11, holdings };
+  },
+  /**
+   * 11 → 12 (M3 increment 34): contact. Each power is in contact with those M2b counted as met (a
+   * colony, outpost or lane of theirs in a system it has surveyed), from this turn; at talk if they
+   * share a tongue, at the first words if not.
+   */
+  11: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.holdings) || !Array.isArray(g.lanes)) throw new SaveError(DAMAGED);
+    const holdings = g.holdings as Raw[];
+    const lanes = g.lanes as Raw[];
+    const powers = (g.powers as Raw[]).map((p) => {
+      const surveyed = new Set(Array.isArray(p.surveyed) ? (p.surveyed as string[]) : []);
+      const met = (g.powers as Raw[])
+        .map((q) => q.faction as FactionId)
+        .filter(
+          (f) =>
+            f !== p.faction &&
+            (holdings.some((h) => h.owner === f && surveyed.has(h.system as string)) ||
+              lanes.some((l) => l.owner === f && laneEnds(l.id as string).some((end) => surveyed.has(end)))),
+        );
+      const contacts = met.map((f) => {
+        const talk = isFactionId(p.faction) && isFactionId(f) && sharesTongue(p.faction, f);
+        return {
+          faction: f,
+          stage: talk ? 'talk' : 'words',
+          since: g.turn,
+          words: talk ? RULES.contact.wordsToTalk : 0,
+        };
+      });
+      return { ...p, contacts };
+    });
+    return { ...g, version: 12, powers };
   },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {

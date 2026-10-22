@@ -904,7 +904,7 @@ function greatWorks(): ArtBrief[] {
   }));
 }
 
-/** Increment 22's advisors (M2_WORLDS.md §24.1): six faces for each power, all fiction. */
+/** Increment 22's advisors (M2_WORLDS.md §24.1), and M3's Envoy: seven faces for each power, all fiction. */
 function advisors(): ArtBrief[] {
   const sta = 'of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia';
   const coop = 'of the Frontier Cooperative, in practical blue work clothes with a small round pin';
@@ -999,6 +999,22 @@ function advisors(): ArtBrief[] {
       'wake-watch',
       `The raider who keeps watch ${wake}, a hood half up: a tall man in his forties with a long black beard and one clouded eye; silent, wary.`,
       'the Wake’s Watch',
+    ],
+    // M3's Envoy (M3_NEIGHBOURS.md §19.3).
+    [
+      'sta-envoy',
+      `The Envoy ${sta}, a dark green sash of office across it: a Dutch woman in her forties with straight auburn hair cut at the jaw and an attentive half-smile; poised, diplomatic.`,
+      'the Authority’s Envoy',
+    ],
+    [
+      'frontier-envoy',
+      `The envoy of the welcome table ${coop}, a woven shawl over one shoulder: a Peruvian man in his sixties with a broad, warm face and grey hair tied back; open, patient.`,
+      'the Cooperative’s Envoy',
+    ],
+    [
+      'wake-envoy',
+      `The raider who does the talking ${wake}: a sharp-featured woman in her thirties with dark braided hair, a row of silver rings in one ear and a knowing look; smooth, persuasive.`,
+      'the Wake’s Envoy',
     ],
   ];
   return people.map(([id, subject, who]) => ({

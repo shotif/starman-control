@@ -50,6 +50,18 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isStrings(p.investigated)) out.push(`power ${i} investigated is not a list`);
       if (!Array.isArray(p.inspired) || !p.inspired.every(isTechId))
         out.push(`power ${i} was inspired towards unknown technologies`);
+      if (
+        !Array.isArray(p.contacts) ||
+        !p.contacts.every(
+          (c) =>
+            isRecord(c) &&
+            isFactionId(c.faction) &&
+            (c.stage === 'words' || c.stage === 'talk') &&
+            isWhole(c.since, 1) &&
+            isWhole(c.words),
+        )
+      )
+        out.push(`power ${i} contacts are not a list of contacts`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -221,6 +233,17 @@ export function stateProblems(world: World, state: GameState): string[] {
     }
     if (new Set(p.inspired).size !== p.inspired.length)
       out.push(`${p.faction} was inspired towards a technology twice`);
+    // Contact (M3_NEIGHBOURS.md §19): each other power in play at most once, talk only with every word learnt.
+    const heard = new Set<string>();
+    for (const c of p.contacts) {
+      if (c.faction === p.faction || !state.powers.some((x) => x.faction === c.faction))
+        out.push(`${p.faction} is in contact with ${c.faction}, which is not another power in play`);
+      if (heard.has(c.faction)) out.push(`${p.faction} is in contact with ${c.faction} twice`);
+      heard.add(c.faction);
+      if (c.since > state.turn) out.push(`${p.faction} heard ${c.faction} after this turn`);
+      if (c.words > RULES.contact.wordsToTalk || (c.stage === 'talk') !== (c.words === RULES.contact.wordsToTalk))
+        out.push(`${p.faction}'s words with ${c.faction} do not match its stage`);
+    }
     for (const [id, v] of Object.entries(p.techProgress))
       if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId, false))
         out.push(`${p.faction} has progress in ${id}, which is done`);

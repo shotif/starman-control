@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-22 | **about $50 in all** (raised from $5, then $15, then $25, then $35, by D-57); about $24.45 spent by 22 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-22 | **about $50 in all** (raised from $5, then $15, then $25, then $35, by D-57); about $24.75 spent by 22 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
@@ -369,7 +369,8 @@ increment 32's four great works, **about $24.45** in all, leaving about **$10.55
 
 **Raised again on 22 October 2026** by D-57, answered *as recommended*: **about $50 in all** may
 now be spent without asking; about $24.45 was spent, so about **$25.55** is left. M3's pictures
-are planned at about $6.50 (M3_NEIGHBOURS.md §16).
+are planned at about $6.50 (M3_NEIGHBOURS.md §16). Then about $0.30 on increment 34's three
+Envoys, **about $24.75** in all, leaving about **$25.25**.
 
 ### D-28 · The colony view — **Decided**
 
@@ -588,6 +589,8 @@ Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
+| 2026-10-22 | Increment 34's pictures (M3_NEIGHBOURS.md §19.6): 6 candidates of the three Envoys' faces, about **$0.30**, so about **$24.75** of the owner's $50 spent in all; chosen the Authority's A (the sash of office shows), the Cooperative's B (the shawl over one shoulder) and the Wake's A | within D-27; the lettered sheet went to the owner to overrule |
+| 2026-10-22 | Increment 34 as M3_NEIGHBOURS.md §19 (D-52 A): a signal from a colony, outpost or lane where the power has surveyed, a ship where it watches, or a great work; words grow 1 a turn in sight and 1 more with Translation, talk at 20; contact never lost and one-sided; a ship seen now counts for spreading knowledge, where M2b counted colonies, outposts and lanes; a save from before is in contact as M2b's *met*; the contact shown under each power's name in the standings rather than in a column of its own, so the phone's table keeps its width; rivals research Translation only while they learn a tongue; the Cooperative's Envoy named Rafael Quispe (Kofi Mensah in the design), as its Survey advisor is Ghanaian already | the smallest reading of §6 that every power follows; each has a unit test |
 | 2026-10-22 | Increment 33 as M3_NEIGHBOURS.md §18 (D-51 A): the archives asked from this container rather than GitHub's runners, as they answer here now; the shell kept in a file of its own (`shell.json`), the census's `sky.json` and its lanes unchanged so saved games keep their worlds; Mu Herculis left out, as its Mu¹ Herculis belongs with the census's Mu² Herculis; no flare stars marked in the shell (the census keeps Reborn's ten); a Gaia identifier read without its words in the copy, and Infinity read as no value | the smallest reading of §4 that keeps every saved game as it was; each has a test |
 | 2026-10-21 | Increment 32 as M2B_SCIENCE.md §20 (D-49, D-50 as recommended): Great engineering at tier 5 needing Prefabrication; great works at a colony, one building each per power at a time, upkeep 3; the loser that was building it first keeps half its industry; a colony holding a great work is seen by every power; rivals build theirs at the capital; a rival's score counts its technologies once met and its great works always; each technology now costs 8% more for every one known (7% before) to meet §2's targets on every seed | the smallest reading of §9 and §10 that makes the race real; each has a unit test |
 | 2026-10-21 | Increment 32's pictures (M2B_SCIENCE.md §20.2): 8 candidates, about **$0.40**, so about **$24.45** of the owner's $35 spent in all; chosen the Long Array A (B had a row of dishes floating free), the Lapse Archive A, the Lanewright Foundry A and the Commons A | within D-27; the lettered sheet went to the owner to overrule |

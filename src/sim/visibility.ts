@@ -9,9 +9,17 @@ import { RULES } from '../content/rules.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import type { ReportEvent } from './report.ts';
-import { effects, hasMet } from './research.ts';
+import { effects } from './research.ts';
 import { scoreOf } from './score.ts';
-import { type GameState, type Holding, type LaneState, powerOf, type ShipState } from './state.ts';
+import {
+  contactWith,
+  type GameState,
+  type Holding,
+  inContact,
+  type LaneState,
+  powerOf,
+  type ShipState,
+} from './state.ts';
 import { laneEnds, type World } from './world.ts';
 
 /** Systems where a power sees the others' ships: where it holds something, and in its scanners' range. */
@@ -104,10 +112,10 @@ export function watchNews(world: World, before: GameState, after: GameState, fac
       )
         out.push({ kind: 'great-work-begun', faction: h.owner, project: q.project, holding: h.id, system: h.system });
   }
-  // Rumours (M2B_SCIENCE.md §19.3): a met rival's great steps, a tier 4 or 5 technology or a doctrine.
+  // Rumours (M2B_SCIENCE.md §19.3): the great steps of a rival in contact, a tier 4 or 5 technology or a doctrine.
   const viewer = powerOf(after, faction);
   for (const p of after.powers) {
-    if (p.faction === faction || !hasMet(after, viewer, p.faction)) continue;
+    if (!inContact(viewer, p.faction)) continue;
     const knew = new Set(before.powers.find((x) => x.faction === p.faction)?.researched ?? []);
     for (const tech of p.researched)
       if (!knew.has(tech) && (TECHS[tech].tier >= 4 || TECHS[tech].fork))
@@ -131,11 +139,13 @@ export interface Standing {
   science: 'ahead' | 'level' | 'behind' | null;
   /** The score as far as the viewer sees it (M2B_SCIENCE.md §20.3). */
   score: number;
+  /** The viewer's contact with this power (M3_NEIGHBOURS.md §19.2); null for the viewer, or one only just seen. */
+  contact: { stage: 'words' | 'talk'; words: number } | null;
 }
 
 /**
- * The standings from a power's view (`knownView`): its own line first, then each other power it
- * has seen anything of, in the order they are listed.
+ * The standings from a power's view (`knownView`): its own line first, then each other power it is
+ * in contact with or sees anything of now, in the order they are listed.
  */
 export function standings(view: GameState, viewer: FactionId): Standing[] {
   const line = (faction: FactionId): Standing => {
@@ -149,12 +159,19 @@ export function standings(view: GameState, viewer: FactionId): Standing[] {
       technologies: faction === viewer ? mine : null,
       science: faction === viewer ? null : compare(powerOf(view, faction).researched.length),
       score: scoreOf(view, faction, viewer).total,
+      contact: contactOf(faction),
     };
   };
-  const mine = powerOf(view, viewer).researched.length;
+  const contactOf = (faction: FactionId): Standing['contact'] => {
+    const c = contactWith(me, faction);
+    return c ? { stage: c.stage, words: c.words } : null;
+  };
+  const me = powerOf(view, viewer);
+  const mine = me.researched.length;
   const gap = RULES.research.standingsGap;
   const compare = (theirs: number) => (theirs >= mine + gap ? 'ahead' : theirs <= mine - gap ? 'behind' : 'level');
   const known = (f: FactionId) =>
+    inContact(me, f) ||
     view.holdings.some((h) => h.owner === f) ||
     view.lanes.some((l) => l.owner === f) ||
     view.ships.some((s) => s.owner === f);
