@@ -157,7 +157,7 @@ describe('defeat, and the story (§30.2, §30.3)', () => {
     ev.get('frontier')?.push({ kind: 'war-declared', faction: 'sta', by: 'frontier' });
     resolveVictory(g, ev);
     expect(g.history).toEqual([{ turn: 10, scores: g.powers.map((p) => scoreOf(g, p.faction).total) }]);
-    expect(powerOf(g, 'frontier').story).toEqual({ wars: 1, battles: 0, taken: 0 });
+    expect(powerOf(g, 'frontier').story).toMatchObject({ wars: 1, battles: 0, taken: 0 });
     g.turn = 11;
     resolveVictory(g, events(g));
     expect(g.history).toHaveLength(1);

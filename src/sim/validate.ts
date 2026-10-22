@@ -188,7 +188,14 @@ export function shapeProblems(raw: unknown): string[] {
       if (!isWhole(p.mostColonies)) out.push(`power ${i}'s most colonies is not a whole number`);
       // Leaving the game, and the story (M4_FLEETS.md §30.2, §30.3).
       if (p.left !== null && !isWhole(p.left, 1)) out.push(`power ${i} left the game on no turn`);
-      if (!isRecord(p.story) || !isWhole(p.story.wars) || !isWhole(p.story.battles) || !isWhole(p.story.taken))
+      if (
+        !isRecord(p.story) ||
+        !isWhole(p.story.wars) ||
+        !isWhole(p.story.battles) ||
+        !isWhole(p.story.taken) ||
+        !isWhole(p.story.research) ||
+        !isWhole(p.story.industry)
+      )
         out.push(`power ${i}'s story is not its numbers`);
       // Designs (M4_FLEETS.md §21.3).
       if (

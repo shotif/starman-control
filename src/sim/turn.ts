@@ -338,6 +338,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     if (h.overdrive === 0) (events.get(h.owner) as ReportEvent[]).push({ kind: 'overdrive-stopped', holding: h.id });
   }
   const made = new Map(state.holdings.map((h) => [h.id, industryOf(world, state, h, fusion.get(h.id) ?? false).total]));
+  // Each power's works, for the score (M4_FLEETS.md §31.4).
+  for (const h of state.holdings) powerOf(state, h.owner).story.industry += made.get(h.id) ?? 0;
   for (const h of state.holdings) {
     const power = powerOf(state, h.owner);
     const log = events.get(h.owner) as ReportEvent[];
@@ -454,6 +456,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 4. Research: each power's points go into its research queue.
   for (const p of state.powers) {
+    p.story.research += research.get(p.faction) ?? 0;
     const done = spendResearch(state, p, research.get(p.faction) ?? 0);
     for (const tech of done) (events.get(p.faction) as ReportEvent[]).push({ kind: 'researched', tech });
   }

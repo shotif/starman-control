@@ -85,8 +85,11 @@ export interface PowerState {
   mostColonies: number;
   /** The turn it left the game, its last colony gone (M4_FLEETS.md §30.2); null while it plays. */
   left: number | null;
-  /** Its story in numbers, for the end (§30.3): wars it declared, battles it fought, holdings it took. */
-  story: { wars: number; battles: number; taken: number };
+  /**
+   * Its story in numbers, for the end (§30.3): wars it declared, battles it fought, holdings it took;
+   * and the research points and industry it has made in the game, its works in the score (§31.4).
+   */
+  story: { wars: number; battles: number; taken: number; research: number; industry: number };
 }
 
 /** A war between two powers (M4_FLEETS.md §23.1): `a` before `b` in id order; `by` declared it. */
@@ -599,7 +602,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       subduedBy: null,
       mostColonies: 1,
       left: null,
-      story: { wars: 0, battles: 0, taken: 0 },
+      story: { wars: 0, battles: 0, taken: 0, research: 0, industry: 0 },
     })),
     lanes,
     ships: [],

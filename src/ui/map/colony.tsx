@@ -58,6 +58,7 @@ import { laneQuote, laneTargets } from '../../sim/lanes.ts';
 import type { Need } from '../../sim/needs.ts';
 import { refuse } from '../../sim/orders.ts';
 import { speciesFor } from '../../sim/research.ts';
+import { scoreWords } from '../../sim/score.ts';
 import {
   type GameState,
   type Holding,
@@ -1323,8 +1324,7 @@ function Standings({ game, faction, rows }: { game: GameState; faction: FactionI
         <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = 'diplomacy')}>
           Diplomacy
         </button>{' '}
-        The score counts 10 for each colony, 1 for each million people, 5 for each technology, 3 for each lane and 50
-        for each great work; there is no victory yet.
+        {scoreWords()}
       </p>
       {unmet.length > 0 && (
         <p class="dim">

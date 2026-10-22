@@ -1,4 +1,4 @@
-# Handover: Starman Control, 22 October 2026 (M3 complete, M4 decided)
+# Handover: Starman Control, 22 October 2026 (M4 complete)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -214,7 +214,13 @@ its chamber's picture; state version 23. **Done: increment 50, victory, defeat a
 none; 250 by default); a power with no colony leaves the game; the end screen with its picture,
 the story in numbers and *Play on*; late turns made about twice as fast; the headless games played
 to their end (six of eight won by the Assembly's vote, all by the Cooperative: D-69 asks the
-owner); state version 24. **M4 is complete.** The owner is asked to try it, and to answer D-69.
+owner); state version 24. **M4 is complete.** **Done: increment 51, many roads to victory** (§31,
+D-69 as the owner chose): war plans that strike anywhere the lanes reach and the capital first; the
+Wake and the Concord as conquerors that arm, fall on the weak and see a war through; the balance of
+power; fear at the Assembly's deciding vote and tiring of a long leader; a less-loved Co-op; works
+in the score; state version 25. Three different winners in the eight headless games (the target was
+four), none by the vote; shipped on the owner's standing leave, with a switch for every change
+(M4_FLEETS.md, *Increment 51*). The owner is asked to try it.
 
 The art and music spend: about $27.55 of $50 (raised on 22 October 2026; about $22.45 left). M3's
 art is about 65 pictures (about $6.50).

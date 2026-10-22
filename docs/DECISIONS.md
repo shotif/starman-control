@@ -68,7 +68,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-14 | Victory and defeat ([M4 §13](design/M4_FLEETS.md#13-victory-and-defeat-d-14)) | Decided 2026-10-22 | **A, conquest, the vote, a score at a turn limit** (250 turns by default), as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-68 | Rivals at war ([M4 §14](design/M4_FLEETS.md#14-rivals-at-war-d-68)) | Decided 2026-10-22 | **A, by character**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
 | D-17 | Words from the other powers ([M4 §15](design/M4_FLEETS.md#15-words-from-the-other-powers-d-17)) | Decided 2026-10-22 | **A, every line written into the game**, as recommended; see [Round 7](#round-7-fleets-decided-22-october-2026) |
-| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--decided-owners-choice)) | Decided 2026-10-22 (owner's choice) | **war plans for the rivals (H), fear at the deciding vote (K), tiring of a leader (C), and a less-loved Cooperative**, as increment 51 |
+| D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--decided-owners-choice)) | Decided 2026-10-22 (owner's choice) | **war plans for the rivals (H), fear at the deciding vote (K), tiring of a leader (C), and a less-loved Cooperative**, built as increment 51: three different winners in eight games (the target was four), none by the vote; every part has a switch |
 | D-13, D-18 | Round 2 | Open | see [Round 2](#round-2-needed-later) |
 
 ## Round 1: decided 19 October 2026
@@ -719,12 +719,26 @@ and the Cooperative grows more slowly and has a quarrel. Built as increment 51
 ([M4_FLEETS.md §31](design/M4_FLEETS.md)), and shipped only if the headless games show at least four
 different winners in the eight games, none winning more than three.
 
+**As built (22 October 2026), and shipped short of its target.** The headless games now give three
+different winners in eight: the Co-op five, the Concord two and the Wake one, all on score at turn
+250; none is won by the Assembly's vote. The owner's standing leave of the same day ("continue with
+development according to your best judgement ... make sure that any major impact on the game is well
+documented and reversible") is read as leave to ship it short of the target, since it is nearer the
+owner's aim than what it replaced (one winner in eight games) and every part of it has a switch.
+Why it falls short, and the switch for each change, are in
+[M4_FLEETS.md, *Increment 51*](design/M4_FLEETS.md#increment-51-many-roads-to-victory-22-october-2026):
+the rivals' lane networks seldom meet, so the stronger cannot carry a war to the leader, and the
+Co-op's economy leads. What is left is for M5 (the Authority's road through the keys) and M6
+(balance from AI-against-AI games, and a rival's road to war: settling toward its prey). The owner
+may still ask for any part to be undone.
+
 ## Made without waiting
 
 Small engineering choices, easy to reverse. Overrule any of them.
 
 | Date | Choice | Why |
 | --- | --- | --- |
+| 2026-10-22 | Increment 51 as M4_FLEETS.md §31 (D-69), with what the building found: *you are weak* only for a power the rival's fleets can reach; a lane queued toward prey it cannot reach; the outlaw Wake breaks a non-aggression pact for easy prey, the lawful Concord does not; a fifth reason for war, the balance of power (the Authority, the Wake and the Concord against a power that leads all in score with 130% of their own, which they can match and reach); the peaceful arm half as much at war; a subdued power's lanes open to its victor; **works in the score** (a point for every 100 research and 200 industry made in the game); state version 25. **Shipped short of its target** (three different winners, not four; none by the vote) | nearer the owner's aim than one winner in eight; each change has a switch, listed in M4_FLEETS.md under *Increment 51*; overrule any |
 | 2026-10-22 | Increment 50 as M4_FLEETS.md §30 (D-14): conquest, then the Assembly's choice, then the limit, checked as each turn ends; a tie in score goes to the earlier power in the order; played alone, the game simply ends at the limit; a power with no colony leaves the game, and no one hears from it again; *Play on* after a victory or a surrender, not once our power has left; a save from before gets the 250-turn limit, or none if past turn 250; **the rule that a rival votes a power into victory only if friendly with it, dropped** (with it no game was won before the limit) | the smallest reading of §13 that lets most games end before the limit; each has a unit test; overrule any |
 | 2026-10-22 | Increment 50's pictures (M4_FLEETS.md §30.5): 4 candidates, about **$0.20**, so about **$27.55** of the owner's $50 spent in all; chosen victory A and defeat A (defeat B had black bars) | lettered sheet sent; overrule either letter |
 | 2026-10-22 | Late turns made faster without changing any result: a power's routes searched once from each system while its lanes and passage stay the same, and a rival's lane chosen at the first it may build | a turn near turn 200 went from about 300 ms to about 130 ms; the same game to the byte after 150 turns |

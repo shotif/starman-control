@@ -294,10 +294,18 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, left: null, story: { wars: 0, battles: 0, taken: 0 } }));
     return { ...g, version: 24, powers, limit: g.turn > 250 ? null : 250, ended: null, history: [] };
   },
-  /** 24 → 25 (M4 increment 51): a leader's terms in a row, one for a leader the Assembly has. */
+  /**
+   * 24 → 25 (M4 increment 51): a leader's terms in a row, one for a leader the Assembly has; and the
+   * works each power has made, counted from now.
+   */
   24: (g) => {
+    if (!Array.isArray(g.powers)) throw new SaveError(DAMAGED);
     const a = g.assembly as Raw | null;
-    return { ...g, version: 25, assembly: a ? { ...a, terms: a.leader ? 1 : 0 } : null };
+    const powers = (g.powers as Raw[]).map((p) => ({
+      ...p,
+      story: { ...(p.story as Raw), research: 0, industry: 0 },
+    }));
+    return { ...g, version: 25, powers, assembly: a ? { ...a, terms: a.leader ? 1 : 0 } : null };
   },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {

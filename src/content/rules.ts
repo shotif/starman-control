@@ -149,8 +149,11 @@ export const RULES = {
     /** A colony that loses the race keeps this share of its industry, in percent. */
     lostKeepsPercent: 50,
   },
-  /** The score (M2B_SCIENCE.md §20.3, D-50). */
-  score: { colony: 10, millionPeople: 1, technology: 5, lane: 3, greatWork: 50 },
+  /**
+   * The score (M2B_SCIENCE.md §20.3, D-50); and its works (M4_FLEETS.md §31.4, as built): a point for
+   * every so many research points and industry a power has made in the game. 0 leaves works out.
+   */
+  score: { colony: 10, millionPeople: 1, technology: 5, lane: 3, greatWork: 50, researchPer: 100, industryPer: 200 },
   /** Contact (M3_NEIGHBOURS.md §19.1, D-52). */
   contact: {
     /** Translation needed before powers of different species can talk. */
@@ -308,6 +311,10 @@ export const RULES = {
     spareTroops: 2,
     /** A conqueror (§31.2) sees a war through while its war weariness is under this. */
     pressOnWeariness: 60,
+    /** At war a rival keeps a warship a colony and two more; one that calls for peace, this share of a warship a colony. */
+    peacefulAtWarPercent: 50,
+    /** The balance of power (§31.2, as built): a power whose score is this share of a rival's or more, and leads all. */
+    leaderPercent: 130,
     /** After a peace, so many turns more before it goes back to war with the same power. */
     rest: 30,
   },

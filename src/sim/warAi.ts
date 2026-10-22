@@ -12,6 +12,7 @@ import { bestWeapon, garrisonOf, hasBattery, troopsOf } from './invasion.ts';
 import { laneTargets } from './lanes.ts';
 import { attitudeOf } from './memory.ts';
 import { lanesFor } from './movement.ts';
+import { scoreOf } from './score.ts';
 import { contactWith, type Fleet, type GameState, type Holding, powerOf } from './state.ts';
 import { declareRefusal, enemiesOf, isArmed } from './war.ts';
 import { laneEnds, type World } from './world.ts';
@@ -47,6 +48,8 @@ function reasonHolds(
   reason: WarReason,
   /** Whether it must be the stronger now; without, a grievance it may arm for (§28.2). */
   strength = true,
+  /** Whether its fleets must reach the other now; without, a power it may build lanes toward (§31.1). */
+  reach = true,
 ): boolean {
   const w = RULES.rivalsWar;
   const power = powerOf(state, f);
@@ -68,8 +71,19 @@ function reasonHolds(
         state.turn >= w.choiceFrom &&
         attitudeOf(world, state, f, other).total <= w.notWarm &&
         stronger() &&
-        reachable(world, state, f, other)
+        (!reach || reachable(world, state, f, other))
       );
+    case 'leader': {
+      // The balance of power (§31.2, as built): the power that leads all in score, well ahead of it,
+      // that it does not like well, and whose warships it can match.
+      if (state.turn < w.choiceFrom || attitudeOf(world, state, f, other).total >= RULES.assembly.warm) return false;
+      const theirs = scoreOf(state, other).total;
+      if (theirs * 100 < scoreOf(state, f).total * w.leaderPercent) return false;
+      if (state.powers.some((p) => p.left === null && p.faction !== other && scoreOf(state, p.faction).total > theirs))
+        return false;
+      const able = !strength || (strengthOf(state, f) > 0 && strengthOf(state, f) >= strengthOf(state, other));
+      return able && (!reach || reachable(world, state, f, other));
+    }
     case 'claim':
       return (
         power.memories.filter((m) => m.faction === other && m.kind === 'claim-crossed').length >= w.claims && stronger()
@@ -274,18 +288,20 @@ export function reachable(world: World, state: GameState, f: FactionId, other: F
  */
 export function bridgeLane(world: World, state: GameState, f: FactionId): { holding: Holding; to: SystemId } | null {
   const w = RULES.rivalsWar;
-  if (!FACTIONS[f].war.conqueror || state.turn < w.choiceFrom) return null;
+  const reasons = FACTIONS[f].war.declares.filter((r) => r === 'weak' || r === 'leader');
+  if (reasons.length === 0 || state.turn < w.choiceFrom) return null;
   const power = powerOf(state, f);
   if (power.subduedBy || enemiesOf(state, f).length > 0) return null;
   const mine = state.holdings.filter((h) => h.owner === f);
-  const mineAttack = strengthOf(state, f);
   let best: { holding: Holding; to: SystemId; d: number } | null = null;
   for (const p of state.powers) {
     const other = p.faction;
-    if (other === f || p.left !== null || !contactWith(power, other) || declareRefusal(state, f, other) !== null)
-      continue;
-    if (lately(state, f, other) || attitudeOf(world, state, f, other).total > w.notWarm) continue;
-    if (mineAttack === 0 || mineAttack * 2 < strengthOf(state, other) * 3) continue;
+    if (other === f || p.left !== null || !contactWith(power, other)) continue;
+    // A pact the outlaw would break is no obstacle (§31.2).
+    const refusal = declareRefusal(state, f, other);
+    if (refusal !== null && !(refusal.includes('non-aggression') && !FACTIONS[f].lawful)) continue;
+    if (lately(state, f, other)) continue;
+    if (!reasons.some((r) => reasonHolds(world, state, f, other, r, true, false))) continue;
     if (reachable(world, state, f, other)) continue;
     // Its holdings, and every star its open lanes touch: a lane to any of them opens the way at war.
     const theirs = new Set(state.holdings.filter((h) => h.owner === other).map((h) => h.system));
@@ -329,7 +345,7 @@ export function pactToBreak(world: World, state: GameState, f: FactionId): Facti
     const pact = state.treaties.some((t) => t.a === a && t.b === b && t.kind === 'non-aggression');
     const bound = state.treaties.some((t) => t.a === a && t.b === b && t.kind === 'alliance');
     if (!pact || bound || lately(state, f, other) || state.truces.some((t) => t.a === a && t.b === b)) continue;
-    if (reasonHolds(world, state, f, other, 'weak')) return other;
+    if (reasonHolds(world, state, f, other, 'weak') || reasonHolds(world, state, f, other, 'leader')) return other;
   }
   return null;
 }

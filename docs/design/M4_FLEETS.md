@@ -1757,3 +1757,83 @@ counts one term for a leader it has, none without.
   conquerors' arming, their reason for war, pressing on and ignoring a call; fear at the deciding
   vote; tiring of a leader; the Cooperative's growth and the quarrels; the migration.
 - **Journeys:** the Assembly's and the war journeys still pass on the phone, tablet and desktop.
+
+### Increment 51: many roads to victory (22 October 2026)
+
+- **War plans as §31.1:** a rival at war strikes anywhere its strike fleet can reach by the lanes it
+  may sail, and the enemy's capital first when its fleet's attack is at least twice what defends
+  it there. The fleet does not yet stage forward to a holding near the enemy.
+- **The conquerors as §31.2,** with four things found in the building:
+  - *You are weak* now asks that the conqueror's fleets **can reach** the weak power (by its own
+    lanes, those it may sail, and the other's), so it does not declare a war it cannot carry.
+  - **A lane toward the prey:** a rival that would fall on a power (as weak, or by the balance of
+    power below) but cannot reach it queues a lane from its holding nearest that power, toward it,
+    one at a time.
+  - **The outlaw breaks a pact for easy prey:** the Wake breaks a non-aggression pact with a power it
+    would otherwise go to war on (the lawful Concord keeps its word, and never declares on a power
+    it holds a pact with).
+  - **The balance of power** (a fifth reason for war, *you would rule us all*): from turn 80 the
+    Authority, the Wake and the Concord go to war on the power that leads every other in score, when
+    it has at least 130% of their own, they do not regard it warmly, their warships' attack is at
+    least its own, and they can reach it.
+  - At war, a power that calls for peace (the Co-op and the Moot) keeps half a warship a colony and
+    2 more, rather than one a colony and 2 more; a subdued power's lanes are open to its victor, and
+    its victor's to it.
+- **The Assembly's brakes as §31.3** (K and C), and **a less-loved Co-op as §31.4.**
+- **Works in the score** (not in §31's design): a point for every 100 research and every 200
+  industry a power has made in the game, so a power that researched or built more than the others is
+  keeps the credit once the others catch up on the tree (by turn 250 every power held 45 to 67 of
+  its 80 technologies). The standings
+  say what the score counts, from the rules; they no longer say there is no victory.
+- **State version 25:** `Assembly.terms`, and each power's story counts the research and industry
+  made (`story.research`, `story.industry`); a save from before counts both from 0.
+
+**Numbers** (M2_BALANCE.md, *To the end of each game*): **three different winners in eight games,
+the Co-op five, the Concord two and the Wake one, all on score at turn 250; the target of four
+winners, none winning more than three, is not met.** No game was won before the limit (six of eight
+by the Assembly's vote after increment 50, all by the Co-op): fear at the deciding vote stops every
+choice, and every trial without it gave the vote to the Co-op again. A war by turn 150 in all eight
+games; 1 to 27 battles and 2 to 10 colonies or outposts taken in each; no surrender and no power
+left the game. M3's targets are still met at turn 100. The slowest turn took 87 ms (turn 242) and the
+largest save was 122.0 KB, within 200 ms and 200 KB.
+
+**Why the target was missed,** found by following the rivals turn by turn:
+
+- **Distance.** The powers' lane networks seldom meet. On seed 5 the Concord was half again as
+  strong as the leading Co-op from turn 150 and regarded it at −38 and worse, but its nearest holding
+  stayed 33 light-years from the Co-op's, and every beacon at its border systems was in use, so no
+  lane toward it could be built. Of the balance of power's conditions, reach is the one that fails;
+  130% or 105% made no difference. A conqueror would have to settle toward its prey, outpost by
+  outpost, before its lanes can carry a war: a rival's road to war, not built.
+- **The Co-op's economy.** It leads in colonies and people (19 to 34 colonies and 238 to 453 million
+  people at turn 250 in the games it won). The research leader, the Authority, has no road of its own
+  until the keys (M5).
+- **Small changes move the outcomes a great deal:** with the Co-op's growth at 5% rather than 10%,
+  it won six games rather than five, one of them by the Assembly's vote on turn 91. Eight seeds are a small sample, so
+  deeper tuning is left to M6's balance from AI-against-AI games.
+
+**Reversing it.** Every change has a switch in the rules or the factions; the tests name the rules
+they check, so a changed switch may need its test changed with it.
+
+| To undo | Set |
+| --- | --- |
+| Fear at the deciding vote (K) | `RULES.assembly.fear` to 0 (the vote is then won again, by the Co-op) |
+| Tiring of a leader (C) | `RULES.assembly.tired` to 0 |
+| Works in the score | `RULES.score.researchPer` and `industryPer` to 0 |
+| The conquerors | `war.conqueror` to false for the Wake and the Concord (`src/content/factions.ts`) |
+| The Concord falling on the weak | remove `'weak'` from the Concord's `war.declares` |
+| The balance of power | remove `'leader'` from each faction's `war.declares`, or `RULES.rivalsWar.leaderPercent` very high |
+| Seeing a war through | `RULES.rivalsWar.pressOnWeariness` to 0 |
+| The peaceful arming less at war | `RULES.rivalsWar.peacefulAtWarPercent` to 100 |
+| The Co-op's slower growth | the Settlers trait's `percent` back to 20 |
+| The quarrels with the Co-op | the `frontier` entries in the Wake's and the Concord's `regard` |
+
+The strike anywhere the lanes reach, the capital first, the lane toward the prey, the outlaw's
+broken pact and a subdued power's open lanes have no switch; each is a few lines in
+`src/sim/warAi.ts`, `src/sim/ai.ts` and `src/sim/treaties.ts`, and its own unit test.
+
+- **Tests:** `roads.test.ts` (12 tests): the capital first; the conquerors' arming, pressing on and
+  ignoring a call; reach and the lane toward the prey; the outlaw's broken pact and the Concord's
+  kept word; a subdued power's lanes; the balance of power; fear at the deciding vote; tiring of a
+  leader; the Co-op's growth and the quarrels; works in the score and its words; the migration.
+  The Assembly's, the war and the victory journeys pass on the phone, tablet and desktop.

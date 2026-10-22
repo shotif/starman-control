@@ -245,8 +245,11 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   const colonyCount = mine.filter((h) => h.kind === 'colony').length;
   const raiding = raider && state.turn >= RULES.raid.from && colonyCount >= RULES.raid.colonies;
   // In peace it arms when its neighbours arm (M4_FLEETS.md §28.2).
+  // At war, a warship a colony and two more; the peaceful (those that call for peace) half that
+  // (M4_FLEETS.md §31.2, as built).
+  const atWarShare = FACTIONS[faction].war.callsForPeace ? RULES.rivalsWar.peacefulAtWarPercent : 100;
   const wanted = atWarNow
-    ? colonyCount + 2
+    ? Math.floor((colonyCount * atWarShare) / 100) + 2
     : Math.max(raiding ? RULES.raid.squadron : 0, warshipsWanted(world, state, faction));
   let arming = yardDesign !== undefined && warships < wanted;
   for (const h of mine) {

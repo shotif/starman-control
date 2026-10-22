@@ -187,10 +187,16 @@ describe('the score (§20.3)', () => {
       technologies: 0,
       lanes: 6,
       greatWorks: 0,
+      works: 0,
     });
     knowing(g, 'sta', 'deep-survey', 'habitat-domes');
     capital(g).projects.push('commons');
     expect(scoreOf(g, 'sta').total).toBe(38 + 2 * 5 + 50);
+    // Its works (M4_FLEETS.md §31.4): a point for every 100 research points and 200 industry made.
+    powerOf(g, 'sta').story.research = 250;
+    powerOf(g, 'sta').story.industry = 450;
+    expect(scoreOf(g, 'sta').works).toBe(2 + 2);
+    expect(scoreOf(g, 'sta').total).toBe(38 + 2 * 5 + 50 + 4);
   });
 
   it('a rival’s as far as you see it: its technologies once in contact, its great works always', () => {
