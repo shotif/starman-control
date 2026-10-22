@@ -19,12 +19,14 @@ import { rivalChoice } from './events.ts';
 import { fleetAt, fleetLanes, fleetShips } from './fleets.ts';
 import { habitability } from './habitability.ts';
 import { garrisonOf, holdsOrbit, missionRefusal, raidRefusal, troopsOf } from './invasion.ts';
+import { beginAnswerRefusal, isKeySite, keySight, keysHeld } from './keys.ts';
 import { nearestLane } from './lanes.ts';
 import { attitudeOf, attitudeWord } from './memory.ts';
 import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
-import { canExcavate, digAt, excavateRefusal, knownSites, laneToSite } from './relics.ts';
+import { canExcavate, digAt, excavateRefusal, knownSites } from './relics.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
+import { reachableFrom, roadStep } from './roads.ts';
 import {
   type Amount,
   contactWith,
@@ -38,6 +40,7 @@ import {
 import { offerRefusal, partnerOf, treatiesOf, wouldAccept } from './treaties.ts';
 import { atWar, enemiesOf, isArmed } from './war.ts';
 import {
+  answerTarget,
   beaten,
   bridgeLane,
   invasionTarget,
@@ -198,8 +201,20 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
               settleable(world, state, faction, id, 'outpost').length > 0
             );
           })
-          .sort(byDistance(power.capital))
+          .sort(
+            (a, b) =>
+              // The key sites first, once it knows them (M5_UNKNOWN.md §21.4).
+              (keySight(state, faction)
+                ? Number(isKeySite(world, state.seed, b)) - Number(isKeySite(world, state.seed, a))
+                : 0) || byDistance(power.capital)(a, b),
+          )
       : [];
+
+  // The road to the nearest site it would dig and cannot reach (M5_UNKNOWN.md §21.4, as built).
+  const reach = digTargets.length > 0 ? reachableFrom(world, state, faction) : new Set<SystemId>();
+  const unreached = digTargets.find((id) => !reach.has(id));
+  const road =
+    unreached && !digTargets.some((id) => reach.has(id)) ? roadStep(world, state, faction, unreached, reach) : null;
 
   // Ships.
   for (const s of state.ships) {
@@ -244,7 +259,11 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       );
     const systems = power.surveyed.filter((id) => reachable(at, id) && worth(id).length > 0).sort(byDistance(at));
     // A power that digs sends its outposts to a known relic site first (M5_UNKNOWN.md §20.7).
-    const site = kind === 'outpost' && me.digs > 0 ? digTargets.find((id) => reachable(at, id)) : undefined;
+    const site =
+      kind === 'outpost' && me.digs > 0
+        ? (digTargets.find((id) => reachable(at, id)) ??
+          (road?.kind === 'outpost' && reachable(at, road.system) ? road.system : undefined))
+        : undefined;
     const target = site ?? systems[0];
     if (!target) continue;
     if (target === site) {
@@ -462,10 +481,10 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   // A conqueror builds toward a weak power it cannot yet reach (M4_FLEETS.md §31.1).
   const bridge = bridgeLane(world, state, faction);
   if (bridge) orders.push({ type: 'queue', holding: bridge.holding.id, item: { kind: 'lane', to: bridge.to } });
-  // A power that digs builds a lane straight to the nearest site it cannot yet reach (M5_UNKNOWN.md §20.7, as built).
-  const unreached = digTargets.find((id) => !reachable(power.capital, id));
-  const road = !bridge && unreached ? laneToSite(world, state, faction, unreached) : null;
-  if (road) orders.push({ type: 'queue', holding: road.holding, item: { kind: 'lane', to: road.to } });
+  // A power that digs builds its road to the nearest site it cannot yet reach, a lane or an outpost at a
+  // time (M5_UNKNOWN.md §21.4, as built).
+  if (!bridge && road?.kind === 'lane')
+    orders.push({ type: 'queue', holding: road.holding, item: { kind: 'lane', to: road.to } });
   for (const h of mine) {
     if (h.queue.length > 0 || (h.kind === 'colony' && !me.laneBuilder)) continue;
     const lane = nearestLane(world, state, faction, h.system);
@@ -506,6 +525,8 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   for (const d of state.digs)
     if (d.by === faction && d.waiting !== null && d.answer === null)
       orders.push({ type: 'chapter-choice', system: d.system, choice: me.studies ? 0 : 1 });
+  // The Answer, as soon as it may (M5_UNKNOWN.md §21.4).
+  if (beginAnswerRefusal(state, faction) === null) orders.push({ type: 'begin-answer' });
 
   // Research: the cheapest it can with what it needs, by base cost, its own fields at half the price
   // (M2B_SCIENCE.md §18.4), so a deep tree in its own fields does not keep it from the first steps of
@@ -521,7 +542,8 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     const armed = state.ships.some((s) => s.owner === faction && isHull(s.type));
     // Excavation's technologies only for a power that digs and knows a site (M5_UNKNOWN.md §20.7).
     const digging = me.digs > 0 && knownSites(world, state, faction).length > 0;
-    const relicTech = (x: TechId) => ['excavation', 'relic-charts', 'chapter-percent'].includes(TECHS[x].effect.kind);
+    const relicTech = (x: TechId) =>
+      ['excavation', 'relic-charts', 'chapter-percent', 'key-sight', 'answer'].includes(TECHS[x].effect.kind);
     const idle = (id: TechId) =>
       (!learning && withNeeds(power, id).some((x) => TECHS[x].effect.kind === 'translation')) ||
       (!armed && withNeeds(power, id).some((x) => TECHS[x].field === 'weapons')) ||
@@ -531,7 +553,14 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     // At war, its batteries first (§26.11), then its troops (§28.3).
     const warTech = (['planetary-defence', 'ground-forces'] as const).find((t) => canResearch(power).includes(t));
     // A power that digs learns to excavate as soon as it knows a site (M5_UNKNOWN.md §20.7).
-    const relicFirst = digging && canResearch(power).includes('relic-studies') ? 'relic-studies' : undefined;
+    // And, holding three keys, the way to the Answer (§21.4).
+    const keyTech = (
+      ['relic-studies', 'old-charts', 'the-second-tone', 'field-archaeology', 'the-instrument'] as const
+    ).find(
+      (t, i) =>
+        (i === 0 ? digging : keysHeld(state, faction).length >= RULES.keys.hunt) && canResearch(power).includes(t),
+    );
+    const relicFirst = keyTech;
     const next =
       atWarNow && warTech
         ? warTech
@@ -546,7 +575,15 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   // War, by its character and for a reason it gives (§28.1); an outlaw conqueror first breaks a pact
   // that stands between it and easy prey (§31.2).
   const war = warTarget(world, state, faction);
+  // A pact that stands between it and a power answering is broken first (M5_UNKNOWN.md §21.3).
+  const answering = answerTarget(state, faction);
+  const pactWithAnswer = answering
+    ? (['non-aggression', 'alliance'] as const).find((t) =>
+        treatiesOf(state, faction).some((x) => x.kind === t && partnerOf(x, faction) === answering),
+      )
+    : undefined;
   if (war) orders.push({ type: 'declare-war', on: war.on, reason: war.reason });
+  else if (answering && pactWithAnswer) orders.push({ type: 'break-treaty', with: answering, treaty: pactWithAnswer });
   else {
     const pact = pactToBreak(world, state, faction);
     if (pact) orders.push({ type: 'break-treaty', with: pact, treaty: 'non-aggression' });

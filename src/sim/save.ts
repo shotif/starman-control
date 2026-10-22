@@ -316,6 +316,8 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
     const powers = (g.powers as Raw[]).map((p) => ({ ...p, digShare: 25, chapters: 0 }));
     return { ...g, version: 26, powers, digs: [] };
   },
+  /** 26 → 27 (M5 increment 53): the keys of the Absent. None found yet, and no Answer under way. */
+  26: (g) => ({ ...g, version: 27, keys: [], answer: null }),
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

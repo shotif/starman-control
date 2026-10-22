@@ -188,6 +188,7 @@ describe('the score (§20.3)', () => {
       lanes: 6,
       greatWorks: 0,
       works: 0,
+      relics: 0,
     });
     knowing(g, 'sta', 'deep-survey', 'habitat-domes');
     capital(g).projects.push('commons');

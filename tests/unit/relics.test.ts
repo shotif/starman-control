@@ -98,7 +98,7 @@ describe('where the sites are (§20.1)', () => {
 });
 
 describe('finding them (§20.2)', () => {
-  it('a survey finds a site and says so; Old charts show those within 12 light-years of a holding', () => {
+  it('a survey finds a site and says so; Relic studies shows those within 10 light-years of a holding, Old charts 20', () => {
     let g = five();
     const site = sites.find((s) => s.system === 'sirius');
     if (!site) throw new Error('no site at Sirius');
@@ -113,10 +113,14 @@ describe('finding them (§20.2)', () => {
     expect(knownSites(world, g, 'sta').map((s) => s.system)).toContain('sirius');
 
     const h = five();
-    powerOf(h, 'sta').researched.push('relic-studies', 'old-charts');
-    const near = sites.filter((s) => world.distanceDeci('sol', s.system) <= 120).map((s) => s.system);
-    expect(near.length).toBeGreaterThan(0);
-    expect(knownSites(world, h, 'sta').map((s) => s.system)).toEqual(near);
+    const within = (deci: number) =>
+      sites.filter((s) => world.distanceDeci('sol', s.system) <= deci).map((s) => s.system);
+    powerOf(h, 'sta').researched.push('relic-studies');
+    expect(within(100).length).toBeGreaterThan(0);
+    expect(knownSites(world, h, 'sta').map((s) => s.system)).toEqual(within(100));
+    powerOf(h, 'sta').researched.push('old-charts');
+    expect(within(200).length).toBeGreaterThan(within(100).length);
+    expect(knownSites(world, h, 'sta').map((s) => s.system)).toEqual(within(200));
     const t = resolveTurn(world, h);
     expect(t.reports.find((x) => x.faction === 'sta')?.events).not.toContainEqual(
       expect.objectContaining({ kind: 'relics-charted' }),
@@ -179,18 +183,18 @@ describe('excavating (§20.3)', () => {
     const p = ready(g, 'sta', site.system);
     excavate(g, 'sta', site.system);
     p.digShare = 50;
-    expect(chapterCost(g, 'sta', 0)).toBe(150);
+    expect(chapterCost(g, 'sta', 0)).toBe(100);
     const ev = events(g);
-    const rest = resolveDigs(g, new Map([['sta', 320]]), ev);
-    expect(rest.get('sta')).toBe(160);
+    const rest = resolveDigs(g, new Map([['sta', 220]]), ev);
+    expect(rest.get('sta')).toBe(110);
     expect(digAt(g, site.system)).toMatchObject({ chapters: 1, progress: 10, waiting: g.turn });
     expect(p.chapters).toBe(1);
     expect(ev.get('sta')).toContainEqual({ kind: 'chapter', system: site.system, chapter: 1, revelation: 1 });
     // Waiting, it takes nothing.
     expect(resolveDigs(g, new Map([['sta', 320]]), events(g)).get('sta')).toBe(320);
     p.researched.push('old-charts', 'field-archaeology');
-    expect(chapterCost(g, 'sta', 1)).toBe(240);
-    expect(chapterCost(g, 'sta', 2)).toBe(400);
+    expect(chapterCost(g, 'sta', 1)).toBe(160);
+    expect(chapterCost(g, 'sta', 2)).toBe(240);
   });
 
   it('the choice: research, the kind’s own, or the first after waiting 3 turns', () => {
@@ -252,7 +256,7 @@ describe('excavating (§20.3)', () => {
     ready(g, 'frontier', site.system);
     expect(excavateRefusal(world, g, 'frontier', site.system)).toBeNull();
     excavate(g, 'frontier', site.system);
-    resolveDigs(g, new Map([['frontier', 240]]), events(g));
+    resolveDigs(g, new Map([['frontier', 40]]), events(g));
     expect(d).toMatchObject({ by: 'frontier', chapters: 1, progress: 0 });
     expect(stateProblems(world, g)).toEqual([]);
   });

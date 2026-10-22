@@ -114,7 +114,7 @@ test('a relic site found, excavated, its chapter chosen, and the Absent in the j
   await expect(row).toContainText('A hall of charts');
   await expect(row).toContainText('Not yet excavated.');
   await press(row.getByRole('button', { name: 'Excavate' }), project);
-  await expect(row).toContainText('We excavate it: chapter 1, 0 of 150 research.');
+  await expect(row).toContainText('We excavate it: chapter 1, 0 of 100 research.');
   await expect(relics.getByRole('button', { name: 'A quarter' })).toHaveAttribute('aria-pressed', 'true');
   await close(page, project);
 

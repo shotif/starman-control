@@ -7,13 +7,14 @@ import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { TREATIES } from '../content/treaties.ts';
+import { keysHeld } from './keys.ts';
 import type { ReportEvent } from './report.ts';
 import { contactWith, type GameState, type Memory, type MemoryKind, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 /** One part of an attitude, with its reason as the regarded power reads it. */
 export interface AttitudePart {
-  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | 'war' | 'tired' | MemoryKind;
+  kind: 'kin' | 'known' | 'character' | 'treaty' | 'lawful' | 'war' | 'tired' | 'keys' | 'answering' | MemoryKind;
   reason: string;
   amount: number;
 }
@@ -124,6 +125,16 @@ export function attitudeOf(world: World, state: GameState, holder: FactionId, to
       !state.treaties.some((t) => t.a === a && t.b === b && t.kind === 'alliance')
     )
       parts.push({ kind: 'tired', reason: 'Tired of our leading the Assembly', amount: RULES.assembly.tired * past });
+    // The keys of the Absent are feared (M5_UNKNOWN.md §21.2); the Answer more, by those that keep the peace (§21.3).
+    const keys = keysHeld(state, toward).length;
+    if (keys > 0)
+      parts.push({
+        kind: 'keys',
+        reason: keys === 1 ? 'Holds a key of the Absent' : `Holds ${keys} keys of the Absent`,
+        amount: RULES.keys.fear * keys,
+      });
+    if (state.answer?.by === toward && FACTIONS[holder].war.callsForPeace)
+      parts.push({ kind: 'answering', reason: 'Would answer for us all', amount: RULES.keys.answering });
   }
   const sum = parts.reduce((n, p) => n + p.amount, 0);
   const total = Math.max(-r.most, Math.min(r.most, sum));

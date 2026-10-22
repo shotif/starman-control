@@ -14,6 +14,7 @@ import { isTreatyKind } from '../content/treaties.ts';
 import { anomalyAt } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { RETREATS, STANCES, TARGETS } from './fleets.ts';
+import { isKeySite } from './keys.ts';
 import { siteAt } from './relics.ts';
 import { techCost } from './research.ts';
 import { beaconSlots, contactWith, type GameState, MEMORY_KINDS, type MemoryKind, powerOf } from './state.ts';
@@ -81,7 +82,10 @@ export function shapeProblems(raw: unknown): string[] {
     !(
       isRecord(raw.ended) &&
       (raw.ended.winner === null || isFactionId(raw.ended.winner)) &&
-      (raw.ended.how === 'conquest' || raw.ended.how === 'vote' || raw.ended.how === 'score') &&
+      (raw.ended.how === 'conquest' ||
+        raw.ended.how === 'vote' ||
+        raw.ended.how === 'score' ||
+        raw.ended.how === 'keys') &&
       isWhole(raw.ended.turn, 1)
     )
   )
@@ -109,6 +113,20 @@ export function shapeProblems(raw: unknown): string[] {
     )
   )
     out.push('the excavations are not a list of excavations');
+  // The keys of the Absent and the Answer (M5_UNKNOWN.md §21.8).
+  if (
+    !Array.isArray(raw.keys) ||
+    !raw.keys.every(
+      (k) =>
+        isRecord(k) &&
+        typeof k.system === 'string' &&
+        (k.holding === null || isWhole(k.holding, 1)) &&
+        (k.by === null || isFactionId(k.by)),
+    )
+  )
+    out.push('the keys are not a list of keys');
+  if (raw.answer !== null && !(isRecord(raw.answer) && isFactionId(raw.answer.by) && isWhole(raw.answer.left)))
+    out.push('the Answer is not an Answer');
   // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
   if (
     !Array.isArray(raw.battles) ||
@@ -393,6 +411,17 @@ export function stateProblems(world: World, state: GameState): string[] {
       last = sys;
     }
   }
+  // Every key at a key site, once, in order; held by a holding that stands (§21.8).
+  let lastKey = '';
+  for (const k of state.keys) {
+    if (!isKeySite(world, state.seed, k.system)) out.push(`a key at ${k.system}, where none lies`);
+    if (k.system <= lastKey) out.push('the keys are out of order or listed twice');
+    if (k.holding !== null && !state.holdings.some((h) => h.id === k.holding))
+      out.push(`the key at ${k.system} is held by a holding that is gone`);
+    lastKey = k.system;
+  }
+  if (state.answer && !state.powers.some((p) => p.faction === state.answer?.by))
+    out.push('the Answer is by no power in play');
   // Every excavation at a site, each once, in order (M5_UNKNOWN.md §20.10).
   let lastDig = '';
   for (const d of state.digs) {

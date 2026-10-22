@@ -9,6 +9,7 @@ import type { SystemId } from '../data/types.ts';
 import { designStats, shipDesign } from './designs.ts';
 import { fleetAt, fleetLanes, fleetShips } from './fleets.ts';
 import { bestWeapon, garrisonOf, hasBattery, troopsOf } from './invasion.ts';
+import { keysHeld } from './keys.ts';
 import { laneTargets } from './lanes.ts';
 import { attitudeOf } from './memory.ts';
 import { lanesFor } from './movement.ts';
@@ -84,6 +85,17 @@ function reasonHolds(
       const able = !strength || (strengthOf(state, f) > 0 && strengthOf(state, f) >= strengthOf(state, other));
       return able && (!reach || reachable(world, state, f, other));
     }
+    // The outlaw takes what it wants (M5_UNKNOWN.md §21.4): a power holding a key it can reach and match.
+    case 'keys':
+      return (
+        state.turn >= w.choiceFrom &&
+        keysHeld(state, other).length > 0 &&
+        stronger() &&
+        (!reach || reachable(world, state, f, other))
+      );
+    // Against the Answer (§21.3), whatever the strength or the reach: war is declared by `warTarget`.
+    case 'answer':
+      return state.answer?.by === other;
     case 'claim':
       return (
         power.memories.filter((m) => m.faction === other && m.kind === 'claim-crossed').length >= w.claims && stronger()
@@ -97,7 +109,14 @@ function reasonHolds(
  */
 export function warTarget(world: World, state: GameState, f: FactionId): { on: FactionId; reason: WarReason } | null {
   const w = RULES.rivalsWar;
-  const reasons = FACTIONS[f].war.declares;
+  // The Answer (M5_UNKNOWN.md §21.3): every rival that does not call for peace goes to war on it at once.
+  const answering = answerTarget(state, f);
+  if (answering && declareRefusal(state, f, answering) === null) return { on: answering, reason: 'answer' };
+  const reasons: readonly WarReason[] =
+    // A power holding three keys goes for the rest (M5_UNKNOWN.md §21.4, as built).
+    keysHeld(state, f).length >= RULES.keys.hunt && !FACTIONS[f].war.declares.includes('keys')
+      ? [...FACTIONS[f].war.declares, 'keys']
+      : FACTIONS[f].war.declares;
   if (reasons.length === 0 || state.turn % w.every !== 0) return null;
   const power = powerOf(state, f);
   if (power.subduedBy || enemiesOf(state, f).length > 0 || warshipsOf(state, f) < w.warships) return null;
@@ -109,6 +128,17 @@ export function warTarget(world: World, state: GameState, f: FactionId): { on: F
       if (reasonHolds(world, state, f, other, reason)) return { on: other, reason };
     }
   return null;
+}
+
+/**
+ * The power answering (M5_UNKNOWN.md §21.3) a rival would go to war on: one it knows and is not yet at
+ * war with, unless it calls for peace or is subdued; or null.
+ */
+export function answerTarget(state: GameState, f: FactionId): FactionId | null {
+  const a = state.answer;
+  const power = powerOf(state, f);
+  if (!a || a.by === f || FACTIONS[f].war.callsForPeace || power.subduedBy || !contactWith(power, a.by)) return null;
+  return state.wars.some((x) => (x.a === f && x.b === a.by) || (x.b === f && x.a === a.by)) ? null : a.by;
 }
 
 /**
@@ -212,10 +242,12 @@ export function invasionTarget(
     if (j === undefined || !enemies.includes(h.owner)) continue;
     if (attack < defenceAt(state, h) * 2) continue;
     const troops = garrisonOf(h).total + RULES.rivalsWar.spareTroops;
+    // A key's holding first (M5_UNKNOWN.md §21.4), then the capital, then the nearest.
+    const rank = (x: Holding) => (state.keys.some((k) => k.holding === x.id) ? 2 : x.capital ? 1 : 0);
     const better =
       !best ||
-      (h.capital && !best.holding.capital) ||
-      (h.capital === best.holding.capital && (j < best.jumps || (j === best.jumps && h.id < best.holding.id)));
+      rank(h) > rank(best.holding) ||
+      (rank(h) === rank(best.holding) && (j < best.jumps || (j === best.jumps && h.id < best.holding.id)));
     if (better) best = { holding: h, troops, jumps: j };
   }
   return best;

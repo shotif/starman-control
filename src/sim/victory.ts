@@ -67,7 +67,7 @@ export function resolveLeaving(state: GameState, events: Map<FactionId, ReportEv
       leaveGame(state, p.faction, events);
 }
 
-/** Who has won now, and how (§30.1), or null: conquest, then the Assembly's choice, then the limit. */
+/** Who has won now, and how (§30.1), or null: conquest, then the keys, then the Assembly's choice, then the limit. */
 export function victoryNow(state: GameState): { winner: FactionId | null; how: VictoryKind } | null {
   const playing = state.powers.filter((p) => p.left === null);
   if (state.powers.length > 1) {
@@ -76,6 +76,9 @@ export function victoryNow(state: GameState): { winner: FactionId | null; how: V
       if (holds && playing.every((q) => q.faction === p.faction || q.subduedBy === p.faction))
         return { winner: p.faction, how: 'conquest' };
     }
+    // The keys (M5_UNKNOWN.md §21.3): the Answer done.
+    const a = state.answer;
+    if (a && a.left <= 0 && inGame(state, a.by)) return { winner: a.by, how: 'keys' };
     const chosen = state.assembly?.chosen;
     if (chosen && inGame(state, chosen)) return { winner: chosen, how: 'vote' };
   }

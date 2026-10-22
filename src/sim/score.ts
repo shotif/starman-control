@@ -7,6 +7,7 @@
 import type { FactionId } from '../content/factions.ts';
 import { GREAT_WORKS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
+import { keysHeld } from './keys.ts';
 import { type GameState, inContact, powerOf } from './state.ts';
 
 /** A power's score, with its parts. */
@@ -20,6 +21,8 @@ export interface Score {
   greatWorks: number;
   /** Points for what it has made in the game, research and industry (M4_FLEETS.md §31.4). */
   works: number;
+  /** Points for the keys of the Absent it holds and the chapters it has excavated (M5_UNKNOWN.md §21, as built). */
+  relics: number;
 }
 
 function scored(
@@ -29,23 +32,26 @@ function scored(
   lanes: number,
   greatWorks: number,
   works: number,
+  relics: number,
 ): Score {
   const s = RULES.score;
   const millions = Math.floor(people / 10);
   return {
     total:
       colonies * s.colony +
-      millions * s.millionPeople +
+      Math.floor(millions / s.peoplePer) * s.millionPeople +
       technologies * s.technology +
       lanes * s.lane +
       greatWorks * s.greatWork +
-      works,
+      works +
+      relics,
     colonies,
     millions,
     technologies,
     lanes,
     greatWorks,
     works,
+    relics,
   };
 }
 
@@ -73,19 +79,33 @@ export function scoreOf(state: GameState, faction: FactionId, viewer: FactionId 
     state.lanes.filter((l) => l.owner === faction).length,
     held.reduce((n, h) => n + h.projects.filter((p) => GREAT_WORKS.includes(p)).length, 0),
     knows ? worksOf(powerOf(state, faction).story) : 0,
+    keysHeld(state, faction).length * RULES.score.key +
+      (knows ? powerOf(state, faction).chapters * RULES.score.chapter : 0),
   );
 }
 
-/** What the score counts (M2B_SCIENCE.md §20.3, M4_FLEETS.md §31.4), from the rules. */
+/** What the score counts (M2B_SCIENCE.md §20.3, M4_FLEETS.md §31.4, M5_UNKNOWN.md §21), from the rules. */
 export function scoreWords(): string {
   const s = RULES.score;
+  const people =
+    s.peoplePer > 1
+      ? `${s.millionPeople} for every ${s.peoplePer} million people`
+      : `${s.millionPeople} for each million people`;
+  const parts = [
+    `${s.colony} for each colony`,
+    people,
+    `${s.technology} for each technology`,
+    `${s.lane} for each lane`,
+    `${s.greatWork} for each great work`,
+    ...(s.key > 0 ? [`${s.key} for each key of the Absent held`] : []),
+    ...(s.chapter > 0 ? [`${s.chapter} for each chapter excavated`] : []),
+  ];
   const works = [
     s.researchPer > 0 ? `${s.researchPer} research` : '',
     s.industryPer > 0 ? `${s.industryPer} industry` : '',
   ].filter(Boolean);
   return (
-    `The score counts ${s.colony} for each colony, ${s.millionPeople} for each million people, ${s.technology} for ` +
-    `each technology, ${s.lane} for each lane and ${s.greatWork} for each great work` +
+    `The score counts ${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` +
     (works.length > 0 ? `, and a point for every ${works.join(' and every ')} made in the game` : '') +
     '; at the turn limit, the highest score wins.'
   );

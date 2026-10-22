@@ -19,6 +19,7 @@ const HOW: Record<VictoryKind, string> = {
   conquest: 'by conquest',
   vote: 'chosen by the Assembly',
   score: 'with the highest score at the turn limit',
+  keys: 'by answering the second tone with the five keys of the Absent',
 };
 
 /** The report's line for a power leaving the game, or the game decided (§30.3). */
@@ -34,7 +35,9 @@ export function endText(game: GameState, e: ReportEvent, me: FactionId | undefin
       ? 'Victory: no power stands against us.'
       : e.how === 'vote'
         ? 'Victory: the Assembly has chosen us to lead it.'
-        : 'Victory: the turn limit is reached, and ours is the highest score.';
+        : e.how === 'keys'
+          ? 'Victory: we have given the Answer, and it was heard.'
+          : 'Victory: the turn limit is reached, and ours is the highest score.';
   return `The game is lost: ${the(e.winner)} has won, ${HOW[e.how]}.`;
 }
 
@@ -59,7 +62,9 @@ function headline(game: GameState, o: Outcome): { title: string; line: string } 
         ? 'No power stands against us: every other has left the game or surrendered to us.'
         : o.how === 'vote'
           ? 'The Assembly has chosen us to lead it, by two thirds of all its votes.'
-          : 'The turn limit is reached, and ours is the highest score.';
+          : o.how === 'keys'
+            ? 'We have answered the second tone with the five keys of the Absent. The tone stops. Then, on every beacon in the neighbourhood, a new one begins: ours.'
+            : 'The turn limit is reached, and ours is the highest score.';
     return { title: 'Victory', line: `${line} ${date}.` };
   }
   if (o.result === 'end') return { title: 'The end', line: `The game has reached its last turn. ${date}.` };
@@ -68,7 +73,9 @@ function headline(game: GameState, o: Outcome): { title: string; line: string } 
       ? 'Our last colony is gone: our power has left the game.'
       : o.how === 'surrender'
         ? `We have surrendered to ${o.by ? the(o.by) : 'our enemy'}: we pay them tribute and fight their wars.`
-        : `${o.by ? The(o.by) : 'Another power'} has won, ${HOW[o.how]}.`;
+        : o.how === 'keys'
+          ? `${o.by ? The(o.by) : 'Another power'} has answered the second tone with the five keys of the Absent. The tone stops; on every beacon a new one begins, and it is not ours.`
+          : `${o.by ? The(o.by) : 'Another power'} has won, ${HOW[o.how]}.`;
   return { title: 'Defeat', line: `${line} ${date}.` };
 }
 
@@ -119,7 +126,9 @@ export function EndView({
   const o = outcomeFor(game, faction);
   if (!o) return <p class="dim">The game is not decided yet.</p>;
   const { title, line } = headline(game, o);
-  const picture = o.result === 'defeat' ? 'end-defeat' : 'end-victory';
+  // The end by the keys has its own picture, won or lost (M5_UNKNOWN.md §21.7).
+  const byKeys = o.result !== 'end' && o.how === 'keys';
+  const picture = byKeys ? 'end-keys' : o.result === 'defeat' ? 'end-defeat' : 'end-victory';
   const base = `${import.meta.env.BASE_URL}art/illustration/${picture}`;
   const last = game.history.at(-1);
   // The scores as last kept, for every power alike (as the game was decided, or the latest tenth turn).
@@ -135,9 +144,11 @@ export function EndView({
           width={640}
           height={427}
           alt={
-            o.result === 'defeat'
-              ? 'An empty command room at night, its star map dark, one officer at the window looking out at a distant red sun.'
-              : 'Crowds celebrating on a station concourse under a great curved window, warships passing in salute before a blue-white planet.'
+            byKeys
+              ? 'Five pieces of an old instrument, fitted together in a dark chamber, glowing faintly as they answer.'
+              : o.result === 'defeat'
+                ? 'An empty command room at night, its star map dark, one officer at the window looking out at a distant red sun.'
+                : 'Crowds celebrating on a station concourse under a great curved window, warships passing in salute before a blue-white planet.'
           }
           decoding="async"
         />

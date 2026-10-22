@@ -34,6 +34,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 18. [Art and its cost](#18-art-and-its-cost)
 19. [Decisions](#19-decisions)
 20. [Increment 52 in detail: relic sites](#20-increment-52-in-detail-relic-sites-written-before-building-it)
+21. [Increment 53 in detail: the keys and the Answer](#21-increment-53-in-detail-the-keys-and-the-answer-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -156,11 +157,11 @@ survey ship, as an anomaly is, with no chapters · C. a dozen fixed sites, the s
   to be found again by one chapter more. Keys are not traded.
 - **Holding keys is feared:** every other power regards a power 5 less for each key it holds
   (*Holds a key of the Absent*).
-- **The Answer.** A power that holds all five keys and has learnt *The instrument* builds the Answer
-  at a colony that holds a key: a work of 10 turns at least. Every power in contact hears when it
+- **The Answer.** A power that holds all five keys and has learnt *The instrument* begins the Answer:
+  10 turns, while it keeps the keys and its capital (§21.3). Every power in contact hears when it
   begins, and each gains a reason for war, whatever its character (*you would answer for us all*);
-  the peaceful ones call on the Assembly for sanctions instead. If the colony is taken, or a key is
-  lost, the work stops where it is.
+  the peaceful ones think much the less of it instead. If the capital is taken, or a key is lost,
+  it stops, and must be begun again.
 - **When it is done, that power wins** (a fourth kind of victory, *by the keys*, D-14). The end
   screen tells what it hears, in a few lines, and no more.
 
@@ -553,3 +554,147 @@ again with them.
 - **Tests:** `relics.test.ts` (12 tests). `relics.spec.ts`, on the phone, tablet and desktop: a site
   known and held, excavated, its first chapter done with its revelation, its choice made, the charts
   followed, and the journal and the system's panel.
+
+## 21. Increment 53 in detail: the keys and the Answer (written before building it)
+
+**Goals.** §6: five keys, held and taken, feared; the Answer, a fourth road to victory that every
+power can see coming and try to stop; the rivals' hunt. **Out of scope:** guardians (increment 54);
+the keys in exchanges.
+
+### 21.1 Where the keys lie
+
+- **Five of the twelve sites hold a key,** chosen from the seed: GJ 915 when it is a site, and the
+  others spread as far apart as they can be (each next one the site farthest from those already
+  chosen), so no power has them all on its doorstep.
+- **A key site is like any other** until its third chapter is done; then the key is found, whatever
+  the chapter's choice. *The second tone* (§21.5) shows a power where all five lie.
+
+### 21.2 A key held, taken and lost
+
+- **Found,** a key is held in the holding of the excavating power in that system (its oldest there).
+  Every power that knows the finder hears of it.
+- **Taken:** a holding taken by invasion, or a power subdued, carries its keys to the victor (the key
+  goes with the holding); every power that knows either hears.
+- **Lost:** a holding abandoned or gone with a power that left the game leaves its key at its site,
+  which then needs one chapter more (its third again) to be found.
+- **Feared:** every other power regards a power 5 less for each key it holds (*Holds a key of the
+  Absent*).
+
+### 21.3 The Answer
+
+- **Begun by order** (*Begin the Answer*, on the Relics screen) by a power that holds all five keys
+  and has learnt *The instrument*, when no other power's Answer is under way.
+- **It takes 10 turns,** and only goes on while the power holds all five keys and its capital, and
+  is not subdued; otherwise it stops, and must be begun again from the start.
+- **Every power hears when it begins** and when it stops, with the turns left. Each rival that
+  does not call for peace goes to war on it (*you would answer for us all*), breaking a pact first if
+  it must; those that call for peace think 30 less of it (*Would answer for us all*).
+- **Done, that power wins:** victory *by the keys*, checked after conquest and before the
+  Assembly's choice. The end screen says what it hears.
+
+### 21.4 The rivals
+
+- **The hunt:** a power that knows where the keys lie digs the key sites before any other; its
+  outposts and lanes go there first.
+- **War for keys:** at war, a rival strikes an enemy's key holding first, if its fleet can take it,
+  then the capital, then the nearest.
+- **The outlaw takes them:** the Wake, which does not dig, goes to war (*you hold what we want*) on a
+  power holding a key that it can reach and outmatch, from turn 80.
+- **The Answer:** a rival begins it as soon as it may.
+
+### 21.5 Xenology
+
+| Technology | Tier | Cost | Needs | Effect |
+| --- | --- | --- | --- | --- |
+| The second tone | 4 | 300 | Old charts | Where the five keys lie is known. |
+| The instrument | 5 | 480 | Field archaeology, The second tone | The Answer may be begun. |
+
+Inspirations: a key found (The second tone), three keys held (The instrument).
+
+### 21.6 On the screen
+
+- **Relics:** a *Keys* section, the five keys and where each is, as far as we know (found and held by
+  whom, or its site, or not yet known); *Begin the Answer*, with the reason when we may not; the
+  Answer under way, with its turns left, ours or another's.
+- **A site's panel** says when it holds a key, or held one.
+- **The report:** a key found, taken or lost; the Answer begun, stopped and the turns left; the end
+  by the keys. *What needs you* never waits on it.
+- **The end screen:** victory by the keys, or defeat by another's, with its own picture.
+
+### 21.7 Art
+
+One picture for the end by the keys, two candidates (about $0.10): the five pieces of the
+instrument assembled in a dark chamber, answering.
+
+### 21.8 State
+
+`GameState.keys`: each key found, with its site's system, the holding that holds it (or none, lost)
+and the power that held it last turn. `GameState.answer`: the power answering and the turns left, or
+none. Victory's kinds gain `keys`. **State version 27**; an older save has no keys and no Answer.
+
+### 21.9 Targets and tests
+
+- **The headless games:** D-69's target, carried on: **at least four different winners in the eight
+  games, none more than three, and at least one by the keys**. If the first build misses, the
+  numbers decide what to tune, noted here as built.
+- **Unit** (`keys.test.ts`): five key sites from the seed, GJ 915 among them when a site, spread; a
+  key found with the third chapter; taken with its holding; lost and found again; fear; the Answer's
+  refusals, its ten turns, its stopping, and the victory; the war on it, and the peaceful's regard;
+  the rivals' hunt; the migration.
+- **Journey** (`keys.spec.ts`, phone, tablet and desktop): holding all five keys and The
+  instrument, the Answer begun, every turn's report, and victory by the keys.
+
+### Increment 53: the keys and the Answer (22 October 2026)
+
+- **The keys, their fear and the Answer as §21,** with the Answer **begun by order** and lasting 10
+  turns, rather than built as a project (a project would need a building in every colony view).
+- **Where the keys lie, changed in the building.** As first built (GJ 915, then each next key the site
+  farthest from the others), the keys fell at the map's far edges: two were found in eight games.
+  Now each is **the site nearest one of the five capitals** (in play or not), so every
+  neighbourhood has a key near it and must fetch the rest. GJ 915 holds one only when it is the
+  nearest to a capital.
+- **Chapters cheaper:** 100, 200 and 300 research (150, 300 and 500 in increment 52).
+- **Relic studies shows the sites within 10 light-years** of a holding, and **Old charts within 20**
+  (12 before): the rivals never learnt of sites they could have reached.
+- **A road for the rivals** (`src/sim/roads.ts`): to a site they would dig and cannot reach, a power
+  founds an outpost at the reachable system nearest it, or lays a lane toward it from one of its
+  three holdings nearest it, a step at a time. (It replaces increment 52's lane straight to a site.)
+- **A power holding three keys goes to war for the rest** (*you hold what we want*), as the Wake does
+  for any key; and it researches the way to the Answer first.
+- **Fear at the deciding vote, mended** (from increment 51): a member judged whether its vote would
+  bring a power to two thirds from the roll as it stood, but the votes are counted a turn later, when
+  the people have grown. In one game a vote of 87 in 131 became 88 in 132, two thirds exactly, and the
+  Co-op won on turn 70. Fear now applies once a power's votes, as they lean, are 60% of all
+  (`RULES.assembly.fearFromPercent`).
+- **Three switches in the score,** neutral for now: `RULES.score.peoplePer` (millions of people for a
+  point, 1), `key` and `chapter` (points for each key held and chapter excavated, 0). Tried at 2, 50
+  and 5 (and other mixes) they narrowed the Co-op's lead but changed no winner, so they stay neutral
+  for M6 to use.
+- **On the screen as §21.6;** the end by the keys has its own picture: 2 candidates, about $0.10,
+  chosen A (B's arches read as a church). **State version 27.**
+
+**Numbers** (M2_BALANCE.md): the Co-op won seven games on score and the Wake one; **no game was won
+by the keys, and D-69's target is still not met.** Keys were found in every game but no power held
+more than two: only the Authority digs much (3 to 9 chapters), the Co-op and the Concord a few, and
+the keys at the far neighbourhoods are fought over (the Wake took the Authority's key at Sirius back
+and forth in several games). The rivals cannot plan the long campaign the keys need: dig five sites
+across others' neighbourhoods, or take keys by war. A player can (the journey `keys.spec.ts`), and
+for a player the Answer is the race it was meant to be: every rival that does not call for peace
+goes to war on it. M3's and M2b's targets are still met at turn 100. The deepest debt was −410 and the
+longest 69 turns (126 before). The slowest turn took 110 ms (turn 233); the largest save 135.4 KB.
+
+**Reversing it.**
+
+| To undo | Set or remove |
+| --- | --- |
+| The keys and the Answer | `the-instrument` (no Answer) and `the-second-tone`; or `RULES.keys.count` lower to need fewer keys |
+| The fear of keys | `RULES.keys.fear` to 0 |
+| The peaceful's regard for the answerer | `RULES.keys.answering` to 0 |
+| Wars for keys | `'keys'` out of the Wake's `war.declares`; `RULES.keys.hunt` above 5 |
+| Where the keys lie | `keySites` in `src/sim/keys.ts` |
+| The rivals' road | the `road` lines in `aiOrders` (`src/sim/ai.ts`) |
+| Fear within reach of two thirds | `RULES.assembly.fearFromPercent` to 67 (two thirds, as before) |
+
+- **Tests:** `keys.test.ts` (10 tests), one more in `roads.test.ts` (fear within reach), and
+  `keys.spec.ts` on the phone, tablet and desktop: five keys and The instrument, the Answer begun,
+  its report, and victory by the keys.

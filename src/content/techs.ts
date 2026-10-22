@@ -93,6 +93,9 @@ export type TechId =
   | 'relic-studies'
   | 'old-charts'
   | 'field-archaeology'
+  // M5's keys (M5_UNKNOWN.md §21.5).
+  | 'the-second-tone'
+  | 'the-instrument'
   // M4's Weapons field (M4_FLEETS.md §21.5).
   | 'fire-control'
   | 'destroyer-hulls'
@@ -202,7 +205,12 @@ export type TechEffect =
   /** Every relic site within this many tenths of a light-year of a holding is known. */
   | { kind: 'relic-charts'; deci: number }
   /** Each chapter of excavation needs this share less research, in percent. */
-  | { kind: 'chapter-percent'; percent: number };
+  | { kind: 'chapter-percent'; percent: number }
+  // M5's keys (M5_UNKNOWN.md §21.5).
+  /** Where every key of the Absent lies is known. */
+  | { kind: 'key-sight' }
+  /** The Answer may be begun. */
+  | { kind: 'answer' };
 
 /**
  * A deed that teaches a power something towards a technology: its inspiration (M2B_SCIENCE.md §17.1,
@@ -281,7 +289,9 @@ export type Deed =
   /** Anomalies investigated that are threads of the mystery. */
   | { kind: 'mysteries'; n: number }
   /** Chapters of excavation completed. */
-  | { kind: 'chapters'; n: number };
+  | { kind: 'chapters'; n: number }
+  /** Keys of the Absent held (M5_UNKNOWN.md §21.5). */
+  | { kind: 'keys'; n: number };
 
 export interface TechDef {
   id: TechId;
@@ -948,7 +958,8 @@ export const TECHS: Record<TechId, TechDef> = {
     cost: 80,
     needs: [],
     effect: { kind: 'excavation' },
-    text: 'Relic sites may be excavated.',
+    also: [{ kind: 'relic-charts', deci: 100 }],
+    text: 'Relic sites may be excavated, and every one within 10 light-years of a holding is known.',
     inspiration: { deed: { kind: 'mysteries', n: 2 }, text: 'two of the mystery’s anomalies investigated' },
   },
   'old-charts': {
@@ -958,8 +969,8 @@ export const TECHS: Record<TechId, TechDef> = {
     tier: 3,
     cost: 140,
     needs: ['relic-studies'],
-    effect: { kind: 'relic-charts', deci: 120 },
-    text: 'Every relic site within 12 light-years of a holding is known.',
+    effect: { kind: 'relic-charts', deci: 200 },
+    text: 'Every relic site within 20 light-years of a holding is known.',
     inspiration: { deed: { kind: 'chapters', n: 2 }, text: 'two chapters of excavation done' },
   },
   'field-archaeology': {
@@ -972,6 +983,29 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'chapter-percent', percent: 20 },
     text: 'Each chapter of excavation needs a fifth less research.',
     inspiration: { deed: { kind: 'chapters', n: 5 }, text: 'five chapters of excavation done' },
+  },
+  // M5's keys (M5_UNKNOWN.md §21.5).
+  'the-second-tone': {
+    id: 'the-second-tone',
+    name: 'The second tone',
+    field: 'xenology',
+    tier: 4,
+    cost: 300,
+    needs: ['old-charts'],
+    effect: { kind: 'key-sight' },
+    text: 'Where the five keys of the Absent lie is known.',
+    inspiration: { deed: { kind: 'keys', n: 1 }, text: 'a key of the Absent held' },
+  },
+  'the-instrument': {
+    id: 'the-instrument',
+    name: 'The instrument',
+    field: 'xenology',
+    tier: 5,
+    cost: 480,
+    needs: ['field-archaeology', 'the-second-tone'],
+    effect: { kind: 'answer' },
+    text: 'The Answer may be begun, with all five keys: ten turns, and then we win.',
+    inspiration: { deed: { kind: 'keys', n: 3 }, text: 'three keys of the Absent held' },
   },
   // M2b's doctrines (M2B_SCIENCE.md §19.1): each pair a fork.
   'open-frontier': {

@@ -42,6 +42,7 @@ import { fleetById, moveFleet, placeBuilt, pruneFleets } from './fleets.ts';
 import { governAll } from './governor.ts';
 import { habitability } from './habitability.ts';
 import { blockadedNow, reportBlockades, resolveBombardment, resolveLandings, settleTaken } from './invasion.ts';
+import { resolveAnswer, resolveKeys, resolveKeysFound } from './keys.ts';
 import { laneQuote, laneRefusal } from './lanes.ts';
 import { deliverGifts, fadeMemories, remember } from './memory.ts';
 import { findRoute, jumpPoints, lanesFor } from './movement.ts';
@@ -464,6 +465,7 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 4. Research: each power's points go into its research queue, but for the share its excavations
   // take (M5_UNKNOWN.md §20.3).
   const forTech = resolveDigs(state, research, events);
+  resolveKeysFound(world, state, events);
   for (const p of state.powers) {
     p.story.research += research.get(p.faction) ?? 0;
     const done = spendResearch(state, p, forTech.get(p.faction) ?? 0);
@@ -576,6 +578,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   // 10e. A power with no colony left leaves the game; the stories and scores kept; the game decided
   // if it is won (M4_FLEETS.md §30).
   resolveLeaving(state, events);
+  // The keys of the Absent taken or lost, and the Answer a turn nearer (M5_UNKNOWN.md §21).
+  resolveKeys(state, events);
+  resolveAnswer(state, events);
   resolveVictory(state, events);
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.

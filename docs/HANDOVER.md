@@ -234,9 +234,13 @@ it how to undo it. **Done: increment 52, relic sites** (§20): twelve sites a ga
 of the powers, found by survey or Old charts, excavated in chapters with a share of research, each
 chapter a choice and a revelation of the Absent, kept in the journal on the Relics screen (**J**);
 three Xenology technologies; the rivals digging by character; governors and rivals kept out of
-deep debt; state version 26.
+deep debt; state version 26. **Done: increment 53, the keys and the Answer** (§21): five keys, one near each
+capital, found with a site's third chapter, taken and lost with their holding, feared; the Answer
+(10 turns with all five and The instrument) and victory by the keys; every rival that does not call
+for peace goes to war on it; a road for the rivals to the sites; fear at the deciding vote mended;
+state version 27. No headless game is won by the keys, and the Co-op still wins most: both for M6.
 
-The art and music spend: about $28.15 of $50 (raised on 22 October 2026; about $21.85 left). M3's
+The art and music spend: about $28.25 of $50 (raised on 22 October 2026; about $21.75 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

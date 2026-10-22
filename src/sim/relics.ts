@@ -7,7 +7,6 @@ import { RELIC_KIND_IDS, RELIC_KINDS, type RelicKind } from '../content/relics.t
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
-import { laneTargets } from './lanes.ts';
 import type { ReportEvent } from './report.ts';
 import { effects, grantResearch } from './research.ts';
 import { rng } from './rng.ts';
@@ -311,28 +310,4 @@ export function resolveChapterChoices(
     d.waiting = null;
     d.answer = null;
   }
-}
-
-/**
- * A lane a power may queue straight to a site it would excavate (§20.7, as built): from the nearest of
- * its holdings that can build it now, with no lane already queued there; or null. None while a lane
- * to the site is queued anywhere.
- */
-export function laneToSite(
-  world: World,
-  state: GameState,
-  faction: FactionId,
-  site: SystemId,
-): { holding: number; to: SystemId } | null {
-  const mine = state.holdings.filter((h) => h.owner === faction);
-  if (mine.some((h) => h.queue.some((q) => q.kind === 'lane' && q.to === site))) return null;
-  const near = [...mine].sort(
-    (a, b) => world.distanceDeci(a.system, site) - world.distanceDeci(b.system, site) || a.id - b.id,
-  );
-  for (const h of near) {
-    if (h.queue.some((q) => q.kind === 'lane')) continue;
-    if (laneTargets(world, state, faction, h.system).some((t) => t.refusal === null && t.quote.to === site))
-      return { holding: h.id, to: site };
-  }
-  return null;
 }

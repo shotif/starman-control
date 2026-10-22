@@ -153,7 +153,20 @@ export const RULES = {
    * The score (M2B_SCIENCE.md §20.3, D-50); and its works (M4_FLEETS.md §31.4, as built): a point for
    * every so many research points and industry a power has made in the game. 0 leaves works out.
    */
-  score: { colony: 10, millionPeople: 1, technology: 5, lane: 3, greatWork: 50, researchPer: 100, industryPer: 200 },
+  score: {
+    colony: 10,
+    millionPeople: 1,
+    /** Millions of people for each such point (M5_UNKNOWN.md §21, as built). */
+    peoplePer: 1,
+    technology: 5,
+    lane: 3,
+    greatWork: 50,
+    researchPer: 100,
+    industryPer: 200,
+    /** The relics (§21, as built): points for each key of the Absent held and each chapter excavated. */
+    key: 0,
+    chapter: 0,
+  },
   /** Contact (M3_NEIGHBOURS.md §19.1, D-52). */
   contact: {
     /** Translation needed before powers of different species can talk. */
@@ -338,6 +351,8 @@ export const RULES = {
     warm: 10,
     /** Fear at the deciding vote (§31.3): so much less regard for a power about to be chosen. */
     fear: 20,
+    /** About to be chosen: its votes, as they lean, are this share of all the votes or more, in percent. */
+    fearFromPercent: 60,
     /** Tiring of a leader (§31.3): so much less regard for each election won past so many in a row. */
     tireAfter: 2,
     tired: -10,
@@ -364,7 +379,7 @@ export const RULES = {
     /** The share of research a new power gives its excavations, in percent. */
     share: 25,
     /** Research each chapter needs, the first to the third. */
-    chapterCost: [150, 300, 500] as const,
+    chapterCost: [100, 200, 300] as const,
     /** Field archaeology: each chapter needs this share less, in percent. */
     fieldPercent: 20,
     /** A chapter's choice not made in so many turns takes the first. */
@@ -373,8 +388,18 @@ export const RULES = {
     research: [100, 200, 350] as const,
     resource: [40, 80, 120] as const,
     charts: [3, 5, 8] as const,
-    /** Old charts: sites within so many tenths of a light-year of a holding are known. */
-    chartsDeci: 120,
+  },
+  /** The keys and the Answer (M5_UNKNOWN.md §21): how many, the fear of them, the Answer's turns. */
+  keys: {
+    count: 5,
+    /** Regard for a power for each key it holds, from every other power. */
+    fear: -5,
+    /** Turns the Answer takes. */
+    answerTurns: 10,
+    /** Regard for a power answering, from a power that calls for peace rather than go to war. */
+    answering: -30,
+    /** A power holding so many keys goes to war for the rest (§21.4, as built). */
+    hunt: 3,
   },
   /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
   raid: {

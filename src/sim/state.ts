@@ -21,7 +21,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 26;
+export const STATE_VERSION = 27;
 
 export interface Stockpile {
   metals: number;
@@ -471,10 +471,24 @@ export interface GameState {
   history: { turn: number; scores: number[] }[];
   /** The relic sites' excavations (M5_UNKNOWN.md §20.10), one for each site begun, in system order. */
   digs: Dig[];
+  /** The keys of the Absent found (M5_UNKNOWN.md §21.8), in system order. */
+  keys: Key[];
+  /** The Answer under way (§21.3): who answers and the turns left, or none. */
+  answer: { by: FactionId; left: number } | null;
+}
+
+/**
+ * A key of the Absent, found (M5_UNKNOWN.md §21.2): its site's system, the holding that holds it, or
+ * none when lost (it lies at its site again), and the power that held it as the last turn ended.
+ */
+export interface Key {
+  system: SystemId;
+  holding: number | null;
+  by: FactionId | null;
 }
 
 /** How a game is won (M4_FLEETS.md §30.1). */
-export type VictoryKind = 'conquest' | 'vote' | 'score';
+export type VictoryKind = 'conquest' | 'vote' | 'score' | 'keys';
 
 export interface NewGameSetup {
   seed: number;
@@ -649,6 +663,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     ended: null,
     history: [],
     digs: [],
+    keys: [],
+    answer: null,
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

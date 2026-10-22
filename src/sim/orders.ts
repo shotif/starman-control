@@ -28,6 +28,7 @@ import {
 } from './fleets.ts';
 import { formatLy } from './geometry.ts';
 import { missionRefusal } from './invasion.ts';
+import { beginAnswer, beginAnswerRefusal } from './keys.ts';
 import { giftRefusal, giveGift } from './memory.ts';
 import { blindJumpTurns, blindReachDeci, canJumpBlind, findRoute } from './movement.ts';
 import { chapterRefusal, digAt, excavate, excavateRefusal, stopExcavation, stopRefusal } from './relics.ts';
@@ -129,7 +130,9 @@ export type Order =
   | { type: 'excavate'; system: SystemId }
   | { type: 'stop-excavation'; system: SystemId }
   | { type: 'dig-share'; share: DigShare }
-  | { type: 'chapter-choice'; system: SystemId; choice: 0 | 1 };
+  | { type: 'chapter-choice'; system: SystemId; choice: 0 | 1 }
+  /** The Answer begun (M5_UNKNOWN.md §21.3). */
+  | { type: 'begin-answer' };
 
 type FleetOrder = Extract<
   Order,
@@ -240,6 +243,7 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'excavate') return excavateRefusal(world, state, faction, order.system);
   if (order.type === 'stop-excavation') return stopRefusal(state, faction, order.system);
   if (order.type === 'dig-share') return DIG_SHARES.includes(order.share) ? null : 'There is no such share.';
+  if (order.type === 'begin-answer') return beginAnswerRefusal(state, faction);
   if (order.type === 'chapter-choice')
     return order.choice === 0 || order.choice === 1
       ? chapterRefusal(state, faction, order.system)
@@ -390,6 +394,10 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   if (order.type === 'chapter-choice') {
     const d = digAt(next, order.system);
     if (d) d.answer = order.choice;
+    return { ok: true, state: next };
+  }
+  if (order.type === 'begin-answer') {
+    beginAnswer(next, faction);
     return { ok: true, state: next };
   }
   if (order.type === 'gift') {

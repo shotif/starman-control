@@ -41,7 +41,7 @@ export interface Figure {
 }
 
 /** Why a rival declares war (M4_FLEETS.md §28.1): raided by the other, holding it hostile, the other weak and near, or settling in its claim. */
-export type WarReason = 'raided' | 'hostile' | 'weak' | 'claim' | 'leader';
+export type WarReason = 'raided' | 'hostile' | 'weak' | 'claim' | 'leader' | 'keys' | 'answer';
 
 /** A reason as the declarer gives it to the attacked, fiction. */
 export const WAR_REASONS: Record<WarReason, string> = {
@@ -50,6 +50,8 @@ export const WAR_REASONS: Record<WarReason, string> = {
   weak: 'you are weak',
   claim: 'you would not stop settling in our claim',
   leader: 'you would rule us all',
+  keys: 'you hold what we want',
+  answer: 'you would answer for us all',
 };
 
 export interface FactionDef {
@@ -242,7 +244,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     fleetWord: 'Pack',
     weary: 1,
     war: {
-      declares: ['weak', 'leader'],
+      declares: ['weak', 'leader', 'keys'],
       acceptsAfter: 5,
       offersAfter: 10,
       credits: 50,

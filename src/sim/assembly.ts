@@ -227,7 +227,10 @@ function wouldChoose(world: World, state: GameState, candidate: FactionId): bool
         : (a.cast.find((c) => c.faction === who)?.choice ?? 'abstain');
     if (choice === candidate) votes += votesOf(state, m);
   }
-  return isTwoThirds(votes, totalVotes(state));
+  // Within reach of two thirds, not only past it: the roll moves with the people before the count
+  // (M5_UNKNOWN.md §21, as built: a vote of 87 in 131 became 88 in 132, two thirds exactly).
+  const total = totalVotes(state);
+  return total > 0 && votes * 100 >= total * A.fearFromPercent;
 }
 
 /**

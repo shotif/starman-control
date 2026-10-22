@@ -194,6 +194,33 @@ describe('the Assembly’s brakes (§31.3)', () => {
     expect(electionLean(world, g, 'dusk-concord')).toBe('frontier');
   });
 
+  it('fear within reach of two thirds, not only past it (as built in increment 53)', () => {
+    const g = five('drift-moot');
+    resolveAssembly(g, events(g));
+    const a = g.assembly;
+    if (!a) throw new Error('no assembly');
+    // The Cooperative's own people and the Authority's: 62% of all the votes, short of two thirds.
+    for (const h of g.holdings) h.people = h.owner === 'frontier' ? 400 : h.owner === 'sta' ? 220 : 130;
+    a.election = g.turn;
+    a.candidates = ['frontier', 'drift-moot'];
+    const memory = (of: FactionId, toward: FactionId, amount: number) =>
+      powerOf(g, of).memories.push({ faction: toward, kind: 'gift', amount, turn: g.turn, credits: 100 });
+    // The Authority warm to the Cooperative (kin, and a gift), and to the Moot.
+    memory('sta', 'frontier', 8);
+    memory('sta', 'drift-moot', 12);
+    expect(attitudeOf(world, g, 'sta', 'frontier').total).toBeGreaterThanOrEqual(RULES.assembly.warm);
+    expect(attitudeOf(world, g, 'sta', 'frontier').total - RULES.assembly.fear).toBeLessThan(RULES.assembly.warm);
+    for (const f of ['hollow-wake', 'dusk-concord'] as const) memory(f, 'frontier', -40);
+    expect(electionLean(world, g, 'sta')).toBe('drift-moot');
+    const rules = RULES.assembly as { fearFromPercent: number };
+    rules.fearFromPercent = 70;
+    try {
+      expect(electionLean(world, g, 'sta')).toBe('frontier');
+    } finally {
+      rules.fearFromPercent = 60;
+    }
+  });
+
   it('tiring of a leader: after two terms in a row, ten less a term from every member not its ally', () => {
     const g = five();
     resolveAssembly(g, events(g));

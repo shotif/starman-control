@@ -25,6 +25,7 @@ import {
 } from './economy.ts';
 import { habitability } from './habitability.ts';
 import { homeWebs } from './homeWeb.ts';
+import { keysHeld } from './keys.ts';
 import type { ReportEvent } from './report.ts';
 import { closedBy, effects, learn, speciesFor, techCost } from './research.ts';
 import { starClass } from './stars.ts';
@@ -228,6 +229,8 @@ export function deedDone(
       );
     case 'chapters':
       return power.chapters >= deed.n;
+    case 'keys':
+      return keysHeld(state, faction).length >= deed.n;
   }
 }
 

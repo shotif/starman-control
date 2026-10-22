@@ -6654,6 +6654,32 @@
       "aiGenerated": true
     },
     {
+      "briefId": "end-keys",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: In a vast dark chamber of smooth grey stone, five strange pieces of an ancient instrument, each a different shape, fitted together on a low plinth into one quiet whole; a thin pale light rising from where they meet and spreading in faint rings across the walls; far beyond a tall window, the stars; awed, quiet, uneasy; no people, no writing.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T22:16:20.135Z",
+      "note": "Here is the widescreen painted illustration for the strategy game event, focusing on a quiet, ancient sci-fi discovery within a vast stone chamber:",
+      "id": "end-keys",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T22:19:05.145Z",
+      "candidate": "art/out/end-keys/20261022-221601-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/end-keys-640.webp",
+          "bytes": 16982
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/end-keys-1280.webp",
+          "bytes": 46634
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "end-victory",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",

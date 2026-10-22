@@ -659,6 +659,8 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'dig':
     case 'chapter':
     case 'chapter-answered':
+    case 'key':
+    case 'answer':
       return relicText(world, game, e, playerPower(game)?.faction) ?? '';
   }
 }
@@ -759,6 +761,8 @@ function eventPlace(
     case 'chapter':
     case 'chapter-answered':
     case 'dig':
+    case 'key':
+    case 'answer':
       return { relics: true };
     case 'event-answered':
     case 'event-gone':
@@ -849,6 +853,8 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   dig: { icon: 'anomaly', tone: 'wrong' },
   chapter: { icon: 'anomaly', tone: 'needs' },
   'chapter-answered': { icon: 'anomaly', tone: 'growth' },
+  key: { icon: 'anomaly', tone: 'news' },
+  answer: { icon: 'anomaly', tone: 'needs' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */

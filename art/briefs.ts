@@ -335,6 +335,17 @@ const FIRST: ArtBrief[] = [
       'pushed back, one officer standing alone at the window looking out at the stars and a distant red sun.',
     purpose: 'The end of the game: a defeat (M4).',
   },
+  // The end by the keys (M5_UNKNOWN.md §21.7): the Answer given. The instrument and the Absent are fiction.
+  {
+    id: 'end-keys',
+    series: 'illustration',
+    subject:
+      'In a vast dark chamber of smooth grey stone, five strange pieces of an ancient instrument, each a different ' +
+      'shape, fitted together on a low plinth into one quiet whole; a thin pale light rising from where they meet ' +
+      'and spreading in faint rings across the walls; far beyond a tall window, the stars; awed, quiet, uneasy; ' +
+      'no people, no writing.',
+    purpose: 'The end of the game: the Answer given with the keys of the Absent (M5).',
+  },
   // The colony view's style slice (COLONY_VIEW.md §6, increment 14): one landscape, the
   // Cooperative's buildings for its capital, the shared scaffold, and homes in the other two
   // architectures, so the owner sees all three before the rest is made.
