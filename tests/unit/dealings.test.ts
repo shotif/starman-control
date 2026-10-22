@@ -402,7 +402,7 @@ describe('state (§23.8)', () => {
     expect(stateProblems(world, g)).toEqual(['treaty frontier~sta~trade is shared, yet paid for']);
   });
 
-  it('a save from version 14 reads as it is, at version 15', () => {
+  it('a save from version 14 reads as it is, and is brought up to date', () => {
     const g = allMet(three());
     g.treaties.push({
       kind: 'open-lanes',
@@ -415,8 +415,7 @@ describe('state (§23.8)', () => {
     });
     const raw = { format: SAVE_FORMAT, version: 1, savedAt: '2026-10-22T00:00:00Z', game: { ...g, version: 14 } };
     const loaded = parseSave(world, JSON.stringify(raw));
-    expect(STATE_VERSION).toBe(15);
-    expect(loaded.version).toBe(15);
+    expect(loaded.version).toBe(STATE_VERSION);
     expect(loaded.treaties).toEqual(g.treaties);
   });
 

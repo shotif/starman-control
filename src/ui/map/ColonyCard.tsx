@@ -3,9 +3,10 @@
 
 import { ZONE_DEFS } from '../../content/districts.ts';
 import { FACTIONS } from '../../content/factions.ts';
-import { PROJECTS, projectWords } from '../../content/projects.ts';
+import { PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SceneBuilding } from '../../render/colonyScene.ts';
+import { queueName } from '../../sim/designs.ts';
 import { costOf, queueTurns, workedSlots } from '../../sim/economy.ts';
 import type { GameState, Holding } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
@@ -78,7 +79,7 @@ export function buildingCard(
   if (project === 'shipyard')
     lines.push(
       first?.kind === 'ship'
-        ? `Building a ${SHIPS[first.ship].name.toLowerCase()}: ${progress()}.`
+        ? `Building ${first.design !== undefined ? withArticle(queueName(game, h.owner, first) ?? SHIPS[first.ship].name) : withArticle(SHIPS[first.ship].name.toLowerCase())}: ${progress()}.`
         : 'No ship is being built.',
     );
   return { title: def.name, lines };

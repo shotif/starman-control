@@ -5,9 +5,10 @@ import { isZone } from '../content/districts.ts';
 import { isEdictId, isPriority } from '../content/edicts.ts';
 import { isEventId } from '../content/events.ts';
 import { isFactionId } from '../content/factions.ts';
+import { isModuleId } from '../content/modules.ts';
 import { PROJECTS } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { SHIPS } from '../content/ships.ts';
+import { isHull, SHIPS } from '../content/ships.ts';
 import { isTechId, TECHS, type TechId } from '../content/techs.ts';
 import { isTreatyKind } from '../content/treaties.ts';
 import { anomalyAt } from './anomalies.ts';
@@ -112,6 +113,24 @@ export function shapeProblems(raw: unknown): string[] {
         out.push(`power ${i} memories are not a list of memories`);
       if (!Array.isArray(p.gifts) || !p.gifts.every((g) => isRecord(g) && isFactionId(g.to) && isWhole(g.credits, 1)))
         out.push(`power ${i} gifts are not a list of gifts`);
+      // Designs (M4_FLEETS.md §21.3).
+      if (
+        !Array.isArray(p.designs) ||
+        !p.designs.every(
+          (d) =>
+            isRecord(d) &&
+            isWhole(d.id, 1) &&
+            typeof d.name === 'string' &&
+            typeof d.hull === 'string' &&
+            isHull(d.hull as never) &&
+            Array.isArray(d.modules) &&
+            d.modules.every(isModuleId) &&
+            typeof d.yard === 'boolean' &&
+            isWhole(d.since, 1) &&
+            typeof d.retired === 'boolean',
+        )
+      )
+        out.push(`power ${i} designs are not a list of designs`);
       const st = p.stockpile;
       if (!isRecord(st) || !isWhole(st.metals) || !isWhole(st.volatiles) || !isWhole(st.fuel))
         out.push(`power ${i} stockpile is not three whole numbers`);
@@ -176,6 +195,7 @@ export function shapeProblems(raw: unknown): string[] {
         continue;
       }
       if (typeof s.type !== 'string' || !(s.type in SHIPS)) out.push(`ship ${i} is of an unknown type`);
+      if (s.design !== null && !isWhole(s.design, 1)) out.push(`ship ${i} has a design that is no design`);
       if (s.at !== null && typeof s.at !== 'string') out.push(`ship ${i} is nowhere`);
       if (!isStrings(s.destinations)) out.push(`ship ${i} destinations are not a list`);
       if (typeof s.hold !== 'boolean' || typeof s.autoSurvey !== 'boolean')
@@ -217,7 +237,11 @@ export function shapeProblems(raw: unknown): string[] {
         !h.queue.every(
           (q) =>
             isRecord(q) &&
-            ((q.kind === 'ship' && typeof q.ship === 'string' && q.ship in SHIPS) ||
+            ((q.kind === 'ship' &&
+              typeof q.ship === 'string' &&
+              q.ship in SHIPS &&
+              (q.design === undefined || isWhole(q.design, 1))) ||
+              (q.kind === 'refit' && isWhole(q.ship, 1) && isWhole(q.design, 1)) ||
               (q.kind === 'project' && typeof q.project === 'string' && q.project in PROJECTS) ||
               (q.kind === 'zone' && isZone(q.zone) && isWhole(q.slot, 1)) ||
               (q.kind === 'lane' && typeof q.to === 'string')) &&
@@ -310,6 +334,11 @@ export function stateProblems(world: World, state: GameState): string[] {
       if (!(RULES.memory.gifts as readonly number[]).includes(g.credits))
         out.push(`${p.faction} sends a gift of ${g.credits} credits`);
     }
+    const ids = new Set(p.designs.map((d) => d.id));
+    if (ids.size !== p.designs.length) out.push(`${p.faction} has two designs of one number`);
+    for (const d of p.designs)
+      if (d.modules.length !== (SHIPS[d.hull].hull?.places ?? 0))
+        out.push(`${p.faction}'s design ${d.name} does not fill its hull's places`);
     for (const [id, v] of Object.entries(p.techProgress))
       if (p.researched.includes(id as never) || (v ?? 0) >= techCost(state, p, id as TechId, false))
         out.push(`${p.faction} has progress in ${id}, which is done`);
@@ -380,6 +409,14 @@ export function stateProblems(world: World, state: GameState): string[] {
     const most = h.capital ? 10 : 12;
     if (h.districts.some((d) => d.slot > most)) out.push(`holding ${h.id} has a district past its land`);
     for (const q of h.queue) {
+      const designs = state.powers.find((p) => p.faction === h.owner)?.designs ?? [];
+      if (
+        q.kind === 'ship' &&
+        (isHull(q.ship) ? !designs.some((d) => d.id === q.design && d.hull === q.ship) : q.design !== undefined)
+      )
+        out.push(`holding ${h.id} queues a ship of no design of its hull`);
+      if (q.kind === 'refit' && !designs.some((d) => d.id === q.design))
+        out.push(`holding ${h.id} queues a refit to no design`);
       if (q.kind === 'lane' && (!world.hasSystem(q.to) || q.to === h.system))
         out.push(`holding ${h.id} queues a lane to ${q.to}, which it cannot have`);
       const outposts =
@@ -397,6 +434,10 @@ export function stateProblems(world: World, state: GameState): string[] {
     if (s.at !== null && !world.hasSystem(s.at)) out.push(`ship ${s.name} is at ${s.at}, which is not a system`);
     for (const d of s.destinations)
       if (!world.hasSystem(d)) out.push(`ship ${s.name} is bound for ${d}, which is not a system`);
+    // A warship is built to a design of its owner's, of its hull; a civil ship to none (§21.3).
+    const design = state.powers.find((p) => p.faction === s.owner)?.designs.find((d) => d.id === s.design);
+    if (isHull(s.type) ? !design || design.hull !== s.type : s.design !== null)
+      out.push(`ship ${s.name} is not built to a design of its hull`);
     if (s.blindJump) {
       const j = s.blindJump;
       if (!world.hasSystem(j.from) || !world.hasSystem(j.to)) out.push(`ship ${s.name} jumps to or from nowhere`);

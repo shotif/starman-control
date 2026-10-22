@@ -17,11 +17,12 @@ import {
   type QueueItem,
 } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { SHIPS, type ShipType } from '../content/ships.ts';
+import { CIVIL, isHull, SHIPS } from '../content/ships.ts';
 import { TECHS } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { type Body, bodiesOf } from './bodies.ts';
 import { claimOf, tradeIncome } from './borders.ts';
+import { buildable, designCost, designOf, refitCost, refitRefusal } from './designs.ts';
 import { lastingLabel, lastingOn } from './events.ts';
 import { ceilDiv } from './geometry.ts';
 import { type Habitability, habitability } from './habitability.ts';
@@ -688,7 +689,8 @@ export function creditsOf(world: World, state: GameState, h: Holding): Figure {
 /** What a power pays a turn to keep its ships, outposts and projects. */
 export function upkeepOf(state: GameState, faction: FactionId): Figure {
   const u = RULES.credits.upkeep;
-  const ships = state.ships.filter((s) => s.owner === faction).length * u.ship;
+  // Each ship by its hull (M4_FLEETS.md §6): a civil ship 1, a capital ship 5.
+  const ships = state.ships.filter((s) => s.owner === faction).reduce((n, s) => n + SHIPS[s.type].upkeep, 0);
   const outposts = state.holdings.filter((h) => h.owner === faction && h.kind === 'outpost').length * u.outpost;
   let projects = 0;
   for (const h of state.holdings) if (h.owner === faction) for (const p of h.projects) projects += PROJECTS[p].upkeep;
@@ -839,7 +841,17 @@ export function settleable(
 export function costOf(world: World, state: GameState, h: Holding, item: QueueItem): Cost {
   if (item.kind === 'lane') return laneQuote(world, state, h.owner, h.system, item.to).cost;
   if (item.kind === 'zone') return { ...RULES.districts.zoneCost };
-  const c = { ...itemCost(item) };
+  // A refit (M4_FLEETS.md §21.4): the new modules less the old.
+  if (item.kind === 'refit') {
+    const power = powerOf(state, h.owner);
+    const ship = state.ships.find((s) => s.id === item.ship);
+    const from = ship ? designOf(power, ship.design) : undefined;
+    const to = designOf(power, item.design);
+    return from && to ? refitCost(from, to) : { industry: 0, metals: 0, volatiles: 0, fuel: 0 };
+  }
+  // A warship costs its hull and its design's modules (§21.1).
+  const design = item.kind === 'ship' ? designOf(powerOf(state, h.owner), item.design) : undefined;
+  const c = design ? designCost(design.hull, design.modules) : { ...itemCost(item) };
   if (item.kind === 'ship') {
     for (const e of effects(state, h.owner, 'ship-industry-discount'))
       c.industry = ceilDiv(c.industry * (100 - e.percent), 100);
@@ -871,8 +883,14 @@ export function queueRefusal(world: World, state: GameState, h: Holding, item: Q
   if (h.kind !== 'colony' && where === 'colony') return 'Outposts build only lanes, lane relays and orbital habitats.';
   if (h.kind === 'colony' && where === 'outpost') return 'Only at an outpost.';
   if (item.kind === 'zone') return zoneRefusal(world, state, h, item.zone, item.slot);
+  if (item.kind === 'refit') return refitRefusal(state, h, item);
   if (item.kind === 'ship') {
     if (!h.projects.includes('shipyard')) return 'Ships need a shipyard.';
+    // A warship is built to a design (M4_FLEETS.md §21.3); a civil ship to none.
+    if (!isHull(item.ship)) return item.design === undefined ? null : 'Only warships have designs.';
+    const design = designOf(powerOf(state, h.owner), item.design);
+    if (!design || design.hull !== item.ship) return 'Choose a design to build.';
+    if (design.retired) return `${design.name} is retired.`;
     return null;
   }
   const def = PROJECTS[item.project];
@@ -911,8 +929,14 @@ export function buildOptions(
   h: Holding,
 ): { item: BuildItem; refusal: string | null }[] {
   // An outpost is offered only what an outpost can build (§18.3).
+  // Civil ships, then every design that can be built (M4_FLEETS.md §21.7).
   const ships: BuildItem[] =
-    h.kind === 'colony' ? (Object.keys(SHIPS) as ShipType[]).map((ship) => ({ kind: 'ship', ship })) : [];
+    h.kind === 'colony'
+      ? [
+          ...CIVIL.map((ship): BuildItem => ({ kind: 'ship', ship })),
+          ...buildable(powerOf(state, h.owner)).map((d): BuildItem => ({ kind: 'ship', ship: d.hull, design: d.id })),
+        ]
+      : [];
   const projects: BuildItem[] = Object.values(PROJECTS)
     .filter((p) => h.kind === 'colony' || (p.where ?? 'colony') !== 'colony')
     .map((p) => ({ kind: 'project', project: p.id }));

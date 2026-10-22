@@ -7,18 +7,20 @@ import type { District } from '../content/districts.ts';
 import type { EdictId, Priority } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
+import type { ModuleId } from '../content/modules.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
-import { type ShipType, STARTING_FLEET, shipName } from '../content/ships.ts';
+import { type HullId, type ShipType, STARTING_FLEET, shipName } from '../content/ships.ts';
 import { TECHS, type TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
+import { refreshYards } from './designs.ts';
 import { homeWebs } from './homeWeb.ts';
 import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 15;
+export const STATE_VERSION = 16;
 
 export interface Stockpile {
   metals: number;
@@ -70,6 +72,25 @@ export interface PowerState {
   memories: Memory[];
   /** Gifts it is sending this turn, paid already and delivered as the turn ends (§20.2). */
   gifts: { to: FactionId; credits: number }[];
+  /** Its warships' designs, the yard's and its own, in the order made (M4_FLEETS.md §21.3). */
+  designs: Design[];
+}
+
+/**
+ * A warship's design (M4_FLEETS.md §21.3): a hull and a module in each place. Never changed once
+ * made, so every ship built to it stays as built; retired, it leaves the build lists.
+ */
+export interface Design {
+  /** Unique among its power's designs. */
+  id: number;
+  name: string;
+  hull: HullId;
+  modules: ModuleId[];
+  /** Made by the power's yard from the best it knows; else the player's own. */
+  yard: boolean;
+  /** The turn it was made. */
+  since: number;
+  retired: boolean;
 }
 
 /** What a memory is of (M3_NEIGHBOURS.md §20.1, §21). */
@@ -220,6 +241,8 @@ export interface ShipState {
   founding: { kind: 'colony' | 'outpost'; body: string } | null;
   /** The anomaly it is investigating where it is, and the turns left. */
   investigating: { system: SystemId; left: number } | null;
+  /** A warship's design, one of its power's (M4_FLEETS.md §21.3); null for a civil ship. */
+  design: number | null;
 }
 
 /** A colony or an outpost (M1_COLONIES.md §1). */
@@ -281,7 +304,13 @@ export interface NewGameSetup {
 }
 
 /** A new ship for a power, at a system, named after its makers' traditions. */
-export function makeShip(state: GameState, faction: FactionId, type: ShipType, at: SystemId): ShipState {
+export function makeShip(
+  state: GameState,
+  faction: FactionId,
+  type: ShipType,
+  at: SystemId,
+  design: number | null = null,
+): ShipState {
   const power = state.powers.find((p) => p.faction === faction);
   if (!power) throw new RangeError(`${faction} is not in play`);
   const ship: ShipState = {
@@ -296,6 +325,7 @@ export function makeShip(state: GameState, faction: FactionId, type: ShipType, a
     autoSurvey: type === 'survey',
     founding: null,
     investigating: null,
+    design,
   };
   state.nextShipId++;
   power.shipsBuilt++;
@@ -405,6 +435,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
       event: null,
       lastEvent: 0,
       lasting: [],
+      designs: [],
     })),
     lanes,
     ships: [],
@@ -418,6 +449,8 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });
   for (const p of state.powers) for (const type of STARTING_FLEET) makeShip(state, p.faction, type, p.capital);
+  // Each yard's designs for the hulls every power can build from the start (M4_FLEETS.md §21.3).
+  for (const p of state.powers) refreshYards(state, p);
   return state;
 }
 

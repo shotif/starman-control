@@ -1,10 +1,10 @@
-// The advisors (M2_WORLDS.md §9, §24): seven for each power, one for each department, each with a
+// The advisors (M2_WORLDS.md §9, §24, M4_FLEETS.md §21.6): eight for each power, one for each department, each with a
 // name in its power's tradition, a face and a voice. All of them are fiction. What they say is
 // written here as sentences with blanks, filled from the game's state (no live AI text, D-17).
 
 import type { FactionId } from './factions.ts';
 
-export type Department = 'colonies' | 'works' | 'treasury' | 'science' | 'survey' | 'watch' | 'envoy';
+export type Department = 'colonies' | 'works' | 'treasury' | 'science' | 'survey' | 'watch' | 'envoy' | 'admiral';
 
 /** In the order they speak when two have news of the same weight. */
 export const DEPARTMENTS: readonly Department[] = [
@@ -15,6 +15,7 @@ export const DEPARTMENTS: readonly Department[] = [
   'survey',
   'watch',
   'envoy',
+  'admiral',
 ];
 
 export const DEPARTMENT_NAMES: Record<Department, string> = {
@@ -25,6 +26,7 @@ export const DEPARTMENT_NAMES: Record<Department, string> = {
   survey: 'Survey',
   watch: 'the Watch',
   envoy: 'the Envoy',
+  admiral: 'the Admiral',
 };
 
 export type Voice = 'formal' | 'warm' | 'blunt';
@@ -52,6 +54,8 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       watch: { name: 'Owen Hale', role: 'Inspector of the Watch', portrait: 'advisor-sta-watch' },
       // M3's Envoy (M3_NEIGHBOURS.md §19.3).
       envoy: { name: 'Isabel Achterberg', role: 'Envoy of the Authority', portrait: 'advisor-sta-envoy' },
+      // M4's Admiral (M4_FLEETS.md §21.6).
+      admiral: { name: 'Helena Vasquez', role: 'Rear Admiral of the Fleet', portrait: 'advisor-sta-admiral' },
     },
   },
   frontier: {
@@ -64,6 +68,7 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       survey: { name: 'Sefa Owusu', role: 'of the Pathfinders', portrait: 'advisor-frontier-survey' },
       watch: { name: 'Mara Kowal', role: 'of the Lookouts', portrait: 'advisor-frontier-watch' },
       envoy: { name: 'Rafael Quispe', role: 'of the Welcome table', portrait: 'advisor-frontier-envoy' },
+      admiral: { name: 'Joon-ho Park', role: 'of the Defence table', portrait: 'advisor-frontier-admiral' },
     },
   },
   'hollow-wake': {
@@ -76,6 +81,7 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       survey: { name: 'Farcast', role: 'navigator', portrait: 'advisor-wake-survey' },
       watch: { name: 'Lantern', role: 'who keeps watch', portrait: 'advisor-wake-watch' },
       envoy: { name: 'Hush', role: 'who does the talking', portrait: 'advisor-wake-envoy' },
+      admiral: { name: 'Gaff', role: 'who runs the guns', portrait: 'advisor-wake-admiral' },
     },
   },
   // The Duskfolk's names are translations (M3_NEIGHBOURS.md §24.1). Only First Voice has a face yet:
@@ -90,6 +96,7 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       survey: { name: 'Far Walker', role: 'who speaks for the Wayfarers', portrait: 'advisor-dusk-survey' },
       watch: { name: 'Night Ear', role: 'who speaks for the Watchers', portrait: 'advisor-dusk-watch' },
       envoy: { name: 'First Voice', role: 'who speaks to strangers', portrait: 'advisor-dusk-envoy' },
+      admiral: { name: 'Stone Shield', role: 'who speaks for the Guardians', portrait: 'advisor-dusk-admiral' },
     },
   },
   // The Drifters' names are translations too (M3_NEIGHBOURS.md §25.1); only Fair Wind has a face yet.
@@ -103,6 +110,7 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       survey: { name: 'Far Drift', role: 'who speaks for the Wanderers', portrait: 'advisor-drift-survey' },
       watch: { name: 'Still Air', role: 'who speaks for the Listeners', portrait: 'advisor-drift-watch' },
       envoy: { name: 'Fair Wind', role: 'who carries offers', portrait: 'advisor-drift-envoy' },
+      admiral: { name: 'Deep Keel', role: 'who speaks for the Wardens', portrait: 'advisor-drift-admiral' },
     },
   },
 };
@@ -148,7 +156,11 @@ export type LineKind =
   | 'treaty-begun'
   | 'treaty-ending'
   | 'treaty-broken'
-  | 'event';
+  | 'event'
+  // The Admiral (M4_FLEETS.md §21.6).
+  | 'warship-built'
+  | 'design-new'
+  | 'refitted';
 
 export const LINES: Record<LineKind, Record<Voice, string>> = {
   hungry: {
@@ -264,6 +276,22 @@ export const LINES: Record<LineKind, Record<Voice, string>> = {
     blunt: 'The {power} lit a lane {place}. Ours can’t use it.',
   },
   // Contact (M3_NEIGHBOURS.md §19.3): the Envoy speaks.
+  // The Admiral (M4_FLEETS.md §21.6).
+  'warship-built': {
+    formal: 'Control, {place} has commissioned {what}, the {ship}. She is ready for orders.',
+    warm: 'Control, the {ship} is out of the yard at {place}: {what}, and a good crew aboard.',
+    blunt: 'New gun on the line: the {ship}, {what}, out of {place}.',
+  },
+  'design-new': {
+    formal: 'Control, the yard has drawn a new design, the {design}: {what}.',
+    warm: 'Control, the yard has a new design for us, the {design}: {what}.',
+    blunt: 'The yard’s new design: the {design}. {what}.',
+  },
+  refitted: {
+    formal: 'Control, the {ship} has been refitted at {place} to the {design}.',
+    warm: 'Control, the {ship} is refitted at {place}: she’s a {design} now.',
+    blunt: 'The {ship}: refitted at {place}. A {design} now.',
+  },
   'contact-talk': {
     formal: 'Control, we have made contact with the {power} at {place}. They share our tongue, so we may talk.',
     warm: 'Control, we’ve met the {power}, at {place}! We speak the same tongue, so we can talk whenever you like.',

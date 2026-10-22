@@ -5,7 +5,7 @@
 
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
-import { STARTING_FLEET } from '../content/ships.ts';
+import { isHull, STARTING_FLEET } from '../content/ships.ts';
 import { SOL_BODIES } from '../content/sol.ts';
 import { type Deed, TECH_IDS, TECHS, type TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
@@ -211,6 +211,8 @@ export function deedDone(
       );
     case 'investigations':
       return power.investigated.length >= deed.n;
+    case 'warships':
+      return state.ships.filter((s) => s.owner === faction && isHull(s.type)).length >= deed.n;
     case 'contacts':
       return power.contacts.length >= deed.n;
   }

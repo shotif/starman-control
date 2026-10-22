@@ -21,6 +21,7 @@ import { TECHS } from '../content/techs.ts';
 import { TREATIES } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { bodiesOf } from './bodies.ts';
+import { designStats, queueName } from './designs.ts';
 import { listWords, observationShort } from './discoveries.ts';
 import { bodyOf, fusionRuns } from './economy.ts';
 import { eventWords } from './events.ts';
@@ -214,6 +215,36 @@ export function adviceFor(
     } else if (e.kind === 'rival-ship') {
       const ship = withArticle(`${FACTIONS[e.faction].shortName} ${SHIPS[e.type].name.toLowerCase()}`);
       say('watch', 3, 'rival-ship', { ship, place: world.system(e.system).name }, e);
+    } else if (e.kind === 'built' && e.item.kind === 'ship' && e.item.design !== undefined && e.ship !== undefined) {
+      // The Admiral (M4_FLEETS.md §21.6).
+      const ship = state.ships.find((x) => x.id === e.ship);
+      const design = queueName(state, faction, e.item);
+      if (ship && design)
+        say(
+          'admiral',
+          3,
+          'warship-built',
+          { place: holdingName(e.holding), what: withArticle(design), ship: ship.name },
+          { holding: e.holding },
+        );
+    } else if (e.kind === 'design-new') {
+      const d = powerOf(state, faction).designs.find((x) => x.id === e.design);
+      if (d) {
+        const st = designStats(d);
+        const what = `attack ${st.attack}, shields ${st.shields}, structure ${st.structure}`;
+        say('admiral', 3, 'design-new', { design: e.name, what });
+      }
+    } else if (e.kind === 'refitted') {
+      const ship = state.ships.find((x) => x.id === e.ship);
+      const d = powerOf(state, faction).designs.find((x) => x.id === e.design);
+      if (ship && d)
+        say(
+          'admiral',
+          3,
+          'refitted',
+          { ship: ship.name, place: holdingName(e.holding), design: d.name },
+          { holding: e.holding },
+        );
     } else if (e.kind === 'founded') {
       const kind = state.holdings.find((h) => h.id === e.holding)?.kind === 'outpost' ? 'outpost' : 'colony';
       say('colonies', 3, 'founded', { place: holdingName(e.holding), what: `a new ${kind}` }, { holding: e.holding });

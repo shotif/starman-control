@@ -1111,6 +1111,22 @@ function advisors(): ArtBrief[] {
       `The raider who does the talking ${wake}: a sharp-featured woman in her thirties with dark braided hair, a row of silver rings in one ear and a knowing look; smooth, persuasive.`,
       'the Wake’s Envoy',
     ],
+    // M4's Admiral (M4_FLEETS.md §21.6).
+    [
+      'sta-admiral',
+      `The Rear Admiral of the fleet ${sta}, two plain gold bars on the collar: a Spanish woman in her fifties with greying black hair pinned back and a level gaze; steady, exacting.`,
+      'the Authority’s Admiral',
+    ],
+    [
+      'frontier-admiral',
+      `The defender of the defence table ${coop}, a worn navy padded vest over it: a Korean man in his forties with short black hair and a calm, careful face; patient, resolute.`,
+      'the Cooperative’s Admiral',
+    ],
+    [
+      'wake-admiral',
+      `The raider who runs the guns ${wake}, a bandolier of tools across the chest: a broad-shouldered man in his fifties with a shaved head, a scarred chin and a hard grin; fearless, loud.`,
+      'the Wake’s Admiral',
+    ],
   ];
   return people.map(([id, subject, who]) => ({
     id: `advisor-${id}`,

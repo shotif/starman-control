@@ -182,7 +182,10 @@ invasion, the outlaw's raids, the Assembly (the council), rivals at war, and the
 in increments 41 to 50. Its questions (D-59 to D-68, D-14, D-17) were answered *as recommended*
 the same day ([DECISIONS.md Round 7](DECISIONS.md#round-7-fleets-decided-22-october-2026)). As in M3:
 write each increment's detailed design section (§21 onwards) before building it. The owner has not
-yet played M3; their try, when it comes, is recorded there too.
+yet played M3; their try, when it comes, is recorded there too. **Done: increment 41, warships**
+(§21): five hulls, 22 modules, the yard's designs and the player's own (*Designs*, **B**), refits,
+the Weapons field (17 technologies, 79 in the tree), upkeep by hull, the Admiral (an eighth
+advisor, 3 faces); state version 16.
 
 The art and music spend: about $25.55 of $50 (raised on 22 October 2026; about $24.45 left). M3's
 art is about 65 pictures (about $6.50).

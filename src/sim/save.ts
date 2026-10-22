@@ -7,8 +7,9 @@
 import { FACTIONS, type FactionId, isFactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import { sharesTongue } from './contact.ts';
+import { refreshYards } from './designs.ts';
 import { startZoning } from './economy.ts';
-import { capitalHolding, type GameState, type Holding, STATE_VERSION } from './state.ts';
+import { capitalHolding, type GameState, type Holding, type PowerState, STATE_VERSION } from './state.ts';
 import { shapeProblems, stateProblems } from './validate.ts';
 import { laneEnds, type World } from './world.ts';
 
@@ -212,6 +213,21 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   13: (g) => ({ ...g, version: 14, treaties: [], offers: [] }),
   /** 14 → 15 (M3 increment 37b): exchanges and treaties sold. A save from before has neither. */
   14: (g) => ({ ...g, version: 15 }),
+  /**
+   * 15 → 16 (M4 increment 41): warships. Each power gains its yard's designs for the hulls it can
+   * build (made in the turn the save was at), and its ships, all civil, no design.
+   */
+  15: (g) => {
+    if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
+    const turn = typeof g.turn === 'number' ? g.turn : 1;
+    const powers = (g.powers as Raw[]).map((p) => {
+      const power = { ...p, designs: [] } as unknown as PowerState;
+      refreshYards({ turn } as GameState, power);
+      return power as unknown as Raw;
+    });
+    const ships = (g.ships as Raw[]).map((s) => ({ ...s, design: null }));
+    return { ...g, version: 16, powers, ships };
+  },
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);

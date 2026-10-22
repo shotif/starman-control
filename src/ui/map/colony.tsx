@@ -15,6 +15,7 @@ import { RULES } from '../../content/rules.ts';
 import { SHIPS } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
+import { designOf, queueName } from '../../sim/designs.ts';
 import {
   type ApprovalLevel,
   approvalOf,
@@ -74,7 +75,7 @@ import { HABITABILITY_WORD } from '../system/words.ts';
 import { AdvisorBy } from './advisor.tsx';
 import { ColonyStill } from './ColonyStill.tsx';
 import { eventTitle } from './event.tsx';
-import { give, type Play } from './play.tsx';
+import { designLine, give, type Play } from './play.tsx';
 import { lanePreview, panel, queueHover } from './state.ts';
 import './colony.css';
 import { Count } from '../count.tsx';
@@ -102,8 +103,11 @@ export function costText(c: Cost): string {
   return parts.join(', ');
 }
 
-/** "Survey ship", "New lane to Ross 128", "Relight the lane to Ross 128". */
-export function queueLabel(world: World, h: Holding, item: QueueItem): string {
+/** "Survey ship", "Frigate Mark I", "New lane to Ross 128", "Relight the lane to Ross 128". */
+export function queueLabel(world: World, h: Holding, item: QueueItem, game?: GameState): string {
+  // A warship by its design, a refit by its ship and design (M4_FLEETS.md §21.3, §21.4).
+  const named = game ? queueName(game, h.owner, item) : null;
+  if (named) return named;
   if (item.kind === 'zone')
     return `${districtAt(h, item.slot) ? 'Rezone' : 'Zone'} district ${item.slot} for ${ZONE_DEFS[item.zone].name.toLowerCase()}`;
   if (item.kind !== 'lane') return itemName(item);
@@ -299,7 +303,7 @@ function Queue({
   const short = shortfall(world, game, h);
   const turns = queueTurns(world, game, h);
   const cost = (item: QueueItem) => costOf(world, game, h, item);
-  const label = (item: QueueItem) => `${queueLabel(world, h, item)}${item.governor ? ' (governor)' : ''}`;
+  const label = (item: QueueItem) => `${queueLabel(world, h, item, game)}${item.governor ? ' (governor)' : ''}`;
   const up = (i: number) => give(play, { type: 'reorder', holding: h.id, from: i, to: i - 1 });
   const remove = (i: number) => give(play, { type: 'unqueue', holding: h.id, index: i });
   const waits = (i: number) =>
@@ -418,19 +422,33 @@ function Queue({
 
 function AddToQueue({ world, game, h, play }: { world: World; game: GameState; h: Holding; play: Play }) {
   const options = buildOptions(world, game, h);
+  const power = powerOf(game, h.owner);
   return (
     <ul class="build-options" data-guide="queue">
+      {h.projects.includes('shipyard') && (
+        <li>
+          <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = 'designs')}>
+            Designs…
+          </button>
+        </li>
+      )}
       {options.map(({ item, refusal }) => {
-        const name = itemName(item);
-        const does = item.kind === 'ship' ? SHIPS[item.ship].does : PROJECTS[item.project].does;
-        const upkeep = item.kind === 'ship' ? RULES.credits.upkeep.ship : PROJECTS[item.project].upkeep;
+        // A warship by its design, with what it adds up to (M4_FLEETS.md §21.7).
+        const design = item.kind === 'ship' ? designOf(power, item.design) : undefined;
+        const name = design?.name ?? itemName(item);
+        const does = design
+          ? `${SHIPS[design.hull].name}: ${designLine(design)}.`
+          : item.kind === 'ship'
+            ? SHIPS[item.ship].does
+            : PROJECTS[item.project].does;
+        const upkeep = item.kind === 'ship' ? SHIPS[item.ship].upkeep : PROJECTS[item.project].upkeep;
         return (
           <li key={name}>
             <button
               type="button"
               class="build-option"
               disabled={refusal !== null}
-              aria-label={`Queue ${item.kind === 'project' ? projectWords(item.project) : withArticle(name.toLowerCase())}`}
+              aria-label={`Queue ${item.kind === 'project' ? projectWords(item.project) : design ? withArticle(name) : withArticle(name.toLowerCase())}`}
               onClick={() => give(play, { type: 'queue', holding: h.id, item })}
             >
               <b>{name}</b>
@@ -938,7 +956,7 @@ export function needText(world: World, game: GameState, need: Need): string {
     return `${name} has ${need.districts} district${need.districts === 1 ? '' : 's'} with no one to work ${need.districts === 1 ? 'it' : 'them'}.`;
   const first = h.queue[0];
   const short = shortfall(world, game, h);
-  return `${first ? queueLabel(world, h, first) : 'Its next item'} at ${name} waits for ${short ? missingText(short.missing) : 'resources'}.`;
+  return `${first ? queueLabel(world, h, first, game) : 'Its next item'} at ${name} waits for ${short ? missingText(short.missing) : 'resources'}.`;
 }
 
 type Tab = 'colonies' | 'outposts' | 'ships' | 'powers';
@@ -1072,7 +1090,7 @@ export function EmpireView({
     const first = h.queue[0];
     if (!first) return h.projects.includes('shipyard') ? 'Nothing' : '—';
     const t = queueTurns(world, game, h)[0] ?? null;
-    return `${queueLabel(world, h, first)}, ${t === null ? 'no industry' : t === 1 ? 'this turn' : `about ${t} turns`}`;
+    return `${queueLabel(world, h, first, game)}, ${t === null ? 'no industry' : t === 1 ? 'this turn' : `about ${t} turns`}`;
   };
   const head = (key: ColonyKey, label: string) => (
     <th scope="col" aria-sort={sort.key === key ? (sort.down ? 'descending' : 'ascending') : 'none'}>

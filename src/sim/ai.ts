@@ -7,6 +7,7 @@ import type { Priority } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
+import { isHull } from '../content/ships.ts';
 import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import { TREATY_KINDS } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
@@ -144,7 +145,8 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
   // Ships.
   for (const s of state.ships) {
     if (s.owner !== faction || s.at === null || s.destinations.length > 0 || s.blindJump || s.founding) continue;
-    if (s.investigating) continue;
+    // Warships are not ordered here: the rivals build none until increment 43 (M4_FLEETS.md §21).
+    if (s.investigating || isHull(s.type)) continue;
     const at = s.at;
     if (s.type === 'survey') {
       if (investigateRefusal(state, s) === null) {
@@ -267,10 +269,15 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       withNeeds(power, id).reduce((n, x) => n + TECHS[x].cost * (me.fields.includes(TECHS[x].field) ? 1 : 2), 0);
     // Of each pair of doctrines, only its own (§19.1).
     const own = (id: TechId) => !TECHS[id].fork || me.doctrines.includes(id);
-    // Translation only while it learns a tongue (M3_NEIGHBOURS.md §19.4), as it does nothing else.
+    // Translation only while it learns a tongue (M3_NEIGHBOURS.md §19.4), as it does nothing else;
+    // the Weapons field only once it holds warships (M4_FLEETS.md §21), for the same reason.
     const learning = power.contacts.some((c) => c.stage === 'words');
+    const armed = state.ships.some((s) => s.owner === faction && isHull(s.type));
     const idle = (id: TechId) =>
-      !learning && withNeeds(power, id).some((x) => TECHS[x].effect.kind === 'translation') ? 1 : 0;
+      (!learning && withNeeds(power, id).some((x) => TECHS[x].effect.kind === 'translation')) ||
+      (!armed && withNeeds(power, id).some((x) => TECHS[x].field === 'weapons'))
+        ? 1
+        : 0;
     const next = canResearch(power)
       .filter((id) => withNeeds(power, id).every(own))
       .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];

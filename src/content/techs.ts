@@ -8,7 +8,7 @@ import type { EventId } from './events.ts';
 import type { ProjectId } from './projects.ts';
 import type { ShipType } from './ships.ts';
 
-export type FieldId = 'propulsion' | 'construction' | 'life-sciences' | 'society' | 'survey' | 'xenology';
+export type FieldId = 'propulsion' | 'construction' | 'life-sciences' | 'society' | 'survey' | 'xenology' | 'weapons';
 
 export const FIELDS: readonly { id: FieldId; name: string }[] = [
   { id: 'propulsion', name: 'Propulsion' },
@@ -17,6 +17,8 @@ export const FIELDS: readonly { id: FieldId; name: string }[] = [
   { id: 'society', name: 'Society' },
   { id: 'survey', name: 'Survey' },
   { id: 'xenology', name: 'Xenology' },
+  // M4's seventh field (M4_FLEETS.md §21.5, D-60).
+  { id: 'weapons', name: 'Weapons' },
 ];
 
 export type TechId =
@@ -86,7 +88,25 @@ export type TechId =
   | 'garden-worlds'
   // M2b's great works (M2B_SCIENCE.md §20.1).
   | 'great-engineering'
-  | 'translation';
+  | 'translation'
+  // M4's Weapons field (M4_FLEETS.md §21.5).
+  | 'fire-control'
+  | 'destroyer-hulls'
+  | 'pulse-cannons-2'
+  | 'railguns-2'
+  | 'deflector-fields'
+  | 'diffuser-fields'
+  | 'composite-armour'
+  | 'plasma-cannons'
+  | 'ion-disruptors'
+  | 'cruiser-hulls'
+  | 'shield-harmonics'
+  | 'combat-drives'
+  | 'capital-hulls'
+  | 'heavy-guns'
+  | 'lattice-armour'
+  | 'particle-beams'
+  | 'layered-shields';
 
 /** What a technology does. The rules read these; the interface shows `text`. */
 export type TechEffect =
@@ -110,7 +130,10 @@ export type TechEffect =
   | { kind: 'investigation-turns'; turns: number }
   /** Survey stations survey this many lanes out. */
   | { kind: 'survey-station-lanes'; lanes: number }
-  /** Opens projects (src/content/projects.ts names the technology each needs), and does nothing else. */
+  /**
+   * Opens projects, hulls or modules (src/content/projects.ts, ships.ts and modules.ts name the
+   * technology each needs), and does nothing else.
+   */
   | { kind: 'opens' }
   /** Each worked district of a zone yields this much more. */
   | { kind: 'zone-yield'; zone: Zone; amount: number }
@@ -231,7 +254,10 @@ export type Deed =
   /** Anomalies investigated. */
   | { kind: 'investigations'; n: number }
   /** In contact with this many other powers (M3_NEIGHBOURS.md §19.4). */
-  | { kind: 'contacts'; n: number };
+  | { kind: 'contacts'; n: number }
+  // M4 (M4_FLEETS.md §21.5).
+  /** Warships held. */
+  | { kind: 'warships'; n: number };
 
 export interface TechDef {
   id: TechId;
@@ -985,6 +1011,194 @@ export const TECHS: Record<TechId, TechDef> = {
     effect: { kind: 'opens' },
     text: 'Opens the great works: the Long Array, the Lapse Archive, the Lanewright Foundry and the Commons, each with its own technology. One of each in the whole neighbourhood.',
     inspiration: { deed: { kind: 'projects', n: 20 }, text: 'twenty projects standing' },
+  },
+  // M4's Weapons field (M4_FLEETS.md §21.5, D-60): each opens hulls or modules.
+  'fire-control': {
+    id: 'fire-control',
+    name: 'Fire control',
+    field: 'weapons',
+    tier: 1,
+    cost: 30,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens the targeting computer: its ship’s shots hit more often.',
+    inspiration: { deed: { kind: 'warships', n: 2 }, text: 'holding two warships' },
+  },
+  'destroyer-hulls': {
+    id: 'destroyer-hulls',
+    name: 'Destroyer hulls',
+    field: 'weapons',
+    tier: 1,
+    cost: 30,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens the destroyer: a warship of the line with four places for modules.',
+    inspiration: { deed: { kind: 'warships', n: 3 }, text: 'holding three warships' },
+  },
+  'pulse-cannons-2': {
+    id: 'pulse-cannons-2',
+    name: 'Pulse cannons II',
+    field: 'weapons',
+    tier: 2,
+    cost: 60,
+    needs: ['fire-control'],
+    effect: { kind: 'opens' },
+    text: 'Opens the pulse cannon II: 8 energy damage a shot, best at middle range.',
+    inspiration: { deed: { kind: 'warships', n: 4 }, text: 'holding four warships' },
+  },
+  'railguns-2': {
+    id: 'railguns-2',
+    name: 'Railguns II',
+    field: 'weapons',
+    tier: 2,
+    cost: 60,
+    needs: ['fire-control'],
+    effect: { kind: 'opens' },
+    text: 'Opens the railgun II: 8 kinetic damage a shot, best at long range.',
+    inspiration: { deed: { kind: 'ships-built', n: 6 }, text: 'six ships built' },
+  },
+  'deflector-fields': {
+    id: 'deflector-fields',
+    name: 'Deflector fields',
+    field: 'weapons',
+    tier: 2,
+    cost: 60,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens the deflector shield I: 9 capacity, shedding kinetic slugs and taking more from energy.',
+    inspiration: { deed: { kind: 'colony-industry', n: 20 }, text: 'a colony making 20 industry' },
+  },
+  'diffuser-fields': {
+    id: 'diffuser-fields',
+    name: 'Diffuser fields',
+    field: 'weapons',
+    tier: 2,
+    cost: 60,
+    needs: [],
+    effect: { kind: 'opens' },
+    text: 'Opens the diffuser shield I: 9 capacity, spreading energy hits and taking more from plasma.',
+    inspiration: { deed: { kind: 'research', n: 30 }, text: '30 research a turn' },
+  },
+  'composite-armour': {
+    id: 'composite-armour',
+    name: 'Composite armour',
+    field: 'weapons',
+    tier: 2,
+    cost: 60,
+    needs: ['destroyer-hulls'],
+    effect: { kind: 'opens' },
+    text: 'Opens composite armour: structure +14.',
+    inspiration: { deed: { kind: 'warships', n: 6 }, text: 'holding six warships' },
+  },
+  'plasma-cannons': {
+    id: 'plasma-cannons',
+    name: 'Plasma cannons',
+    field: 'weapons',
+    tier: 3,
+    cost: 100,
+    needs: ['pulse-cannons-2'],
+    effect: { kind: 'opens' },
+    text: 'Opens the plasma cannon I: 8 plasma damage a shot, best at close range.',
+    inspiration: { deed: { kind: 'colony-industry', n: 30 }, text: 'a colony making 30 industry' },
+  },
+  'ion-disruptors': {
+    id: 'ion-disruptors',
+    name: 'Ion disruptors',
+    field: 'weapons',
+    tier: 3,
+    cost: 100,
+    needs: ['deflector-fields'],
+    effect: { kind: 'opens' },
+    text: 'Opens the ion disruptor I: 6 ion damage a shot, best at middle range, breaking shields fast and barely scratching hulls.',
+    inspiration: { deed: { kind: 'research', n: 60 }, text: '60 research a turn' },
+  },
+  'cruiser-hulls': {
+    id: 'cruiser-hulls',
+    name: 'Cruiser hulls',
+    field: 'weapons',
+    tier: 3,
+    cost: 100,
+    needs: ['destroyer-hulls', 'composite-armour'],
+    effect: { kind: 'opens' },
+    text: 'Opens the cruiser: a heavy warship with six places for modules.',
+    inspiration: { deed: { kind: 'warships', n: 8 }, text: 'holding eight warships' },
+  },
+  'shield-harmonics': {
+    id: 'shield-harmonics',
+    name: 'Shield harmonics',
+    field: 'weapons',
+    tier: 3,
+    cost: 100,
+    needs: ['deflector-fields', 'diffuser-fields'],
+    effect: { kind: 'opens' },
+    text: 'Opens the second mark of every shield: balanced 13, deflector 14, diffuser 14.',
+    inspiration: { deed: { kind: 'ships-built', n: 10 }, text: 'ten ships built' },
+  },
+  'combat-drives': {
+    id: 'combat-drives',
+    name: 'Combat drives',
+    field: 'weapons',
+    tier: 3,
+    cost: 100,
+    needs: ['fire-control', 'jump-tuning'],
+    effect: { kind: 'opens' },
+    text: 'Opens the jump drive: its ship has a jump point more a turn.',
+    inspiration: { deed: { kind: 'lanes-held', n: 10 }, text: 'holding ten lanes' },
+  },
+  'capital-hulls': {
+    id: 'capital-hulls',
+    name: 'Capital hulls',
+    field: 'weapons',
+    tier: 4,
+    cost: 240,
+    needs: ['cruiser-hulls'],
+    effect: { kind: 'opens' },
+    text: 'Opens the capital ship: the greatest warship, with eight places for modules.',
+    inspiration: { deed: { kind: 'warships', n: 12 }, text: 'holding twelve warships' },
+  },
+  'heavy-guns': {
+    id: 'heavy-guns',
+    name: 'Heavy guns',
+    field: 'weapons',
+    tier: 4,
+    cost: 240,
+    needs: ['pulse-cannons-2', 'railguns-2'],
+    effect: { kind: 'opens' },
+    text: 'Opens the pulse cannon III and the railgun III: 11 damage a shot each.',
+    inspiration: { deed: { kind: 'ships-built', n: 20 }, text: 'twenty ships built' },
+  },
+  'lattice-armour': {
+    id: 'lattice-armour',
+    name: 'Lattice armour',
+    field: 'weapons',
+    tier: 4,
+    cost: 240,
+    needs: ['composite-armour'],
+    effect: { kind: 'opens' },
+    text: 'Opens lattice armour: structure +20.',
+    inspiration: { deed: { kind: 'colony-industry', n: 40 }, text: 'a colony making 40 industry' },
+  },
+  'particle-beams': {
+    id: 'particle-beams',
+    name: 'Particle beams',
+    field: 'weapons',
+    tier: 4,
+    cost: 240,
+    needs: ['plasma-cannons', 'ion-disruptors'],
+    effect: { kind: 'opens' },
+    text: 'Opens the plasma cannon II (12 a shot) and the ion disruptor II (9 a shot).',
+    inspiration: { deed: { kind: 'research', n: 100 }, text: '100 research a turn' },
+  },
+  'layered-shields': {
+    id: 'layered-shields',
+    name: 'Layered shields',
+    field: 'weapons',
+    tier: 5,
+    cost: 480,
+    needs: ['shield-harmonics'],
+    effect: { kind: 'opens' },
+    text: 'Opens the balanced shield III: 18 capacity.',
+    inspiration: { deed: { kind: 'warships', n: 16 }, text: 'holding sixteen warships' },
   },
 };
 

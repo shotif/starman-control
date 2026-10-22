@@ -5,11 +5,14 @@
 import type { AnomalyId } from '../content/anomalies.ts';
 import { EDICTS, type EdictId, isEdictId, isPriority, type Priority } from '../content/edicts.ts';
 import type { FactionId } from '../content/factions.ts';
+import type { ModuleId } from '../content/modules.ts';
 import type { QueueItem } from '../content/projects.ts';
+import type { HullId } from '../content/ships.ts';
 import { isTechId, type TechId } from '../content/techs.ts';
 import { isTreatyKind, type TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
+import { designRefusal, makeDesign, retireRefusal } from './designs.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
 import { choiceRefusal } from './events.ts';
 import { formatLy } from './geometry.ts';
@@ -71,7 +74,10 @@ export type Order =
   | { type: 'offer'; to: FactionId; treaty: TreatyKind | 'exchange'; give?: Amount; get?: Amount }
   | { type: 'answer-offer'; from: FactionId; treaty: TreatyKind | 'exchange'; accept: boolean }
   | { type: 'end-treaty'; with: FactionId; treaty: TreatyKind }
-  | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind };
+  | { type: 'break-treaty'; with: FactionId; treaty: TreatyKind }
+  /** A warship design of the power's own (M4_FLEETS.md §21.3), and one taken off the build lists. */
+  | { type: 'design'; hull: HullId; name: string; modules: ModuleId[] }
+  | { type: 'retire-design'; design: number };
 
 type HoldingOrder = Extract<Order, { holding: number }>;
 type ResearchOrder = Extract<Order, { tech: TechId }>;
@@ -150,6 +156,8 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
       : 'There is no such tax rate.';
   if (order.type === 'answer') return choiceRefusal(state, faction, order.choice);
   if (order.type === 'gift') return giftRefusal(state, faction, order.to, order.credits);
+  if (order.type === 'design') return designRefusal(powerOf(state, faction), order.hull, order.name, order.modules);
+  if (order.type === 'retire-design') return retireRefusal(powerOf(state, faction), order.design);
   if (
     order.type === 'offer' ||
     order.type === 'answer-offer' ||
@@ -233,6 +241,15 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'gift') {
     giveGift(next, faction, order.to, order.credits);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'design') {
+    makeDesign(next, powerOf(next, faction), order.hull, order.name, order.modules);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'retire-design') {
+    const d = powerOf(next, faction).designs.find((x) => x.id === order.design);
+    if (d) d.retired = true;
     return { ok: true, state: next };
   }
   if (order.type === 'offer') {

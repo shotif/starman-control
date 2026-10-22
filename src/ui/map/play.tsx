@@ -10,8 +10,9 @@ import { ZONE_DEFS } from '../../content/districts.ts';
 import { EDICTS, PRIORITY_DEFS } from '../../content/edicts.ts';
 import { EVENTS } from '../../content/events.ts';
 import { FACTIONS, type FactionId } from '../../content/factions.ts';
+import type { ModuleId } from '../../content/modules.ts';
 import { itemName, PROJECTS, projectWords, withArticle } from '../../content/projects.ts';
-import { SHIPS } from '../../content/ships.ts';
+import { type HullId, SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import { TREATIES } from '../../content/treaties.ts';
 import type { SystemId } from '../../data/types.ts';
@@ -19,6 +20,7 @@ import { adviceFor } from '../../sim/advice.ts';
 import { anomalyAt, investigateRefusal, investigationTurns, rewardTimes } from '../../sim/anomalies.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
+import { designStats, queueName, refitTargets, shipDesign } from '../../sim/designs.ts';
 import { observationWords } from '../../sim/discoveries.ts';
 import { eventWords } from '../../sim/events.ts';
 import { formatLy } from '../../sim/geometry.ts';
@@ -31,9 +33,10 @@ import { amountWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
-import { Founding, holdingName, needText } from './colony.tsx';
+import { costText, Founding, holdingName, needText } from './colony.tsx';
+import { ModuleList, StatsLine } from './designs.tsx';
 import { eventTitle } from './event.tsx';
-import { say, targeting } from './state.ts';
+import { panel, say, targeting } from './state.ts';
 
 export interface Play {
   faction: FactionId;
@@ -99,6 +102,7 @@ export function ShipPanel({
   const moving = ship.destinations.length > 0 || ship.blindJump !== null;
   const inFlight = ship.at === null;
   const reach = blindReachDeci(game, ship.owner);
+  const design = shipDesign(game, ship);
   return (
     <article class="ship-panel" aria-label={ship.name}>
       {ship.at && (
@@ -110,10 +114,10 @@ export function ShipPanel({
         <h2>
           <FactionMark faction={ship.owner} size={14} /> {ship.name}
         </h2>
-        <p class="system-kind">{def.name}</p>
+        <p class="system-kind">{design ? `${design.name} · ${def.name}` : def.name}</p>
         <p class="ship-status">{shipStatus(world, game, ship)}</p>
       </header>
-      <p class="dim">{def.does}</p>
+      {design ? <Warship game={game} ship={ship} play={play} /> : <p class="dim">{def.does}</p>}
       {!inFlight && (
         <div class="ship-actions">
           <button
@@ -178,6 +182,47 @@ export function ShipPanel({
   );
 }
 
+/** A ship's kind in a word or two: a warship's design ("Frigate Mark I"), else its type ("Survey ship"). */
+export function shipKind(game: GameState, ship: ShipState): string {
+  return shipDesign(game, ship)?.name ?? SHIPS[ship.type].name;
+}
+
+/** A warship's design and what it adds up to, and a refit where its power has a shipyard (§21.4, §21.7). */
+function Warship({ game, ship, play }: { game: GameState; ship: ShipState; play: Play }) {
+  const design = shipDesign(game, ship);
+  if (!design) return null;
+  const yard = game.holdings.find(
+    (h) => h.owner === ship.owner && h.system === ship.at && h.kind === 'colony' && h.projects.includes('shipyard'),
+  );
+  const refits = yard ? refitTargets(game, ship) : [];
+  const queued = game.holdings.some((h) => h.queue.some((q) => q.kind === 'refit' && q.ship === ship.id));
+  return (
+    <section class="warship" aria-label="Design">
+      <p>
+        <StatsLine stats={designStats(design)} />
+      </p>
+      <ModuleList modules={design.modules} />
+      {queued && <p class="dim">A refit is queued: it stays here until the shipyard has done it.</p>}
+      {yard && !queued && refits.length > 0 && (
+        <div class="refits">
+          {refits.slice(0, 3).map(({ design: to, cost }) => (
+            <button
+              key={to.id}
+              type="button"
+              class="button button-small"
+              onClick={() =>
+                give(play, { type: 'queue', holding: yard.id, item: { kind: 'refit', ship: ship.id, design: to.id } })
+              }
+            >
+              Refit to {to.name} <span class="dim">({costText(cost)})</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 /** Every ship of the player's, idle ones first. */
 export function ShipsList({
   world,
@@ -196,6 +241,31 @@ export function ShipsList({
     .filter((s) => s.owner === faction)
     .sort((a, b) => Number(idle(b)) - Number(idle(a)) || a.id - b.id);
   return (
+    <>
+      <p>
+        <button type="button" class="button button-small" onClick={() => (panel.value = 'designs')}>
+          Designs
+        </button>
+      </p>
+      <ShipRows world={world} game={game} ships={ships} onPick={onPick} idle={idle} />
+    </>
+  );
+}
+
+function ShipRows({
+  world,
+  game,
+  ships,
+  onPick,
+  idle,
+}: {
+  world: World;
+  game: GameState;
+  ships: ShipState[];
+  onPick: (id: number) => void;
+  idle: (s: ShipState) => boolean;
+}) {
+  return (
     <ul class="ships-list">
       {ships.map((s) => (
         <li key={s.id}>
@@ -207,7 +277,7 @@ export function ShipsList({
           >
             <span class="ship-chevron" style={{ '--faction': FACTIONS[s.owner].colour }} aria-hidden="true" />
             <b>{s.name}</b>
-            <span class="ship-type">{SHIPS[s.type].name}</span>
+            <span class="ship-type">{shipKind(game, s)}</span>
             <span class="ship-line">{shipStatus(world, game, s)}</span>
             {idle(s) && <span class="needs-tag">Idle</span>}
           </button>
@@ -309,8 +379,15 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'built': {
       if (e.item.kind === 'project' && PROJECTS[e.item.project].great)
         return `${holding(e.holding)} has finished ${projectWords(e.item.project)}: a great work, the only one in the neighbourhood.`;
+      // A warship by its design (M4_FLEETS.md §21.3): "a Frigate Mark I".
+      const owner = game.holdings.find((h) => h.id === e.holding)?.owner;
+      const design = e.item.kind === 'ship' && owner ? queueName(game, owner, e.item) : null;
       const what =
-        e.item.kind === 'project' ? projectWords(e.item.project) : withArticle(itemName(e.item).toLowerCase());
+        e.item.kind === 'project'
+          ? projectWords(e.item.project)
+          : design
+            ? withArticle(design)
+            : withArticle(itemName(e.item).toLowerCase());
       return e.ship !== undefined
         ? `${holding(e.holding)} built ${what}, the ${shipOf(e.ship)}.`
         : `${holding(e.holding)} built ${what}.`;
@@ -437,14 +514,33 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
       return `${eventTitle(world, game, { id: e.event, turn: game.turn, ...e })}: it has passed.`;
     case 'defected':
       return `The crew of the ${e.ship} went over to the ${FACTIONS[e.to].shortName} at ${name(e.system)}, ship and all.`;
+    case 'design-new': {
+      const power = playerPower(game);
+      const d = power?.designs.find((x) => x.id === e.design);
+      const what = d ? designLine(d) : '';
+      return `The yard has a new design: the ${e.name}${what ? `, ${what}` : ''}${e.old ? `. The ${e.old} is retired` : ''}.`;
+    }
+    case 'refitted': {
+      const power = playerPower(game);
+      const d = power?.designs.find((x) => x.id === e.design);
+      return `${shipOf(e.ship)} is refitted at ${holding(e.holding)} to the ${d?.name ?? 'new design'}.`;
+    }
+    case 'refit-dropped':
+      return `The refit of ${shipOf(e.ship)} at ${holding(e.holding)} was dropped, unpaid: ${e.reason}`;
   }
+}
+
+/** A design in a few words: "attack 10, shields 8, structure 20". */
+export function designLine(d: { hull: HullId; modules: readonly ModuleId[] }): string {
+  const st = designStats(d);
+  return `attack ${st.attack}, shields ${st.shields}, structure ${st.structure}`;
 }
 
 /** Where a report item leads: the colony it is about, its system, or the research screen. */
 function eventPlace(
   game: GameState,
   e: ReportEvent,
-): { holding: number } | { system: SystemId } | { research: true } | { event: true } {
+): { holding: number } | { system: SystemId } | { research: true } | { event: true } | { designs: true } {
   switch (e.kind) {
     case 'researched':
     case 'inspired':
@@ -479,6 +575,11 @@ function eventPlace(
       return { system: laneEnds(e.lane)[1] };
     case 'event':
       return { event: true };
+    case 'design-new':
+      return { designs: true };
+    case 'refitted':
+    case 'refit-dropped':
+      return { holding: e.holding };
     case 'contact':
       return { system: e.system ?? playerPower(game)?.capital ?? 'sol' };
     case 'gift-sent':
@@ -557,6 +658,9 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   'event-answered': { icon: 'report', tone: 'news' },
   'event-gone': { icon: 'report', tone: 'news' },
   defected: { icon: 'refused', tone: 'wrong' },
+  'design-new': { icon: 'ship', tone: 'growth' },
+  refitted: { icon: 'ship', tone: 'growth' },
+  'refit-dropped': { icon: 'refused', tone: 'wrong' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -616,11 +720,14 @@ export function ReportView({
   onResearch,
   onViewColony,
   onEvent,
+  onDesigns,
 }: {
   world: World;
   game: GameState;
   faction: FactionId;
   needs: number;
+  /** Opens the designs (M4_FLEETS.md §21.7). */
+  onDesigns?: () => void;
   onGo: (id: SystemId) => void;
   onHolding: (id: number) => void;
   onResearch: () => void;
@@ -688,6 +795,7 @@ export function ReportView({
                   if ('holding' in place) onHolding(place.holding);
                   else if ('research' in place) onResearch();
                   else if ('event' in place) onEvent?.();
+                  else if ('designs' in place) onDesigns?.();
                   else onGo(place.system);
                 }}
               >

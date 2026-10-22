@@ -242,8 +242,14 @@ export const GREAT_WORKS = (Object.keys(PROJECTS) as ProjectId[]).filter((id) =>
 
 export const PROJECT_IDS = Object.keys(PROJECTS) as ProjectId[];
 
-/** A ship or a project: what costs the same wherever it is built. */
-export type BuildItem = { kind: 'ship'; ship: ShipType } | { kind: 'project'; project: ProjectId };
+/**
+ * A ship or a project: what costs the same wherever it is built. A warship names its design
+ * (M4_FLEETS.md §21.3), whose modules add to its hull's cost.
+ */
+export type BuildItem = { kind: 'ship'; ship: ShipType; design?: number } | { kind: 'project'; project: ProjectId };
+
+/** A warship refitted to another design of its hull, at a shipyard where it is (M4_FLEETS.md §21.4). */
+export type RefitItem = { kind: 'refit'; ship: number; design: number };
 
 /** A lane from the holding's system to another star, new or relit (M1_LANES_RESEARCH.md §1). */
 export type LaneItem = { kind: 'lane'; to: SystemId };
@@ -252,9 +258,12 @@ export type LaneItem = { kind: 'lane'; to: SystemId };
 export type ZoneItem = { kind: 'zone'; zone: Zone; slot: number };
 
 /** What a colony or outpost has queued; a governor's own items say so (M2_WORLDS.md §25.1). */
-export type QueueItem = (BuildItem | LaneItem | ZoneItem) & { governor?: true };
+export type QueueItem = (BuildItem | LaneItem | ZoneItem | RefitItem) & { governor?: true };
 
-/** The base cost of a ship or project; src/sim/economy.ts's costOf gives any item's actual cost. */
+/**
+ * The base cost of a ship's hull or a project; src/sim/economy.ts's costOf gives any item's actual
+ * cost, with a warship's modules.
+ */
 export function itemCost(item: BuildItem): Cost {
   if (item.kind === 'project') return PROJECTS[item.project].cost;
   const c = SHIPS[item.ship].cost;
@@ -273,7 +282,9 @@ export function projectWords(id: ProjectId): string {
   return def.great ? `the ${def.name}` : withArticle(def.name.toLowerCase());
 }
 
+/** An item's name; a warship's design or a refit is named by src/sim/designs.ts's `queueName`. */
 export function itemName(item: QueueItem): string {
   if (item.kind === 'zone') return `${ZONE_DEFS[item.zone].name} district`;
+  if (item.kind === 'refit') return 'Refit';
   return item.kind === 'lane' ? 'Lane' : item.kind === 'project' ? PROJECTS[item.project].name : SHIPS[item.ship].name;
 }

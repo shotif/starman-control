@@ -33,6 +33,7 @@ game can be won by conquest or by the council's vote.* Five powers already deal 
 18. [Tests and budgets](#18-tests-and-budgets)
 19. [Art and its cost](#19-art-and-its-cost)
 20. [Decisions for the owner](#20-decisions-for-the-owner)
+21. [Increment 41 in detail: warships](#21-increment-41-in-detail-warships-written-before-building-it)
 
 ## 1. Where M4 starts
 
@@ -397,3 +398,170 @@ Answer *as recommended* to take every recommendation, or name what to change.
 | **D-14** | Victory and defeat (§13) | A conquest, the vote, a score at a turn limit · B no turn limit | **A**, 250 turns by default |
 | **D-68** | Rivals at war (§14) | A by character · B strength alone · C no rival starts a war | **A** |
 | **D-17** | Words from the other powers (§15) | A written into the game · B written at build time · C the player's own key | **A** |
+
+## 21. Increment 41 in detail: warships (written before building it)
+
+**Goals.** D-59 and D-60 as decided (A): five warship hulls, modules for each place, designs made
+from them, the yard's design for every hull a power can build, renewed as research brings better,
+the player's own designs, refits at a shipyard, and the Weapons field's technologies for hulls,
+weapons, shields, armour and specials. Upkeep by hull size (D-61). The Admiral, an eighth advisor,
+speaks for the fleet. Warships are built and moved like any ship; there is no war yet, so they
+patrol (§17).
+
+**Out of scope.** Fleets (42); war, battles and what the modules do in them (43, 44); repairs and the
+repair bay (44); the troop transport, defences and their technologies (46); the rivals building
+warships (43 and 48: until then they build none, and leave the Weapons field to last, as they leave
+Translation, since it does nothing for them).
+
+### 21.1 The hulls
+
+| Hull | Places | Structure | Cost (industry, metals, volatiles) | Upkeep | Needs |
+| --- | --- | --- | --- | --- | --- |
+| Corvette | 2 | 12 | 25, 8, 0 | 1 | — |
+| Frigate | 3 | 20 | 40, 12, 0 | 1 | — |
+| Destroyer | 4 | 32 | 70, 20, 4 | 2 | Destroyer hulls |
+| Cruiser | 6 | 55 | 120, 35, 8 | 3 | Cruiser hulls |
+| Capital ship | 8 | 100 | 220, 60, 15 | 5 | Capital hulls |
+
+A warship is built at a shipyard like any ship, for its hull's cost and its modules'. Survey, outpost
+and colony ships keep their upkeep of 1. Warships use lanes as other ships do and never jump blind.
+
+### 21.2 The modules
+
+Every place holds one module. Weapons have a damage type (Reborn's four), a damage a shot and a best
+range (§7); shields a capacity; armour adds structure.
+
+| Module | Does | Cost (industry, metals, volatiles, fuel) | Needs |
+| --- | --- | --- | --- |
+| Pulse cannon I, II, III | energy, 5, 8, 11 a shot, best at middle range | 6, 2, 0, 0 · 9, 3, 1, 0 · 13, 4, 2, 0 | —, Pulse cannons II, Heavy guns |
+| Railgun I, II, III | kinetic, 5, 8, 11, best at long range | 6, 3, 0, 0 · 9, 4, 1, 0 · 13, 6, 1, 0 | —, Railguns II, Heavy guns |
+| Plasma cannon I, II | plasma, 8, 12, best at close range | 9, 2, 0, 2 · 13, 3, 1, 3 | Plasma cannons, Particle beams |
+| Ion disruptor I, II | ion, 6, 9, best at middle range; breaks shields, barely scratches hulls | 8, 2, 2, 0 · 12, 3, 3, 0 | Ion disruptors, Particle beams |
+| Balanced shield I, II, III | 8, 13, 18 | 5, 0, 2, 0 · 8, 0, 3, 0 · 11, 0, 4, 0 | —, Shield harmonics, Layered shields |
+| Deflector shield I, II | 9, 14; sheds kinetic, takes more from energy | 6, 0, 2, 0 · 9, 0, 3, 0 | Deflector fields, Shield harmonics |
+| Diffuser shield I, II | 9, 14; spreads energy, takes more from plasma | 6, 0, 2, 0 · 9, 0, 3, 0 | Diffuser fields, Shield harmonics |
+| Plate, composite, lattice armour | structure +8, +14, +20 | 3, 5, 0, 0 · 5, 8, 0, 0 · 7, 11, 2, 0 | —, Composite armour, Lattice armour |
+| Targeting computer | its ship's shots hit more often | 8, 2, 2, 0 | Fire control |
+| Jump drive | its ship has a jump point more a turn | 10, 3, 0, 3 | Combat drives |
+
+A design's **attack** is its weapons' damage a shot, its **shields** their capacity, and its
+**structure** its hull's and its armour's. What the damage types, ranges and the targeting computer
+do in battle comes with increment 44; until then the screens show them as numbers.
+
+### 21.3 Designs
+
+- **A design** is a hull, a name and a module in each place. Once made it never changes, so every
+  ship built to it stays as it was built; a design is **retired** to take it off the build lists.
+- **The yard's design** for each hull a power can build is made from the best it knows: half its
+  places (rounded up) weapons, alternating the two strongest kinds it knows (ion counted at half,
+  as it barely scratches a hull), then a shield, then armour, and on a cruiser or capital ship a
+  targeting computer once known and a second shield on a capital ship. Every power's yard follows
+  the same rule (D-08). When research brings a better module or a new hull, the yard makes a new
+  design as the turn ends (*Frigate Mark II*), retires its old one, and the Admiral says so.
+- **The player's designs:** a hull, a name (up to 24 characters) and a module of any it knows in
+  each place, through the order `design`; `retire-design` takes one off the lists. The rivals use
+  the yard's.
+- A ship's queue item names its design; an item queued before the design was retired is still
+  built.
+
+### 21.4 Refits
+
+At a system where its power has a shipyard, a warship may be **refitted** to another design of its
+hull: a queue item at that colony, costing the new design's modules less the old ones' (never less
+than a tenth of the new modules' cost). Paid, the ship takes the new design as the turn ends. If it
+has left the system, the refit is dropped unpaid and the report says so.
+
+### 21.5 The Weapons field
+
+A seventh field, **Weapons**, with 17 technologies here (more come with repairs in 44 and defences
+in 46), costed by tier as the others (30, 60, 100, 240, 480, rising as M2b set out). Each opens
+hulls or modules. Every power can build corvettes and frigates with pulse cannons I, railguns I,
+balanced shields I and plate armour from the start.
+
+| Tier | Technology | Opens | Needs | Inspired by |
+| --- | --- | --- | --- | --- |
+| 1 | Fire control | targeting computer | — | holding 2 warships |
+| 1 | Destroyer hulls | destroyer | — | holding 3 warships |
+| 2 | Pulse cannons II | pulse cannon II | Fire control | holding 4 warships |
+| 2 | Railguns II | railgun II | Fire control | 6 ships built |
+| 2 | Deflector fields | deflector shield I | — | a colony making 20 industry |
+| 2 | Diffuser fields | diffuser shield I | — | 30 research a turn |
+| 2 | Composite armour | composite armour | Destroyer hulls | holding 6 warships |
+| 3 | Plasma cannons | plasma cannon I | Pulse cannons II | a colony making 30 industry |
+| 3 | Ion disruptors | ion disruptor I | Deflector fields | 60 research a turn |
+| 3 | Cruiser hulls | cruiser | Destroyer hulls, Composite armour | holding 8 warships |
+| 3 | Shield harmonics | balanced shield II, deflector II, diffuser II | Deflector fields, Diffuser fields | 10 ships built |
+| 3 | Combat drives | jump drive | Fire control, Jump tuning | holding 10 lanes |
+| 4 | Capital hulls | capital ship | Cruiser hulls | holding 12 warships |
+| 4 | Heavy guns | pulse cannon III, railgun III | Pulse cannons II, Railguns II | 20 ships built |
+| 4 | Lattice armour | lattice armour | Composite armour | a colony making 40 industry |
+| 4 | Particle beams | plasma cannon II, ion disruptor II | Plasma cannons, Ion disruptors | 100 research a turn |
+| 5 | Layered shields | balanced shield III | Shield harmonics | holding 16 warships |
+
+### 21.6 The Admiral
+
+An eighth department for each power, **the Admiral**, with a name in its tradition and a voice: Rear
+Admiral Helena Vasquez (the Authority, formal), Joon-ho Park of the Defence table (the Cooperative,
+warm), and Gaff, who runs the guns (the Wake, blunt); for the alien powers, who are not yet played,
+Stone Shield (the Concord) and Deep Keel (the Moot), with no face yet. All fiction. The Admiral
+speaks when a warship is built, the yard makes a new design and a refit is done; from increment 43,
+of wars and battles. The three human Admirals' faces: 6 candidates, about $0.30.
+
+### 21.7 On the screen
+
+- **Designs** (a sheet on a phone, a panel on a desktop with **B**), opened from the Empire's *Ships*
+  tab and a shipyard's build list: every design that can be built, by hull, with its modules,
+  attack, shields, structure, cost and upkeep; *New design* on a hull, which starts from the yard's
+  and lists each place with the modules known for it, the numbers changing as they are chosen, and
+  *Save design*; *Retire* on one's own designs.
+- **The build list** offers each design that can be built (the yard's newest and the player's own),
+  with its cost, upkeep and numbers.
+- **A warship's panel** shows its design, hull, modules and numbers, and *Refit* at a shipyard when a
+  newer design of its hull stands, with its cost.
+- **The research screen** has the Weapons field as a seventh tab (phone) or column (desktop).
+
+### 21.8 State
+
+`PowerState.designs` (each: an id, a name, a hull, the modules, whether the yard's, the turn made,
+and whether retired); `ShipState.design` (null for a civil ship); a ship's queue item names its
+design; a refit is a queue item of its own. **State version 16**; a save from before gains the
+yard's designs for the hulls it can build, and its ships no design.
+
+### 21.9 Tests
+
+`warships.test.ts`: the yard's designs at the start and renewed by research (and every power's by
+the same rule); a design ordered, checked (hull known, every module known and right for its place
+count, a name) and retired; a warship queued, built and paid for; upkeep by hull; a refit queued,
+paid and done, and dropped when the ship has left; the rivals leave the Weapons field to last; the
+migration from version 15. `warships.spec.ts`: a design made in the designer, queued at the capital
+and built, on the phone, tablet and desktop.
+
+### Increment 41: warships (22 October 2026)
+
+- **Hulls and modules as §21.1 and §21.2** (`src/content/ships.ts`, `src/content/modules.ts`): the
+  five warship hulls are ship types with a `hull` of places, structure and the technology they
+  need, and every ship type has its upkeep; 22 modules in four kinds, four of them open from the
+  start.
+- **Designs as §21.3** (`src/sim/designs.ts`): each power's `designs`; the yard's rule
+  (`yardModules`) and its renewal as the turn ends (`refreshYards`, after research and again after
+  inspirations), reported as *design-new*; the orders `design` and `retire-design`; a warship's
+  queue item names its design and is paid for its hull and modules.
+- **Refits as §21.4:** a queue item of its own at a shipyard where the ship is, checked again
+  before it is paid, and dropped unpaid if the ship has left.
+- **The Weapons field as §21.5:** 17 technologies (79 in the tree, 76 for any one power), each
+  opening a hull or modules; the rivals leave it to last while they hold no warships, so the
+  headless games play out exactly as before. Only inspirations rise (the Authority 40.4 at turn
+  100, 34.5 before), as the field's deeds (ships built, industry, research) are met and pay 40%
+  towards technologies the rivals do not yet study.
+- **The Admiral as §21.6:** an eighth department in every power, speaking when a warship is built,
+  the yard draws a new design and a refit is done. The faces, from 6 candidates (about $0.30, so
+  about **$25.85** of D-27's $50 spent): the Authority's A, the Cooperative's B (the padded vest
+  shows), the Wake's B (the bandolier of tools); the lettered sheet went to the owner.
+- **On the screen as §21.7:** *Designs* with **B** on a desktop and from the Empire's *Ships* tab
+  and a shipyard's build list (*Designs…*) on any device; a design's figures and modules, *Change a
+  copy*, *Retire*, and *New design* starting from the yard's; a warship's panel with its design and
+  *Refit to…* at a shipyard. The research screen has a seventh tab and column.
+- **State version 16**, as §21.8.
+- **Tests:** `warships.test.ts` (15 tests); 520 unit tests; `warships.spec.ts` on the phone, tablet
+  and desktop; the tree's journey counts seven tabs.
+

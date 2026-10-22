@@ -13,6 +13,7 @@ import { anomalyAt, grantReward } from './anomalies.ts';
 import { bodiesOf } from './bodies.ts';
 import { claimantsAt, tradeIncome } from './borders.ts';
 import { resolveContacts } from './contact.ts';
+import { refitRefusal, refreshYards } from './designs.ts';
 import { observationPoints, observationsAt, resolveInspirations } from './discoveries.ts';
 import {
   capacityOf,
@@ -102,6 +103,21 @@ function moveShip(world: World, state: GameState, ship: ShipState, events: Repor
     }
     // A survey ship stops in a system nobody of its power has surveyed, and surveys it (§4).
     if (wantsSurvey(state, ship)) break;
+  }
+}
+
+/** Each power's yard makes the designs its research now allows, and says so (§21.3). */
+function yards(state: GameState, events: Map<string, ReportEvent[]>): void {
+  for (const p of state.powers) {
+    const retiring = new Map(p.designs.filter((d) => d.yard && !d.retired).map((d) => [d.hull, d.name]));
+    for (const d of refreshYards(state, p))
+      events.get(p.faction)?.push({
+        kind: 'design-new',
+        design: d.id,
+        hull: d.hull,
+        name: d.name,
+        old: retiring.get(d.hull) ?? null,
+      });
   }
 }
 
@@ -303,6 +319,15 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
           continue;
         }
       }
+      if (first.kind === 'refit') {
+        // A refit is dropped unpaid if its ship has left, or can no longer take that design (§21.4).
+        const reason = refitRefusal(state, h, first, true);
+        if (reason) {
+          h.queue.shift();
+          log.push({ kind: 'refit-dropped', holding: h.id, ship: first.ship, reason });
+          continue;
+        }
+      }
       const c = costOf(world, state, h, first);
       const s = power.stockpile;
       if (h.industry < c.industry || s.metals < c.metals || s.volatiles < c.volatiles || s.fuel < c.fuel) break;
@@ -318,8 +343,14 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
         state.lanes.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
         log.push({ kind: 'lane-begun', holding: h.id, to: first.to, relight: q.relight, turns: q.turns });
       } else if (first.kind === 'ship') {
-        const ship = makeShip(state, h.owner, first.ship, h.system);
-        log.push({ kind: 'built', holding: h.id, item: first, ship: ship.id });
+        const ship = makeShip(state, h.owner, first.ship, h.system, first.design ?? null);
+        const { governor: _, ...item } = first;
+        log.push({ kind: 'built', holding: h.id, item, ship: ship.id });
+      } else if (first.kind === 'refit') {
+        // Paid already (checked below, before paying): the ship takes its new design (§21.4).
+        const ship = state.ships.find((s) => s.id === first.ship);
+        if (ship) ship.design = first.design;
+        log.push({ kind: 'refitted', holding: h.id, ship: first.ship, design: first.design });
       } else if (first.kind === 'zone') {
         const there = h.districts.find((d) => d.slot === first.slot);
         if (there) there.zone = first.zone;
@@ -382,6 +413,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
     const done = spendResearch(state, p, research.get(p.faction) ?? 0);
     for (const tech of done) (events.get(p.faction) as ReportEvent[]).push({ kind: 'researched', tech });
   }
+  // 4b. The yards (M4_FLEETS.md §21.3): a new design wherever research now allows a better one.
+  yards(state, events);
 
   // 5. Food, network by network (M2_WORLDS.md §3): the capital's network keeps a store; a colony
   // cut off from it feeds itself. A shortage the store cannot cover leaves the network hungry.
@@ -479,8 +512,9 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
   resolveEvents(world, state, events);
 
   // 12. Inspirations (M2B_SCIENCE.md §17.1): deeds done this turn, or standing now, teach each power
-  // something towards a technology it has not yet researched.
+  // something towards a technology it has not yet researched; one finished may give the yards more.
   resolveInspirations(world, state, events);
+  yards(state, events);
 
   // 12b. Memories fade a point every few turns (M3_NEIGHBOURS.md §20.1).
   fadeMemories(state);

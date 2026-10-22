@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
-/** The deeper tree's research screen (M2B_SCIENCE.md §18.5), on a phone, a tablet and a desktop. */
+/** The deeper tree's research screen (M2B_SCIENCE.md §18.5, with M4's Weapons field), on a phone, a tablet and a desktop. */
 
 const isDesktop = (name: string) => name === 'desktop';
 const press = (target: Locator, project: string) => (isDesktop(project) ? target.click() : target.tap());
@@ -23,7 +23,7 @@ test('the research screen: a tab for each field on a phone and a tablet', async 
   test.skip(isDesktop(project), 'the desktop shows the whole tree');
   const screen = await openResearch(page, project);
   const tabs = screen.getByRole('tab');
-  await expect(tabs).toHaveCount(6);
+  await expect(tabs).toHaveCount(7);
   await expect(screen.getByRole('tab', { name: 'Propulsion 0/14' })).toHaveAttribute('aria-selected', 'true');
   await expect(screen.getByRole('region', { name: 'Propulsion, tier 5' })).toContainText('Fold charts');
   // Xenology: Lapse studies, opened by anomalies investigated, not by a technology.

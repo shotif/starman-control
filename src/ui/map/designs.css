@@ -1,0 +1,134 @@
+/* The designs (M4_FLEETS.md §21.7): by hull, each design a card, the design being made under its
+   hull on a phone and beside the list on a desktop. */
+.designs h2 {
+  margin: 0.2rem 0 0.4rem;
+}
+
+.designs-body {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.designs-table .designs-body {
+  grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+  align-items: start;
+}
+
+.designs-side {
+  position: sticky;
+  top: 0;
+}
+
+.designs-hull {
+  margin: 0 0 0.9rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(126, 170, 255, 0.14);
+}
+
+.designs-hull h3 {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+}
+
+.design-cards {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.design-card {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba(126, 170, 255, 0.18);
+  background: rgba(10, 18, 34, 0.6);
+}
+
+.design-card p {
+  margin: 0.2rem 0;
+}
+
+.design-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+  align-items: baseline;
+}
+
+.design-card-buttons,
+.design-maker-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.design-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.design-modules {
+  margin: 0.3rem 0;
+  padding-left: 1.2rem;
+}
+
+.design-modules li {
+  margin: 0.1rem 0;
+}
+
+.design-maker {
+  padding: 0.6rem;
+  border: 1px solid var(--accent);
+  background: rgba(10, 22, 40, 0.8);
+}
+
+.design-maker h3 {
+  margin: 0 0 0.4rem;
+}
+
+.design-name {
+  display: grid;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.design-name input,
+.design-places select {
+  min-height: 44px;
+  padding: 0 0.5rem;
+  border: 1px solid rgba(126, 170, 255, 0.3);
+  background: rgba(5, 9, 18, 0.9);
+  color: var(--text);
+  font: inherit;
+}
+
+.design-places {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.design-places label {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.design-place-does {
+  display: block;
+  font-size: 0.85rem;
+}
+
+.popover.designs-popover {
+  top: 12px;
+  right: auto;
+  left: 12px;
+  width: min(880px, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}

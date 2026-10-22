@@ -62,6 +62,36 @@
       "aiGenerated": true
     },
     {
+      "briefId": "advisor-frontier-admiral",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The defender of the defence table of the Frontier Cooperative, in practical blue work clothes with a small round pin, a worn navy padded vest over it: a Korean man in his forties with short black hair and a calm, careful face; patient, resolute.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T13:18:15.317Z",
+      "id": "advisor-frontier-admiral",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T13:19:09.132Z",
+      "candidate": "art/out/advisor-frontier-admiral/20261022-131701-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-frontier-admiral-128.webp",
+          "bytes": 4404
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-frontier-admiral-384.webp",
+          "bytes": 23052
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-frontier-admiral-768.webp",
+          "bytes": 68726
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-frontier-colonies",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -274,6 +304,36 @@
       "aiGenerated": true
     },
     {
+      "briefId": "advisor-sta-admiral",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The Rear Admiral of the fleet of the Sol Transit Authority, in a dark green civil-service uniform with plain geometric insignia, two plain gold bars on the collar: a Spanish woman in her fifties with greying black hair pinned back and a level gaze; steady, exacting.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T13:17:17.068Z",
+      "id": "advisor-sta-admiral",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T13:19:08.584Z",
+      "candidate": "art/out/advisor-sta-admiral/20261022-131701-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-sta-admiral-128.webp",
+          "bytes": 3352
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-sta-admiral-384.webp",
+          "bytes": 16174
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-sta-admiral-768.webp",
+          "bytes": 48906
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-sta-colonies",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -481,6 +541,36 @@
           "width": 768,
           "path": "art/portrait/advisor-sta-works-768.webp",
           "bytes": 53080
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-wake-admiral",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: The raider who runs the guns of the Hollow Wake raiders, in a patched flight jacket of mismatched dark red and grey panels, a bandolier of tools across the chest: a broad-shouldered man in his fifties with a shaved head, a scarred chin and a hard grin; fearless, loud.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T13:18:53.964Z",
+      "id": "advisor-wake-admiral",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T13:19:09.694Z",
+      "candidate": "art/out/advisor-wake-admiral/20261022-131701-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-wake-admiral-128.webp",
+          "bytes": 4906
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-wake-admiral-384.webp",
+          "bytes": 27600
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-wake-admiral-768.webp",
+          "bytes": 74712
         }
       ],
       "aiGenerated": true

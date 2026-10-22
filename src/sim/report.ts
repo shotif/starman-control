@@ -7,7 +7,7 @@ import type { EdictId } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
 import type { FactionId } from '../content/factions.ts';
 import type { BuildItem, ProjectId } from '../content/projects.ts';
-import type { ShipType } from '../content/ships.ts';
+import type { HullId, ShipType } from '../content/ships.ts';
 import type { TechId } from '../content/techs.ts';
 import type { TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
@@ -139,7 +139,12 @@ export type ReportEvent =
   /** An event put away: what it was about has gone. */
   | ({ kind: 'event-gone'; event: EventId } & EventSubjectFields)
   /** A survey ship's crew went over to another power, ship and all. */
-  | { kind: 'defected'; ship: string; to: FactionId; system: SystemId };
+  | { kind: 'defected'; ship: string; to: FactionId; system: SystemId }
+  /** The yard made a new design from the best the power knows (M4_FLEETS.md §21.3); its old one is retired. */
+  | { kind: 'design-new'; design: number; hull: HullId; name: string; old: string | null }
+  /** A warship refitted to another design (§21.4), or a refit dropped because the ship had left. */
+  | { kind: 'refitted'; holding: number; ship: number; design: number }
+  | { kind: 'refit-dropped'; holding: number; ship: number; reason: string };
 
 /** What an event is about, as a report line keeps it. */
 export interface EventSubjectFields {
