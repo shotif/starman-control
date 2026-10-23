@@ -319,3 +319,8 @@ button.link:focus-visible {
   opacity: 0.5;
   cursor: wait;
 }
+
+/* A dialog takes focus as it opens (M6_ONE.md §21.2); the dialog itself needs no ring, its controls do. */
+[role="dialog"]:focus {
+  outline: none;
+}

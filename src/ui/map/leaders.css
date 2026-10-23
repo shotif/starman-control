@@ -87,3 +87,13 @@
   max-height: calc(100% - 60px);
   overflow-y: auto;
 }
+
+/* The systems list (M6_ONE.md §21.2), in the same place as the Leaders screen. */
+.systems-list ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.systems-list li {
+  margin: 0.25rem 0;
+}

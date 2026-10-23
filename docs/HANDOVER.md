@@ -272,7 +272,9 @@ end, the long game's targets for 1.0, polish on phones, and the proof, in increm
 D-80 to D-86 are **assumed as recommended** ([DECISIONS.md Round 9](DECISIONS.md#round-9-10-assumed-23-october-2026));
 D-85 keeps one map for 1.0. **Done: increment 61, lessons when they matter** (M6 §20): sixteen
 lessons from the advisors, each told once on the device the first time its system matters, kept in
-the codex's *How to play*.
+the codex's *How to play*. **Done: increment 62, accessibility** (§21): an accessibility checker on
+every main screen in CI, Enter that presses a focused button, dialogs that take focus and give it
+back, a list of every system (**K**), and the largest text on a phone without sideways scrolling.
 
 The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).
@@ -440,6 +442,9 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
+- `npm audit` (23 October 2026) reports three advisories in Vite's development server (8.3.1, fixed in
+  8.3.5): they touch `npm run dev` only, never the built game. Raise Vite's pin once 8.3.5 is two
+  weeks old.
 - The owner's choice of music by ear (every candidate was sent, lettered), of increments 20's and
   21's buildings and of increment 22's faces (the sheets were sent).
 - The owner may overrule the report pictures chosen in increment 13 (DECISIONS.md, 19 October),

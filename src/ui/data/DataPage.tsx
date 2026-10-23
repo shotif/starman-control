@@ -22,6 +22,7 @@ import { SystemPanel } from '../system/SystemPanel.tsx';
 import { filterRows, type SortKey, type SystemRow, sortRows, systemRows } from './model.ts';
 import '../sheet.css';
 import './data.css';
+import { DialogFocus } from '../focus.tsx';
 
 interface Props {
   world: World;
@@ -173,6 +174,7 @@ export function DataPage({ world, game, buildId }: Props) {
 
       {!desktop && current && (
         <div class={`sheet${sheetFull.value ? ' sheet-full' : ''}`} role="dialog" aria-label={current.name}>
+          <DialogFocus />
           <div class="sheet-bar">
             <button
               type="button"
@@ -194,7 +196,8 @@ export function DataPage({ world, game, buildId }: Props) {
               Close
             </button>
           </div>
-          <div class="sheet-body">
+          {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling body must be reachable by keyboard (WCAG 2.1.1, M6_ONE.md §21.2) */}
+          <div class="sheet-body" tabIndex={0}>
             <SystemPanel world={world} game={game} id={current.id} onGo={go} realOnly />
           </div>
         </div>

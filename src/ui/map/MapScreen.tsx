@@ -44,6 +44,7 @@ import { type Fleet, type GameState, hasSurveyed, powerOf, type ShipState } from
 import { outcomeFor } from '../../sim/victory.ts';
 import { atWar } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
+import { DialogFocus, focusedByKeyboard } from '../focus.tsx';
 import { Icon } from '../icons.tsx';
 import { layout, sideSheets } from '../layout.ts';
 import { Badge, FactionMark } from '../parts.tsx';
@@ -95,6 +96,7 @@ import {
   toast,
   watching,
 } from './state.ts';
+import { SystemsList } from './systems.tsx';
 import '../sheet.css';
 import './map.css';
 import '../console.css';
@@ -135,6 +137,7 @@ export const PLAY_SHORTCUTS: readonly [string, string][] = [
   ['G', 'The Assembly: its members, votes and elections'],
   ['J', 'Relics: the sites of the Absent, their chapters and the journal'],
   ['L', 'Leaders: ours, where they serve, and the people offered'],
+  ['K', 'Systems: every system as a list, nearest our capital first'],
 ];
 
 function shipMarks(game: GameState, viewer?: FactionId): ShipMark[] {
@@ -835,6 +838,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      // Enter presses a control reached by keyboard (M6_ONE.md §21.2); anywhere else it ends the turn.
+      if (
+        e.key === 'Enter' &&
+        e.target instanceof HTMLElement &&
+        focusedByKeyboard(e.target) &&
+        e.target.closest('button, a[href], [role="button"], summary')
+      )
+        return;
       const { play: p } = latest.current;
       const step = 60;
       const k = e.key;
@@ -881,6 +892,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       else if (k === 'g' && p && game.powers.length > 1) panel.value = panel.value === 'assembly' ? null : 'assembly';
       else if (k === 'j' && p) panel.value = panel.value === 'relics' ? null : 'relics';
       else if (k === 'l' && p) panel.value = panel.value === 'leaders' ? null : 'leaders';
+      else if (k === 'k' && p) panel.value = panel.value === 'systems' ? null : 'systems';
       else if (k === 'm' && p && selectedFleet.value !== null)
         targeting.value = { fleet: selectedFleet.value, blind: false, to: null };
       else if (k === 'm' && p && selectedShip.value !== null)
@@ -1050,6 +1062,17 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   const arksView = play && game.arks && <ArksView world={world} game={game} faction={play.faction} play={play} />;
   // Leaders (M5_UNKNOWN.md §24.6).
   const leaders = play && <LeadersView world={world} game={game} faction={play.faction} play={play} />;
+  const systemsList = play && (
+    <SystemsList
+      world={world}
+      game={game}
+      faction={play.faction}
+      onGo={(id) => {
+        panel.value = null;
+        go(id);
+      }}
+    />
+  );
   // The end of the game (M4_FLEETS.md §30.3): play on, unless our power has left the game.
   const outcome = play ? outcomeFor(game, play.faction) : null;
   const end = play && outcome && (
@@ -1199,6 +1222,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && play && panel.value === 'report' && (
           <div class="popover report-popover" role="dialog" aria-label="Report" data-keep-clear>
+            <DialogFocus />
             {report}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1207,6 +1231,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && play && panel.value === 'event' && waiting && (
           <div class="popover event-popover" role="dialog" aria-label={EVENTS[waiting.id].name} data-keep-clear>
+            <DialogFocus />
             {eventView}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1215,6 +1240,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && play && panel.value === 'empire' && (
           <div class="popover empire-popover" role="dialog" aria-label="Empire" data-keep-clear>
+            <DialogFocus />
             {empire}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1223,6 +1249,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && play && panel.value === 'designs' && (
           <div class="popover designs-popover" role="dialog" aria-label="Designs" data-keep-clear>
+            <DialogFocus />
             {designs}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1231,11 +1258,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && end && panel.value === 'end' && (
           <div class="popover end-popover" role="dialog" aria-label="The end of the game" data-keep-clear>
+            <DialogFocus />
             {end}
           </div>
         )}
         {desktop && relics && panel.value === 'relics' && (
           <div class="popover relics-popover" role="dialog" aria-label="Relics" data-keep-clear>
+            <DialogFocus />
             {relics}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1244,6 +1273,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && arksView && panel.value === 'arks' && (
           <div class="popover event-popover" role="dialog" aria-label="The arks" data-keep-clear>
+            <DialogFocus />
             {arksView}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1252,7 +1282,17 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && leaders && panel.value === 'leaders' && (
           <div class="popover leaders-popover" role="dialog" aria-label="Leaders" data-keep-clear>
+            <DialogFocus />
             {leaders}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
+        {desktop && systemsList && panel.value === 'systems' && (
+          <div class="popover leaders-popover systems-popover" role="dialog" aria-label="Systems" data-keep-clear>
+            <DialogFocus />
+            {systemsList}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
             </button>
@@ -1260,6 +1300,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && assembly && panel.value === 'assembly' && (
           <div class="popover assembly-popover" role="dialog" aria-label="The Assembly" data-keep-clear>
+            <DialogFocus />
             {assembly}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1268,6 +1309,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         )}
         {desktop && diplomacy && panel.value === 'diplomacy' && (
           <div class="popover diplomacy-popover" role="dialog" aria-label="Diplomacy" data-keep-clear>
+            <DialogFocus />
             {diplomacy}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
@@ -1463,6 +1505,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
 
       {desktop && play && panel.value === 'research' && (
         <div class="research-overlay" role="dialog" aria-label="Research">
+          <DialogFocus />
           <button
             type="button"
             class="button button-quiet button-small research-close"
@@ -1475,6 +1518,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       )}
       {desktop && play && panel.value === 'menu' && (
         <div class="popover menu-popover" role="dialog" aria-label="Menu">
+          <DialogFocus />
           <nav class="menu-list">
             <button type="button" class="button" onClick={() => void play.leave()}>
               Save and leave
@@ -1505,6 +1549,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             >
               Leaders
             </button>
+            <button
+              type="button"
+              class="button button-quiet"
+              data-guide="menu-systems"
+              onClick={() => (panel.value = 'systems')}
+            >
+              Systems
+            </button>
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
               Legend
             </button>
@@ -1525,11 +1577,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       )}
       {desktop && panel.value === 'legend' && (
         <div class="popover legend-popover" role="dialog" aria-label="Legend">
+          <DialogFocus />
           <Legend />
         </div>
       )}
       {panel.value === 'keys' && (
         <div class="popover keys-popover" role="dialog" aria-label="Keyboard shortcuts">
+          <DialogFocus />
           <h2>Keys</h2>
           <dl class="keys">
             {keys.map(([key, what]) => (
@@ -1664,6 +1718,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           if (assembly && panel.value === 'assembly') return sheet('The Assembly', assembly, close, 'assembly');
           if (relics && panel.value === 'relics') return sheet('Relics', relics, close, 'relics');
           if (leaders && panel.value === 'leaders') return sheet('Leaders', leaders, close, 'leaders');
+          if (systemsList && panel.value === 'systems') return sheet('Systems', systemsList, close, 'systems');
           if (arksView && panel.value === 'arks') return sheet('The arks', arksView, close, 'arks');
           if (end && panel.value === 'end') return sheet('The end of the game', end, close, 'end');
           if (play && panel.value === 'designs') return sheet('Designs', designs, close, 'designs');
@@ -1719,6 +1774,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   onClick={() => (panel.value = 'leaders')}
                 >
                   Leaders
+                </button>
+                <button
+                  type="button"
+                  class="button button-quiet"
+                  data-guide="menu-systems"
+                  onClick={() => (panel.value = 'systems')}
+                >
+                  Systems
                 </button>
                 {outcome && (
                   <button type="button" class="button button-quiet" onClick={() => (panel.value = 'end')}>

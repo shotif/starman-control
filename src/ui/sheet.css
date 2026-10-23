@@ -88,3 +88,8 @@
   min-height: 48px;
   touch-action: auto;
 }
+
+/* A sheet's body takes keyboard focus so it can be scrolled by keys (M6_ONE.md §21.2); a ring only for the keyboard. */
+.sheet-body:focus:not(:focus-visible) {
+  outline: none;
+}

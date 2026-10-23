@@ -31,6 +31,8 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 15. [Art, music and their cost](#15-art-music-and-their-cost)
 16. [Decisions](#16-decisions)
 20. [Increment 61 in detail: lessons when they matter](#20-increment-61-in-detail-lessons-when-they-matter-written-before-building-it)
+21. [Increment 62 in detail: accessibility](#21-increment-62-in-detail-accessibility-written-before-building-it)
+22. [Increment 63 in detail: the keys within reach](#22-increment-63-in-detail-the-keys-within-reach-written-before-building-it)
 
 ## 1. Where M6 starts
 
@@ -411,3 +413,114 @@ desktop): first contact brings the Envoy's lesson with the Diplomacy chip lit (o
 **Reversing it:** the lessons are off for a player who sets the guide *off*; to remove them, drop the
 `LessonCard` branch from `GuideCard` (`src/ui/map/guide.tsx`) and `HowToPlay` from the codex
 (`src/ui/data/DataPage.tsx`). Nothing in a game's state or its saves depends on them.
+
+## 21. Increment 62 in detail: accessibility (written before building it)
+
+**Goals.** §9 (D-84): WCAG 2.2 AA where it applies, checked in CI, and a text alternative to the map.
+**Out of scope:** the 3D scenes themselves (the map, a system, a colony, a battle's replay), which
+are pictures with their words beside them; spoken audio, which the game has none of.
+
+### 21.1 What a first check found
+
+The checker (axe-core, through `@axe-core/playwright`, a development dependency only) on the title,
+the new game, the map, the empire, research, the codex, the settings and the saves, on the phone and
+the desktop: **no failure of any severity.** What it cannot decide is colour contrast over the
+translucent panels; checked by hand from the colours in `style.css` and every power's colour, all
+text is at least 5:1 on a panel over the dark map (AA asks 4.5:1).
+
+Read in the code, three things a checker does not see:
+
+- **Enter always ends the turn** on the map, even when a keyboard user has moved to a button with
+  Tab: the button can never be pressed with Enter, and the turn ends instead.
+- **Dialogs do not take focus** when they open, nor give it back when they close: a screen reader
+  stays where it was, and Tab walks the page behind.
+- **The map has no list:** a system is found by name (the search) or by sight.
+
+### 21.2 What is built
+
+- **The checker in the journeys** (`a11y.spec.ts`, phone, tablet and desktop) on every main screen
+  and dialog: the title, the new game, the map, the empire, research, diplomacy, the report, a
+  colony, relics, leaders, the systems list, the codex, the settings and the saves. Any serious or
+  critical finding fails CI.
+- **Enter presses a button reached by keyboard:** on a control with keyboard focus (the browser's
+  `:focus-visible`), Enter does what the control does; anywhere else it still ends the turn, so a
+  player who clicked a button and then pressed Enter loses nothing.
+- **Dialogs take focus and give it back:** every sheet and popover moves focus into itself as it
+  opens (unless something inside, such as the search, took it first) and back to where it was as it
+  closes.
+- **The systems list** (*Systems*, **K**, and in the menu): every system, nearest our capital first,
+  with its distance, whose holdings are there and ours, whether we have surveyed it, and a relic site
+  we know; choosing one selects it as the map does. The first 40, then *Show all*.
+- **The largest text on a phone:** a journey at the largest text size (150%) opens the map, the
+  empire, research, the codex and the settings and checks nothing scrolls sideways.
+
+### 21.3 Tests
+
+`a11y.spec.ts` (the checker; Enter on a focused button; focus into a dialog and back; the systems
+list) and the largest text, on the phone, tablet and desktop.
+
+
+### As built (23 October 2026)
+
+- **The checker in the journeys** (`a11y.spec.ts`): the title, the new game, the map, the empire,
+  research, diplomacy, relics, leaders, the systems list, the report, the codex, the settings and the
+  saves, on the phone, tablet and desktop; a serious or critical finding fails CI. It found one thing
+  on the phone: **a sheet's scrolling body could not be reached by keyboard** (Relics and Leaders are
+  long enough to scroll). Every sheet's body now takes focus, with its ring shown only for the
+  keyboard.
+- **Contrast by hand** for what the checker could not decide over the translucent panels: every text
+  colour, and every power's colour, is at least 5:1 on a panel over the dark map; the dimmest grey
+  would fall to 3.5:1 only over a white backdrop, which the map never shows behind a panel.
+- **Enter as §21.2:** on a button or link reached by keyboard it presses it; anywhere else, a
+  control clicked included, it ends the turn as before. The browser's `:focus-visible` could not tell
+  the two apart (any key pressed on a control makes it match), so the game notes how focus came to
+  each control: after a press of the mouse or a finger, or without one (`focusedByKeyboard`).
+- **Focus given back** only to a control reached by keyboard: a dialog opened by a click or a
+  shortcut leaves focus on the page when it closes, so Enter still ends the turn. (Built first to give
+  focus back always, two journeys showed Enter then pressing *Move* again instead of ending the
+  turn.)
+- **Dialogs take focus and give it back** (`DialogFocus`, `src/ui/focus.tsx`), in all twenty: the
+  sheets, the popovers, *What needs you*, the destination bar and the codex's sheet.
+- **The systems list** (`src/ui/map/systems.tsx`): *Systems* in the menu and **K**; 40 at first,
+  then all 356.
+- **The largest text on a phone** (150%): the settings, the codex, the new game, the map, the empire
+  and research scroll nothing sideways.
+- **A development dependency:** `@axe-core/playwright` 4.13.0 (August 2026), for the journeys only;
+  nothing of it reaches the game.
+
+**Reversing it:** the checker's journey is `tests/e2e/a11y.spec.ts`; `DialogFocus` is one line in each
+dialog; the Enter rule is one condition in the map's keys (`MapScreen.tsx`); the list is its own
+panel. None touches a game's state.
+
+## 22. Increment 63 in detail: the keys within reach (written before building it)
+
+**Goals.** §6 (D-82, A): the smallest changes that let a rival reach the Answer in some long games,
+each measured in the eight headless games and kept only if it does that without spoiling the rest.
+**Out of scope:** guardians (increment 64); new victory conditions.
+
+### 22.1 What the rivals do now (M5_UNKNOWN.md §21, as built)
+
+A rival that digs digs the key sites first once it knows where the keys lie (*The second tone*).
+Holding **three** keys (`RULES.keys.hunt`), it adds *the keys* to its reasons for war, strikes key
+holdings first, and researches the way to the Answer; the Wake, an outlaw, goes to war for any key
+it can reach and match. In the games no rival ever holds three, so the hunt never begins.
+
+### 22.2 The steps, in order, each measured
+
+1. **The hunt from two keys** (`RULES.keys.hunt` 3 → 2): the hunter goes to war for the rest and
+   learns *The second tone* and *The instrument*.
+2. **The hunter's reach:** at war for keys, it lays its road toward the nearest key it lacks, as a
+   digging power does toward a site (`roads.ts`), so a key across the map is not out of reach.
+3. **Keys in exchanges** (only if 1 and 2 are not enough): a key may be given in a dealing, moving to
+   the receiver's capital. This changes D-71 (*keys are not traded*), so it is built only if the
+   measurements need it.
+4. **Three keys for the Answer** (only if all else fails, as D-82 says).
+
+**What counts as working:** at least one of the eight games won by the keys, and no game ended by
+the keys before turn 150 (the race should be long); the other targets of §8 no worse.
+
+### 22.3 Tests
+
+Unit tests for each kept change (the hunt from two keys; the road to a key); the headless games in
+M2_BALANCE.md, which gain a column: who held the keys at the end.
+

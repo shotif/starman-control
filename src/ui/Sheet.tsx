@@ -4,6 +4,7 @@
 
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { DialogFocus } from './focus.tsx';
 
 export type SheetSize = 'peek' | 'full';
 
@@ -87,13 +88,17 @@ export function Sheet({ label, onClose, onHeight, topInset = 56, bottomInset = 0
         aria-label={label}
         data-covers-map
       >
+        <DialogFocus />
         <div class="sheet-bar">
           <span class="sheet-title">{label}</span>
           <button type="button" class="sheet-close" onClick={onClose}>
             Close
           </button>
         </div>
-        <div class="sheet-body">{children}</div>
+        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling body must be reachable by keyboard (WCAG 2.1.1, M6_ONE.md §21.2) */}
+        <div class="sheet-body" tabIndex={0}>
+          {children}
+        </div>
       </section>
     );
   }
@@ -105,6 +110,7 @@ export function Sheet({ label, onClose, onHeight, topInset = 56, bottomInset = 0
       role="dialog"
       aria-label={label}
     >
+      <DialogFocus />
       <div class="sheet-bar" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
         <button
           type="button"
@@ -120,7 +126,10 @@ export function Sheet({ label, onClose, onHeight, topInset = 56, bottomInset = 0
           Close
         </button>
       </div>
-      <div class="sheet-body">{children}</div>
+      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling body must be reachable by keyboard (WCAG 2.1.1, M6_ONE.md §21.2) */}
+      <div class="sheet-body" tabIndex={0}>
+        {children}
+      </div>
     </section>
   );
 }

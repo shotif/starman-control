@@ -34,6 +34,7 @@ import type { ReportEvent } from '../../sim/report.ts';
 import { type Fleet, type GameState, playerPower, type ShipState } from '../../sim/state.ts';
 import { amountWords, offerWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
+import { DialogFocus } from '../focus.tsx';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
 import { arksText } from './arks.tsx';
@@ -1137,6 +1138,7 @@ export function NeedsStack({
   const need = needs[at];
   return (
     <div class="needs-stack" role="dialog" aria-label="What needs you">
+      <DialogFocus />
       <div class="needs-card">
         {need ? (
           <>
@@ -1242,6 +1244,7 @@ export function TargetBar({ world, game, play }: { world: World; game: GameState
   };
   return (
     <div class="target-bar" role="dialog" aria-label="Choose a destination" data-covers-map>
+      <DialogFocus />
       <p>
         {plan
           ? plan.text
@@ -1290,6 +1293,7 @@ function FleetTargetBar({
   };
   return (
     <div class="target-bar" role="dialog" aria-label="Choose a destination" data-covers-map>
+      <DialogFocus />
       <p>{plan ? plan.text : `Choose where the ${fleet.name} goes.`}</p>
       <div class="target-actions">
         {plan?.ok && (
