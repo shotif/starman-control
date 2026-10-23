@@ -257,6 +257,16 @@ function WebCard({ faction, world, game }: { faction: (typeof FACTION_IDS)[numbe
       )}
       {f.playable ? (
         <ul class="web-advisors" aria-label={`The ${f.name}’s advisors`}>
+          {/* An alien power one may lead keeps its speaker beside its advisors (M6_ONE.md §24). */}
+          {f.speaker && (
+            <li key={f.speaker.portrait}>
+              <AdvisorFace advisor={f.speaker} size={40} />
+              <span>
+                <b>{f.speaker.name}</b>
+                <span class="dim">{f.speaker.role}</span>
+              </span>
+            </li>
+          )}
           {DEPARTMENTS.map((d) => {
             const a = ADVISORS[faction].people[d];
             return (

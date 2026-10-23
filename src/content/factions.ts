@@ -303,7 +303,8 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
   // The first alien power (M3_NEIGHBOURS.md §24), fiction: the Duskfolk of GJ 433 d, in the shell.
   'dusk-concord': {
     id: 'dusk-concord',
-    playable: false,
+    // Playable from M6 (M6_ONE.md §24, D-81): the first power a player may lead that is not human.
+    playable: true,
     name: 'Dusk Concord',
     shortName: 'Dusk Concord',
     description: 'The Duskfolk of GJ 433 d, who live in the ring of dusk on a world locked to its red sun.',

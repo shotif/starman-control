@@ -34,6 +34,7 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 21. [Increment 62 in detail: accessibility](#21-increment-62-in-detail-accessibility-written-before-building-it)
 22. [Increment 63 in detail: the keys within reach](#22-increment-63-in-detail-the-keys-within-reach-written-before-building-it)
 23. [Increment 64: guardians, deferred again](#23-increment-64-guardians-deferred-again)
+24. [Increment 65 in detail: playing the Concord](#24-increment-65-in-detail-playing-the-concord-written-before-building-it)
 
 ## 1. Where M6 starts
 
@@ -579,3 +580,75 @@ winners. And they need every battle, its replay and its report to learn a side t
 large change M5 deferred them for. So M6 goes on without them; nothing is built, so nothing is to undo.
 When the keys are placed or fought for differently (the owner's call), guardians come back with them.
 
+## 24. Increment 65 in detail: playing the Concord (written before building it)
+
+**Goals.** §5 (D-81, A): the Dusk Concord offered on the new game beside the three human powers, the
+first power a player may lead that is not human, seen as fully as they are. **Out of scope:** the
+Moot and the Continuance (after 1.0); any change to the Concord's rules, which it already plays by as
+a rival.
+
+### 24.1 What the player gets
+
+- **The new game's fourth card:** *Lead the Dusk Concord*, with a picture of the Duskfolk at home in
+  the ring of dusk of GJ 433 d (the star is real; the world, its people and everything they built are
+  fiction, and the card says so) and their speaker, Still Water, whose face the codex already has.
+  The rivals are then the three human powers, the Moot and the Continuance.
+- **Its colonies in pictures,** as the human powers' are: homes in three sizes, open and domed, three
+  versions of each; the hall at the capital; districts (works, labs, market); every project; the
+  rig of an outpost; the shuttle; five small props. In the Duskfolk's architecture, written in M3:
+  long low halls half sunk into the ground, turf and dark slate, fitted dark stone, woven screens,
+  slit windows glowing amber.
+- **Its advisors' faces:** the seven still missing (the envoy, First Voice, has one).
+- **Its colonies' music:** one piece for the colony view, by D-31's way.
+- **The guided opening and the lessons** in its formal voice, with its advisors' names, as they are
+  already written.
+
+### 24.2 Pictures and their cost (D-27)
+
+45 buildings, 5 props, 7 faces and the new game's scene: **58 pictures, 116 candidates, about $5.80**,
+sent as lettered sheets for the owner to overrule. The music: three candidates, about $0.25. With
+increment 59's spend, about **$39.25** of the owner's $50.
+
+### 24.3 State and saves
+
+No change: a game's powers already say who is the player. A save from before plays on as it was.
+
+### 24.4 Tests
+
+- **Unit:** the Concord among the playable powers; its every building and prop has a picture (the
+  colony scene's test now runs for four architectures); a game led by the Concord for 100 turns, the
+  game sound, its colonies on the ring of dusk.
+- **Journey** (phone, tablet and desktop): the new game offers four powers; *Lead the Dusk Concord*
+  starts a game at GJ 433; its capital's still and colony view show Duskfolk buildings; the guide's
+  first line is its colonies advisor's. The journeys that count the powers on the new game (three
+  cards, *the other two*) count four.
+
+
+### As built (23 October 2026)
+
+- **The Concord to lead** (`playable: true`): the new game's fourth card, *Lead the Dusk Concord*,
+  with the new scene of GJ 433 d and its speaker Still Water's face (the portrait the codex already
+  had, so no leader's picture was made). The new game lays the cards two by two on a narrower
+  desktop and four across from 1,360 pixels; a phone swipes them as before. The title says *Lead
+  one of four powers*, and its sky now marks four capitals.
+- **Its colonies in pictures** as §24.1: 45 buildings and 5 props in the Duskfolk's architecture,
+  each as wide in the world as the Authority's of its kind (`colonyArt.ts`).
+- **Its advisors' faces:** the seven missing; the codex's card shows them with its speaker.
+- **Its colonies' music:** *colony-dusk*, chosen from three candidates by what can be measured
+  without ears (A begins and ends softest, as the brief asks, with the widest range); the three were
+  sent lettered for the owner to choose by ear.
+- **Found on the way:** the aliens' ships had no names (each was *Ship*, *Ship II* …), so the four
+  alien makers now have names of their own, translated as their advisors' are (fiction). The title's
+  line of progress still said *M4, Fleets*; it says *M6, towards 1.0*.
+- **Pictures (§24.2):** 116 candidates, about **$5.80**, none refused; chosen as the lettered sheets
+  sent to the owner show (seven chosen B for a stray smear or a cropped edge on A, and a few more on
+  looks). The music: three candidates, about **$0.25**. In all about **$39.25** of the $50 (D-27).
+- **Tests:** the colony scene's tests now cover four architectures; the scripted 50-turn player
+  runs as the Concord too (it settles by colonies, so the test checks a colony of it can lay a lane
+  rather than that the simple script lays one); `concord.spec.ts` (phone, tablet and desktop): the
+  card, the game at GJ 433, the guide in Warm Stone's words and the capital drawn in its halls. The
+  journeys that counted three powers count four.
+
+**Reversing it:** set `playable: false` on the Concord in `src/content/factions.ts`; its pictures,
+music and ship names can stay (they are used only when it is seen), and the new game falls back to
+three cards.

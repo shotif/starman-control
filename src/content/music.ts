@@ -12,7 +12,8 @@ export type MusicPiece =
   | 'system'
   | 'colony-authority'
   | 'colony-cooperative'
-  | 'colony-wake';
+  | 'colony-wake'
+  | 'colony-dusk';
 
 /** Where the player is, as far as the music cares. */
 export type MusicMood = 'title' | 'map' | 'system' | `colony-${ArchitectureId}`;
@@ -25,6 +26,7 @@ export const MUSIC_PIECES: readonly MusicPiece[] = [
   'colony-authority',
   'colony-cooperative',
   'colony-wake',
+  'colony-dusk',
 ];
 
 /** The pieces each mood plays, in turn. */
@@ -35,8 +37,9 @@ export const MOOD_PIECES: Record<MusicMood, readonly MusicPiece[]> = {
   'colony-authority': ['colony-authority'],
   'colony-cooperative': ['colony-cooperative'],
   'colony-wake': ['colony-wake'],
-  // None until the Duskfolk can be played and their colonies seen (M3_NEIGHBOURS.md §24.9).
-  'colony-dusk': [],
+  // The Concord, played from M6 (M6_ONE.md §24).
+  'colony-dusk': ['colony-dusk'],
+  // None until these peoples can be played and their colonies seen (M3_NEIGHBOURS.md §25, M5_UNKNOWN.md §27).
   'colony-drift': [],
   'colony-forge': [],
   'colony-hearth': [],
@@ -71,6 +74,7 @@ export const PUBLISHED_PIECES: readonly MusicPiece[] = [
   'colony-authority',
   'colony-cooperative',
   'colony-wake',
+  'colony-dusk',
 ];
 
 /** The mood for where the player is: a screen of the map (the map, a system, a colony) or any other screen. */

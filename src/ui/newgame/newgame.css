@@ -495,7 +495,8 @@
   }
   .power-cards {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* Four powers to lead (M6_ONE.md §24): two by two, four across when there is room. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
     margin: 1.5rem 0 0.5rem;
     padding: 0;
@@ -511,5 +512,11 @@
   }
   .power-dots {
     display: none;
+  }
+}
+
+@media (min-width: 1360px) {
+  .power-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

@@ -108,8 +108,8 @@ describe('their home web, of their own lanes (§24.4)', () => {
 });
 
 describe('the Concord in the game (§24.5 to §24.8)', () => {
-  it('a new game offers the three human powers; the Concord plays as a rival', () => {
-    expect(PLAYABLE_IDS).toEqual(['sta', 'frontier', 'hollow-wake']);
+  it('a new game offers the three human powers and the Concord (M6_ONE.md §24); as a rival it starts at GJ 433', () => {
+    expect(PLAYABLE_IDS).toEqual(['sta', 'frontier', 'hollow-wake', 'dusk-concord']);
     const g = every();
     expect(g.powers.map((p) => p.faction)).toContain('dusk-concord');
     expect(g.holdings.find((h) => h.owner === 'dusk-concord')).toMatchObject({

@@ -12,11 +12,9 @@ interface GameHook {
 
 test('a new game has the Continuance as a rival, and the codex knows them', async ({ page }) => {
   await page.goto('./#/new');
-  await expect(page.locator('.power-card')).toHaveCount(3);
+  await expect(page.locator('.power-card')).toHaveCount(4);
   await expect(page.getByRole('button', { name: 'Lead the Continuance' })).toHaveCount(0);
-  await expect(
-    page.getByText(/the Dusk Concord, the Drift Moot and the Continuance, alien powers far out in the shell/),
-  ).toBeVisible();
+  await expect(page.getByText(/the Drift Moot and the Continuance, alien powers far out in the shell/)).toBeVisible();
   // The codex shows their home web, their speaker and their people, as fiction.
   await page.goto('./#/codex');
   const card = page.locator('.web-card').filter({ hasText: 'Continuance' });

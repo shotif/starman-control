@@ -278,9 +278,11 @@ back, a list of every system (**K**), and the largest text on a phone without si
 reach** (§22), measured: no small change lets a rival win by the keys (missed, recorded; the keys
 stay the player's road); kept: a rival that digs settles its site first, from turn 20, which gives
 the long games five different winners. **Increment 64, guardians: deferred again to after 1.0**
-(§23), since no rival can gather the keys they would guard.
+(§23), since no rival can gather the keys they would guard. **Done: increment 65, playing the
+Concord** (§24): the Dusk Concord is the fourth power to lead, the first not human, with its colonies
+in 50 pictures, its advisors' faces, its scene and its colonies' music.
 
-The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
+The art and music spend: about $39.25 of $50 (raised on 22 October 2026; about $10.75 left). M3's
 art is about 65 pictures (about $6.50).
 
 ### Trying M5 (for the owner)
@@ -446,6 +448,8 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 ## 5. Also open
 
 - The owner's try of M1 on a real phone.
+- The owner's choice by ear of the Concord's colony music (three candidates sent, lettered; A in
+  the game, chosen by measure), and of its pictures (the lettered sheets).
 - `npm audit` (23 October 2026) reports three advisories in Vite's development server (8.3.1, fixed in
   8.3.5): they touch `npm run dev` only, never the built game. Raise Vite's pin once 8.3.5 is two
   weeks old.

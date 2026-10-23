@@ -41,6 +41,26 @@
       }
     },
     {
+      "id": "colony-dusk",
+      "path": "music/colony-dusk.mp3",
+      "bytes": 2167267,
+      "seconds": 154.8,
+      "provider": "gemini",
+      "model": "lyria-3.5",
+      "prompt": "An original instrumental piece of music for a calm, thoughtful science-fiction strategy game set among the real nearby stars. About two and a half minutes long. Cinematic but restrained, spacious and warm, mixed to sit quietly under a game: no sudden loud hits, no build-ups to a big drop. It begins softly and ends by fading gently to silence. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nPatient, ancient and communal music for a settlement of an invented people who live in the endless dusk of a world that never turns. Very slow, about 56 BPM, in E Dorian. A low bowed drone like a deep string held for a long time, soft resonant frame drums struck slowly and far apart, a wooden flute with a breathy tone playing a long, unhurried melody, plucked strings answering it now and then, warm and a little mysterious; it never hurries, and the dusk never ends.",
+      "createdAt": "2026-10-23T04:00:25.058Z",
+      "approvedAt": "2026-10-23T04:01:57.432Z",
+      "aiGenerated": true,
+      "watermark": "SynthID",
+      "candidate": "20261023-035955-lyria-3.5-1.mp3",
+      "encoding": {
+        "codec": "mp3",
+        "bitrate": "112k",
+        "loudness": "-18 LUFS",
+        "gainDb": -6.3
+      }
+    },
+    {
       "id": "colony-wake",
       "path": "music/colony-wake.mp3",
       "bytes": 2056821,

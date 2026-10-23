@@ -131,6 +131,38 @@ export const SHIP_NAMES: Record<string, readonly string[]> = {
   'Horizon Dynamics': ['Aperture', 'Prism', 'Lumen', 'Azimuth', 'Focal', 'Refractor', 'Ocular', 'Collimator'],
   'Eridani Shipwrights': ['Estuary', 'Confluence', 'Rill', 'Meander', 'Shoal', 'Weir', 'Backwater', 'Millrace'],
   'Wake Salvage': ['Hyena', 'Ember', 'Kite', 'Clinker', 'Marten', 'Soot', 'Shrike', 'Ashfall'],
+  // The aliens' makers (M6_ONE.md §24), their names translated as their advisors' are; all fiction.
+  'the Long Hands': [
+    'Low Ember',
+    'Long Shadow',
+    'Still Ridge',
+    'Red Horizon',
+    'Slow Tide',
+    'Warm Slate',
+    'Far Dusk',
+    'Quiet Turf',
+  ],
+  'the Slow Hands': [
+    'Warm Updraft',
+    'High Current',
+    'Pale Squall',
+    'Long Drift',
+    'Soft Gale',
+    'Deep Band',
+    'Bright Haze',
+    'Slow Eddy',
+  ],
+  'the Forge': ['Bearing', 'Gauge', 'Caliper', 'Tolerance', 'Increment', 'Vernier', 'Datum', 'Spindle'],
+  'the ark-wrights': [
+    'Kept Fire',
+    'Banked Coals',
+    'Far Hearth',
+    'Last Ember',
+    'Long Crossing',
+    'Old Ark',
+    'Warm Return',
+    'Ashen Hope',
+  ],
 };
 
 const ROMAN = ['', ' II', ' III', ' IV', ' V', ' VI', ' VII', ' VIII', ' IX', ' X'];

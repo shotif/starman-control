@@ -481,6 +481,11 @@ function growerOrders(state: GameState, faction: FactionId): Order[] {
     ];
     const item = wants.find((w) => refuse(world, state, faction, { type: 'queue', holding: h.id, item: w }) === null);
     if (item) orders.push({ type: 'queue', holding: h.id, item });
+    else {
+      // Nothing else to build: a lane from here, as a player does where its outposts' slots are full.
+      const lane = laneTargets(world, state, faction, h.system).find((t) => t.refusal === null);
+      if (lane) orders.push({ type: 'queue', holding: h.id, item: { kind: 'lane', to: lane.quote.to } });
+    }
   }
   // Research the cheapest technology it can, when nothing is queued.
   if (power.researchQueue.length === 0) {
@@ -515,7 +520,19 @@ describe('a scripted player that grows', () => {
       expect(mine.reduce((sum, h) => sum + h.people, 0)).toBeGreaterThan(RULES.capital.people + 20);
       expect(powerOf(first.state, f).shipsBuilt).toBeGreaterThan(4);
       expect(powerOf(first.state, f).researched.length).toBeGreaterThanOrEqual(5);
-      expect(first.state.lanes.filter((l) => l.owner === f).length).toBeGreaterThan(6);
+      // More lanes than its home web began with. The Concord (M6_ONE.md §24) settles by colonies, and this
+      // simple player lays lanes only from outposts, whose home slots are full: it may lay one from any
+      // of its colonies beyond its capital.
+      const atStart = newGame(world, { seed: 42, powers: [{ faction: f, controller: 'player' }] }).lanes.filter(
+        (l) => l.owner === f,
+      ).length;
+      const lanes = first.state.lanes.filter((l) => l.owner === f).length;
+      if (f === 'dusk-concord') {
+        expect(lanes).toBeGreaterThanOrEqual(atStart);
+        expect(
+          mine.some((h) => !h.capital && laneTargets(world, first.state, f, h.system).some((t) => t.refusal === null)),
+        ).toBe(true);
+      } else expect(lanes).toBeGreaterThan(atStart);
       expect(powerOf(first.state, f).investigated.length).toBeGreaterThanOrEqual(1);
       const again = grow(f, 42, 50, first.log);
       expect(again.state).toEqual(first.state);

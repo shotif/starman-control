@@ -12,7 +12,19 @@ import { Emblem } from '../parts.tsx';
 import './newgame.css';
 
 /** Each power's pictures (art/manifest.json) and what they show, for those who cannot see them. */
-const ART: Partial<Record<FactionId, { file: string; scene: string; leader: string; leaderAlt: string }>> = {
+const ART: Partial<
+  Record<
+    FactionId,
+    {
+      file: string;
+      scene: string;
+      leader: string;
+      leaderAlt: string;
+      /** A portrait already in the game, for the leader's face, in place of `power-<file>-leader`. */
+      portrait?: string;
+    }
+  >
+> = {
   sta: {
     file: 'sta',
     scene:
@@ -32,6 +44,16 @@ const ART: Partial<Record<FactionId, { file: string; scene: string; leader: stri
     leader: 'The Chief',
     leaderAlt: 'The chief of the Wake: a lean woman with a shaved head and a scar, in a patched red flight jacket.',
   },
+  // The first power to lead that is not human (M6_ONE.md §24): its speaker, whose face the codex has.
+  'dusk-concord': {
+    file: 'dusk',
+    portrait: 'speaker-dusk-concord',
+    scene:
+      'Long, low halls of the Duskfolk half sunk into a ridge in the ring of dusk of GJ 433 d, its red sun unmoving on the horizon (fiction).',
+    leader: 'The Speaker',
+    leaderAlt:
+      'Still Water, the speaker of the Concord: one of the Duskfolk, an invented people with a long crested head and amber eyes, in layered shawls (fiction).',
+  },
 };
 
 const base = import.meta.env.BASE_URL;
@@ -50,7 +72,7 @@ function PowerCard({ id, starting, onStart }: { id: FactionId; starting: Faction
   if (!art) return null;
   const capital = world.system(f.capital.systemId);
   const scene = `${base}art/illustration/power-${art.file}-scene`;
-  const leader = `${base}art/portrait/power-${art.file}-leader`;
+  const leader = `${base}art/portrait/${art.portrait ?? `power-${art.file}-leader`}`;
   return (
     <article class="power-card" style={{ '--faction': f.colour }} aria-label={f.name}>
       <div class="power-frame">

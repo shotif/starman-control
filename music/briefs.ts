@@ -70,6 +70,16 @@ export const MUSIC_BRIEFS: MusicBrief[] = [
       'deep pulse, metallic percussion like struck pipes and chains played softly, a lonely, reverberant electric guitar line, a dusty low synthesiser drone.',
     purpose: 'A colony of the Hollow Wake: its character, low and tough.',
   },
+  // M6_ONE.md §24 (D-81): the Concord, the first power to lead that is not human, an invented people.
+  {
+    id: 'colony-dusk',
+    subject:
+      'Patient, ancient and communal music for a settlement of an invented people who live in the endless dusk of a world that never turns. ' +
+      'Very slow, about 56 BPM, in E Dorian. A low bowed drone like a deep string held for a long time, soft resonant frame drums struck slowly and far apart, ' +
+      'a wooden flute with a breathy tone playing a long, unhurried melody, plucked strings answering it now and then, warm and a little mysterious; ' +
+      'it never hurries, and the dusk never ends.',
+    purpose: 'A colony of the Dusk Concord: its character, patient and very old (fiction).',
+  },
 ];
 
 /** The prompt sent for a piece: the shared style, then the piece. */

@@ -6,9 +6,11 @@ import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { type SaveGlance, savedGame } from '../app/hasSave.ts';
 import { quality, reducedMotion } from '../app/settings.ts';
-import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId, PLAYABLE_IDS } from '../content/factions.ts';
 import { formatDate } from '../sim/calendar.ts';
 import './title.css';
+
+const NUMBERS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
 
 /** Line glyphs for the menu, in the console's vocabulary of rings, diamonds and chevrons. */
 const GLYPHS: Record<string, ComponentChildren> = {
@@ -126,7 +128,13 @@ export function Title({ buildId }: { buildId: string }) {
     ...(save
       ? [{ href: '#/game', title: 'Continue', line: continueLine(save), glyph: 'continue', primary: true }]
       : []),
-    { href: '#/new', title: 'New game', line: 'Lead one of three powers', glyph: 'new', primary: !save },
+    {
+      href: '#/new',
+      title: 'New game',
+      line: `Lead one of ${NUMBERS[PLAYABLE_IDS.length] ?? PLAYABLE_IDS.length} powers`,
+      glyph: 'new',
+      primary: !save,
+    },
     {
       href: '#/map',
       title: 'Explore the neighbourhood',
@@ -158,7 +166,7 @@ export function Title({ buildId }: { buildId: string }) {
         </nav>
       </div>
       <footer class="title-foot">
-        <p class="status">In development · M4, Fleets · a whole game can be played, won and lost</p>
+        <p class="status">In development · M6, towards 1.0 · the unknown explored, an alien power to lead</p>
         <p class="credit">
           The stars and their places are real. The lanes, the powers and the look of the sky are the game’s fiction.
         </p>

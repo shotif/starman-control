@@ -15,7 +15,7 @@ test.describe('the first impression', () => {
     await expect(page.locator('#boot')).toHaveCount(0);
     const menu = page.getByRole('navigation', { name: 'Start' });
     await expect(menu.getByRole('link')).toHaveCount(5);
-    await expect(menu.getByRole('link', { name: 'New game' })).toHaveAccessibleDescription('Lead one of three powers');
+    await expect(menu.getByRole('link', { name: 'New game' })).toHaveAccessibleDescription('Lead one of four powers');
     // The scene arrives after the menu, and draws.
     await expect(page.locator('.title-sky')).toHaveAttribute('data-ready', 'yes', { timeout: 20_000 });
     await expect(page.locator('.title-sky canvas')).toHaveCount(1);
@@ -46,8 +46,8 @@ test.describe('the first impression', () => {
 
   test('each power has its home, its face and its emblem', async ({ page }, info) => {
     await page.goto('./?test#/new');
-    await expect(page.locator('.power-card')).toHaveCount(3);
-    for (const name of ['Sol Transit Authority', 'Frontier Cooperative', 'Hollow Wake']) {
+    await expect(page.locator('.power-card')).toHaveCount(4);
+    for (const name of ['Sol Transit Authority', 'Frontier Cooperative', 'Hollow Wake', 'Dusk Concord']) {
       const card = page.getByRole('article', { name });
       await expect(card.getByRole('heading', { name })).toBeAttached();
       await expect(card.locator('.emblem')).toBeAttached();

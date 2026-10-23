@@ -55,7 +55,7 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
 };
 
 /** The architectures whose buildings are painted: the aliens' wait until they can be played (§24.10, §25.9). */
-type Painted = Exclude<ArchitectureId, 'dusk' | 'drift' | 'hearth' | 'forge'>;
+type Painted = Exclude<ArchitectureId, 'drift' | 'hearth' | 'forge'>;
 
 /**
  * The Duskfolk (M3_NEIGHBOURS.md §24), an invented people, written once and put into every brief
@@ -727,6 +727,7 @@ export const BRIEFS: ArtBrief[] = [
   ...advisors(),
   ...events(),
   ...duskfolk(),
+  ...concord(),
   ...drifters(),
   ...leaders(),
   ...unhomed(),
@@ -984,6 +985,184 @@ function duskfolk(): ArtBrief[] {
   ];
 }
 
+/**
+ * The Concord to play (M6_ONE.md §24, D-81): the Duskfolk's colonies in their architecture (M3's), the
+ * advisors' faces still missing and the new game's picture. All fiction.
+ */
+function concord(): ArtBrief[] {
+  const a = ARCHITECTURE.dusk;
+  const own: [string, string, string][] = [
+    [
+      'homes-1-open',
+      'A few small, low homes half sunk into the ground, with curved turf roofs and dark stone walls, woven screens over the doors, slit windows glowing amber.',
+      'small homes, in the open air',
+    ],
+    [
+      'homes-1-domed',
+      'A few small, low turf-roofed homes gathered under a low dome of dark slate ribs and amber glass sealed against a hostile world, a stone airlock tunnel, warm amber light inside.',
+      'small homes, under a dome',
+    ],
+    [
+      'homes-2-open',
+      'A long, low communal hall for a few hundred people, curved to follow a ridge, with a deep turf roof, dark stone walls and rows of amber slit windows, smaller halls round a sheltered yard.',
+      'middle-sized homes, in the open air',
+    ],
+    [
+      'homes-2-domed',
+      'Two long communal halls under a great low dome of dark slate ribs and amber glass sealed against a hostile world, stone airlock tunnels at its base, warm light inside.',
+      'middle-sized homes, under a dome',
+    ],
+    [
+      'homes-3-open',
+      'A great terraced hill of communal halls for thousands, tier on tier of turf roofs and dark stone walls with amber slit windows, ramps and stairs between them.',
+      'large homes, in the open air',
+    ],
+    [
+      'homes-3-domed',
+      'A terraced hill of communal halls under a vast low dome of dark slate ribs and amber glass sealed against a hostile world, stone airlocks round its base, warm amber light inside.',
+      'large homes, under a dome',
+    ],
+    [
+      'shipyard',
+      'A colony shipyard: a long landing trench cut into the ground and lined with dark stone, amber edge lights along it, a tall gantry of stone and blackened timber beside it, a low turf-roofed hangar; no ship on the pad.',
+      'shipyard',
+    ],
+    [
+      'lane-station',
+      "A lane station, the ground station that keeps the system's lane beacons in tune: a tall, slender mast of dark stone and blackened metal with a ring of antennae and an amber light at its top, a woven-mesh dish beside a low sunken control hall.",
+      'lane station',
+    ],
+    [
+      'mine',
+      'A mine: a squat stone headframe over a shaft cut into a ridge, a covered stone conveyor to a low sorting hall with a turf roof, heaps of dark ore.',
+      'mine',
+    ],
+    [
+      'survey-station',
+      'A survey station: three dish telescopes of dark woven mesh on round stone platforms round a low turf-roofed control hall, amber lights.',
+      'survey station',
+    ],
+    [
+      'shuttle',
+      'Not a building but a small cargo shuttle seen from the side and a little above: a long, low, curved lifting body of dark plated metal like a slate roof, woven cargo nets along its side, landing legs down, small engines glowing amber.',
+      'shuttle, landing on and leaving the shipyard',
+    ],
+    [
+      'hall',
+      "The capital's main hall, the seat of the Concord's councils: a very long, curved hall half sunk into a ridge, its great turf roof on rows of dark stone pillars, woven banners at the door, slit windows glowing amber.",
+      'main hall, at the capital',
+    ],
+    [
+      'rig',
+      'An automated outpost with no people: a compact, low extraction rig of dark stone and metal, a drill tower, round storage cisterns, a small landing pad for drones and a slim beacon mast with an amber light.',
+      'outpost rig',
+    ],
+  ];
+  // Each home's second and third versions, as the human powers' (COLONY_VIEW.md §9).
+  const versions: Record<string, [string, string]> = {
+    'homes-1-open': [
+      'Three small round homes half sunk into a low bank, each with a turf dome roof and a woven screen door, joined by a curved stone path, amber lamps.',
+      'A short, curved row of small low homes under one long shared turf roof, dark stone walls, deep eaves, woven screens and amber slit windows.',
+    ],
+    'homes-1-domed': [
+      'A small cluster of low turf-roofed homes under a long, low vault of dark slate ribs and amber glass sealed against a hostile world, an airlock at one end, warm light inside.',
+      'Two small sunken homes beside a little garden of dark ferns under a round, low dome of dark slate ribs and amber glass sealed against a hostile world, a stone airlock porch.',
+    ],
+    'homes-2-open': [
+      'Three long, curved halls set round a sunken courtyard with a stone well, deep turf roofs, woven screens and amber slit windows.',
+      'A long two-storey hall stepped into a slope, its upper storey set back under the turf roof, dark stone walls, balconies screened with woven panels, amber light.',
+    ],
+    'homes-2-domed': [
+      'A ring of communal halls round a central courtyard under a great round dome of dark slate ribs and amber glass sealed against a hostile world, airlocks round its base.',
+      'A long, curved hall under a tall vaulted roof of dark slate ribs and amber glass sealed against a hostile world, gardens of dark ferns along its length, a stone airlock at each end.',
+    ],
+    'homes-3-open': [
+      'A broad, terraced amphitheatre of communal halls cut into a hillside, each tier roofed with turf, rows of amber slit windows, stairways between them.',
+      'Three great curved halls, each three storeys high and half sunk into the ground, joined by covered stone bridges, with turf roofs, woven screens and many amber windows.',
+    ],
+    'homes-3-domed': [
+      'A great spiral of terraced communal halls under a vast low dome of dark slate ribs and amber glass sealed against a hostile world, ramps rising round it, airlocks at its base.',
+      'Two terraced hills of communal halls joined by a covered bridge, each under its own great dome of dark slate ribs and amber glass sealed against a hostile world, warm light inside.',
+    ],
+  };
+  const faces: [string, string, string][] = [
+    [
+      'colonies',
+      'Warm Stone, who speaks for the Settled',
+      'with a broad band of ochre at the shawl; kindly and watchful',
+    ],
+    [
+      'works',
+      'Long Hands, who speaks for the Builders',
+      'with stone dust on the shawl and a coil of measuring cord at the shoulder; practical and patient',
+    ],
+    [
+      'treasury',
+      'Full Store, who keeps the Stores',
+      'with a cord of carved tally stones at the neck; careful and exacting',
+    ],
+    [
+      'science',
+      'Quiet Eye, who speaks for the Learned',
+      'with a fine plum-coloured shawl and a small lens on a cord; curious and thoughtful',
+    ],
+    [
+      'survey',
+      'Far Walker, who speaks for the Wayfarers',
+      'in a weathered travelling shawl with a hood thrown back; restless and keen-eyed',
+    ],
+    [
+      'watch',
+      'Night Ear, who speaks for the Watchers',
+      'in a dark charcoal shawl drawn close, the head turned a little to listen; quiet and wary',
+    ],
+    [
+      'admiral',
+      'Stone Shield, who speaks for the Guardians',
+      'in a heavy charcoal shawl over plates of dark armour, the crest scarred; grave and steady',
+    ],
+  ];
+  return [
+    ...own.map(([kind, subject, what]) => ({
+      id: `dusk-${kind}`,
+      series: 'structure' as const,
+      subject: `${a} ${subject}`,
+      purpose: `Colony view: the Concord's ${what} (M6, fiction).`,
+    })),
+    ...Object.entries(versions).flatMap(([kind, [b, c]]) => [
+      {
+        id: `dusk-${kind}-b`,
+        series: 'structure' as const,
+        subject: `${a} ${b}`,
+        purpose: `Colony view: another version of the Concord's ${kind.replace('homes-', 'homes of size ')} (M6, fiction).`,
+      },
+      {
+        id: `dusk-${kind}-c`,
+        series: 'structure' as const,
+        subject: `${a} ${c}`,
+        purpose: `Colony view: another version of the Concord's ${kind.replace('homes-', 'homes of size ')} (M6, fiction).`,
+      },
+    ]),
+    ...faces.map(([department, who, look]) => ({
+      id: `advisor-dusk-${department}`,
+      series: 'portrait' as const,
+      subject: `${who} of the Dusk Concord: ${DUSKFOLK}, ${look}.`,
+      purpose: `The Concord's ${department} advisor, in the report and the guide (M6, fiction).`,
+    })),
+    {
+      id: 'power-dusk-scene',
+      series: 'illustration',
+      subject:
+        'A settlement of the Duskfolk, an invented alien people, in the ring of dusk on a world locked to its red sun: ' +
+        'long, low halls half sunk into a ridge, roofed with turf and dark slate, their slit windows glowing amber; ' +
+        'the huge dim red sun sits unmoving on the horizon behind them, the sky deep red fading to night overhead; ' +
+        'a slim ship rests in a stone-lined landing trench.',
+      purpose:
+        'New-game screen: the Dusk Concord at home (GJ 433 d; the star is real, the world and its people fiction).',
+    },
+  ];
+}
+
 /** Each home's second and third versions: the same kind of home told another way. */
 function homeVersions(first: ArtBrief[]): ArtBrief[] {
   const versions: [string, string, string][] = [
@@ -1099,6 +1278,7 @@ function props(): ArtBrief[] {
       cooperative:
         'Water tanks for a colony: two squat rounded cisterns printed from the local soil in warm terracotta, a white fabric shade over them, pipes running down to the ground.',
       wake: 'Water tanks for a colony: two old rusty fuel tanks from a starship, patched and welded, stood upright on a frame of girders, with a ladder and a small red light.',
+      dusk: 'Water cisterns for a colony: two round cisterns of fitted dark stone sunk into the ground, with low domed lids roofed in turf, a stone channel leading away and amber lamps on short posts.',
     },
     mast: {
       authority:
@@ -1106,6 +1286,7 @@ function props(): ArtBrief[] {
       cooperative:
         'A communications mast: a slim curved mast about twelve metres tall with small aerials, a little solar sail and a soft blue light on top, rising from a small rounded earth footing.',
       wake: 'A communications mast: a ragged mast about twelve metres tall welded from scrap girders, hung with mismatched aerials and an old dish, a red light at the top, held by guy wires.',
+      dusk: 'A communications mast: a tall, slender mast of dark stone and blackened metal bound with woven cords, a ring of small antennae near the top and an amber light at its tip.',
     },
     cargo: {
       authority:
@@ -1113,6 +1294,7 @@ function props(): ArtBrief[] {
       cooperative:
         'A stack of rounded cargo pods and crates under a white fabric awning, with a small hand crane beside them.',
       wake: 'A jumbled stack of rusty, mismatched cargo containers, one standing open, with a crane arm welded from girders over them and a small red light.',
+      dusk: 'A store of cargo: long woven baskets and dark stone-lidded chests stacked under a low open shelter roofed with slate, a simple timber hoist beside it, amber lamps.',
     },
     greenhouse: {
       authority:
@@ -1120,6 +1302,7 @@ function props(): ArtBrief[] {
       cooperative:
         'A frosted-glass bubble greenhouse on a rounded earth base, full of green plants and vines, warm white light inside.',
       wake: 'A greenhouse built from an old hull section with glass panels welded into its plates, green plants inside under warm white grow lights, patched seams.',
+      dusk: 'A greenhouse: a long, low hall half sunk into the ground, its roof of narrow amber-tinted glass panes between dark slate ribs, dark leafy plants inside under warm light.',
     },
     monument: {
       authority:
@@ -1127,6 +1310,7 @@ function props(): ArtBrief[] {
       cooperative:
         'A monument to the first settlers: a ring of tall standing stones printed from the local soil, leaning together at their tops, a soft blue light glowing at the centre.',
       wake: "A monument to the raiders' first ship: the sharp bow of an old starship stood upright in the ground like a blade, plain welded plates on its side, a red light at its tip.",
+      dusk: 'A monument to the first settlers: a single tall, curved standing stone of dark slate carved with fine spiralling lines, on a low round base of fitted stone, a soft amber light at its foot.',
     },
   };
   const shared: Record<string, string> = {
@@ -1181,6 +1365,7 @@ function districts(): ArtBrief[] {
       cooperative:
         'A works district: a cluster of rounded earth-printed workshops with wide doors open on workbenches and machines, a large printer arm under a fabric awning, solar sails, and soft blue lights.',
       wake: 'A works district: a salvage yard and workshop built in an old freighter hold, cranes made from girders, a furnace glowing orange through an open door, stacks of hull plates, red lights.',
+      dusk: 'A works district: a long, low workshop hall half sunk into a ridge, its turf roof pierced by stone chimneys, wide woven-screen doors open on looms and forges glowing amber, stacks of cut dark stone outside.',
     },
     labs: {
       authority:
@@ -1188,6 +1373,7 @@ function districts(): ArtBrief[] {
       cooperative:
         'A research district: a rounded earth-built laboratory with a large round window, a greenhouse wing for experiments, a small telescope dome, white awnings and soft blue lights.',
       wake: 'A research district: a laboratory improvised in a salvaged science vessel half sunk into banked earth, its sensor mast and dish still working, cables running everywhere, small red lights.',
+      dusk: 'A research district: a curved, low hall of fitted dark stone with a slate roof, a small sunken observatory with a slatted dome beside it, woven screens over narrow windows glowing amber.',
     },
     market: {
       authority:
@@ -1195,6 +1381,7 @@ function districts(): ArtBrief[] {
       cooperative:
         'A market district: a lively covered market of rounded earth stalls under white fabric awnings, crates of produce, a shared kitchen with a chimney, strings of soft blue lights.',
       wake: 'A market district: a black market in stacked cargo containers opened up as stalls, scrap awnings, hanging lamps, crates and barrels, a watchtower with a red light.',
+      dusk: 'A market district: a long covered arcade of dark stone pillars under deep turf eaves, low stalls of woven baskets and bolts of patterned cloth, amber lanterns hanging along it.',
     },
     // M4's defences (M4_FLEETS.md §26.1, §26.10).
     'defence-battery': {
@@ -1203,6 +1390,7 @@ function districts(): ArtBrief[] {
       cooperative:
         'A defence battery: a rounded earth-built bunker half sunk into a mound, a domed turret with three gun barrels angled at the sky, a woven-mesh radar dish beside it, soft blue lights.',
       wake: 'A defence battery: three salvaged warship guns welded onto a turret ring on a blockhouse of hull plates and sandbags, aimed at the sky, a crooked radar mast, red lights.',
+      dusk: 'A defence battery: a low, thick bunker of fitted dark stone half sunk into a turf mound, a slate-armoured turret with three long gun barrels angled at the sky, amber lights.',
     },
     'planetary-shield': {
       authority:
@@ -1210,6 +1398,7 @@ function districts(): ArtBrief[] {
       cooperative:
         'A planetary shield generator: a rounded earth-built hall with three copper-wound emitter towers round a central spire, a faint blue translucent dome of light rising from them into the sky, soft blue lights.',
       wake: 'A planetary shield generator: a warship’s shield projector salvaged and mounted on a tower of welded girders, throwing a faint flickering violet dome of light into the sky, cables and coolant pipes, red lights.',
+      dusk: 'A planetary shield generator: a ring of tall dark standing stones round a low turf-roofed hall, a faint amber light rising from the stones into a translucent dome over the colony.',
     },
     barracks: {
       authority:
@@ -1217,9 +1406,15 @@ function districts(): ArtBrief[] {
       cooperative:
         'Barracks: rounded earth-built bunkhouses round a training yard with a climbing frame, a domed mess hall and solar sails, soft blue lights.',
       wake: 'Barracks: a camp of stacked cargo containers and a grounded troop ship turned into bunk rooms, a sparring ring and armoured buggies, red lights.',
+      dusk: 'Barracks: long, low bunk halls of dark stone with turf roofs round a sunken training yard, a watchtower of stone and blackened timber, amber lights.',
     },
   };
-  const names: Record<Painted, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
+  const names: Record<Painted, string> = {
+    authority: 'Authority',
+    cooperative: 'Cooperative',
+    wake: 'Wake',
+    dusk: 'Concord',
+  };
   return [
     ...Object.entries(own).flatMap(([kind, by]) =>
       (Object.keys(by) as Painted[]).map((a) => ({
@@ -1249,6 +1444,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A hydroponics farm: a rounded earth-built greenhouse hall with a ribbed glass roof, tiers of leafy plants glowing under warm grow lights, rain barrels and a small wind vane, soft blue lights.',
       wake: 'A hydroponics farm: grow racks inside opened-up cargo containers stacked in a horseshoe, pink grow lights spilling out, tarpaulins, water bladders and hoses, small red lights.',
+      dusk: 'A hydroponics farm: a long, low hall half sunk into the ground with narrow skylights in its slate roof, tiers of dark leafy plants under warm amber grow lights, stone water channels along it.',
     },
     'trade-exchange': {
       authority:
@@ -1256,6 +1452,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A trade exchange: a round earth-built hall with a domed roof and a ring of open arches, cargo carts and crates outside, a tall mast hung with signal pennants, soft blue lights.',
       wake: 'A trade exchange: a fortified bazaar in the hull of a grounded cargo ship, its loading ramp down as an entrance, crates and barrels piled outside, a crane, armed lookouts, red lights.',
+      dusk: 'A trade exchange: a broad, low hall of dark stone with a deep porch on many pillars, bales and woven chests stacked outside, a tall pole hung with woven pennants, amber lights.',
     },
     'civic-centre': {
       authority:
@@ -1263,6 +1460,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A civic centre: a large rounded meeting house of rammed earth with a terraced amphitheatre in front, a garden roof, a tall solar sail and soft blue lights.',
       wake: 'A civic centre: a meeting hall built in the bridge section of an old warship, a wide deck in front for gatherings, a banner of red cloth, braziers and red lights.',
+      dusk: 'A civic centre: a great curved council hall half sunk into a ridge under a long turf roof, a sunken ring of stone steps before it for gatherings, amber lamps.',
     },
     'recreation-dome': {
       authority:
@@ -1270,6 +1468,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A recreation dome: a great frosted-glass bubble dome over gardens, a pool and a little open-air stage, rounded pavilions round its edge, soft blue lights.',
       wake: 'A recreation dome: a patched glass dome salvaged from a liner, over a rough garden and a fighting ring, scrap benches, hanging lamps and red lights.',
+      dusk: 'A recreation dome: a low, wide dome of slate ribs and amber glass over a sunken garden of pools and dark ferns, woven screens round its edge, warm amber light.',
     },
     'research-institute': {
       authority:
@@ -1277,6 +1476,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A research institute: a cluster of rounded earth-built halls round a courtyard, a big glass telescope dome, solar sails and a tall weather mast, soft blue lights.',
       wake: 'A research institute: the hull of a salvaged science ship stood on end and braced with girders, sensor dishes bolted on at every level, cables everywhere, red lights.',
+      dusk: 'A research institute: a long, curved stone hall following a ridge, slit windows glowing amber, a sunken stone observatory with a slatted dome and a tall, slender antenna mast.',
     },
     'fusion-plant': {
       authority:
@@ -1284,6 +1484,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A fusion power plant: a rounded earth-built reactor hall with a glowing blue ring window, curved cooling fins, a low control building and cables on posts, soft blue lights.',
       wake: 'A fusion power plant: a starship engine section bolted upright into banked earth as a reactor, glowing violet through vents, radiator fins and thick cables, warning lights.',
+      dusk: 'A fusion power plant: a low, round stone reactor hall half sunk into the ground, a ring of narrow slits glowing bright amber, dark cooling vanes like slate fins, cables on stone posts.',
     },
     refinery: {
       authority:
@@ -1291,6 +1492,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A fuel refinery: rounded earth-built sheds round two tall distillation columns, pipes on wooden trestles, round storage tanks and soft blue lights.',
       wake: 'A fuel refinery: tanks cut from old fuel pods, crooked pipe runs, a flare stack burning brightly, a pump house of hull plates, red lights.',
+      dusk: 'A fuel refinery: squat rounded tanks of dark stone and blackened metal under slate hoods, pipes running along low stone walls, a slim flare stack with a small amber flame.',
     },
     arcology: {
       authority:
@@ -1298,6 +1500,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'An arcology: a huge rounded tower of earth-printed rings wider at the base like a hill, every terrace green with gardens and lit windows, solar sails at the top.',
       wake: 'An arcology: the hulk of a great colony ship stood upright and buried at its base, its decks turned into homes, lit portholes in rows, scaffold walkways and red lights.',
+      dusk: 'An arcology: a vast, low hill of terraced stone halls, each tier roofed with turf, hundreds of slit windows glowing amber, woven screens and ramps between the terraces.',
     },
     'medical-centre': {
       authority:
@@ -1305,6 +1508,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A medical centre: a rounded earth-built clinic with a healing garden, big round windows, a white awning over the entrance and a blue cross sign, soft blue lights.',
       wake: 'A medical centre: a field hospital in a salvaged medical frigate, its side opened up as a ward, a red cross painted on the hull, tents and red lights.',
+      dusk: 'A medical centre: a quiet, curved stone hall with a turf roof round a sheltered courtyard garden, woven screens over its windows, a soft amber lamp over the door.',
     },
     // Increment 24 (M2_WORLDS.md §26.3).
     'deep-space-scanner': {
@@ -1313,6 +1517,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A deep-space scanner: three rounded radio dishes on earth-built plinths round a domed listening hall, a tall braced antenna, cables on posts, soft blue lights.',
       wake: 'A deep-space scanner: a salvaged warship’s sensor array bolted on top of a tower of stacked hull sections, dishes and antennas jutting at angles, hanging cables, red lights.',
+      dusk: 'A deep-space scanner: a great dish of dark woven mesh on a stone ring, tilted at the sky, beside a low sunken control hall with slit windows glowing amber.',
     },
     // Increment 25 (M2_WORLDS.md §27.5).
     'flare-shield': {
@@ -1321,6 +1526,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A flare shield: a low rounded earth-built bunker half sunk into a mound, a cluster of three coil towers wound with copper on its roof, a soft blue glow between them, solar sails folded down.',
       wake: 'A flare shield: a starship’s magnetic deflector ring salvaged and stood upright on a frame of girders over a blockhouse of hull plates, cables and coolant pipes, a faint violet glow, red lights.',
+      dusk: "A flare shield: a tall arching frame of dark stone and metal over the colony's roofs, hung with a fine woven mesh that catches a faint amber shimmer, cables running to a sunken hall.",
     },
     // M2b's increment 30 (M2B_SCIENCE.md §18.3).
     'lane-relay': {
@@ -1329,6 +1535,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'A lane relay: a tall braced mast on a rounded earth-built base, two big woven-mesh beacon dishes turned skyward, a soft blue beacon lamp on top, a small round hut and solar sails beside it.',
       wake: 'A lane relay: a crooked tower of welded girders topped by a salvaged ship’s beacon array and a red-glowing lamp, mismatched dishes bolted on at angles, a blockhouse of hull plates and hanging cables.',
+      dusk: 'A lane relay: a slender tower of fitted dark stone topped by a ring of beacon vanes and a softly glowing amber lamp.',
     },
     'orbital-habitat': {
       authority:
@@ -1336,6 +1543,7 @@ function projects(): ArtBrief[] {
       cooperative:
         'An orbital habitat seen from the ground: a rounded earth-built shuttle port with a domed hall and a launch ring, a shuttle rising on a thin trail towards a bright ring-shaped station small in the sky, soft blue lights.',
       wake: 'An orbital habitat seen from the ground: a launch gantry of girders over a scorched pad, a battered shuttle on it, fuel tanks and cargo, and a patched wheel-shaped station small in the sky above, red lights.',
+      dusk: 'An orbital habitat seen from the ground: a long launch ramp cut into a ridge with a slim shuttle on it, a low stone control hall beside it, and far overhead a faint ring of light in the dusk sky.',
     },
     'terraforming-station': {
       authority:
@@ -1343,9 +1551,15 @@ function projects(): ArtBrief[] {
       cooperative:
         'A terraforming station: rounded earth-built halls round a huge glass bioreactor dome glowing green with algae, tall vents breathing white vapour, terraced beds of hardy plants around it, soft blue lights.',
       wake: 'A terraforming station: the engine block of a wrecked bulk carrier rigged as an atmosphere processor, its exhausts roaring white vapour into the sky, tanks and crooked pipes, red lights.',
+      dusk: 'A terraforming station: a squat, round stone tower with tall chimneys breathing pale vapour into the sky, low pump halls round it, amber lights.',
     },
   };
-  const names: Record<Painted, string> = { authority: 'Authority', cooperative: 'Cooperative', wake: 'Wake' };
+  const names: Record<Painted, string> = {
+    authority: 'Authority',
+    cooperative: 'Cooperative',
+    wake: 'Wake',
+    dusk: 'Concord',
+  };
   return Object.entries(own).flatMap(([kind, by]) =>
     (Object.keys(by) as Painted[]).map((a) => ({
       id: `${a}-${kind}`,

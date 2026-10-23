@@ -32,6 +32,67 @@
       "aiGenerated": true
     },
     {
+      "briefId": "advisor-dusk-admiral",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Stone Shield, who speaks for the Guardians of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, in a heavy charcoal shawl over plates of dark armour, the crest scarred; grave and steady.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:36:34.315Z",
+      "note": "Here is a grounded and believable sci-fi character portrait for Stone Shield, capturing their distinctive non-human features, practical worn gear, and grave presence in a painterly strategy game style.",
+      "id": "advisor-dusk-admiral",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:53.547Z",
+      "candidate": "art/out/advisor-dusk-admiral/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-admiral-128.webp",
+          "bytes": 4262
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-admiral-384.webp",
+          "bytes": 23868
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-admiral-768.webp",
+          "bytes": 68786
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-dusk-colonies",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Warm Stone, who speaks for the Settled of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, with a broad band of ochre at the shawl; kindly and watchful.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:32:38.589Z",
+      "id": "advisor-dusk-colonies",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:49.997Z",
+      "candidate": "art/out/advisor-dusk-colonies/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-colonies-128.webp",
+          "bytes": 4198
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-colonies-384.webp",
+          "bytes": 23398
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-colonies-768.webp",
+          "bytes": 74448
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-dusk-envoy",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -57,6 +118,157 @@
           "width": 768,
           "path": "art/portrait/advisor-dusk-envoy-768.webp",
           "bytes": 64690
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-dusk-science",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Quiet Eye, who speaks for the Learned of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, with a fine plum-coloured shawl and a small lens on a cord; curious and thoughtful.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:34:38.455Z",
+      "id": "advisor-dusk-science",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:51.767Z",
+      "candidate": "art/out/advisor-dusk-science/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-science-128.webp",
+          "bytes": 3986
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-science-384.webp",
+          "bytes": 21386
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-science-768.webp",
+          "bytes": 67350
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-dusk-survey",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Far Walker, who speaks for the Wayfarers of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, in a weathered travelling shawl with a hood thrown back; restless and keen-eyed.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:35:37.240Z",
+      "id": "advisor-dusk-survey",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:52.330Z",
+      "candidate": "art/out/advisor-dusk-survey/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-survey-128.webp",
+          "bytes": 4180
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-survey-384.webp",
+          "bytes": 22110
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-survey-768.webp",
+          "bytes": 67450
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-dusk-treasury",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Full Store, who keeps the Stores of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, with a cord of carved tally stones at the neck; careful and exacting.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:33:56.267Z",
+      "note": "Here is the painted science-fiction portrait of \"Full Store\" from the Dusk Concord, created with a grounded, painterly aesthetic and the requested lighting and style.",
+      "id": "advisor-dusk-treasury",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:51.192Z",
+      "candidate": "art/out/advisor-dusk-treasury/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-treasury-128.webp",
+          "bytes": 3834
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-treasury-384.webp",
+          "bytes": 18340
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-treasury-768.webp",
+          "bytes": 55142
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-dusk-watch",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Night Ear, who speaks for the Watchers of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, in a dark charcoal shawl drawn close, the head turned a little to listen; quiet and wary.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:36:17.227Z",
+      "id": "advisor-dusk-watch",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:52.966Z",
+      "candidate": "art/out/advisor-dusk-watch/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-watch-128.webp",
+          "bytes": 4026
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-watch-384.webp",
+          "bytes": 21624
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-watch-768.webp",
+          "bytes": 69656
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "advisor-dusk-works",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Long Hands, who speaks for the Builders of the Dusk Concord: one of the Duskfolk, an invented alien people who are not human and have no human features: a long, narrow head that sweeps back into a single curved crest of bone like a blade, no nose and no ears, a small lipless mouth, small deep-set eyes that glow a soft amber-red, a long neck, dark slate-brown skin; long thin arms with long fingers (they walk on four legs, two arms free, with a long tail); wrapped in layered, hand-woven shawls in charcoal, ochre and plum, with stone dust on the shawl and a coil of measuring cord at the shoulder; practical and patient.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T04:33:19.149Z",
+      "id": "advisor-dusk-works",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T04:38:50.571Z",
+      "candidate": "art/out/advisor-dusk-works/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-dusk-works-128.webp",
+          "bytes": 4052
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-dusk-works-384.webp",
+          "bytes": 23418
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-dusk-works-768.webp",
+          "bytes": 81674
         }
       ],
       "aiGenerated": true
@@ -6740,6 +6952,2739 @@
       "aiGenerated": true
     },
     {
+      "briefId": "dusk-arcology",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. An arcology: a vast, low hill of terraced stone halls, each tier roofed with turf, hundreds of slit windows glowing amber, woven screens and ramps between the terraces.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:11:28.215Z",
+      "id": "dusk-arcology",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:18.930Z",
+      "candidate": "art/out/dusk-arcology/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-arcology-256.webp",
+          "bytes": 14606
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-arcology-512.webp",
+          "bytes": 42752
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-arcology-1024.webp",
+          "bytes": 130820
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 34,
+        "top": 298,
+        "width": 1959,
+        "height": 1390
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-barracks",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Barracks: long, low bunk halls of dark stone with turf roofs round a sunken training yard, a watchtower of stone and blackened timber, amber lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:06:09.170Z",
+      "id": "dusk-barracks",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:08.084Z",
+      "candidate": "art/out/dusk-barracks/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-barracks-256.webp",
+          "bytes": 12864
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-barracks-512.webp",
+          "bytes": 39092
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-barracks-1024.webp",
+          "bytes": 121154
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 75,
+        "top": 312,
+        "width": 1908,
+        "height": 1362
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-cargo",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single small piece of colony equipment for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its sides are seen more than its top. Lit from the upper left, with any lamps or lit panels glowing warmly. The whole object is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction equipment with real materials and wear, like concept art for a film, with ladders, doors and railings sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A store of cargo: long woven baskets and dark stone-lidded chests stacked under a low open shelter roofed with slate, a simple timber hoist beside it, amber lamps.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, buildings, a block of soil or rock under it, a floating island, an isometric game-tile look, magenta or pink on the object itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:00:37.224Z",
+      "id": "dusk-cargo",
+      "series": "prop",
+      "approvedAt": "2026-10-23T04:25:57.750Z",
+      "candidate": "art/out/dusk-cargo/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/prop/dusk-cargo-256.webp",
+          "bytes": 15386
+        },
+        {
+          "width": 512,
+          "path": "art/prop/dusk-cargo-512.webp",
+          "bytes": 43486
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 71,
+        "top": 374,
+        "width": 1884,
+        "height": 1287
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-civic-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A civic centre: a great curved council hall half sunk into a ridge under a long turf roof, a sunken ring of stone steps before it for gatherings, amber lamps.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:08:15.848Z",
+      "id": "dusk-civic-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:12.492Z",
+      "candidate": "art/out/dusk-civic-centre/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-civic-centre-256.webp",
+          "bytes": 16612
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-civic-centre-512.webp",
+          "bytes": 50466
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-civic-centre-1024.webp",
+          "bytes": 166706
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 38,
+        "top": 272,
+        "width": 1951,
+        "height": 1540
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-deep-space-scanner",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A deep-space scanner: a great dish of dark woven mesh on a stone ring, tilted at the sky, beside a low sunken control hall with slit windows glowing amber.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:12:25.576Z",
+      "id": "dusk-deep-space-scanner",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:21.246Z",
+      "candidate": "art/out/dusk-deep-space-scanner/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-deep-space-scanner-256.webp",
+          "bytes": 11398
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-deep-space-scanner-512.webp",
+          "bytes": 33326
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-deep-space-scanner-1024.webp",
+          "bytes": 102154
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 83,
+        "top": 435,
+        "width": 1836,
+        "height": 1017
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-defence-battery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A defence battery: a low, thick bunker of fitted dark stone half sunk into a turf mound, a slate-armoured turret with three long gun barrels angled at the sky, amber lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:04:00.749Z",
+      "id": "dusk-defence-battery",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:05.394Z",
+      "candidate": "art/out/dusk-defence-battery/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-defence-battery-256.webp",
+          "bytes": 13452
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-defence-battery-512.webp",
+          "bytes": 39854
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-defence-battery-1024.webp",
+          "bytes": 115246
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 63,
+        "top": 287,
+        "width": 1913,
+        "height": 1282
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-flare-shield",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A flare shield: a tall arching frame of dark stone and metal over the colony's roofs, hung with a fine woven mesh that catches a faint amber shimmer, cables running to a sunken hall.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:12:59.401Z",
+      "id": "dusk-flare-shield",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:22.845Z",
+      "candidate": "art/out/dusk-flare-shield/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-flare-shield-256.webp",
+          "bytes": 22290
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-flare-shield-512.webp",
+          "bytes": 73156
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-flare-shield-1024.webp",
+          "bytes": 258682
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 59,
+        "top": 203,
+        "width": 1926,
+        "height": 1592
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-fusion-plant",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A fusion power plant: a low, round stone reactor hall half sunk into the ground, a ring of narrow slits glowing bright amber, dark cooling vanes like slate fins, cables on stone posts.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:09:48.488Z",
+      "id": "dusk-fusion-plant",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:16.341Z",
+      "candidate": "art/out/dusk-fusion-plant/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-fusion-plant-256.webp",
+          "bytes": 11834
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-fusion-plant-512.webp",
+          "bytes": 32882
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-fusion-plant-1024.webp",
+          "bytes": 86308
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 65,
+        "top": 403,
+        "width": 1919,
+        "height": 1220
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-greenhouse",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single small piece of colony equipment for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its sides are seen more than its top. Lit from the upper left, with any lamps or lit panels glowing warmly. The whole object is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction equipment with real materials and wear, like concept art for a film, with ladders, doors and railings sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A greenhouse: a long, low hall half sunk into the ground, its roof of narrow amber-tinted glass panes between dark slate ribs, dark leafy plants inside under warm light.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, buildings, a block of soil or rock under it, a floating island, an isometric game-tile look, magenta or pink on the object itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:00:57.737Z",
+      "note": "Here is the concept art image for the Duskfolk greenhouse colony equipment, painted in a realistic matte style on a pure magenta background.",
+      "id": "dusk-greenhouse",
+      "series": "prop",
+      "approvedAt": "2026-10-23T04:25:58.912Z",
+      "candidate": "art/out/dusk-greenhouse/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/prop/dusk-greenhouse-256.webp",
+          "bytes": 11794
+        },
+        {
+          "width": 512,
+          "path": "art/prop/dusk-greenhouse-512.webp",
+          "bytes": 35314
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 58,
+        "top": 418,
+        "width": 1896,
+        "height": 1217
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-hall",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. The capital's main hall, the seat of the Concord's councils: a very long, curved hall half sunk into a ridge, its great turf roof on rows of dark stone pillars, woven banners at the door, slit windows glowing amber.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:23:30.208Z",
+      "id": "dusk-hall",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:32.191Z",
+      "candidate": "art/out/dusk-hall/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-hall-256.webp",
+          "bytes": 10382
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-hall-512.webp",
+          "bytes": 30254
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-hall-1024.webp",
+          "bytes": 85786
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 50,
+        "top": 395,
+        "width": 1963,
+        "height": 1168
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-1-domed",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A few small, low turf-roofed homes gathered under a low dome of dark slate ribs and amber glass sealed against a hostile world, a stone airlock tunnel, warm amber light inside.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:16:38.473Z",
+      "id": "dusk-homes-1-domed",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:18.317Z",
+      "candidate": "art/out/dusk-homes-1-domed/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-1-domed-256.webp",
+          "bytes": 11938
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-1-domed-512.webp",
+          "bytes": 35692
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-1-domed-1024.webp",
+          "bytes": 117036
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 43,
+        "top": 491,
+        "width": 1960,
+        "height": 1074
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-1-domed-b",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A small cluster of low turf-roofed homes under a long, low vault of dark slate ribs and amber glass sealed against a hostile world, an airlock at one end, warm light inside.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:25:43.540Z",
+      "id": "dusk-homes-1-domed-b",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:37.633Z",
+      "candidate": "art/out/dusk-homes-1-domed-b/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-1-domed-b-256.webp",
+          "bytes": 11610
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-1-domed-b-512.webp",
+          "bytes": 34822
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-1-domed-b-1024.webp",
+          "bytes": 100248
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 45,
+        "top": 424,
+        "width": 1945,
+        "height": 1175
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-1-domed-c",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Two small sunken homes beside a little garden of dark ferns under a round, low dome of dark slate ribs and amber glass sealed against a hostile world, a stone airlock porch.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:26:38.824Z",
+      "note": "Here is the Duskfolk communal hall, designed as a grounded and weathered science-fiction structure in a realistic matte-painting style. Shown from a three-quarter perspective slightly above, it is isolated against a flat, pure magenta background.",
+      "id": "dusk-homes-1-domed-c",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:38.947Z",
+      "candidate": "art/out/dusk-homes-1-domed-c/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-1-domed-c-256.webp",
+          "bytes": 12856
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-1-domed-c-512.webp",
+          "bytes": 39308
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-1-domed-c-1024.webp",
+          "bytes": 124670
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 45,
+        "top": 511,
+        "width": 1944,
+        "height": 1011
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-1-open",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A few small, low homes half sunk into the ground, with curved turf roofs and dark stone walls, woven screens over the doors, slit windows glowing amber.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:15:39.706Z",
+      "id": "dusk-homes-1-open",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:16.917Z",
+      "candidate": "art/out/dusk-homes-1-open/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-1-open-256.webp",
+          "bytes": 11144
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-1-open-512.webp",
+          "bytes": 32992
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-1-open-1024.webp",
+          "bytes": 98824
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 37,
+        "top": 560,
+        "width": 1976,
+        "height": 928
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-1-open-b",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Three small round homes half sunk into a low bank, each with a turf dome roof and a woven screen door, joined by a curved stone path, amber lamps.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:24:28.110Z",
+      "id": "dusk-homes-1-open-b",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:34.989Z",
+      "candidate": "art/out/dusk-homes-1-open-b/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-1-open-b-256.webp",
+          "bytes": 13314
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-1-open-b-512.webp",
+          "bytes": 39546
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-1-open-b-1024.webp",
+          "bytes": 110788
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 61,
+        "top": 381,
+        "width": 1926,
+        "height": 1335
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-1-open-c",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A short, curved row of small low homes under one long shared turf roof, dark stone walls, deep eaves, woven screens and amber slit windows.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:25:23.309Z",
+      "id": "dusk-homes-1-open-c",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:36.250Z",
+      "candidate": "art/out/dusk-homes-1-open-c/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-1-open-c-256.webp",
+          "bytes": 12364
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-1-open-c-512.webp",
+          "bytes": 37696
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-1-open-c-1024.webp",
+          "bytes": 110222
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 49,
+        "top": 515,
+        "width": 1948,
+        "height": 940
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-2-domed",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Two long communal halls under a great low dome of dark slate ribs and amber glass sealed against a hostile world, stone airlock tunnels at its base, warm light inside.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:17:43.237Z",
+      "id": "dusk-homes-2-domed",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:21.111Z",
+      "candidate": "art/out/dusk-homes-2-domed/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-2-domed-256.webp",
+          "bytes": 14350
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-2-domed-512.webp",
+          "bytes": 44410
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-2-domed-1024.webp",
+          "bytes": 134292
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 41,
+        "top": 338,
+        "width": 1963,
+        "height": 1380
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-2-domed-b",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A ring of communal halls round a central courtyard under a great round dome of dark slate ribs and amber glass sealed against a hostile world, airlocks round its base.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:28:25.072Z",
+      "id": "dusk-homes-2-domed-b",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:42.857Z",
+      "candidate": "art/out/dusk-homes-2-domed-b/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-2-domed-b-256.webp",
+          "bytes": 14548
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-2-domed-b-512.webp",
+          "bytes": 43238
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-2-domed-b-1024.webp",
+          "bytes": 126952
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 67,
+        "top": 419,
+        "width": 1906,
+        "height": 1207
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-2-domed-c",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A long, curved hall under a tall vaulted roof of dark slate ribs and amber glass sealed against a hostile world, gardens of dark ferns along its length, a stone airlock at each end.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:29:10.908Z",
+      "id": "dusk-homes-2-domed-c",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:44.245Z",
+      "candidate": "art/out/dusk-homes-2-domed-c/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-2-domed-c-256.webp",
+          "bytes": 14774
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-2-domed-c-512.webp",
+          "bytes": 46458
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-2-domed-c-1024.webp",
+          "bytes": 140386
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 52,
+        "top": 383,
+        "width": 1941,
+        "height": 1205
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-2-open",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A long, low communal hall for a few hundred people, curved to follow a ridge, with a deep turf roof, dark stone walls and rows of amber slit windows, smaller halls round a sheltered yard.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:17:05.604Z",
+      "id": "dusk-homes-2-open",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:19.638Z",
+      "candidate": "art/out/dusk-homes-2-open/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-2-open-256.webp",
+          "bytes": 14088
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-2-open-512.webp",
+          "bytes": 42564
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-2-open-1024.webp",
+          "bytes": 138620
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 35,
+        "top": 474,
+        "width": 1967,
+        "height": 984
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-2-open-b",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Three long, curved halls set round a sunken courtyard with a stone well, deep turf roofs, woven screens and amber slit windows.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:27:06.525Z",
+      "id": "dusk-homes-2-open-b",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:40.210Z",
+      "candidate": "art/out/dusk-homes-2-open-b/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-2-open-b-256.webp",
+          "bytes": 10926
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-2-open-b-512.webp",
+          "bytes": 34214
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-2-open-b-1024.webp",
+          "bytes": 119942
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 50,
+        "top": 523,
+        "width": 1934,
+        "height": 1077
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-2-open-c",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A long two-storey hall stepped into a slope, its upper storey set back under the turf roof, dark stone walls, balconies screened with woven panels, amber light.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:27:44.563Z",
+      "id": "dusk-homes-2-open-c",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:41.550Z",
+      "candidate": "art/out/dusk-homes-2-open-c/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-2-open-c-256.webp",
+          "bytes": 13134
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-2-open-c-512.webp",
+          "bytes": 39204
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-2-open-c-1024.webp",
+          "bytes": 124418
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 45,
+        "top": 387,
+        "width": 1954,
+        "height": 1250
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-3-domed",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A terraced hill of communal halls under a vast low dome of dark slate ribs and amber glass sealed against a hostile world, stone airlocks round its base, warm amber light inside.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:19:05.530Z",
+      "id": "dusk-homes-3-domed",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:24.105Z",
+      "candidate": "art/out/dusk-homes-3-domed/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-3-domed-256.webp",
+          "bytes": 13360
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-3-domed-512.webp",
+          "bytes": 39744
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-3-domed-1024.webp",
+          "bytes": 112176
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 42,
+        "top": 337,
+        "width": 1937,
+        "height": 1344
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-3-domed-b",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A great spiral of terraced communal halls under a vast low dome of dark slate ribs and amber glass sealed against a hostile world, ramps rising round it, airlocks at its base.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:31:19.354Z",
+      "id": "dusk-homes-3-domed-b",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:48.047Z",
+      "candidate": "art/out/dusk-homes-3-domed-b/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-3-domed-b-256.webp",
+          "bytes": 15114
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-3-domed-b-512.webp",
+          "bytes": 46918
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-3-domed-b-1024.webp",
+          "bytes": 144014
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 81,
+        "top": 319,
+        "width": 1872,
+        "height": 1404
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-3-domed-c",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Two terraced hills of communal halls joined by a covered bridge, each under its own great dome of dark slate ribs and amber glass sealed against a hostile world, warm light inside.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:32:00.345Z",
+      "note": "Here is a realistic matte-painted depiction of the \"Duskfolk\" communal complex on a magenta background, following your precise perspective, architecture, and lighting requirements:",
+      "id": "dusk-homes-3-domed-c",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:49.407Z",
+      "candidate": "art/out/dusk-homes-3-domed-c/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-3-domed-c-256.webp",
+          "bytes": 12960
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-3-domed-c-512.webp",
+          "bytes": 38666
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-3-domed-c-1024.webp",
+          "bytes": 114202
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 51,
+        "top": 396,
+        "width": 1938,
+        "height": 1193
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-3-open",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A great terraced hill of communal halls for thousands, tier on tier of turf roofs and dark stone walls with amber slit windows, ramps and stairs between them.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:18:19.134Z",
+      "id": "dusk-homes-3-open",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:22.627Z",
+      "candidate": "art/out/dusk-homes-3-open/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-3-open-256.webp",
+          "bytes": 14304
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-3-open-512.webp",
+          "bytes": 45138
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-3-open-1024.webp",
+          "bytes": 137412
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 45,
+        "top": 375,
+        "width": 1964,
+        "height": 1276
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-3-open-b",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A broad, terraced amphitheatre of communal halls cut into a hillside, each tier roofed with turf, rows of amber slit windows, stairways between them.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:30:00.423Z",
+      "id": "dusk-homes-3-open-b",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:45.517Z",
+      "candidate": "art/out/dusk-homes-3-open-b/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-3-open-b-256.webp",
+          "bytes": 12980
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-3-open-b-512.webp",
+          "bytes": 38468
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-3-open-b-1024.webp",
+          "bytes": 121802
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 46,
+        "top": 467,
+        "width": 1926,
+        "height": 1078
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-homes-3-open-c",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Three great curved halls, each three storeys high and half sunk into the ground, joined by covered stone bridges, with turf roofs, woven screens and many amber windows.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:30:35.941Z",
+      "id": "dusk-homes-3-open-c",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:46.615Z",
+      "candidate": "art/out/dusk-homes-3-open-c/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-homes-3-open-c-256.webp",
+          "bytes": 9250
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-homes-3-open-c-512.webp",
+          "bytes": 27002
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-homes-3-open-c-1024.webp",
+          "bytes": 92546
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 72,
+        "top": 557,
+        "width": 1895,
+        "height": 938
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-hydroponics",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A hydroponics farm: a long, low hall half sunk into the ground with narrow skylights in its slate roof, tiers of dark leafy plants under warm amber grow lights, stone water channels along it.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:06:28.011Z",
+      "note": "Here is the single building for the Duskfolk's hydroponics farm, created in a realistic matte-painting style with a natural, worn appearance. It features a low, curved structure with turf and dark slate on the roof, fitted dark stone and woven screens on the walls, and glowing amber lights inside, entirely isolated on a pure magenta background.",
+      "id": "dusk-hydroponics",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:09.369Z",
+      "candidate": "art/out/dusk-hydroponics/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-hydroponics-256.webp",
+          "bytes": 12278
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-hydroponics-512.webp",
+          "bytes": 35672
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-hydroponics-1024.webp",
+          "bytes": 97422
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 52,
+        "top": 509,
+        "width": 1949,
+        "height": 1061
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-labs",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A research district: a curved, low hall of fitted dark stone with a slate roof, a small sunken observatory with a slatted dome beside it, woven screens over narrow windows glowing amber.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:03:06.289Z",
+      "id": "dusk-labs",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:02.647Z",
+      "candidate": "art/out/dusk-labs/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-labs-256.webp",
+          "bytes": 12326
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-labs-512.webp",
+          "bytes": 36542
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-labs-1024.webp",
+          "bytes": 100872
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 39,
+        "top": 491,
+        "width": 1979,
+        "height": 1084
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-lane-relay",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A lane relay: a slender tower of fitted dark stone topped by a ring of beacon vanes and a softly glowing amber lamp.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:13:45.147Z",
+      "id": "dusk-lane-relay",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:24.196Z",
+      "candidate": "art/out/dusk-lane-relay/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-lane-relay-256.webp",
+          "bytes": 15054
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-lane-relay-512.webp",
+          "bytes": 41256
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-lane-relay-1024.webp",
+          "bytes": 114182
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 138,
+        "top": 161,
+        "width": 1715,
+        "height": 1663
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-lane-station",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A lane station, the ground station that keeps the system's lane beacons in tune: a tall, slender mast of dark stone and blackened metal with a ring of antennae and an amber light at its top, a woven-mesh dish beside a low sunken control hall.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:20:27.528Z",
+      "id": "dusk-lane-station",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:26.867Z",
+      "candidate": "art/out/dusk-lane-station/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-lane-station-256.webp",
+          "bytes": 13226
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-lane-station-512.webp",
+          "bytes": 36682
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-lane-station-1024.webp",
+          "bytes": 99994
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 111,
+        "top": 179,
+        "width": 1826,
+        "height": 1442
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-market",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A market district: a long covered arcade of dark stone pillars under deep turf eaves, low stalls of woven baskets and bolts of patterned cloth, amber lanterns hanging along it.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:03:41.519Z",
+      "id": "dusk-market",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:04.038Z",
+      "candidate": "art/out/dusk-market/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-market-256.webp",
+          "bytes": 12768
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-market-512.webp",
+          "bytes": 38538
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-market-1024.webp",
+          "bytes": 117532
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 29,
+        "top": 433,
+        "width": 2001,
+        "height": 1164
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-mast",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single small piece of colony equipment for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its sides are seen more than its top. Lit from the upper left, with any lamps or lit panels glowing warmly. The whole object is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction equipment with real materials and wear, like concept art for a film, with ladders, doors and railings sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A communications mast: a tall, slender mast of dark stone and blackened metal bound with woven cords, a ring of small antennae near the top and an amber light at its tip.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, buildings, a block of soil or rock under it, a floating island, an isometric game-tile look, magenta or pink on the object itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T03:59:34.906Z",
+      "id": "dusk-mast",
+      "series": "prop",
+      "approvedAt": "2026-10-23T04:25:56.534Z",
+      "candidate": "art/out/dusk-mast/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/prop/dusk-mast-256.webp",
+          "bytes": 12132
+        },
+        {
+          "width": 512,
+          "path": "art/prop/dusk-mast-512.webp",
+          "bytes": 34904
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 367,
+        "top": 79,
+        "width": 1198,
+        "height": 1795
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-medical-centre",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A medical centre: a quiet, curved stone hall with a turf roof round a sheltered courtyard garden, woven screens over its windows, a soft amber lamp over the door.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:11:48.357Z",
+      "note": "Here is the matte-painted concept art for the Duskfolk medical center, with its curved, sunken design, textured dark stone, and turf/slate roofing, perfectly isolated on a pure magenta background.",
+      "id": "dusk-medical-centre",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:20.104Z",
+      "candidate": "art/out/dusk-medical-centre/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-medical-centre-256.webp",
+          "bytes": 10326
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-medical-centre-512.webp",
+          "bytes": 30528
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-medical-centre-1024.webp",
+          "bytes": 91680
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 86,
+        "top": 592,
+        "width": 1871,
+        "height": 840
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-mine",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A mine: a squat stone headframe over a shaft cut into a ridge, a covered stone conveyor to a low sorting hall with a turf roof, heaps of dark ore.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:21:09.456Z",
+      "id": "dusk-mine",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:28.309Z",
+      "candidate": "art/out/dusk-mine/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-mine-256.webp",
+          "bytes": 13124
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-mine-512.webp",
+          "bytes": 40420
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-mine-1024.webp",
+          "bytes": 126552
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 47,
+        "top": 219,
+        "width": 1966,
+        "height": 1482
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-monument",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single small piece of colony equipment for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its sides are seen more than its top. Lit from the upper left, with any lamps or lit panels glowing warmly. The whole object is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction equipment with real materials and wear, like concept art for a film, with ladders, doors and railings sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A monument to the first settlers: a single tall, curved standing stone of dark slate carved with fine spiralling lines, on a low round base of fitted stone, a soft amber light at its foot.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, buildings, a block of soil or rock under it, a floating island, an isometric game-tile look, magenta or pink on the object itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:01:36.110Z",
+      "id": "dusk-monument",
+      "series": "prop",
+      "approvedAt": "2026-10-23T04:25:59.942Z",
+      "candidate": "art/out/dusk-monument/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/prop/dusk-monument-256.webp",
+          "bytes": 10608
+        },
+        {
+          "width": 512,
+          "path": "art/prop/dusk-monument-512.webp",
+          "bytes": 29850
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 441,
+        "top": 159,
+        "width": 1148,
+        "height": 1722
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-orbital-habitat",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. An orbital habitat seen from the ground: a long launch ramp cut into a ridge with a slim shuttle on it, a low stone control hall beside it, and far overhead a faint ring of light in the dusk sky.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:14:44.441Z",
+      "id": "dusk-orbital-habitat",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:25.348Z",
+      "candidate": "art/out/dusk-orbital-habitat/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-orbital-habitat-256.webp",
+          "bytes": 10170
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-orbital-habitat-512.webp",
+          "bytes": 30074
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-orbital-habitat-1024.webp",
+          "bytes": 89710
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 44,
+        "top": 448,
+        "width": 1940,
+        "height": 966
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-planetary-shield",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A planetary shield generator: a ring of tall dark standing stones round a low turf-roofed hall, a faint amber light rising from the stones into a translucent dome over the colony.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:04:57.655Z",
+      "id": "dusk-planetary-shield",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:06.782Z",
+      "candidate": "art/out/dusk-planetary-shield/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-planetary-shield-256.webp",
+          "bytes": 16430
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-planetary-shield-512.webp",
+          "bytes": 48974
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-planetary-shield-1024.webp",
+          "bytes": 155188
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 59,
+        "top": 468,
+        "width": 1949,
+        "height": 1085
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-recreation-dome",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A recreation dome: a low, wide dome of slate ribs and amber glass over a sunken garden of pools and dark ferns, woven screens round its edge, warm amber light.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:08:51.155Z",
+      "id": "dusk-recreation-dome",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:13.813Z",
+      "candidate": "art/out/dusk-recreation-dome/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-recreation-dome-256.webp",
+          "bytes": 12934
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-recreation-dome-512.webp",
+          "bytes": 38674
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-recreation-dome-1024.webp",
+          "bytes": 111138
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 76,
+        "top": 421,
+        "width": 1884,
+        "height": 1181
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-refinery",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A fuel refinery: squat rounded tanks of dark stone and blackened metal under slate hoods, pipes running along low stone walls, a slim flare stack with a small amber flame.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:10:49.935Z",
+      "id": "dusk-refinery",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:17.505Z",
+      "candidate": "art/out/dusk-refinery/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-refinery-256.webp",
+          "bytes": 11732
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-refinery-512.webp",
+          "bytes": 33558
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-refinery-1024.webp",
+          "bytes": 92888
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 62,
+        "top": 402,
+        "width": 1898,
+        "height": 1119
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-research-institute",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A research institute: a long, curved stone hall following a ridge, slit windows glowing amber, a sunken stone observatory with a slatted dome and a tall, slender antenna mast.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:09:13.053Z",
+      "note": "Here is the single building for the strategy game's colony view, depicting the Duskfolk research institute on a flat magenta background, designed in a realistic matte-painting style from the requested perspective.",
+      "id": "dusk-research-institute",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:15.072Z",
+      "candidate": "art/out/dusk-research-institute/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-research-institute-256.webp",
+          "bytes": 11396
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-research-institute-512.webp",
+          "bytes": 32716
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-research-institute-1024.webp",
+          "bytes": 97836
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 82,
+        "top": 171,
+        "width": 1899,
+        "height": 1426
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-rig",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. An automated outpost with no people: a compact, low extraction rig of dark stone and metal, a drill tower, round storage cisterns, a small landing pad for drones and a slim beacon mast with an amber light.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:24:10.149Z",
+      "id": "dusk-rig",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:33.539Z",
+      "candidate": "art/out/dusk-rig/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-rig-256.webp",
+          "bytes": 12276
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-rig-512.webp",
+          "bytes": 36182
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-rig-1024.webp",
+          "bytes": 117258
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 87,
+        "top": 384,
+        "width": 1908,
+        "height": 1197
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-shipyard",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A colony shipyard: a long landing trench cut into the ground and lined with dark stone, amber edge lights along it, a tall gantry of stone and blackened timber beside it, a low turf-roofed hangar; no ship on the pad.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:20:07.162Z",
+      "note": "Here is the single building colony shipyard for the Duskfolk, featuring natural materials, worn finishes, and a long, low profile with a landing trench, a stone and timber gantry, and a turf-roofed hangar. It is seen from a shallow, three-quarter angle and is cleanly cut off at its base against a flat magenta background, designed in a realistic matte-painting style suitable for a film concept or strategy game view.",
+      "id": "dusk-shipyard",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:25.630Z",
+      "candidate": "art/out/dusk-shipyard/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-shipyard-256.webp",
+          "bytes": 15134
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-shipyard-512.webp",
+          "bytes": 46014
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-shipyard-1024.webp",
+          "bytes": 142658
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 52,
+        "top": 171,
+        "width": 1950,
+        "height": 1646
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-shuttle",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Not a building but a small cargo shuttle seen from the side and a little above: a long, low, curved lifting body of dark plated metal like a slate roof, woven cargo nets along its side, landing legs down, small engines glowing amber.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:22:43.018Z",
+      "id": "dusk-shuttle",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:30.965Z",
+      "candidate": "art/out/dusk-shuttle/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-shuttle-256.webp",
+          "bytes": 12910
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-shuttle-512.webp",
+          "bytes": 39298
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-shuttle-1024.webp",
+          "bytes": 108270
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 121,
+        "top": 443,
+        "width": 1831,
+        "height": 1242
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-survey-station",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A survey station: three dish telescopes of dark woven mesh on round stone platforms round a low turf-roofed control hall, amber lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:22:06.902Z",
+      "note": "Here is the building for the strategy game's colony view, rendered in a realistic, grounded matte-painting style against a flat magenta background as requested:",
+      "id": "dusk-survey-station",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:38:29.742Z",
+      "candidate": "art/out/dusk-survey-station/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-survey-station-256.webp",
+          "bytes": 14270
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-survey-station-512.webp",
+          "bytes": 40986
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-survey-station-1024.webp",
+          "bytes": 128266
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 75,
+        "top": 379,
+        "width": 1900,
+        "height": 1293
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-terraforming-station",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A terraforming station: a squat, round stone tower with tall chimneys breathing pale vapour into the sky, low pump halls round it, amber lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:15:21.798Z",
+      "id": "dusk-terraforming-station",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:26.755Z",
+      "candidate": "art/out/dusk-terraforming-station/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-terraforming-station-256.webp",
+          "bytes": 14656
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-terraforming-station-512.webp",
+          "bytes": 42336
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-terraforming-station-1024.webp",
+          "bytes": 121890
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 105,
+        "top": 178,
+        "width": 1868,
+        "height": 1440
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-trade-exchange",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A trade exchange: a broad, low hall of dark stone with a deep porch on many pillars, bales and woven chests stacked outside, a tall pole hung with woven pennants, amber lights.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:07:29.387Z",
+      "id": "dusk-trade-exchange",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:10.763Z",
+      "candidate": "art/out/dusk-trade-exchange/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-trade-exchange-256.webp",
+          "bytes": 14508
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-trade-exchange-512.webp",
+          "bytes": 41998
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-trade-exchange-1024.webp",
+          "bytes": 126834
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 40,
+        "top": 268,
+        "width": 1950,
+        "height": 1401
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-water-tanks",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single small piece of colony equipment for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its sides are seen more than its top. Lit from the upper left, with any lamps or lit panels glowing warmly. The whole object is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction equipment with real materials and wear, like concept art for a film, with ladders, doors and railings sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. Water cisterns for a colony: two round cisterns of fitted dark stone sunk into the ground, with low domed lids roofed in turf, a stone channel leading away and amber lamps on short posts.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, buildings, a block of soil or rock under it, a floating island, an isometric game-tile look, magenta or pink on the object itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T03:59:01.445Z",
+      "id": "dusk-water-tanks",
+      "series": "prop",
+      "approvedAt": "2026-10-23T04:25:55.650Z",
+      "candidate": "art/out/dusk-water-tanks/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/prop/dusk-water-tanks-256.webp",
+          "bytes": 14178
+        },
+        {
+          "width": 512,
+          "path": "art/prop/dusk-water-tanks-512.webp",
+          "bytes": 39460
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 84,
+        "top": 405,
+        "width": 1877,
+        "height": 1234
+      },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "dusk-works",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A single building for a strategy game's colony view, painted in a realistic matte-painting style, not as a stylised game icon. Seen from some way off and only a little above, as from a low rise: a three-quarter view from the front left, looking down at a shallow angle of about fifteen degrees, so its walls are seen more than its roof. Lit from the upper left, with warm lit windows. The whole building is in frame with clear space all round it. It stands at ground level and is cut off cleanly at its base: no block of earth, plinth, platform edge or floating island under it. All round it is a plain, flat, uniform pure magenta (#FF00FF) background: no surrounding ground, no cast shadow and nothing else in the picture. Grounded, believable science-fiction architecture with real materials and wear, like concept art for a film, with doors and windows sized for people so that it reads at its true size. Muted palette, painterly brushwork, crisp clean edges against the background.\n\nSubject: In the architecture of the Duskfolk, an invented alien people: long, low halls half sunk into the ground, curved to follow a ridge, roofed with turf and dark slate, deep overhanging eaves, walls of fitted dark stone and woven screens, narrow slit windows glowing warm amber; communal, patient and very old. A works district: a long, low workshop hall half sunk into a ridge, its turf roof pierced by stone chimneys, wide woven-screen doors open on looms and forges glowing amber, stacks of cut dark stone outside.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, ground, terrain, grass, shadows on the ground, people, vehicles, a second building, a block of soil or rock under the building, a floating island, an isometric game-tile look, magenta or pink on the building itself, cartoon style, glossy toy-like plastic.",
+      "aspect": "1:1",
+      "createdAt": "2026-10-23T04:02:10.218Z",
+      "id": "dusk-works",
+      "series": "structure",
+      "approvedAt": "2026-10-23T04:26:01.308Z",
+      "candidate": "art/out/dusk-works/20261023-035844-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 256,
+          "path": "art/structure/dusk-works-256.webp",
+          "bytes": 11872
+        },
+        {
+          "width": 512,
+          "path": "art/structure/dusk-works-512.webp",
+          "bytes": 33264
+        },
+        {
+          "width": 1024,
+          "path": "art/structure/dusk-works-1024.webp",
+          "bytes": 98706
+        }
+      ],
+      "key": {
+        "backdrop": "magenta",
+        "mode": "cutout",
+        "settings": {
+          "version": 3,
+          "magenta": {
+            "low": 0.3,
+            "high": 0.85
+          },
+          "white": {
+            "slack": 6,
+            "band": 42,
+            "maxChroma": 36
+          },
+          "groundRun": 3,
+          "margin": 6,
+          "rim": 2
+        }
+      },
+      "crop": {
+        "left": 46,
+        "top": 389,
+        "width": 1957,
+        "height": 1087
+      },
+      "aiGenerated": true
+    },
+    {
       "briefId": "end-defeat",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -9265,6 +12210,32 @@
           "width": 1280,
           "path": "art/illustration/people-unhomed-1280.webp",
           "bytes": 95962
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "power-dusk-scene",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: A settlement of the Duskfolk, an invented alien people, in the ring of dusk on a world locked to its red sun: long, low halls half sunk into a ridge, roofed with turf and dark slate, their slit windows glowing amber; the huge dim red sun sits unmoving on the horizon behind them, the sky deep red fading to night overhead; a slim ship rests in a stone-lined landing trench.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-23T04:37:39.847Z",
+      "note": "Here is a cinematic, wide-aspect painted illustration for your strategy game event, featuring a grounded sci-fi landscape of the Duskfolk settlement under their perpetual red sun. Let me know if this works for you!",
+      "id": "power-dusk-scene",
+      "series": "illustration",
+      "approvedAt": "2026-10-23T04:38:54.083Z",
+      "candidate": "art/out/power-dusk-scene/20261023-035844-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/power-dusk-scene-640.webp",
+          "bytes": 16904
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/power-dusk-scene-1280.webp",
+          "bytes": 45882
         }
       ],
       "aiGenerated": true

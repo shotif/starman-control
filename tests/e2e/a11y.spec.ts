@@ -27,7 +27,7 @@ async function findings(page: Page, what: string): Promise<string[]> {
 
 async function newGame(page: Page, project: string) {
   await page.goto('./?test#/new');
-  await expect(page.locator('.power-card')).toHaveCount(3);
+  await expect(page.locator('.power-card')).toHaveCount(4);
   await press(page.getByText('More'), project);
   await page.getByLabel(/Seed/).fill('42');
   await press(page.getByRole('button', { name: 'Lead the Transit Authority' }), project);
@@ -71,7 +71,7 @@ test('every main screen passes the checker', async ({ page }, info) => {
   await expect(page.getByRole('heading', { name: /Starman Control/i })).toBeVisible();
   found.push(...(await findings(page, 'title')));
   await page.goto('./?test#/new');
-  await expect(page.locator('.power-card')).toHaveCount(3);
+  await expect(page.locator('.power-card')).toHaveCount(4);
   found.push(...(await findings(page, 'new game')));
   await newGame(page, project);
   found.push(...(await findings(page, 'map')));

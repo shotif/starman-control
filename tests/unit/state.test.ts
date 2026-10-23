@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FACTION_IDS, PLAYABLE_IDS } from '../../src/content/factions.ts';
+import { FACTION_IDS } from '../../src/content/factions.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { dateOfTurn, formatDate } from '../../src/sim/calendar.ts';
 import { beaconSlots, newGame } from '../../src/sim/state.ts';
@@ -30,9 +30,7 @@ describe('a new game', () => {
       expect(g.powers).toHaveLength(1);
       // The aliens' home webs are of their own lanes: the Concord's five, the Moot's four (M3_NEIGHBOURS.md
       // §24.4), the Continuance's five (M5_UNKNOWN.md §27.4).
-      expect(g.lanes, f).toHaveLength(
-        PLAYABLE_IDS.includes(f) ? 6 : f === 'dusk-concord' || f === 'continuance' ? 5 : 4,
-      );
+      expect(g.lanes, f).toHaveLength(f === 'dusk-concord' || f === 'continuance' ? 5 : f === 'drift-moot' ? 4 : 6);
       expect(g.lanes.every((l) => l.owner === f && l.status === 'open')).toBe(true);
     }
   });

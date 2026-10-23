@@ -36,16 +36,13 @@ async function close(page: Page, project: string) {
   else await page.getByRole('button', { name: 'Close' }).first().tap();
 }
 
-test('a new game offers the three human powers; the Concord plays as a rival', async ({ page }, info) => {
+test('a new game offers the Concord to lead, beside the three human powers (M6_ONE.md §24)', async ({ page }, info) => {
   await page.goto('./#/new');
-  await expect(page.locator('.power-card')).toHaveCount(3);
-  for (const name of ['Transit Authority', 'Frontier Co-op', 'Hollow Wake'])
+  await expect(page.locator('.power-card')).toHaveCount(4);
+  for (const name of ['Transit Authority', 'Frontier Co-op', 'Hollow Wake', 'Dusk Concord'])
     await expect(page.getByRole('button', { name: `Lead the ${name}` })).toBeAttached();
-  await expect(page.getByRole('button', { name: 'Lead the Dusk Concord' })).toHaveCount(0);
   await expect(
-    page.getByText(
-      /the other two, and the Dusk Concord, the Drift Moot and the Continuance, alien powers far out in the shell/,
-    ),
+    page.getByText(/the other three, and the Drift Moot and the Continuance, alien powers far out in the shell/),
   ).toBeVisible();
   // The codex shows its home web, its speaker and its people, as fiction.
   await page.goto('./#/codex');
