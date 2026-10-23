@@ -6,6 +6,7 @@ import { newGame } from '../../src/sim/state.ts';
 import { buildWorld } from '../../src/sim/world.ts';
 import { filterRows, sortRows, systemRows } from '../../src/ui/data/model.ts';
 import { layoutFor, sideSheetsFor } from '../../src/ui/layout.ts';
+import { holdingsText } from '../../src/ui/map/systems.tsx';
 import { searchKey, searchSystems } from '../../src/ui/search.ts';
 
 describe('the layout breakpoints (§10)', () => {
@@ -91,5 +92,21 @@ describe('finding a system', () => {
     expect(searchSystems(world, '')).toEqual([]);
     expect(searchSystems(world, 'zzz')).toEqual([]);
     expect(searchSystems(world, 'a', 3)).toHaveLength(3);
+  });
+});
+
+describe('the systems list (M6_ONE.md §27)', () => {
+  it('counts our holdings in a system in words', () => {
+    expect(holdingsText([{ kind: 'colony' }])).toBe('a colony');
+    expect(holdingsText([{ kind: 'outpost' }, { kind: 'outpost' }])).toBe('2 outposts');
+    expect(
+      holdingsText([
+        { kind: 'colony' },
+        { kind: 'outpost' },
+        { kind: 'colony' },
+        { kind: 'colony' },
+        { kind: 'outpost' },
+      ]),
+    ).toBe('3 colonies and 2 outposts');
   });
 });

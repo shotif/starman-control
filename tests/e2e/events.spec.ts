@@ -69,5 +69,5 @@ test('an event: an epidemic at Earth, answered with a quarantine, which shows in
   const empire = page.getByRole('dialog', { name: 'Empire' });
   await press(empire.getByRole('button', { name: /^Earth/ }).first(), project);
   const panel = isDesktop(project) ? page.locator('.map-inspector') : page.getByRole('dialog', { name: 'Earth' });
-  await expect(panel).toContainText('-10 quarantine');
+  await expect(panel).toContainText('−10 quarantine');
 });

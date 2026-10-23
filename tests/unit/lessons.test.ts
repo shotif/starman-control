@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { currentLesson, forgetLessons, lessonDue, lessons, lessonsOn, tellLesson } from '../../src/app/lessons.ts';
+import {
+  currentLesson,
+  forgetLessons,
+  hintFor,
+  lessonDue,
+  lessons,
+  lessonsOn,
+  tellLesson,
+} from '../../src/app/lessons.ts';
 import { DEFAULT_SETTINGS, settings } from '../../src/app/settings.ts';
 import { ADVISORS } from '../../src/content/advisors.ts';
 import { FACTION_IDS, type FactionId, PLAYABLE_IDS } from '../../src/content/factions.ts';
@@ -148,5 +156,22 @@ describe('told once on this device (§20.1)', () => {
     expect(lessonsOn()).toBe(true);
     settings.value = { ...settings.value, guide: 'off' };
     expect(lessonsOn()).toBe(false);
+  });
+});
+
+describe('a lesson’s hint for each layout (M6_ONE.md §27)', () => {
+  it('keeps the key on a desktop and only the phone’s way on a phone', () => {
+    expect(hintFor('Leaders (L, or Menu): hire them.', true)).toBe('Leaders (L, or Menu): hire them.');
+    expect(hintFor('Leaders (L, or Menu): hire them.', false)).toBe('Leaders (Menu): hire them.');
+    expect(hintFor('Diplomacy (Y, or Menu on a phone) shows it.', true)).toBe('Diplomacy (Y) shows it.');
+    expect(hintFor('Diplomacy (Y, or Menu on a phone) shows it.', false)).toBe('Diplomacy (Menu) shows it.');
+    expect(hintFor('The empire (P) shows it.', true)).toBe('The empire (P) shows it.');
+    expect(hintFor('The empire (P) shows it.', false)).toBe('The empire shows it.');
+    expect(hintFor('Designs (B, or from a shipyard).', false)).toBe('Designs (from a shipyard).');
+    expect(hintFor('A colony’s panel shows its food.', false)).toBe('A colony’s panel shows its food.');
+  });
+
+  it('leaves no key in any lesson on a phone', () => {
+    for (const l of LESSONS) expect(hintFor(l.hint, false), l.id).not.toMatch(/\([A-Z][,)]/);
   });
 });

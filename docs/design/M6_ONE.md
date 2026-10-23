@@ -37,6 +37,8 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 24. [Increment 65 in detail: playing the Concord](#24-increment-65-in-detail-playing-the-concord-written-before-building-it)
 25. [Increment 66 in detail: music and sound for 1.0](#25-increment-66-in-detail-music-and-sound-for-10-written-before-building-it)
 26. [Increment 67 in detail: the long game for 1.0](#26-increment-67-in-detail-the-long-game-for-10-written-before-building-it)
+27. [Increment 68 in detail: polish and phones](#27-increment-68-in-detail-polish-and-phones-written-before-building-it)
+28. [Increment 69 in detail: the proof](#28-increment-69-in-detail-the-proof-written-before-building-it)
 
 ## 1. Where M6 starts
 
@@ -800,3 +802,93 @@ largest save 173.5 KB (**met**, within 200 ms and 200 KB; M2_BALANCE.md, regener
 | --- | --- |
 | Rivals racing for great works | `RULES.greatWorks.rivalsFrom = null` |
 | A race from a set turn instead (measured, not kept) | `RULES.greatWorks.rivalsFrom = 60` |
+
+## 27. Increment 68 in detail: polish and phones (written before building it)
+
+**Goals.** §12: the game played long on a phone, looked at screen by screen, and fixed where it is
+cut off, crowded, unreadable or slow; its load and speed measured with the browser's phone
+throttling; its words kept British. **Out of scope:** a real phone (the owner's, §5 of HANDOVER.md);
+new screens; the map's look.
+
+### 27.1 The long journey on a phone
+
+A new journey, `tests/e2e/journey.spec.ts`, in a project of its own (`journey-phone`, run with
+`npm run journey`, after the others, as the hundred-turn games are), leads **the Concord** (the
+newest power, and not human) at 390 × 844 to turn 150, ending each turn through the interface and
+answering every event. At turns 1, 50, 100 and 150 it opens every main screen (the Empire, Research,
+Diplomacy, Relics, Leaders, Systems, the report, the capital's panel and its colony view, the codex)
+and for each:
+
+- keeps a screenshot (`test-results/journey/<turn>-<screen>.png`) to be looked at;
+- checks that nothing scrolls sideways and that the accessibility checker finds nothing serious;
+- times the turn from the press to the new quarter (within 2 s, as the hundred-turn games).
+
+Each screenshot is then looked at, and what is cut off, overlapping or unreadable is fixed in this
+increment and listed in its as-built.
+
+### 27.2 Load and speed with phone throttling
+
+`npm run phone-speed` (a Playwright script) loads the built game with the browser throttled as a
+mid-range phone on a mobile network (**4× slower processor; 150 ms round trips, 1.6 Mb/s down**) and
+measures: the title shown (first load, nothing cached); a new game's map ready; a turn ended after 50;
+and the map's frames a second while it turns. The targets, an engineering choice that the owner can
+change: **title within 3 s, map within 12 s, a turn within 2 s.** The frame rate is recorded but not
+judged: the test browser draws in software, not on a phone's graphics chip.
+
+### 27.3 Words
+
+Every screen's text was read again (as in every increment); a unit test now keeps American
+spellings (*color*, *center*, *defense*, *-ize* and the like) out of every string the player reads,
+in `src/content` and `src/ui`.
+
+### 27.4 Tests
+
+The journey above; the speed script's targets; the words test.
+
+### 27.5 As built (23 October 2026)
+
+- **The journey** (`tests/e2e/journey.spec.ts`, `npm run journey`; `JOURNEY_TURNS` for a shorter one):
+  the Concord to turn 150 in 4.5 minutes, its orders each turn given by a test hook (`__autoplay`,
+  only with `?test`, loading the rivals' code only when asked) as a rival of its character would; 10
+  events answered, 9 lessons read; the slowest turn 178 ms, the average 69 ms; at turns 1, 50, 100 and
+  150, 11 screens each kept and checked, with nothing sideways, no sheet wider than its box and nothing
+  serious for the checker.
+- **Fixed from its screenshots:** Diplomacy, the Assembly, Relics, Leaders and Systems had no title on
+  either layout, where the Empire and Research have one: each now opens with its name. The chosen step
+  of *Excavations take* and *Guard home* was not lit (its buttons said they were pressed, but nothing
+  showed it): now lit as a pressed chip is. The systems list said "ours: colony, colony, outpost,
+  colony" and "0.0 ly" at the capital: now "ours: 3 colonies and an outpost", and "our capital" in
+  place of the distance. A colony's approval wrote "-15 high taxes" with a hyphen, where the treasury
+  writes "−7 upkeep": now a true minus too. A lesson's hint named the desktop's key on a phone
+  ("Leaders (L, or Menu)"): each layout now shows its own way in (`hintFor`).
+- **Load and speed** (`tests/e2e/speed.spec.ts`, `npm run phone-speed`): the title in **1.0 s**, a
+  new game's map in **3.5 s**, the map turning at 25 frames a second (in software). The browser's
+  throttle slows the page but not the worker that works out a turn, so a turn after 50 is measured
+  unslowed (36 ms) and judged at four times that; the slowest headless turn of all (150 ms, §26) would
+  be about 600 ms on such a phone. Within the targets.
+- **Words** (`tests/unit/words.test.ts`): no American spelling was found in any string the player
+  reads; the test keeps it so.
+
+### 27.6 Reversing it
+
+| To undo | Change |
+| --- | --- |
+| The titles on the menu's screens | the `<h2 class="sheet-heading">` before each view in MapScreen |
+| The lit chosen step | the `.dig-share-buttons .button[aria-pressed="true"]` rule in `relics.css` |
+| A hint for each layout | `hintFor` in the lesson card (`guide.tsx`) |
+| The journey and the speed script | their projects in `playwright.config.ts` and their scripts in `package.json` |
+
+## 28. Increment 69 in detail: the proof (written before building it)
+
+**Goals.** §13: M6 shown whole. **Out of scope:** anything new; what the owner's try asks for comes
+after.
+
+- **The headless games:** M2_BALANCE.md written again from the game as it stands, the targets of §8
+  read off it (as §26.5).
+- **The whole suite:** `npm run check`, the browser journeys on the phone, tablet and desktop, the
+  hundred-turn games, the long journey (§27.1) and the phone's speed (§27.2), each passing, and CI
+  green on `main`.
+- **For the owner:** *Trying M6* in HANDOVER.md, beside *Trying M5*: what is new, where it is, a
+  good first try, and what would help most to hear; SCOPE.md marks M6 built; this design gains a
+  closing *As built* for M6 as a whole (§29), with what was missed and what was deferred.
+

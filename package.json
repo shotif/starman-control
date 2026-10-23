@@ -12,6 +12,8 @@
     "dev:host": "vite --host",
     "build": "vite build",
     "budgets": "node scripts/app/budgets.ts",
+    "journey": "playwright test --project=journey-phone",
+    "phone-speed": "playwright test --project=speed-phone",
     "balance": "node scripts/app/balance.ts",
     "icons": "node scripts/app/icons.ts",
     "preview": "vite preview --host",

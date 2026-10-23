@@ -14,6 +14,17 @@ import { FactionTag } from '../parts.tsx';
 /** Systems shown before *Show all*. */
 const FIRST = 40;
 
+/** Our holdings in a system, counted: "a colony", "2 colonies and an outpost". */
+export function holdingsText(held: readonly { kind: 'colony' | 'outpost' }[]): string {
+  const count = (kind: 'colony' | 'outpost', one: string, many: string) => {
+    const n = held.filter((h) => h.kind === kind).length;
+    return n === 0 ? null : n === 1 ? `a ${one}` : `${n} ${many}`;
+  };
+  return [count('colony', 'colony', 'colonies'), count('outpost', 'outpost', 'outposts')]
+    .filter((x) => x !== null)
+    .join(' and ');
+}
+
 export function SystemsList({
   world,
   game,
@@ -47,14 +58,10 @@ export function SystemsList({
               <button type="button" class="link systems-row" onClick={() => onGo(id)}>
                 <b>{world.system(id).name}</b>
               </button>{' '}
-              <span class="dim">{formatLy(world.distanceDeci(power.capital, id))}</span>
-              {ours.length > 0 && (
-                <span>
-                  {' '}
-                  · ours: {ours.map((h) => h.kind).join(', ')}
-                  {ours.some((h) => h.capital) ? ' (our capital)' : ''}
-                </span>
-              )}
+              <span class="dim">
+                {id === power.capital ? 'our capital' : formatLy(world.distanceDeci(power.capital, id))}
+              </span>
+              {ours.length > 0 && <span> · ours: {holdingsText(ours)}</span>}
               {holders
                 .filter((f) => f !== faction)
                 .map((f) => (

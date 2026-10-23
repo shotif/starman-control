@@ -286,7 +286,10 @@ screen, and two sounds after a turn's tone: a muffled double thud for a battle f
 a key found or taken. **Done: increment 67, the long game for 1.0** (§26): rivals now race for the
 great works once any power begins one (none had ever built one, so a player took all four
 unopposed); the targets for 1.0 measured: five winners with the Co-op one over the three, no win by
-the keys, debt and the budgets within their limits.
+the keys, debt and the budgets within their limits. **Done: increment 68, polish and phones** (§27):
+the Concord played to turn 150 on a phone with every screen looked at (`npm run journey`), what it
+showed fixed (titles on the menu's screens, the chosen step lit, plainer words), load and speed
+measured with phone throttling (`npm run phone-speed`: title 1.0 s, map 3.5 s), British words tested.
 
 The art and music spend: about $40.00 of $50 (raised on 22 October 2026; about $10.00 left). M3's
 art is about 65 pictures (about $6.50).
@@ -355,6 +358,8 @@ npm run check          # typecheck, lint (Biome), art records, unit tests, build
 npm run format         # Biome's formatting and safe fixes (run before check)
 npm run test:e2e       # browser journeys: phone 390×844, tablet 820×1180, desktop 1440×900
 npm run screenshots    # ten sizes into test-results/screens/<screen>-<size>.png
+npm run journey        # the Concord to turn 150 on a phone, every screen into test-results/journey/
+npm run phone-speed    # load and speed with a phone's throttling (title, map, a turn, frames)
 npm run art:generate -- --brief <id>[,<id>…] --provider gemini --count 2
 npm run art:key -- --brief <id>[,<id>…]             # key a landscape's or building's candidates
 npm run art:sheet -- --brief <id>                   # one brief at a time (keyed ones on a checkerboard)

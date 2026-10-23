@@ -168,7 +168,7 @@ export function Resources({ world, game, faction }: { world: World; game: GameSt
       {item('fuel', 'res-fuel')}
       <li
         class={`res-credits${power.treasury < 0 ? ' is-short' : ''}`}
-        title={`Credits a turn: ${treasury.parts.map((p) => `${p.value > 0 ? '+' : ''}${p.value} ${p.label}`).join(', ')}`}
+        title={`Credits a turn: ${treasury.parts.map((p) => `${p.value > 0 ? '+' : p.value < 0 ? '−' : ''}${Math.abs(p.value)} ${p.label}`).join(', ')}`}
       >
         <span class="res-icon res-credits-icon" aria-hidden="true" />
         <b>
@@ -249,7 +249,12 @@ function ApprovalText({ world, game, h }: { world: World; game: GameState; h: Ho
         {a.total} · {APPROVAL_WORD[a.level]}
       </span>{' '}
       <span class="dim">
-        = {a.parts.map((p) => `${p.value > 0 && p !== a.parts[0] ? '+' : ''}${p.value} ${p.label}`).join(' ')}
+        ={' '}
+        {a.parts
+          .map(
+            (p) => `${p.value > 0 && p !== a.parts[0] ? '+' : p.value < 0 ? '−' : ''}${Math.abs(p.value)} ${p.label}`,
+          )
+          .join(' ')}
       </span>
     </>
   );

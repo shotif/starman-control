@@ -15,6 +15,20 @@ import { enemiesOf } from '../sim/war.ts';
 import type { World } from '../sim/world.ts';
 import { settings } from './settings.ts';
 
+/**
+ * A lesson's hint for one layout (M6_ONE.md §27): written once with the desktop's key and a phone's
+ * way in, as "Leaders (L, or Menu)" or "Diplomacy (Y, or Menu on a phone)", it keeps on a desktop
+ * the key (and Menu, which a desktop has too) and on a phone only its own way.
+ */
+export function hintFor(hint: string, desktop: boolean): string {
+  return hint.replace(/ \(([A-Z])(?:, or ([^)]+))?\)/g, (_, key: string, other: string | undefined) => {
+    const phoneOnly = other?.endsWith(' on a phone');
+    if (desktop) return phoneOnly || !other ? ` (${key})` : ` (${key}, or ${other})`;
+    if (!other) return '';
+    return ` (${phoneOnly ? other.slice(0, -' on a phone'.length) : other})`;
+  });
+}
+
 /** Agents are told of only once the first years of settling and meeting are past. */
 const AGENTS_FROM = 30;
 

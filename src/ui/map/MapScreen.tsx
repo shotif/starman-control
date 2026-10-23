@@ -1049,38 +1049,58 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   );
   // Diplomacy (M3_NEIGHBOURS.md §20.3), only with another power in play.
   const others = game.powers.length > 1;
+  // Each screen opened from the menu says where it is, as the Empire and Research do (M6_ONE.md §27).
   const diplomacy = play && others && (
-    <DiplomacyView world={world} game={game} faction={play.faction} play={play} table={desktop} />
+    <>
+      <h2 class="sheet-heading">Diplomacy</h2>
+      <DiplomacyView world={world} game={game} faction={play.faction} play={play} table={desktop} />
+    </>
   );
   // The Assembly (M4_FLEETS.md §29.4).
-  const assembly = play && others && <AssemblyView world={world} game={game} faction={play.faction} play={play} />;
+  const assembly = play && others && (
+    <>
+      <h2 class="sheet-heading">The Assembly</h2>
+      <AssemblyView world={world} game={game} faction={play.faction} play={play} />
+    </>
+  );
   // Relic sites (M5_UNKNOWN.md §20.8).
   const relics = play && (
-    <RelicsView
-      world={world}
-      game={game}
-      faction={play.faction}
-      play={play}
-      onGo={(id) => {
-        if (!desktop) panel.value = null;
-        go(id);
-      }}
-    />
+    <>
+      <h2 class="sheet-heading">Relics</h2>
+      <RelicsView
+        world={world}
+        game={game}
+        faction={play.faction}
+        play={play}
+        onGo={(id) => {
+          if (!desktop) panel.value = null;
+          go(id);
+        }}
+      />
+    </>
   );
   // The arks of the Unhomed (M5_UNKNOWN.md §25.6).
   const arksView = play && game.arks && <ArksView world={world} game={game} faction={play.faction} play={play} />;
   // Leaders (M5_UNKNOWN.md §24.6).
-  const leaders = play && <LeadersView world={world} game={game} faction={play.faction} play={play} />;
+  const leaders = play && (
+    <>
+      <h2 class="sheet-heading">Leaders</h2>
+      <LeadersView world={world} game={game} faction={play.faction} play={play} />
+    </>
+  );
   const systemsList = play && (
-    <SystemsList
-      world={world}
-      game={game}
-      faction={play.faction}
-      onGo={(id) => {
-        panel.value = null;
-        go(id);
-      }}
-    />
+    <>
+      <h2 class="sheet-heading">Systems</h2>
+      <SystemsList
+        world={world}
+        game={game}
+        faction={play.faction}
+        onGo={(id) => {
+          panel.value = null;
+          go(id);
+        }}
+      />
+    </>
   );
   // The end of the game (M4_FLEETS.md §30.3): play on, unless our power has left the game.
   const outcome = play ? outcomeFor(game, play.faction) : null;

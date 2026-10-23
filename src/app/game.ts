@@ -31,6 +31,20 @@ if (typeof location !== 'undefined' && new URLSearchParams(location.search).has(
     __setGame: (g: GameState) => {
       game.value = g;
     },
+    // The long journey on a phone (M6_ONE.md §27.1): the player's orders for a turn, as a rival of
+    // its character would give them, so the empire grows as a played one does. Loaded only when asked.
+    __autoplay: async (): Promise<number> => {
+      const g = game.value;
+      const p = g && playerPower(g);
+      if (!g || !p) return 0;
+      const [{ aiOrders }, { applyInPlace }] = await Promise.all([import('../sim/ai.ts'), import('../sim/orders.ts')]);
+      const next = structuredClone(g);
+      let given = 0;
+      for (const o of aiOrders(world, g, p.faction)) if (applyInPlace(world, next, p.faction, o) === null) given++;
+      game.value = next;
+      saveSoon();
+      return given;
+    },
   });
 /** True while a turn is being worked out. */
 export const resolving = signal(false);

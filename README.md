@@ -63,6 +63,8 @@ npm run preview   # serve dist/ at http://localhost:4173
 npm run check     # typecheck, lint, art records, unit tests and the production build
 npm run test:e2e  # browser journeys on a phone, a tablet and a desktop (Playwright)
 npm run screenshots  # every screen at the review sizes, into test-results/screens/
+npm run journey      # the Concord to turn 150 on a phone, every screen kept and checked
+npm run phone-speed  # load and speed with a phone's throttling
 npm run format    # apply Biome's formatting
 npm run data:import  # copy the sky and lanes from a Starman Reborn checkout (../starman-reborn)
 npm run data:import-dwarfs  # copy the mean dwarf star table (Pecaut & Mamajek 2013)

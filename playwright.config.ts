@@ -27,17 +27,17 @@ export default defineConfig({
   projects: [
     {
       name: 'phone',
-      testIgnore: /(screenshots|long)\.spec\.ts/,
+      testIgnore: /(screenshots|long|journey|speed)\.spec\.ts/,
       use: { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
     },
     {
       name: 'tablet',
-      testIgnore: /(screenshots|long)\.spec\.ts/,
+      testIgnore: /(screenshots|long|journey|speed)\.spec\.ts/,
       use: { viewport: { width: 820, height: 1180 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
     },
     {
       name: 'desktop',
-      testIgnore: /(screenshots|long)\.spec\.ts/,
+      testIgnore: /(screenshots|long|journey|speed)\.spec\.ts/,
       use: { viewport: { width: 1440, height: 900 } },
     },
     // The 100-turn games (M2_WORLDS.md §29.3) run after every other journey, alone, so their long
@@ -53,6 +53,18 @@ export default defineConfig({
       testMatch: /long\.spec\.ts/,
       dependencies: ['phone', 'tablet', 'desktop', 'screenshots'],
       use: { viewport: { width: 1440, height: 900 } },
+    },
+    // The long journey on a phone (M6_ONE.md §27.1), alone: `npm run journey`.
+    {
+      name: 'journey-phone',
+      testMatch: /journey\.spec\.ts/,
+      use: { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
+    },
+    // Load and speed with phone throttling (M6_ONE.md §27.2), alone: `npm run phone-speed`.
+    {
+      name: 'speed-phone',
+      testMatch: /speed\.spec\.ts/,
+      use: { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 },
     },
     {
       name: 'screenshots',

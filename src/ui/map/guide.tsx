@@ -5,7 +5,7 @@
 
 import { useEffect } from 'preact/hooks';
 import { currentStep, guide, guideFinished, guideGameId, setGuideFlag, skipStep, stopGuide } from '../../app/guide.ts';
-import { currentLesson, lessons, lessonsOn, tellLesson } from '../../app/lessons.ts';
+import { currentLesson, hintFor, lessons, lessonsOn, tellLesson } from '../../app/lessons.ts';
 import { settings } from '../../app/settings.ts';
 import { ADVISORS, DEPARTMENT_NAMES } from '../../content/advisors.ts';
 import type { FactionId } from '../../content/factions.ts';
@@ -13,6 +13,7 @@ import { ALONE_LINES, GUIDE_STEPS } from '../../content/guide.ts';
 import type { Lesson } from '../../content/lessons.ts';
 import type { GameState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
+import { layout } from '../layout.ts';
 import { AdvisorFace } from '../parts.tsx';
 import { panel, selectedHolding } from './state.ts';
 import './guide.css';
@@ -96,7 +97,7 @@ function LessonCard({ lesson, faction, top }: { lesson: Lesson; faction: Faction
           </span>
         </p>
         <p class="guide-line">{lesson.lines[team.voice]}</p>
-        <p class="guide-hint">{lesson.hint}</p>
+        <p class="guide-hint">{hintFor(lesson.hint, layout.value === 'desktop')}</p>
         <div class="guide-actions">
           <button type="button" class="button button-small" onClick={() => tellLesson(lesson.id)}>
             Got it

@@ -56,6 +56,16 @@
   min-height: 44px;
 }
 
+/* The step chosen, lit as a pressed chip is (M6_ONE.md §27): the dig share and the guard at home. */
+.dig-share-buttons .button[aria-pressed="true"] {
+  background: var(--plate-lit);
+  box-shadow:
+    inset 0 -2px 0 var(--accent),
+    inset 0 1px 0 rgba(143, 220, 255, 0.35),
+    0 8px 18px -10px rgba(92, 200, 255, 0.9);
+  color: #ffffff;
+}
+
 .relic-list {
   display: grid;
   gap: 0.35rem;
