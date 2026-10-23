@@ -263,8 +263,14 @@ the proof** (§28): M5 measured against its targets with six powers; the Forge m
 its own, since the heirs could reach none; raids mended (a holding plundered once a turn, nothing
 taken from an empty treasury; deepest debt −131); four different winners in the long games. **M5 is
 built**; its last condition, the decision on Steam (D-18), is the owner's. Missed, for M6: a game
-won by the keys by a rival, the Co-op's fourth win (D-79), every site found by turn 150. Next:
-**M6**, after the owner's try.
+won by the keys by a rival, the Co-op's fourth win (D-79), every site found by turn 150.
+
+**Now: M6 "1.0"** ([design/M6_ONE.md](design/M6_ONE.md)), on the owner's leave renewed on 23 October
+2026: lessons for every system when it first matters, accessibility checked in CI with a list for
+the map, the keys within the rivals' reach, guardians, the Concord to play, music for war and the
+end, the long game's targets for 1.0, polish on phones, and the proof, in increments 61 to 69.
+D-80 to D-86 are **assumed as recommended** ([DECISIONS.md Round 9](DECISIONS.md#round-9-10-assumed-23-october-2026));
+D-85 keeps one map for 1.0.
 
 The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).

@@ -1,0 +1,333 @@
+# M6 · 1.0
+
+*Proposed 23 October 2026, after M5. The owner renewed their standing leave the same day: "continue
+with development according to your best judgement, without asking me anything", asking that "any
+major impact on the game is well documented and reversible, so I can maybe change directions later
+on". So each question below has its options and a recommendation as before, and is recorded in
+[DECISIONS.md, Round 9](../DECISIONS.md#round-9-10-assumed-23-october-2026) as **assumed on the
+owner's leave**: built as recommended, and the owner may overrule any of them. Each increment gets a
+detailed design section (§20 onwards), written before it is built, with its notes as built.*
+
+SCOPE.md's M6: *balance from AI-against-AI games, the guided opening, music and sound,
+accessibility, the wider map sizes, polish.* Done when *the owner is happy to call it 1.0*: that is
+the owner's alone, so M6 ends with a proof and the owner's try.
+
+## Contents
+
+1. [Where M6 starts](#1-where-m6-starts)
+2. [Goals](#2-goals)
+3. [Out of scope](#3-out-of-scope)
+4. [Lessons when they matter (D-80)](#4-lessons-when-they-matter-d-80)
+5. [Playing an alien power (D-81)](#5-playing-an-alien-power-d-81)
+6. [The keys within everyone's reach (D-82)](#6-the-keys-within-everyones-reach-d-82)
+7. [Guardians (D-72, carried from M5)](#7-guardians-d-72-carried-from-m5)
+8. [The long game, balanced (D-83)](#8-the-long-game-balanced-d-83)
+9. [Accessibility (D-84)](#9-accessibility-d-84)
+10. [Map sizes (D-85)](#10-map-sizes-d-85)
+11. [Music and sound (D-86)](#11-music-and-sound-d-86)
+12. [Polish and phones](#12-polish-and-phones)
+13. [Increments](#13-increments)
+14. [Tests and budgets](#14-tests-and-budgets)
+15. [Art, music and their cost](#15-art-music-and-their-cost)
+16. [Decisions](#16-decisions)
+
+## 1. Where M6 starts
+
+- **Six powers start every game with rivals** on 356 real systems out to 33 light-years: the three
+  human powers, which the player may lead, and the Dusk Concord, the Drift Moot and the Continuance,
+  which play only as rivals. The Last Hearth may arrive in mid-game (M5).
+- **Every system of M1 to M5 is built:** worlds, colonies and the economy; research; contact,
+  diplomacy and the Assembly; fleets, battles, war and invasion; relic sites, the keys and the
+  Answer; events; agents; leaders; the arks. A game can be won by conquest, by the Assembly's choice,
+  by the keys or on score at the turn limit.
+- **The guided opening** (M2, D-40) teaches the first twenty or so turns of M2's economy: the
+  capital, the queue, survey, research, taxes, settling, lanes, governors. **Nothing teaches what
+  came after:** contact and words, treaties, the Assembly, warships, war and invasion, raids, relic
+  sites and their chapters, the keys, agents, leaders, the arks. The advisors comment in the report,
+  but a new player meets most of M3 to M5 unexplained.
+- **The aliens cannot be played** (D-08: "alien species later"). Their rules are complete, as every
+  rival plays by the player's rules; what is missing is what a player sees: their colonies in
+  pictures (the human powers have 45 buildings each), their advisors' faces (only the envoys have
+  one), the new game's picture of them, and their colonies' music.
+- **The keys are the player's road only.** In the eight headless games no rival holds more than two
+  of the five keys; they end spread among three or four powers (M5_UNKNOWN.md §28).
+- **Guardians were deferred** from M5 (D-72), since a battle assumes each side is a power.
+- **The headless games** (M2_BALANCE.md): four different winners (the Co-op 4, the Continuance 2,
+  the Wake 1, the Concord 1); one game won before the limit, by the Assembly; turns within 143 ms and
+  saves within 174 KB on the machine that measures them; the deepest debt −131.
+- **Accessibility** so far: a text size setting, reduced motion, a shortcut for every action on the
+  desktop, every power's colour paired with a shape, labelled controls. Nothing checks it
+  automatically, and the map is a picture with no text alternative but the search.
+- **Music** (D-31, Lyria): seven pieces, for the title, the map, a system and the three human powers'
+  colonies. Interface sounds are made in the browser.
+- **Not yet tried by the owner on a real phone** since M1.
+
+## 2. Goals
+
+1. **Every system explained when it first matters,** by the advisor whose work it is, in a sentence
+   or two, never in the way.
+2. **An alien power to play** (D-08), the first that is not human.
+3. **The keys a road the rivals can take too,** so the fourth victory is a race, not a puzzle only
+   the player solves; and the guardians that make a key cost a fight.
+4. **A long game that is balanced:** many winners, by more than one road, with no power broke.
+5. **Accessible to more people:** checked automatically, every screen usable by keyboard and screen
+   reader, readable at the largest text size on a phone.
+6. **Music for the moments that matter,** and sound that tells what happened.
+7. **Polished:** nothing that looks unfinished on a phone or a desktop, and fast enough on a phone.
+
+## 3. Out of scope
+
+- **Several players** (hot seat or online): after 1.0, if ever.
+- **A store build** (Steam, app stores): D-18 is the owner's; nothing in M6 depends on it.
+- **The under-ice thinkers and the chorus** (M5_UNKNOWN.md §12), **sabotage and theft** (SCOPE §4.10,
+  *later*): after 1.0.
+- **A composer's score** (D-31, D): if the game earns it, after 1.0.
+- **Pyre on the map** (D-78 stays A).
+
+## 4. Lessons when they matter (D-80)
+
+**The lessons.** The first time something that needs explaining happens to the player, the advisor
+whose work it is says what it is and where to act, in the power's voice: a card like the guided
+opening's, with *Got it*, never blocking anything, lit round the control when it is on the screen.
+About fifteen, each told once a game:
+
+| When | Who | What it says, in short |
+| --- | --- | --- |
+| First contact | the Envoy | who they are; words grow each turn until we can talk |
+| We can talk | the Envoy | treaties, and how they regard us (Diplomacy) |
+| The Assembly forms | the Envoy | votes by people; elections; resolutions |
+| A rival's warship near us, or our first warship | the Admiral | designs, fleets and their orders |
+| War declared, by or on us | the Admiral | fleets, defences, invasion, peace |
+| First raid on us | the Watch | the outlaw's raids; warships or protection |
+| A relic site known | Science | excavation, the share of research, chapters |
+| A chapter waiting | Science | the choice; the journal |
+| A key found by anyone | Science | the five keys and the Answer |
+| Leaders offered | Colonies (or the Envoy) | callings, posts, wages |
+| Agents possible | the Watch | watching a power, guarding home |
+| The arks arrive | the Envoy | their ask and our three answers |
+| An event with a choice | its advisor | events and their choices |
+| Hunger, unrest or debt for the first time | that advisor | what causes it and the cure |
+
+**Kept for later.** Every lesson told is kept in the codex, under *How to play*, in the order told,
+with the rest listed as *not yet met*; the codex also has a short written summary of every system,
+for a player who wants to read ahead.
+
+**Settings.** The guide setting already chooses *on* or *off*; *off* turns the lessons off too. A new
+setting is not needed.
+
+**Options:**
+
+- **A. Lessons when they matter, kept in the codex (recommended):** short, in the moment, in the
+  advisors' voices, as the guided opening is, and readable again.
+- **B. A written manual only,** in the codex: least work, but read by few.
+- **C. A second scripted tutorial** after the opening (a war, a relic): thorough, but long and in the
+  way of a game already under way.
+
+## 5. Playing an alien power (D-81)
+
+**What a power needs to be played,** besides its rules, which every rival already has:
+
+- **Its colonies in pictures:** 45 buildings in its architecture (homes in three sizes, open and
+  domed, three versions; districts; projects; ships on the pad), as each human power has.
+- **Its advisors' faces:** seven more (only the envoy has one).
+- **Its picture for the new game and the title,** and its card's words.
+- **Its colonies' music:** one piece.
+- **The guided opening and the lessons** in its voice (each power has a voice already).
+
+**Which first.** The **Dusk Concord** (the Duskfolk, at home in the ring of dusk on tidally locked
+worlds, M3_NEIGHBOURS.md §24) builds on the ground, like the human powers, so the colony view needs
+nothing new but its buildings. The **Drift Moot** lives in the air of giant planets: its colonies
+need a new kind of ground (a cloud deck) and its own scene. The **Continuance** came in M5 and is the
+least written.
+
+**Options:**
+
+- **A. The Concord in M6, the Moot and the Continuance after 1.0 (recommended):** one alien power to
+  play for 1.0, about $5.50 of pictures and music; the others when their art fits the allowance.
+- **B. The Concord and the Moot in M6:** about $12, most of what is left of the $50 (D-27), and a
+  new kind of colony scene for the Moot.
+- **C. None for 1.0:** the three human powers only.
+
+## 6. The keys within everyone's reach (D-82)
+
+**Why the rivals never gather the keys** (M5_UNKNOWN.md §21, §28): each key lies at the site
+nearest one capital, so each power finds the one near it; the rest are across the map, held by
+others. A rival takes a key only by war, and goes to war for keys only once it holds three. No one
+trades a key. So the keys end spread among three or four powers.
+
+**What could change:**
+
+- **The hunt:** a power holding two keys and knowing where the rest lie (*The second tone*) makes the
+  keys its war aim: its war plans strike key holdings first, as far as its lanes reach, and it
+  builds the road to them; a power that holds a key fears such a hunter (it arms, and seeks pacts).
+- **Keys in exchanges:** a key may be given in a dealing, as credits or a treaty are; a rival gives
+  one only to a friend that does not frighten it, and never the last it needs to stop another.
+- **Three keys for the Answer** (D-71's option C): shorter games, and the race open to anyone with
+  one war won.
+
+**Options:**
+
+- **A. The hunt first, then keys in exchanges, each measured; three keys only if both fail
+  (recommended):** the smallest changes that make the keys a race, each with its switch, kept only if
+  the headless games show a rival reaching the Answer without the game ending too soon.
+- **B. Three keys for the Answer, now:** simplest; changes D-71 for the player too.
+- **C. Leave the keys the player's road:** honest, but the fourth victory stays a puzzle.
+
+## 7. Guardians (D-72, carried from M5)
+
+As M5_UNKNOWN.md §7: old machines of the Absent at **every key site and about a third of the
+others**, that do not talk, move or leave (fiction). A guarded site cannot be excavated until they
+are beaten; they fight as a colony's battery does, from a side of their own, against an armed fleet
+sent with the order *clear the guardians*; beaten, they are gone; not beaten, they mend. A risky
+choice in a chapter may wake them.
+
+**What M6 adds:** a side in battle that is no power (battles, replays and reports learn it); the
+rivals' fleets clear the guardians of a site they would dig; and the order comes after §6, so the
+keys are first a race the rivals can win. **No new decision:** D-72 stays A, built now.
+
+## 8. The long game, balanced (D-83)
+
+**The targets for 1.0,** in the eight headless games to turn 250, for the owner to overrule:
+
+- **At least four different winners, none winning more than three** (D-69's, carried on).
+- **At least one won by the keys** (M5's, carried on).
+- **No treasury below −200,** and none in debt for more than 30 turns in a row.
+- **Turns within 200 ms and saves within 200 KB** on the measuring machine.
+- **M4's target that most games are won before the limit is dropped:** since increment 51 the brakes
+  on the Assembly's vote (fear and tiring, D-69, the owner's choice) end most games at the limit, on
+  score, which is a fair end for a long game.
+
+**How:** every change measured in the eight games and kept only if it helps, with its switch; D-79
+(the Co-op's lead) stays A.
+
+**Options:**
+
+- **A. These targets (recommended).**
+- **B. Keep M4's target too** (most games won before the limit): would mean loosening the brakes
+  on the vote the owner chose in D-69.
+- **C. No numeric targets for 1.0,** only the owner's try.
+
+## 9. Accessibility (D-84)
+
+- **Checked automatically:** an accessibility checker (axe-core, a development dependency only) runs
+  in the browser journeys on every main screen, on the phone and the desktop, and CI fails on a
+  serious finding.
+- **Fixed:** what it finds (names, roles, contrast, focus).
+- **A text alternative to the map:** a list of the systems we know, with what is there and whose,
+  sorted by distance, reachable from the menu and the keyboard; choosing one selects it as the map
+  does.
+- **Keyboard and focus:** every dialog takes focus and gives it back; focus is always visible.
+- **The largest text on a phone:** every screen read at the largest text size without sideways
+  scrolling.
+- **Colour:** every power's colour checked for contrast where it colours text; the shapes beside
+  the colours stay.
+
+**Options:**
+
+- **A. WCAG 2.2 AA where it applies, checked in CI, with the map's list (recommended).**
+- **B. A lighter pass:** labels and contrast only.
+- **C. None before 1.0.**
+
+## 10. Map sizes (D-85)
+
+The game has one map, every real system out to 33 light-years (356 systems), with the human powers
+in the old 27 light-year heartland and the aliens in the shell beyond. D-02 planned a 40 light-year
+map (about 600 systems) *if performance and the AI allow*.
+
+- **Larger (40 ly):** a new import of real stars through Starman Reborn's sky pipeline; turns would
+  take about twice as long (the slowest is 143 ms now, against a budget of 200 ms) and a phone's map
+  would carry nearly twice the stars. The alien powers would be no nearer one another.
+- **Smaller (27 ly, the heartland):** 207 systems, but every alien capital lies beyond it, so it
+  would be a game of the human powers alone; and every part of the game reads one map today, so a
+  second needs the world chosen per game, in the turn's worker and in saves.
+
+**Options:**
+
+- **A. One map for 1.0, the 33 ly neighbourhood (recommended):** already larger than *Master of
+  Orion 3*'s largest galaxy; a shorter game is the turn limit's job (150, 200, 250 or none).
+- **B. Add the heartland map** (27 ly, the human powers only), for short games.
+- **C. Add the 40 ly map,** if a measurement first shows turns within budget.
+
+## 11. Music and sound (D-86)
+
+Seven pieces play now (title, map, system, three colonies). **For 1.0:**
+
+- **A piece for the playable alien's colonies** (§5).
+- **War:** the map's music while we are at war, tenser.
+- **The end:** victory and defeat, for the end screen.
+- **Sounds that tell:** a short sound for a battle reported, a key found and the Answer begun, made
+  in the browser like the interface sounds.
+
+Generated with Lyria as D-31 decided, three candidates each, chosen by Claude on the owner's leave,
+the candidates kept and sent lettered for the owner to overrule: about four pieces, **about $1**.
+
+**Options:** **A. those four pieces and the sounds (recommended)** · B. the sounds only · C. none.
+
+## 12. Polish and phones
+
+Not a decision, the work of every increment and one of its own (§13):
+
+- **A long journey on a phone:** a game played by script to turn 150 on the phone size, every screen
+  opened along the way, screenshots kept; anything cut off, overlapping, unreadable or slow is
+  fixed.
+- **Load and speed on a phone:** the first load, a turn and the map's frame rate measured with the
+  browser's phone throttling, within the budgets of SCOPE.md.
+- **Words:** every screen's text read once more for plain British English and for what is fiction.
+
+## 13. Increments
+
+Each keeps the game playable, passes CI and deploys from `main`.
+
+| # | Increment | What it adds |
+| --- | --- | --- |
+| 61 | **Lessons when they matter** | §4: the lessons, *How to play* in the codex |
+| 62 | **Accessibility** | §9: the checker in the journeys, fixes, the map's list |
+| 63 | **The keys within reach** | §6: the hunt, keys in exchanges, measured |
+| 64 | **Guardians** | §7 |
+| 65 | **Playing the Concord** | §5: its buildings, faces, picture and music; the new game offers it |
+| 66 | **Music and sound for 1.0** | §11 |
+| 67 | **The long game for 1.0** | §8: the targets measured and met where they can be |
+| 68 | **Polish and phones** | §12 |
+| 69 | **The proof** | the headless games, the whole suite, the owner's try |
+
+## 14. Tests and budgets
+
+- **Unit tests for every rule:** each lesson's trigger, once a game; the hunt and keys in exchanges;
+  guardians in battle; the Concord as the player's power for 100 turns.
+- **Browser journeys** on the phone, tablet and desktop: a lesson shown and kept in the codex; the
+  accessibility checker on every main screen; the map's list; guardians cleared; a game led by the
+  Concord, with its colony view.
+- **The headless games** to the targets of §8.
+- **Budgets** as SCOPE.md: the title, a game's map, a colony's pictures; turns within 200 ms, saves
+  within 200 KB.
+
+## 15. Art, music and their cost
+
+| What | About |
+| --- | --- |
+| The Concord's 45 buildings, two candidates each | $4.50 |
+| The Concord's seven advisors' faces and its new-game picture | $0.80 |
+| Guardians: a picture for the report | $0.10 |
+| Music: the Concord's colonies, war, victory and defeat, three candidates each | $1.00 |
+| **In all** | **about $6.40** |
+
+About $16.80 of the $50 allowance (D-27) is left, so M6 fits with about $10 to spare for re-rolls
+and the next alien. No increase is asked for.
+
+## 16. Decisions
+
+Assumed on the owner's standing leave of 23 October 2026, each as recommended, and recorded in
+[DECISIONS.md, Round 9](../DECISIONS.md#round-9-10-assumed-23-october-2026):
+
+| ID | Question | Recommendation |
+| --- | --- | --- |
+| **D-80** | Lessons when they matter (§4) | **A, lessons when they matter, kept in the codex** |
+| **D-81** | Playing an alien power (§5) | **A, the Concord in M6; the Moot and the Continuance after 1.0** |
+| **D-82** | The keys within everyone's reach (§6) | **A, the hunt, then keys in exchanges, measured; three keys only if both fail** |
+| **D-83** | The balance targets for 1.0 (§8) | **A, four winners and one by the keys; no deep or long debt; M4's limit target dropped** |
+| **D-84** | Accessibility (§9) | **A, WCAG 2.2 AA where it applies, checked in CI, with the map's list** |
+| **D-85** | Map sizes (§10) | **A, one map for 1.0** |
+| **D-86** | Music and sound (§11) | **A, four pieces and the sounds** |
+
+D-72 (guardians) stays A and is built in M6; D-79 stays A. **Left to the owner:** **D-18**, and
+whether to call the result 1.0.

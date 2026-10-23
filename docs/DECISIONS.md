@@ -72,6 +72,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-13, D-70 – D-78 | The M5 design: the Absent, relic sites, the keys, guardians, leaders, espionage, events, the dying star, the species, Pyre | Assumed 2026-10-22 (owner's leave) | **as recommended**, open to the owner to overrule; see [Round 8](#round-8-the-unknown-assumed-22-october-2026) and [M5_UNKNOWN.md](design/M5_UNKNOWN.md) |
 | D-18 | Free or paid, open source or not, Steam or the web only | Open | the owner's; see [Round 2](#round-2-needed-later) |
 | D-79 | The Co-op's lead in long games ([below](#d-79--the-co-ops-lead-in-long-games--assumed-owners-leave)) | Assumed 2026-10-23 (owner's leave) | **A, leave the Co-op as it is for M6's longer campaigns**, as recommended; overrule any time |
+| D-80 – D-86 | The M6 design: lessons when they matter, playing an alien power, the keys within everyone's reach, the balance targets for 1.0, accessibility, map sizes, music and sound | Assumed 2026-10-23 (owner's leave) | **as recommended**, open to the owner to overrule; see [Round 9](#round-9-10-assumed-23-october-2026) and [M6_ONE.md](design/M6_ONE.md) |
 
 ## Round 1: decided 19 October 2026
 
@@ -806,6 +807,34 @@ have turned every power against a player who leads).
 8's). The Co-op is left as it is; the machine heirs (increment 59), whose home lies 23 light-years
 from the Co-op's and nearer it than any other capital, are its first new neighbour. To overrule,
 choose B, C or D and the next increment builds it.
+
+## Round 9: 1.0, assumed 23 October 2026
+
+With M5 built, M6 "1.0" (SCOPE.md §7) is designed in [design/M6_ONE.md](design/M6_ONE.md): lessons
+for every system when it first matters, an alien power to play, the keys within the rivals' reach,
+guardians, the balance targets for 1.0, accessibility, map sizes, music and sound, polish. On 23
+October 2026 the owner renewed their standing leave:
+
+> When done with your current work, continue with development according to your best judgement,
+> without asking me anything. [...] Make sure that any major impact on the game is well documented
+> and reversible, so I can maybe change directions later on.
+
+So each question was written with its options and a recommendation, and is **assumed as recommended
+on that leave**: built that way, documented in the section named, and open to the owner to overrule
+at any time. None needs money beyond the allowance already given (D-27).
+
+| ID | Question | Options | Assumed | Why |
+| --- | --- | --- | --- | --- |
+| **D-80** | Lessons when they matter ([§4](design/M6_ONE.md#4-lessons-when-they-matter-d-80)) | A lessons when they matter, kept in the codex · B a written manual only · C a second scripted tutorial | **A** | most of M3 to M5 meets a new player unexplained; a sentence from the right advisor at the right moment, as the guided opening does, readable again later |
+| **D-81** | Playing an alien power ([§5](design/M6_ONE.md#5-playing-an-alien-power-d-81)) | A the Concord in M6, the others after 1.0 · B the Concord and the Moot · C none for 1.0 | **A** | D-08's aliens begin; the Concord builds on the ground, so it needs only its pictures (about $5.50); the Moot needs a new kind of colony scene |
+| **D-82** | The keys within everyone's reach ([§6](design/M6_ONE.md#6-the-keys-within-everyones-reach-d-82)) | A the hunt, then keys in exchanges, measured; three keys only if both fail · B three keys now · C the player's road only | **A** | the smallest changes that make the keys a race, each with a switch |
+| **D-83** | The balance targets for 1.0 ([§8](design/M6_ONE.md#8-the-long-game-balanced-d-83)) | A four winners and one by the keys, no deep or long debt, M4's limit target dropped · B M4's target kept too · C none | **A** | D-69's and M5's targets carried on; most games now end at the limit by the owner's choice in D-69 |
+| **D-84** | Accessibility ([§9](design/M6_ONE.md#9-accessibility-d-84)) | A WCAG 2.2 AA where it applies, checked in CI, with a list for the map · B labels and contrast only · C none before 1.0 | **A** | checked by a tool on every screen, so it stays true as the game grows |
+| **D-85** | Map sizes ([§10](design/M6_ONE.md#10-map-sizes-d-85)) | A one map for 1.0 · B add the 27 ly heartland · C add 40 ly if it measures within budget | **A** | the 33 ly map is already larger than MoO3's largest; a smaller map would hold no alien, a larger one would double the turn; a shorter game is the turn limit's job. **This takes "the wider map sizes" out of M6's scope in SCOPE.md**; B or C can come after 1.0 |
+| **D-86** | Music and sound ([§11](design/M6_ONE.md#11-music-and-sound-d-86)) | A four pieces (the Concord's colonies, war, victory, defeat) and sounds that tell · B the sounds only · C none | **A** | about $1, by D-31's way (Lyria), chosen on the owner's leave and sent lettered to overrule |
+
+D-72 (guardians) stays A and is built in M6; D-79 stays A. **Left to the owner: D-18**, and whether
+the result is 1.0.
 
 ## Made without waiting
 
