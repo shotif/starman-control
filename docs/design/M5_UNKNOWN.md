@@ -39,6 +39,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 23. [Increment 55 in detail: light espionage](#23-increment-55-in-detail-light-espionage-written-before-building-it)
 24. [Increment 56 in detail: leaders](#24-increment-56-in-detail-leaders-written-before-building-it)
 25. [Increment 57 in detail: the dying star and the unhomed](#25-increment-57-in-detail-the-dying-star-and-the-unhomed-written-before-building-it)
+26. [Increment 58 in detail: the balance of power](#26-increment-58-in-detail-the-balance-of-power-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -321,8 +322,9 @@ Each keeps the game playable, passes CI and deploys from `main`.
 | 55 | **Light espionage** | agents watching and guarding, the Watch's reports |
 | 56 | **Leaders** | the pool, five posts, traits, loyalty |
 | 57 | **The dying star and the unhomed** | the arks, the star's death, a power arriving in mid-game |
-| 58 | **The machine heirs** | a new species and power |
-| 59 | **The proof** | the headless games with the unknown; the owner's try; D-69's spread of winners; rivals that cut their costs when they cannot pay (found in increment 57) |
+| 58 | **The balance of power** (moved forward, §26) | D-69's spread of winners: the powers grow wary of one that leads them all; rivals that cut their costs when they cannot pay |
+| 59 | **The machine heirs** | a new species and power |
+| 60 | **The proof** | the headless games with the unknown; the owner's try |
 | — | **Guardians** | deferred to M6 (§7) |
 
 ## 17. Tests and budgets
@@ -1181,3 +1183,81 @@ six powers.
 | The Hearth's character, asks, trait and names | `FACTIONS['last-hearth']` (`src/content/factions.ts`), `PERSONALITIES['last-hearth']`, `ADVISORS`, `LEADER_NAMES` |
 | The Unhomed's habitability | `SPECIES.unhomed` (`src/content/species.ts`) |
 | The arks off altogether | `RULES.unhomed.from` and `to` past the game's limit (for instance 9999): they never come |
+
+## 26. Increment 58 in detail: the balance of power (written before building it)
+
+**Why now.** D-69's target, carried into M5 (§17), is not met: in the headless games the Co-op wins six
+games of eight, on score at turn 250, and the owner has said that one power winning every time is what
+they like least. Measured after increment 57: the Co-op passes the others about turn 175 and leads by
+the end with half again as many colonies and twice the people of the next. The Concord, strongest in
+warships, would check it by the balance of power (M4_FLEETS.md §31.2), but never does: it keeps a
+non-aggression pact with the Co-op (it is lawful), its regard for the Co-op stays a little above
+nothing so it never gives notice, and the rule waits for a lead of 130%. The Wake has the same pact and
+is too weak to break it. Adding the machine heirs (a seventh power) first would only blur this, so this
+increment comes before them; the heirs move to 59 and the proof to 60.
+
+**Goals.** The powers act on a runaway leader as people would: wary of it, slower to keep faith with
+it, readier to fight it; and no rival sinks deep into debt when it can no longer pay for what it keeps.
+**Out of scope:** changing the Co-op itself, the score's weights (tried in increment 51, §20: no winner
+changed), or new ways to win.
+
+### 26.1 Wary of the leader
+
+- **As the score was last counted** (the story's count every 10 turns), a power that leads all by
+  **15%** over the second is feared by every other power it is not allied with: **−10**, *Leads us
+  all, and grows too strong*; by **30%**, **−20**. From turn 120 (the first years are for growing).
+- The regard falls where it counts: pacts and treaties end with notice when regard falls below what
+  they ask (M3_NEIGHBOURS.md §21.4), the Assembly's votes go elsewhere, and a war of the balance of
+  power becomes possible.
+
+### 26.2 The balance of power, sooner
+
+- **The balance of power** (a conqueror's war on the power that leads all, M4_FLEETS.md §31.2) holds
+  from a lead of **115%** over the declarer's own score (was 130%).
+
+### 26.3 Cutting costs
+
+- **A scrap order** for a ship, the player's and the rivals' alike: the ship is broken up where it is,
+  its upkeep ends, and nothing comes back. On a ship's panel: *Scrap*, with what it saves.
+- **A rival in debt and still losing credits** scraps a ship each turn: first a warship beyond those it
+  wants in peace (M4_FLEETS.md §28.2), then an idle civil ship, until its treasury gains again.
+
+### 26.4 Tests
+
+- **Unit** (`balance.test.ts`): the regard for a leader at 15% and 30%, and none for an ally or before
+  turn 120; the balance of power at 115%; scrapping (the order, its refusals, the upkeep it saves); a
+  rival in debt scrapping a warship beyond its wants; the headless test's targets as before.
+- **Journey** (`fleets.spec.ts`, phone, tablet and desktop): a ship scrapped from its panel.
+- **The headless games:** D-69's target, measured: at least four different winners in eight, none
+  winning more than three; no treasury below −300.
+
+### As built (23 October 2026)
+
+Cut down by what was measured (each change was played in the eight headless games to turn 250):
+
+- **Wary of the leader (§26.1) and the balance of power sooner (§26.2): built, measured and taken
+  out.** With every power thinking 10 or 20 less of a leader, the war at a 115% lead, and a conqueror
+  giving notice on a pact with a power it would check, no game changed winner: the Concord, which
+  would check the Co-op, cannot reach it before turn 250 (35 light-years apart), and the Wake, which
+  can, is weaker. A stronger version (−20 and −40, the war at 105%) turned one more game to the Co-op.
+  Neither is kept: they did not do what they were for, and they would have turned every power against
+  a player who leads. The measurements, and the Co-op's own levers, are in DECISIONS.md under D-79,
+  now open for the owner.
+- **Cutting costs (§26.3), as designed:** the *scrap* order for any ship at a star, the same for the
+  player and the rivals; on a ship's panel, *Scrap: saves 1 credit a turn*, asked twice (*Scrap it* or
+  *Keep it*). A rival in debt and still losing credits scraps one ship a turn: in peace a warship
+  beyond those it wants (the dearest first), else an idle civil ship (survey ships first).
+- **Tests:** `costs.test.ts` (3) and `scrap.spec.ts` (phone, tablet and desktop). The headless test's
+  targets are as before.
+
+**Numbers** (M2_BALANCE.md): by turn 100 as before. To turn 250, two winners: the Co-op seven and
+the Wake one. Seed 3, a narrow Concord win after increment 57 (1,128 to 1,022), went to the Co-op:
+its course changed when the rivals began scrapping ships. The deepest debt was −156 (it was −518) and
+the longest 39 turns (54); the slowest turn took 130 ms and the largest save 146.3 KB.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| The rivals' cost-cutting | the *Cutting costs* block in `aiOrders` (`src/sim/ai.ts`); delete it to turn it off |
+| The scrap order | `scrap` in `src/sim/orders.ts`, and `Scrap` in `src/ui/map/play.tsx` |

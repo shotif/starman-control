@@ -251,7 +251,11 @@ the rivals hire by character from turn 70; state version 29. **Done: increment 5
 and the unhomed** (§25): the arks of the Unhomed arrive at CE Boötis between turns 110 and 150 and
 ask every power for a world (give, take in, refuse); Arcturus dies 12 turns later (real star,
 fictional death); the Last Hearth, a sixth power, arrives in mid-game with a coral cross; state
-version 30.
+version 30. **Done: increment 58, the balance of power** (§26), moved before the machine heirs and
+cut down by what was measured: a *scrap* order for ships, and rivals in debt scrapping what they
+cannot pay for (deepest debt −518 → −156). The wariness of a leader and a sooner balance-of-power war
+changed no winner and were taken out; **D-79, the Co-op's lead in long games, is open for the
+owner** with the measurements. Next: 59 the machine heirs, 60 the proof.
 
 The art and music spend: about $32.55 of $50 (raised on 22 October 2026; about $17.45 left). M3's
 art is about 65 pictures (about $6.50).

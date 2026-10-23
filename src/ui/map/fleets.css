@@ -170,3 +170,24 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+
+/* Scrapping a ship (M5_UNKNOWN.md §26.3): asked twice. */
+.scrap-link {
+  justify-self: start;
+  min-height: 44px;
+}
+
+.scrap-ask {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.scrap-ask p {
+  margin: 0;
+}
+
+fieldset.scrap-ask {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}

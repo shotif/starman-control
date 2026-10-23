@@ -100,6 +100,40 @@ export function shipStatus(world: World, game: GameState, ship: ShipState): stri
   return `Idle at ${here}`;
 }
 
+/** Breaking a ship up where it is (M5_UNKNOWN.md §26.3), asked twice. */
+function Scrap({ ship, play }: { ship: ShipState; play: Play }) {
+  const [asking, setAsking] = useState(false);
+  const upkeep = SHIPS[ship.type].upkeep;
+  return asking ? (
+    <fieldset class="scrap-ask">
+      <legend class="visually-hidden">Scrap the {ship.name}?</legend>
+      <p>
+        Break up the {ship.name} here? Its upkeep of {upkeep} credit{upkeep === 1 ? '' : 's'} a turn ends, and nothing
+        comes back.
+      </p>
+      <div class="ship-actions">
+        <button
+          type="button"
+          class="button"
+          onClick={() => {
+            setAsking(false);
+            give(play, { type: 'scrap', ship: ship.id });
+          }}
+        >
+          Scrap it
+        </button>
+        <button type="button" class="button button-quiet" onClick={() => setAsking(false)}>
+          Keep it
+        </button>
+      </div>
+    </fieldset>
+  ) : (
+    <button type="button" class="link scrap-link" onClick={() => setAsking(true)}>
+      Scrap: saves {upkeep} credit{upkeep === 1 ? '' : 's'} a turn
+    </button>
+  );
+}
+
 export function ShipPanel({
   world,
   game,
@@ -214,6 +248,7 @@ export function ShipPanel({
       )}
       {!inFlight && <Founding world={world} game={game} ship={ship} play={play} />}
       {!inFlight && <Investigate game={game} ship={ship} play={play} />}
+      {!inFlight && <Scrap ship={ship} play={play} />}
     </article>
   );
 }

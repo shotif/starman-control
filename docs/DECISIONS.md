@@ -71,6 +71,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--decided-owners-choice)) | Decided 2026-10-22 (owner's choice) | **war plans for the rivals (H), fear at the deciding vote (K), tiring of a leader (C), and a less-loved Cooperative**, built as increment 51: three different winners in eight games (the target was four), none by the vote; every part has a switch |
 | D-13, D-70 – D-78 | The M5 design: the Absent, relic sites, the keys, guardians, leaders, espionage, events, the dying star, the species, Pyre | Assumed 2026-10-22 (owner's leave) | **as recommended**, open to the owner to overrule; see [Round 8](#round-8-the-unknown-assumed-22-october-2026) and [M5_UNKNOWN.md](design/M5_UNKNOWN.md) |
 | D-18 | Free or paid, open source or not, Steam or the web only | Open | the owner's; see [Round 2](#round-2-needed-later) |
+| D-79 | The Co-op's lead in long games ([below](#d-79--the-co-ops-lead-in-long-games--open-the-owners)) | Open | the owner's: measured in increment 58, nothing tried on the Co-op alone moves it; A, leave it for M6's longer campaigns, recommended |
 
 ## Round 1: decided 19 October 2026
 
@@ -764,6 +765,41 @@ owner to overrule at any time. None needs money beyond the allowance already giv
 **Left to the owner: D-18** (free or paid, open source or not, Steam or the web only). SCOPE makes
 it part of M5's *done*, and money and platforms are the owner's; nothing in M5 waits on it.
 
+### D-79 · The Co-op's lead in long games — **Open (the owner's)**
+
+D-69's target (at least four different winners in the eight headless games, none winning more than
+three) is still not met: the Frontier Co-op wins six or seven, nearly always on score at turn 250. It
+passes the others about turn 175 with half again as many colonies and twice the people of the next.
+The powers that could check it cannot reach it: its home lies among the human powers, 35 light-years
+from the Concord, the strongest in warships, and the Wake, nearer, is weaker. Increment 58
+(M5_UNKNOWN.md §26) measured every lever that does not change the Co-op's character, and two that do.
+Each line is the eight games to turn 250:
+
+| Tried | Winners |
+| --- | --- |
+| As after increment 57 | the Co-op 6, the Concord 1, the Wake 1 |
+| Every power wary of one that leads all by 15% (−10) or 30% (−20), the balance-of-power war at a 115% lead, pacts given notice to check the leader | the Co-op 6, the Concord 1, the Wake 1 (no game changed) |
+| The same, stronger: −20 from a 5% lead, −40 from 20%, the war at 105% | the Co-op 7, the Wake 1 |
+| The Co-op without its growth trait (*Settlers*) | the Co-op 6, the Concord 1, the Wake 1 |
+| The Co-op at standard taxes, not low | the Co-op 7, the Concord 1 |
+| The score counting people at half (increment 53), keys and chapters scored | no winner changed |
+| As built in increment 58 (rivals scrap ships when broke) | the Co-op 7, the Wake 1 (seed 3, a narrow Concord win, went to the Co-op) |
+
+The wariness and the earlier balance of power were taken out again (they changed nothing, and would
+have turned every power against a player who leads).
+
+**Options:**
+
+- **A. Leave the Co-op as it is, and give the conquerors the reach to check it in M6** (wider maps,
+  longer campaigns, the guardians and the heirs on the map) — **recommended**: no lever on the Co-op
+  alone moved the result, and it is the gentlest power to learn the game with.
+- **B. End the game at the limit differently:** for instance, the Assembly chooses among the three
+  highest scores, or each character has its own way to win (the most technologies, the most
+  chapters, the most conquered).
+- **C. Weaken the Co-op's character on several levers at once** (its growth, the Commons, how near it
+  settles), measured until it wins at most three of eight.
+- **D. Drop D-69's target:** one power that plays the long game best may win most long games.
+
 ## Made without waiting
 
 Small engineering choices, easy to reverse. Overrule any of them.
@@ -778,6 +814,7 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-22 | Increment 56's faces (M5_UNKNOWN.md §24.7): 40 candidates, about **$2.00**, so about **$31.55** of the owner's $50 spent in all; four faces for each people, chosen A but for the Authority's second, the Co-op's third and the Moot's first (B) | within D-27; the lettered sheets went to the owner to overrule |
 | 2026-10-22 | Increment 57 as M5_UNKNOWN.md §25 (D-76, D-77 in part): the Unhomed of Arcturus (fiction; the star is real) arrive at CE Boötis between turns 110 and 150 and ask for a world; give, take in or refuse; Arcturus dies 12 turns later (+40 research for all); the **Last Hearth** joins as a rival in mid-game; its names, looks, colour (coral, a cross) and character as §25.1 and §25.5; it comes knowing what **more than half** of the powers know; the rivals answer 2 to 6 turns after the arks come | each number in `RULES.unhomed`, listed under *Increment 57* |
 | 2026-10-22 | Increment 57's pictures (M5_UNKNOWN.md §25.7): 20 candidates, about **$1.00**, so about **$32.55** of the owner's $50 spent in all; the arks' picture cropped of a thin black band rather than rolled a third time | within D-27; the lettered sheets went to the owner to overrule |
+| 2026-10-23 | Increment 58 as M5_UNKNOWN.md §26, cut down by what was measured: **a scrap order** for any ship (the player's and the rivals'), and **rivals in debt and still losing scrap a ship a turn** (a warship beyond their wants in peace, else an idle civil ship); the deepest debt in the headless games fell from −518 to −156. The wariness of a leader, the balance of power at 115% and pacts given notice were built, measured, and taken out; D-79 raised for the owner | `RULES` unchanged; the order in `orders.ts`, the rivals' rule in `ai.ts` under *Cutting costs* |
 | 2026-10-22 | Increment 53 as M5_UNKNOWN.md §21 (D-71), with what the building found: the Answer **begun by order** for 10 turns rather than built; **each key at the site nearest one of the five capitals** (spread to the edges, two were found in eight games); chapters 100, 200 and 300; Relic studies shows sites within 10 light-years, Old charts 20; **a road for the rivals** to a site they cannot reach; a power with three keys goes to war for the rest; the score's `peoplePer`, `key` and `chapter` switches, left neutral; state version 27. **No game won by the keys, and D-69's target still not met:** the Co-op won seven of eight | each has a switch, listed under *Increment 53* in M5_UNKNOWN.md; the rivals' long campaigns and the Co-op's lead are left for M6 |
 | 2026-10-22 | **Fear at the deciding vote mended** (increment 51's rule): it now applies once a power's votes as they lean are 60% of all, not only past two thirds, since the roll grows before the count (a vote of 87 in 131 became 88 in 132 and won the game on turn 70) | a bug in the rule as built; `RULES.assembly.fearFromPercent` |
 | 2026-10-22 | Increment 53's picture (M5_UNKNOWN.md §21.7): 2 candidates, about **$0.10**, so about **$28.25** of the owner's $50 spent in all; chosen the end by the keys A | within D-27; the lettered sheet went to the owner to overrule |

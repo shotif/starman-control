@@ -145,6 +145,8 @@ export type Order =
   | { type: 'hire'; leader: number }
   | { type: 'post'; leader: number; post: number | null }
   | { type: 'dismiss'; leader: number }
+  /** A ship broken up where it is (M5_UNKNOWN.md §26.3): its upkeep ends, and nothing comes back. */
+  | { type: 'scrap'; ship: number }
   /** Our answer to the arks of the Unhomed (M5_UNKNOWN.md §25.3): a world given, taking them in, or refusing. */
   | { type: 'arks'; answer: ArkAnswer; body: string | null };
 
@@ -264,6 +266,12 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'post') return postRefusal(state, faction, order.leader, order.post);
   if (order.type === 'dismiss') return dismissRefusal(state, faction, order.leader);
   if (order.type === 'arks') return arksRefusal(world, state, faction, order.answer, order.body);
+  if (order.type === 'scrap') {
+    const s = state.ships.find((x) => x.id === order.ship && x.owner === faction);
+    if (!s) return 'That ship is not ours.';
+    if (s.at === null) return 'It is between the stars: it can be broken up only at a star.';
+    return null;
+  }
   if (order.type === 'chapter-choice')
     return order.choice === 0 || order.choice === 1
       ? chapterRefusal(state, faction, order.system)
@@ -442,6 +450,11 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'arks') {
     setArksAnswer(next, faction, order.answer, order.body);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'scrap') {
+    next.ships = next.ships.filter((s) => s.id !== order.ship);
+    pruneFleets(next);
     return { ok: true, state: next };
   }
 

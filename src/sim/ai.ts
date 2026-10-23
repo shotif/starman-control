@@ -417,6 +417,23 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
     }
   }
 
+  // Cutting costs (M5_UNKNOWN.md §26.3): in debt and still losing credits, it breaks up a ship a turn:
+  // in peace a warship beyond those it wants, the dearest first; else an idle civil ship.
+  if (power.treasury < 0 && income < 0) {
+    const docked = state.ships.filter((s) => s.owner === faction && s.at !== null);
+    const warships = docked.filter((s) => isArmed(state, s));
+    const spare = atWarNow ? 0 : warships.length - warshipsWanted(world, state, faction);
+    const idle = docked.filter(
+      (s) => !isArmed(state, s) && s.destinations.length === 0 && !s.founding && !s.investigating,
+    );
+    const civil = ['survey', 'transport', 'outpost', 'colony'];
+    const pick =
+      spare > 0
+        ? warships.sort((a, b) => SHIPS[b.type].upkeep - SHIPS[a.type].upkeep || b.id - a.id)[0]
+        : idle.sort((a, b) => civil.indexOf(a.type) - civil.indexOf(b.type) || b.id - a.id)[0];
+    if (pick) orders.push({ type: 'scrap', ship: pick.id });
+  }
+
   // Leaders (M5_UNKNOWN.md §24.5): it hires those its character wants, while its treasury has the fee
   // and more and it is gaining, posts each at once, and lets a waiting one go when in debt.
   const LR = RULES.leaders;
