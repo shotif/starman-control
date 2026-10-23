@@ -494,6 +494,16 @@ export const RULES = {
     answering: -30,
     /** A power holding so many keys goes to war for the rest (§21.4, as built). */
     hunt: 3,
+    /**
+     * How many of the steps to the keys a rival that digs learns first, in order (M6_ONE.md §22):
+     * Relic studies, Old charts, The second tone, Field archaeology. 1, Relic studies only, as built in M5.
+     */
+    study: 1,
+    /**
+     * From this turn a rival that digs builds an outpost ship for a site it can reach before a colony
+     * ship (M6_ONE.md §22); null, never.
+     */
+    outpostFrom: 20 as number | null,
   },
   /** Raids (M4_FLEETS.md §27): remembered by the raided and heard by the lawful; the outlaw's squadron and its pace. */
   raid: {

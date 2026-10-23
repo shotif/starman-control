@@ -392,8 +392,15 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       arming = warships + 1 < wanted;
       continue;
     }
-    const ship: QueueItem | null =
-      idle('colony') === 0 && settleTargets('colony')
+    // A power that digs sends an outpost to a site it can reach before it settles more worlds (M6_ONE.md §22).
+    const siteFirst =
+      RULES.keys.outpostFrom !== null &&
+      state.turn >= RULES.keys.outpostFrom &&
+      idle('outpost') === 0 &&
+      digTargets.some((id) => reach.has(id));
+    const ship: QueueItem | null = siteFirst
+      ? { kind: 'ship', ship: 'outpost' }
+      : idle('colony') === 0 && settleTargets('colony')
         ? { kind: 'ship', ship: 'colony' }
         : idle('outpost') === 0 && settleTargets('outpost')
           ? { kind: 'ship', ship: 'outpost' }
@@ -716,7 +723,8 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       ['relic-studies', 'old-charts', 'the-second-tone', 'field-archaeology', 'the-instrument'] as const
     ).find(
       (t, i) =>
-        (i === 0 ? digging : keysHeld(state, faction).length >= RULES.keys.hunt) && canResearch(power).includes(t),
+        (i < RULES.keys.study ? digging : keysHeld(state, faction).length >= RULES.keys.hunt) &&
+        canResearch(power).includes(t),
     );
     const relicFirst = keyTech;
     const next =

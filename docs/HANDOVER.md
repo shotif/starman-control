@@ -274,7 +274,10 @@ D-85 keeps one map for 1.0. **Done: increment 61, lessons when they matter** (M6
 lessons from the advisors, each told once on the device the first time its system matters, kept in
 the codex's *How to play*. **Done: increment 62, accessibility** (§21): an accessibility checker on
 every main screen in CI, Enter that presses a focused button, dialogs that take focus and give it
-back, a list of every system (**K**), and the largest text on a phone without sideways scrolling.
+back, a list of every system (**K**), and the largest text on a phone without sideways scrolling. **Done: increment 63, the keys within
+reach** (§22), measured: no small change lets a rival win by the keys (missed, recorded; the keys
+stay the player's road); kept: a rival that digs settles its site first, from turn 20, which gives
+the long games five different winners.
 
 The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).

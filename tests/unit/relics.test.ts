@@ -311,6 +311,34 @@ describe('the rivals (§20.7)', () => {
   });
 });
 
+describe('a rival that digs settles its site first (M6_ONE.md §22)', () => {
+  it('builds an outpost ship for a site it can reach before a colony ship', () => {
+    const g = five('frontier');
+    g.turn = RULES.keys.outpostFrom ?? 0;
+    const p = powerOf(g, 'sta');
+    p.researched.push('relic-studies');
+    markSurveyed(p, 'sirius');
+    p.treasury = 500;
+    // No colony or outpost ship of its own: the yard chooses what to build next.
+    g.ships = g.ships.filter((s) => !(s.owner === 'sta' && (s.type === 'colony' || s.type === 'outpost')));
+    const capital = g.holdings.find((h) => h.owner === 'sta' && h.capital);
+    if (!capital) throw new Error('capital');
+    capital.queue = [];
+    const built = () =>
+      aiOrders(world, g, 'sta').find((o) => o.type === 'queue' && o.holding === capital.id && o.item.kind === 'ship');
+    expect(built()).toMatchObject({ item: { kind: 'ship', ship: 'outpost' } });
+    // Before its turn, a colony ship first, as before.
+    const rules = RULES.keys as { outpostFrom: number | null };
+    const from = rules.outpostFrom;
+    rules.outpostFrom = null;
+    try {
+      expect(built()).toMatchObject({ item: { kind: 'ship', ship: 'colony' } });
+    } finally {
+      rules.outpostFrom = from;
+    }
+  });
+});
+
 describe('the treasury (as built)', () => {
   it('a governor starts no project with upkeep while the treasury falls; a rival in debt runs its colonies for trade', () => {
     const g = five('frontier');

@@ -524,3 +524,45 @@ the keys before turn 150 (the race should be long); the other targets of §8 no 
 Unit tests for each kept change (the hunt from two keys; the road to a key); the headless games in
 M2_BALANCE.md, which gain a column: who held the keys at the end.
 
+
+### As built (23 October 2026)
+
+**Measured, each in the eight games to turn 250** (the keys counted as M2_BALANCE.md now shows them,
+in a new column):
+
+| Tried | Keys found in a game | Who won |
+| --- | --- | --- |
+| As after increment 62 | 1 to 3; never more than 2 in one hand | the Co-op 4, the Continuance 2, the Wake 1, the Concord 1 |
+| The hunt from two keys (step 1) | the same; the Authority learns *The instrument* in one game | no change |
+| A digger learns all four steps to the keys first (`RULES.keys.study` 4) | the same | the Co-op 5 |
+| Both | the same | the Co-op 5 |
+| A digger sends an outpost to a site it can reach before a colony ship, from the first turn | 1 to 3 | **five winners**, the Co-op 3; but in seed 7 the Wake no longer agrees a treaty by turn 100 (M3's target) |
+| The same from turn 20, 30 or 40 | 1 to 4 | **five winners**: the Co-op 4, the Wake, the Concord, the Continuance and the Authority 1 each |
+| The same from turn 60 | 1 to 3 | the Co-op 4, the Continuance 2, the Wake 1, the Concord 1 |
+
+**Why the keys stay out of the rivals' reach.** Never more than four of the five keys are found in a
+game, and they end in three or four hands. As placed (each key at the site nearest one of the five
+older capitals, §21 as built), gathering all five means taking four of them from four other powers:
+a harder road than conquest. A rival does not plan so long a campaign, and steps 3 and 4 (keys in
+exchanges, three keys for the Answer) cannot help while no hand holds more than two. **So the target
+of a game won by the keys is missed, and recorded so (D-82)**; the keys stay the player's road, and a
+rival's only by luck. Changing it means placing the keys differently, which is the owner's call.
+
+**Kept: a digger settles its site first** (`RULES.keys.outpostFrom`, turn 20): from turn 20, a rival
+that digs builds an outpost ship for a relic site it can reach before a colony ship. It mends what
+the measures showed (the Authority, having finished Sirius by turn 60, founded no outpost at Procyon,
+11.5 light-years off, until after turn 100, and dug nothing between), and it gives the long games five
+different winners, one more than before. From turn 20 rather than the first, as from the first the
+Wake lost its treaty by turn 100 in one game. **Left at their values, as switches:** the hunt at three
+keys (`RULES.keys.hunt`) and a digger's first steps (`RULES.keys.study`, 1).
+
+**Numbers** (M2_BALANCE.md): five different winners (the Co-op 4, the Wake, the Concord, the
+Continuance and the Authority one each); the deepest debt −62 and the longest 21 turns; the slowest
+turn 161 ms and the largest save 173.3 KB. M3's targets still met at turn 100.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| A digger settling its site first | `RULES.keys.outpostFrom`: `null` turns it off |
+| The hunt, and a digger's first steps | `RULES.keys.hunt`, `RULES.keys.study` |
