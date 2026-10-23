@@ -84,6 +84,9 @@ function continueLine(save: SaveGlance | 'unreadable'): string {
   return `${f} · ${formatDate(save.turn)}`;
 }
 
+/** Said on the window once the boot screen has faded and gone (src/main.tsx). */
+export const BOOT_GONE = 'starman:boot-gone';
+
 /** Starts the live scene once the menu has been drawn; the scene is torn down with the title. */
 function useTitleScene(host: { current: HTMLDivElement | null }): void {
   useEffect(() => {
@@ -101,10 +104,17 @@ function useTitleScene(host: { current: HTMLDivElement | null }): void {
         });
     };
     // After the menu is drawn and the boot screen has gone, so neither is kept waiting while the
-    // sky is baked.
-    const timer = setTimeout(() => requestAnimationFrame(start), 800);
+    // sky is baked: on a busy machine a fixed wait could start the bake first and hold the boot
+    // screen up for seconds (M6_ONE.md §29).
+    let timer = 0;
+    const begin = () => {
+      timer = window.setTimeout(() => requestAnimationFrame(start), 200);
+    };
+    if (document.getElementById('boot')) window.addEventListener(BOOT_GONE, begin, { once: true });
+    else timer = window.setTimeout(() => requestAnimationFrame(start), 800);
     return () => {
       live = false;
+      window.removeEventListener(BOOT_GONE, begin);
       clearTimeout(timer);
       scene?.dispose();
     };

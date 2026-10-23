@@ -5,7 +5,7 @@ import { listenForMusic, setMusicMood } from './app/music.ts';
 import { applySettings } from './app/settings.ts';
 import { listenForPresses } from './app/sound.ts';
 import { watchLayout } from './ui/layout.ts';
-import { Title } from './ui/Title.tsx';
+import { BOOT_GONE, Title } from './ui/Title.tsx';
 import './style.css';
 
 /** The screen, from the address: "#/game", "#/new", "#/map", "#/codex" (once "#/data"), or the title. */
@@ -119,6 +119,9 @@ const boot = document.getElementById('boot');
 if (boot)
   requestAnimationFrame(() => {
     boot.classList.add('gone');
-    setTimeout(() => boot.remove(), 600);
+    setTimeout(() => {
+      boot.remove();
+      window.dispatchEvent(new Event(BOOT_GONE));
+    }, 600);
   });
 window.addEventListener('load', () => setTimeout(keepForOffline, 1500));

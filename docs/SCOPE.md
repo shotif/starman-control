@@ -31,7 +31,8 @@ Wake, hold the old 27-light-year sphere and are pushing the jump lanes past it. 
 frontier are other species, and the relics of one that is gone.
 
 **The player** *(D-08, D-11)* leads one of several playable factions: in 1.0 the three human
-powers, the Authority, the Cooperative and the Wake; the alien species become playable later. You
+powers, the Authority, the Cooperative and the Wake, and the Dusk Concord, the first alien people
+(D-81, M6); the other species become playable later. You
 are *Control*: the voice your captains, governors and admirals answer to. You chart the neighbourhood, settle its real planets, build them
 up, manage resources and fleets, deal with the other powers, human and alien, and hunt for the
 artefacts.
@@ -91,7 +92,7 @@ Orion 3* it answers to.
 *MoO3: every one of its sixteen races could be played.*
 
 *(D-08)* In 1.0 all three human powers are playable, each with its own traits, start, shipmakers
-and way of playing; the AI plays the others. First sketches, to be designed in M1–M3:
+and way of playing, and from M6 the Dusk Concord too (D-81); the AI plays the others. First sketches, to be designed in M1–M3:
 
 | Faction | Plays as | Starts | Shipmakers |
 | --- | --- | --- | --- |
@@ -408,7 +409,8 @@ deterministic and the map is rebuilt from its seed.
 ## 5. Out of scope for 1.0
 
 - Online or real-time multiplayer *(D-06)*; real-time play *(D-05)*.
-- Playing an alien species *(D-08)*: designed for, added after 1.0.
+- Playing the other alien species *(D-08)*: the Drift Moot and the Continuance are designed for,
+  added after 1.0 (the Dusk Concord is playable from M6, D-81).
 - Syncing one campaign between phone and desktop automatically (there is no server); a save can
   be moved by exporting and importing a file, as in Reborn.
 - Tactical command of battles *(D-07)*; flying a ship yourself.
@@ -455,7 +457,7 @@ deploys to the live site. The exit criterion says when the milestone is done.
 | **M3** | Neighbours | The other human powers as AI, the first two or three alien species, first contact and translation, treaties, borders, memory of what you did ([design](design/M3_NEIGHBOURS.md)) | You meet, trade with and quarrel with AI powers that behave believably |
 | **M4** | Fleets | The ship designer, fleets and task forces, battles with orders and replays, invasion and defences, war and peace, the council, the first victory conditions ([design](design/M4_FLEETS.md)) | A full game can be won by conquest or by the council's vote *(done 22 October 2026)* |
 | **M5** | The unknown | Relic sites, the precursor mystery and keys, anomalies, events and the dying star, the remaining species, light espionage, leaders ([design](design/M5_UNKNOWN.md)) | A full game can be won by the keys; the decision on Steam is taken *(built 23 October 2026; D-18 is the owner's)* |
-| **M6** | 1.0 | Balance from AI-against-AI games, the guided opening, music and sound, accessibility, the wider map sizes (one map for 1.0, D-85), polish ([design](design/M6_ONE.md)) | The owner is happy to call it 1.0 |
+| **M6** | 1.0 | Balance from AI-against-AI games, the guided opening, music and sound, accessibility, the wider map sizes (one map for 1.0, D-85), polish ([design](design/M6_ONE.md)) | The owner is happy to call it 1.0 *(built 23 October 2026; the owner's to call)* |
 
 Rough sense of size: M1 and M2 are the foundation and take the longest; M3 and M4 are each about
 as large as M1; M5 is content-heavy; M6 is tuning. Dates will be estimated once round 1 is decided

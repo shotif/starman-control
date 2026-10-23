@@ -1,4 +1,4 @@
-# Handover: Starman Control, 23 October 2026 (M5 built)
+# Handover: Starman Control, 23 October 2026 (M6 built: 1.0, the owner's to call)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -290,6 +290,8 @@ the keys, debt and the budgets within their limits. **Done: increment 68, polish
 the Concord played to turn 150 on a phone with every screen looked at (`npm run journey`), what it
 showed fixed (titles on the menu's screens, the chosen step lit, plainer words), load and speed
 measured with phone throttling (`npm run phone-speed`: title 1.0 s, map 3.5 s), British words tested.
+**Done: increment 69, the proof** (§28): the whole suite on the last build, a CI flake on the title
+mended, and *Trying M6* below. **M6 is built** (§29); whether to call it 1.0 is the owner's.
 
 The art and music spend: about $40.00 of $50 (raised on 22 October 2026; about $10.00 left). M3's
 art is about 65 pictures (about $6.50).
@@ -319,6 +321,31 @@ A good first try: lead the Transit Authority, which digs best, and play past tur
 arks. What would help most to hear: whether the chapters are worth the research they take, whether
 leaders and agents are worth their credits, whether the arks' choice feels like a real one, and
 D-79 (the Co-op's lead in long games).
+
+### Trying M6 (for the owner)
+
+What is new since M5, and where it is (the desktop's key in brackets):
+
+- **The Dusk Concord to lead:** the new game's fourth card, the first power that is not human, at
+  GJ 433 d under a red dwarf (fiction), with its own halls, its advisors' faces and its colonies'
+  music.
+- **Lessons when they matter:** sixteen, each told once by an advisor the first time it matters
+  (debt, hunger, war, the Assembly, relic sites, leaders and more), and all kept in the codex's
+  *How to play*, with *Tell me again*. They follow the guide setting.
+- **Accessibility:** Enter presses a button reached by keyboard and ends the turn otherwise; dialogs
+  take focus and give it back; every system in a list (Systems, **K**, or Menu); the largest text
+  fits a phone. Every main screen passes an accessibility checker in CI.
+- **Music for war and the end:** a war piece on the map while you are at war; a victory and a defeat
+  piece on the end screen; a muffled thud after a battle, two bells for a key.
+- **Great works are a race:** once any power begins one, the rivals reach for theirs.
+- **Polish:** each screen from the menu shows its name, the chosen step is lit, plainer words; the
+  desktop's menu can reopen the end of the game.
+
+A good first try: lead the Dusk Concord on a phone with music on, play past turn 50, begin a great
+work and watch the rivals answer, and go to war to hear its piece. What would help most to hear:
+whether the Concord feels different to lead; whether the lessons come at the right moments and say
+enough; the music, chosen by measure (every candidate was sent, lettered); D-79; and whether the
+game can be called 1.0 (M6's *done when*).
 
 ## 3. Standing instructions from the owner
 

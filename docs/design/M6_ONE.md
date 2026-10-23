@@ -39,6 +39,7 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 26. [Increment 67 in detail: the long game for 1.0](#26-increment-67-in-detail-the-long-game-for-10-written-before-building-it)
 27. [Increment 68 in detail: polish and phones](#27-increment-68-in-detail-polish-and-phones-written-before-building-it)
 28. [Increment 69 in detail: the proof](#28-increment-69-in-detail-the-proof-written-before-building-it)
+29. [M6 as built](#29-m6-as-built-23-october-2026)
 
 ## 1. Where M6 starts
 
@@ -891,4 +892,49 @@ after.
 - **For the owner:** *Trying M6* in HANDOVER.md, beside *Trying M5*: what is new, where it is, a
   good first try, and what would help most to hear; SCOPE.md marks M6 built; this design gains a
   closing *As built* for M6 as a whole (§29), with what was missed and what was deferred.
+
+### 28.1 As built (23 October 2026)
+
+- **The headless games:** no rule changed after increment 67, so M2_BALANCE.md as written then
+  stands (§26.5).
+- **The whole suite on the last build:** `npm run check` (726 unit tests, the budgets); the browser
+  journeys on the phone, tablet and desktop (318 passed, 36 skipped by design); the hundred-turn
+  games (slowest turn 222 ms on the phone, 238 ms on the desktop, from the press to the new quarter,
+  within 2 s); the long journey (150 turns, slowest 229 ms, nothing found); the phone's speed (title
+  1.0 s, map 2.6 s, a turn about 270 ms at 4×, 29 frames a second in software).
+- **A flake found and mended:** the title's journey on the desktop failed twice in CI (increments 59
+  and 65) with the boot screen still up 10 s after the title. The title's sky started on a fixed
+  800 ms timer meant to come after the boot screen had gone; when the first frame came late on a busy
+  machine, the sky's bake (seconds, in software) began first and held the page, and the boot screen
+  could not be taken away. The sky now starts when the boot screen says it has gone
+  (`starman:boot-gone`, `src/main.tsx` and `src/ui/Title.tsx`).
+- **For the owner:** *Trying M6* in HANDOVER.md; SCOPE.md marks M6 built and the Concord playable in
+  1.0.
+
+## 29. M6 as built (23 October 2026)
+
+| # | Increment | What it did |
+| --- | --- | --- |
+| 61 | Lessons when they matter | sixteen lessons from the advisors, each told once on a device when it first matters; *How to play* in the codex |
+| 62 | Accessibility | an accessibility checker on every main screen in CI; Enter, focus and dialogs for the keyboard; the systems list (**K**); the largest text on a phone |
+| 63 | The keys within reach | measured; a rival that digs settles its site first from turn 20; the keys' target missed and recorded |
+| 64 | Guardians | deferred again, to after 1.0 (D-72) |
+| 65 | Playing the Concord | the first alien power to lead, with its own pictures, faces and music (D-81) |
+| 66 | Music and sound for 1.0 | war, victory and defeat pieces; a sound for a battle and one for a key (D-86) |
+| 67 | The long game for 1.0 | the rivals race for great works once any power begins one; the targets measured (D-83) |
+| 68 | Polish and phones | a 150-turn journey on a phone, looked at screen by screen and mended; phone speed measured; British words tested |
+| 69 | The proof | the whole suite on the last build; a CI flake mended; the owner's guide |
+
+**The targets for 1.0 (D-83):** met: no deep or long debt (−62, 21 turns), turns and saves within
+their budgets, the phone's load and speed. **Missed, and recorded:** the Co-op wins four of the
+eight long games, one over the three (D-79 stays A, the owner's to change); no game is won by the
+keys by a rival (§22: the keys are the player's road).
+
+**Decisions:** D-80 to D-86 assumed as recommended on the owner's leave (Round 9); D-72's guardians
+deferred to after 1.0; D-85 keeps one map; D-18 (Steam and money) stays the owner's.
+
+**Spend:** about $40.00 of the owner's $50 on pictures and music (D-27).
+
+**Left to the owner:** the try (HANDOVER.md, *Trying M6*); whether to call it 1.0; D-79 and D-18;
+the pictures and music chosen by measure (every candidate was sent, lettered).
 
