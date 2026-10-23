@@ -13,7 +13,9 @@ test.describe('the codex', () => {
     await expect(page.getByRole('heading', { name: /Codex/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /How the game works out/ })).toBeVisible();
     await expect(page.locator('.count')).toHaveText('356 of 356');
-    await expect(page.locator('.web-card')).toHaveCount(5);
+    // The five that start, and the Last Hearth, which arrives in mid-game (M5_UNKNOWN.md §25).
+    await expect(page.locator('.web-card')).toHaveCount(6);
+    await expect(page.locator('.web-card').filter({ hasText: 'Last Hearth' })).toContainText('Arrives in mid-game');
   });
 
   test('uses the layout for the device', async ({ page }, info) => {

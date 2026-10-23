@@ -47,7 +47,7 @@ test('a new game offers the three human powers; the Concord plays as a rival', a
   ).toBeVisible();
   // The codex shows its home web, its speaker and its people, as fiction.
   await page.goto('./#/codex');
-  await expect(page.locator('.web-card')).toHaveCount(5);
+  await expect(page.locator('.web-card')).toHaveCount(6);
   const card = page.locator('.web-card').filter({ hasText: 'Dusk Concord' });
   await card.scrollIntoViewIfNeeded();
   await expect(card).toContainText('Capital GJ 433');

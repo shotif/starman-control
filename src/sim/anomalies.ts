@@ -3,14 +3,14 @@
 // so it is never saved. Pure.
 
 import { ANOMALIES, ANOMALY_IDS, type AnomalyId } from '../content/anomalies.ts';
-import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { type FactionId, STARTING_FACTIONS } from '../content/factions.ts';
 import type { TechId } from '../content/techs.ts';
 import type { SystemId } from '../data/types.ts';
 import { effects, grantResearch, grantTechProgress } from './research.ts';
 import { rng } from './rng.ts';
 import { type GameState, hasSurveyed, type PowerState, powerOf, type ShipState } from './state.ts';
 
-const CAPITALS = new Set<SystemId>(Object.values(FACTIONS).map((f) => f.capital.systemId));
+const CAPITALS = new Set<SystemId>(STARTING_FACTIONS.map((f) => f.capital.systemId));
 
 /** About one system in six holds an anomaly, never a capital; which, the seed decides. */
 export function anomalyAt(seed: number, system: SystemId): AnomalyId | null {

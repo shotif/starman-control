@@ -4,7 +4,7 @@
 // rules. Pure and in whole numbers.
 
 import { ANOMALIES } from '../content/anomalies.ts';
-import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { type FactionId, STARTING_FACTIONS } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import { isHull, STARTING_FLEET } from '../content/ships.ts';
 import { SOL_BODIES } from '../content/sol.ts';
@@ -97,7 +97,7 @@ function homeLanesOf(world: World, faction: FactionId): Set<LaneId> {
   if (!byPower) {
     const webs = homeWebs(
       world,
-      Object.values(FACTIONS).map((f) => ({ faction: f.id, capital: f.capital.systemId })),
+      STARTING_FACTIONS.map((f) => ({ faction: f.id, capital: f.capital.systemId })),
     );
     byPower = new Map(webs.map((w) => [w.faction, new Set(w.lanes)]));
     homeLanes.set(world, byPower);

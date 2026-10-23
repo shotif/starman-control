@@ -6,7 +6,7 @@
 import { signal } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
 import { ADVISORS, DEPARTMENT_NAMES, DEPARTMENTS } from '../../content/advisors.ts';
-import { FACTION_IDS, FACTIONS } from '../../content/factions.ts';
+import { ALL_FACTION_IDS, type FACTION_IDS, FACTIONS } from '../../content/factions.ts';
 import { SPECIES } from '../../content/species.ts';
 import type { SystemId } from '../../data/types.ts';
 import { formatDate } from '../../sim/calendar.ts';
@@ -98,7 +98,7 @@ export function DataPage({ world, game, buildId }: Props) {
       </header>
 
       <section class="webs" aria-label="Home webs at the start">
-        {FACTION_IDS.map((f) => (
+        {ALL_FACTION_IDS.map((f) => (
           <WebCard key={f} faction={f} world={world} game={game} />
         ))}
       </section>
@@ -221,10 +221,17 @@ function WebCard({ faction, world, game }: { faction: (typeof FACTION_IDS)[numbe
       <h2>
         <FactionMark faction={faction} size={14} /> {f.name}
       </h2>
-      <p>
-        Capital <b>{world.system(f.capital.systemId).name}</b> · {systems.size} systems · {lanes.length} lanes{' '}
-        <Badge kind="fiction" />
-      </p>
+      {f.arrives ? (
+        <p>
+          Arrives in mid-game: its arks come to <b>{world.system(f.capital.systemId).name}</b>, at the map’s edge, and
+          ask the powers for a world <Badge kind="fiction" />
+        </p>
+      ) : (
+        <p>
+          Capital <b>{world.system(f.capital.systemId).name}</b> · {systems.size} systems · {lanes.length} lanes{' '}
+          <Badge kind="fiction" />
+        </p>
+      )}
       <p class="web-traits">{f.traits.map((t) => t.text).join(' ')}</p>
       {f.people && (
         <figure class="web-people">

@@ -36,6 +36,7 @@ import { amountWords, offerWords } from '../../sim/treaties.ts';
 import { laneEnds, type World } from '../../sim/world.ts';
 import { Icon, type IconName } from '../icons.tsx';
 import { AdvisorFace, Badge, FactionMark } from '../parts.tsx';
+import { arksText } from './arks.tsx';
 import { assemblyText } from './assembly.tsx';
 import { BattleWhy, battleText } from './battle.tsx';
 import { costText, Founding, holdingName, needText } from './colony.tsx';
@@ -669,6 +670,8 @@ export function eventText(world: World, game: GameState, e: ReportEvent): string
     case 'offered':
     case 'leader':
       return leaderText(e);
+    case 'arks':
+      return arksText(world, e, playerPower(game)?.faction);
   }
 }
 
@@ -690,7 +693,8 @@ function eventPlace(
   | { designs: true }
   | { assembly: true }
   | { relics: true }
-  | { leaders: true } {
+  | { leaders: true }
+  | { arks: true } {
   switch (e.kind) {
     case 'researched':
     case 'inspired':
@@ -777,6 +781,9 @@ function eventPlace(
     case 'offered':
     case 'leader':
       return { leaders: true };
+    // The arks open their sheet, but a world settled shows where (M5_UNKNOWN.md §25.6).
+    case 'arks':
+      return e.system && e.stage !== 'arrived' ? { system: e.system } : { arks: true };
     case 'event-answered':
     case 'event-gone':
       if (e.holding !== null && game.holdings.some((h) => h.id === e.holding)) return { holding: e.holding };
@@ -871,6 +878,7 @@ const DISPATCH: Record<ReportEvent['kind'], { icon: IconName; tone: 'news' | 'gr
   intel: { icon: 'diplomacy', tone: 'news' },
   offered: { icon: 'diplomacy', tone: 'news' },
   leader: { icon: 'diplomacy', tone: 'news' },
+  arks: { icon: 'diplomacy', tone: 'news' },
 };
 
 /** The turn's picture (DISPATCHES.md §1): its most notable event's, or none for a quiet turn. */
@@ -1032,6 +1040,7 @@ export function ReportView({
                   else if ('assembly' in place) panel.value = 'assembly';
                   else if ('relics' in place) panel.value = 'relics';
                   else if ('leaders' in place) panel.value = 'leaders';
+                  else if ('arks' in place) panel.value = 'arks';
                   else onGo(place.system);
                 }}
               >
@@ -1116,7 +1125,9 @@ export function NeedsStack({
                             ? 'Open the Assembly'
                             : need.kind === 'chapter'
                               ? 'Open Relics'
-                              : 'Open the colony'}
+                              : need.kind === 'arks'
+                                ? 'Answer the arks'
+                                : 'Open the colony'}
               </button>
               <button type="button" class="button button-quiet" onClick={() => setAt(at + 1)}>
                 Skip

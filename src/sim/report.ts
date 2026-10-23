@@ -272,6 +272,16 @@ export type ReportEvent =
   | { kind: 'answer'; by: FactionId; stage: 'begun' | 'turns' | 'stopped'; left: number }
   /** Our agents' intelligence of a power reached a mark (M5_UNKNOWN.md §23.1). */
   | { kind: 'intel'; faction: FactionId; level: number }
+  /**
+   * The arks of the Unhomed (M5_UNKNOWN.md §25): arrived, settled on a world given (by), taken in
+   * (by), or a world taken by force; and their star's death.
+   */
+  | {
+      kind: 'arks';
+      stage: 'arrived' | 'given' | 'taken-in' | 'took' | 'star';
+      by?: FactionId;
+      system?: SystemId;
+    }
   /** New people offered to serve us (M5_UNKNOWN.md §24.3). */
   | { kind: 'offered'; count: number }
   /**

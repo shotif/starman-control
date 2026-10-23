@@ -38,6 +38,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 22. [Increment 54 in detail: events and the living sky](#22-increment-54-in-detail-events-and-the-living-sky-written-before-building-it)
 23. [Increment 55 in detail: light espionage](#23-increment-55-in-detail-light-espionage-written-before-building-it)
 24. [Increment 56 in detail: leaders](#24-increment-56-in-detail-leaders-written-before-building-it)
+25. [Increment 57 in detail: the dying star and the unhomed](#25-increment-57-in-detail-the-dying-star-and-the-unhomed-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -321,7 +322,7 @@ Each keeps the game playable, passes CI and deploys from `main`.
 | 56 | **Leaders** | the pool, five posts, traits, loyalty |
 | 57 | **The dying star and the unhomed** | the arks, the star's death, a power arriving in mid-game |
 | 58 | **The machine heirs** | a new species and power |
-| 59 | **The proof** | the headless games with the unknown; the owner's try |
+| 59 | **The proof** | the headless games with the unknown; the owner's try; D-69's spread of winners; rivals that cut their costs when they cannot pay (found in increment 57) |
 | — | **Guardians** | deferred to M6 (§7) |
 
 ## 17. Tests and budgets
@@ -1015,3 +1016,168 @@ and the longest 42 turns; the slowest turn took 124 ms and the largest save 131.
 | When and what the rivals hire | `RULES.leaders.rivalsFrom`, `rivalsMost`, `rivalsSpare`; `PERSONALITIES[…].leaders` (`src/sim/ai.ts`) |
 | A trait's effect where it acts | `traitPart` or `postGives` in `economy.ts`, `relics.ts`, `memory.ts`, `assembly.ts`, `espionage.ts`; the commander's in `fight` (`battle.ts`) |
 | Leaders off altogether | `RULES.leaders.offers: 0` (no one offered) and `rivalsMost: 0`; the screen then shows none |
+
+## 25. Increment 57 in detail: the dying star and the unhomed (written before building it)
+
+**Goals.** §11 (D-76, option A): a people without a world arrives in mid-game, asks the powers for
+one, and becomes a power of its own (or joins one) as the powers answer; their star's death is seen
+in every sky. Nothing in the rules is theirs alone: they are a faction and a species as data, and
+the one new rule is that a faction may *arrive* rather than start. **Out of scope:** playing them
+(later, D-08: their advisors' faces, their buildings and their music wait until then, as the
+Concord's did); a colony of two peoples (taken in, they join a power's own people); their arks as
+ships that fight.
+
+### 25.1 Names and their star (fiction, and what is real)
+
+- **Arcturus** is real: an old orange giant, 36.7 light-years from Sol in Boötes, beyond the map's
+  33. That it had worlds and a people, and that it dies in the game, is **fiction**: the real star
+  will shine for a very long time yet, and the game says so wherever its death is told.
+- **The Unhomed** is the name the powers give the species; their own is a word of warmth that
+  translates as *the hearth's people*. Fiction, and like no other work's aliens: tall and stooped,
+  with ash-grey skin and large dark eyes made for a dim orange sun, long four-fingered hands, and a
+  crown of soft filaments that glow faintly like embers; they wrap themselves in many layers of
+  patched ark-cloth against the cold.
+- **The Last Hearth** (*the Hearth*): their power once they hold a world. Coral (`#ff8a7a`), and a
+  cross beside the colour wherever it is shown (a sixth shape).
+- **Their names** are translated pairs of warmth and ash (*Banked Coal*, *Ash Singer*); their envoy
+  is *Kindling, who asks*; their speaker *Old Ember, keeper of the hearth*.
+
+### 25.2 The arks arrive
+
+- **When:** on a turn from **110 to 150**, chosen by the seed.
+- **Where:** **CE Boötis**, a real red dwarf 32.4 light-years from Sol at the map's edge, the
+  nearest star to Arcturus on the map (4.5 ly from it).
+- **Every power hears it:** *Ships at CE Boötis, at the edge of the map: arks, very many and very
+  old, crossing from Arcturus. They call to every power that can hear in every tongue they have
+  learnt from our broadcasts: they ask for a world.* The arks wait at CE Boötis, marked on the map,
+  until they are answered.
+
+### 25.3 The ask
+
+Each power in play may answer, once, while the arks wait:
+
+- **Give them a world:** a body in a system where the power holds a colony or an outpost, held by
+  no one, that the Unhomed could settle (tolerable, or harsh for want of better). The power names
+  it. They settle there as the **Last Hearth**, a power of their own, grateful to the giver.
+- **Take them in:** they come to the power's own colonies as its people: **2 million** people to
+  each of the three colonies with the most room (as far as it allows), **150 research** from what
+  they know, and **−5 approval** at those colonies for 10 turns while they settle (*newcomers*). They
+  do not become a power.
+- **Refuse.**
+
+As the turn ends, the first answer that settles them takes effect: a world given before a taking-in,
+and between two of one kind, the nearer to CE Boötis first. A power that has not answered is taken
+to refuse once the arks stop asking.
+
+**The rivals answer by character:** the Authority and the Moot give a world, the Co-op and the Wake
+take them in, the Concord refuses (slow to trust); each only when it can (a world to give, a colony
+with room), and a few turns after they arrive (by the seed, 1 to 4).
+
+### 25.4 The star dies
+
+**12 turns** after the arks arrive, Arcturus dies, in every power's report: *Arcturus has thrown off
+its outer layers in a single night: a new light in Boötes, bright enough to read by. The Unhomed
+have nowhere to go back to.* With the note: *Arcturus is real, an old giant 37 light-years away; its
+death is the game's fiction.* Every power studies it: **+40 research**.
+
+If the arks are still waiting, they stop asking and **take a world by force**: the free body the
+Unhomed could best settle within 10 ly of CE Boötis (the nearest on a tie), or, failing that, the
+nearest free body they could settle at all. They remember each power that refused them.
+
+### 25.5 The Last Hearth, a power in mid-game
+
+- **A new power** is added to the game as a rival, with its capital colony of **3 million**
+  people on the world given or taken, a shipyard and a lane station, a survey ship and a colony
+  ship, 100 credits, a small stockpile, and every technology that **every** power in play knows
+  (what all know, they have learnt from listening); no lanes of its own yet.
+- **It knows every power,** in talk: they have heard each other's tongues for 12 turns.
+- **It remembers:** **+30** for the power that gave it a world (*Gave us a home*), **−15** for each
+  power that refused it (*Refused us a home*), fading a point every **12** turns (slow to forget).
+- **As a rival:** few and stubborn. Its capital and colonies grow; it settles the nearest world;
+  life sciences and propulsion; standard taxes; it builds lanes from its colonies; a festival;
+  Open frontier, Lane network and Garden worlds; the Commons. Its trait, **Hardened by the dark**:
+  its colonies keep 5 more approval. It declares war only for a claim, and accepts peace after 10
+  turns. Asks: open lanes 30, shared research 20, a border 0, trade 10, passage 20, never protection.
+  Lawful. Leaders: a steward, an ambassador, a scholar. No excavations of its own at first (a
+  quarter of its research once it has one, like the Concord).
+- **The rules treat it as any power:** contact, treaties, the Assembly, war, score and victory.
+
+### 25.6 On the screen
+
+- **The arks:** while they wait, a mark at CE Boötis on the map and a section in its system panel;
+  **The arks** sheet (from the report, the needs and the system panel) with their picture, what they
+  ask, and three choices: *Give them a world* (with the list of worlds we could give, each with how
+  habitable it is for them), *Take them in* (what it gives and costs) and *Refuse*. Our answer can be
+  changed until the turn ends.
+- **What needs you:** *The arks ask for a world* until we answer.
+- **The star's death:** in the report, with its picture and the real-astronomy note.
+- **The Last Hearth** then appears as every power does: the standings, the diplomacy screen with its
+  envoy, the map in coral with its cross, the codex with its speaker and its people.
+
+### 25.7 Pictures (D-57)
+
+The arks arriving, Arcturus's death, Kindling's and Old Ember's faces, the Unhomed in their arks for
+the codex, and four leaders' faces: **9 pictures, 18 candidates, about $0.90**, sent as lettered
+sheets. Their buildings, landscapes and other advisors wait until they can be played.
+
+### 25.8 State
+
+`arks`: when they arrived, the turn the star dies, and each power's answer (*give* with the body,
+*take*, *refuse*), and how it ended (*settled* by whom, *taken in* by whom, or *took* a world), or
+none before they come. The faction `last-hearth` and the species `unhomed`; a faction may arrive
+(`arrives`), and a new game never includes one. **State version 30**; an older save has no arks.
+
+### 25.9 Tests
+
+- **Unit** (`unhomed.test.ts`): the arrival turn from the seed, and every power told; each answer
+  and its refusals; the first world given wins; taking in (people, research, approval); refusing; the
+  star's death and its research; taking a world by force; the new power sound and in talk with all,
+  grateful and remembering; the rivals' answers; 50 turns with the Last Hearth in play and the game
+  sound; the migration.
+- **Journey** (`unhomed.spec.ts`, phone, tablet and desktop): the arks arrive, we give them a world,
+  and the Last Hearth stands on the diplomacy screen, grateful.
+
+### As built (22 October 2026)
+
+As designed above, with these differences and details:
+
+- **What the Last Hearth knows:** every technology that **more than half** of the powers in play know
+  (§25.5 said every power). Few technologies are known by all five, the aliens' science being their
+  own, and the Hearth came with ten; with more than half, it comes with 27 to 43, near the others.
+- **Who is remembered as refusing:** a power that refused, and, when the Unhomed take a world by
+  force, every power that never answered. Given a world, they do not hold silence against those that
+  had no time to answer (the rivals answer 2 to 6 turns after the arks come).
+- **The rivals answer 2 to 6 turns after the arks arrive** (§25.3 said 1 to 4), so a player has at
+  least a turn to answer before a rival can.
+- **The arks on the map** are a coral ship's chevron beside CE Boötis, drawn with the relic sites'
+  marks; their section in CE Boötis's panel has *Answer them*.
+- **Taken in,** the newcomers' approval is a lasting effect like an event's (*newcomers settling in*).
+- **A faction that arrives:** `arrives` on its data; `FACTION_IDS` stays the five that start (so a new
+  game, the headless games and the tests are as before), `ARRIVING_IDS` and `ALL_FACTION_IDS` add the
+  Hearth, and every placement from the capitals (home webs, relic sites, keys, anomalies) reads
+  `STARTING_FACTIONS`. A new power's past in the story's history is scored 0.
+- **A sixth shape, the cross,** on the map, the standings, the emblems and the colony view.
+- **Pictures:** 20 candidates, about $1.00: the arks A (cropped: a black band of 64 pixels along its
+  top was cut, keeping 3:2; the second roll's two each had bands of about 120), Arcturus's death A,
+  the Unhomed in their ark B, Kindling B, Old Ember A, the leaders' faces A, A, B, B.
+- **Tests:** `unhomed.test.ts` (10) and `unhomed.spec.ts` (phone, tablet and desktop).
+
+**Numbers** (M2_BALANCE.md): nothing changes by turn 100, as the arks come later. To turn 250, the
+same three winners (the Co-op six, the Concord one, the Wake one). In seven games the arks came
+(seed 5 was decided by the Assembly on turn 90, before them): given a world by the Authority four
+times and the Moot twice, taken in by the Co-op once; the Last Hearth ended those games with 2 to 10
+colonies and 2 to 6 outposts. The deepest debt was −518, the Authority on seed 4: it lost three of
+its eight colonies to the Wake from turn 150 and kept every ship and project on what was left. No
+rival yet scraps ships or projects when it cannot pay for them; that is left for the proof
+(increment 59), with D-69's target. The slowest turn took 128 ms and the largest save 148.5 KB, with
+six powers.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| When and where the arks come, the star's death, what taking in gives, the memories | `RULES.unhomed` (`src/content/rules.ts`) |
+| How each rival answers | `PERSONALITIES[…].arks` (`src/sim/ai.ts`): `give`, `take` or `refuse` |
+| The Hearth's character, asks, trait and names | `FACTIONS['last-hearth']` (`src/content/factions.ts`), `PERSONALITIES['last-hearth']`, `ADVISORS`, `LEADER_NAMES` |
+| The Unhomed's habitability | `SPECIES.unhomed` (`src/content/species.ts`) |
+| The arks off altogether | `RULES.unhomed.from` and `to` past the game's limit (for instance 9999): they never come |

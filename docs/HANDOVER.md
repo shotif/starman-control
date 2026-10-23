@@ -247,9 +247,13 @@ version 28. **Done: increment 56, leaders** (§24): five callings (commander, st
 ambassador, spymaster) with twelve traits that grow and two flaws; three people offered every 10
 turns; wages; leaving in debt or from an unhappy colony, lured by a rival that knows our secrets,
 fallen with a fleet; the Leaders screen (**L**) and a leader's line where they serve; twenty faces;
-the rivals hire by character from turn 70; state version 29.
+the rivals hire by character from turn 70; state version 29. **Done: increment 57, the dying star
+and the unhomed** (§25): the arks of the Unhomed arrive at CE Boötis between turns 110 and 150 and
+ask every power for a world (give, take in, refuse); Arcturus dies 12 turns later (real star,
+fictional death); the Last Hearth, a sixth power, arrives in mid-game with a coral cross; state
+version 30.
 
-The art and music spend: about $31.55 of $50 (raised on 22 October 2026; about $18.45 left). M3's
+The art and music spend: about $32.55 of $50 (raised on 22 October 2026; about $17.45 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

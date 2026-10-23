@@ -925,6 +925,8 @@ export function needText(world: World, game: GameState, need: Need): string {
   if (need.kind === 'no-research') return 'Nothing is being researched.';
   if (need.kind === 'offer')
     return `The ${FACTIONS[need.from].shortName} offers us ${offerWords(need.treaty)}: it needs your answer before this turn ends.`;
+  if (need.kind === 'arks')
+    return `The arks of the Unhomed ask us for a world: ${need.left} turn${need.left === 1 ? '' : 's'} before their star dies.`;
   if (need.kind === 'chapter')
     return `A chapter of the relic site at ${world.system(need.system).name} is done: it needs your choice${need.left === 1 ? ' before this turn ends' : ''}.`;
   if (need.kind === 'vote')

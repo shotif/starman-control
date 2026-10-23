@@ -5,7 +5,7 @@
 after any change to the rules or the rivals.*
 
 The slowest of the first 100 turns took 84 ms on the machine that wrote this; the largest save at turn 100
-was 69.1 KB. The longest time in debt was 2 turns in a row. The longest time hungry was 1 turn in a row.
+was 69.2 KB. The longest time in debt was 2 turns in a row. The longest time hungry was 1 turn in a row.
 
 In all 8 games, by turn 100: 67 turns of plunder by raids, 8 battles, 8 wars declared and 3 colonies or outposts taken by invasion (M4).
 The Assembly formed in 5 of them, on turn 50 at the earliest and 73 at the latest; it held 6 elections and passed 7 resolutions by turn 100.
@@ -81,21 +81,21 @@ The tree has 88 technologies, of which a power can learn 85 (one of each pair of
 
 Each game played on, after turn 100, until it was won or reached the default limit of 250 turns
 (M4_FLEETS.md §30.4). 1 game was won before the limit; 8 games saw a war by turn 150;
-0 powers left the game before turn 100. The slowest turn of all took 124 ms (turn 238); the
-largest save was 131.6 KB. The deepest any treasury fell was -76 credits;
-the longest time in debt was 42 turns in a row.
+0 powers left the game before turn 100. The slowest turn of all took 128 ms (turn 241); the
+largest save was 148.5 KB. The deepest any treasury fell was -518 credits;
+the longest time in debt was 54 turns in a row.
 Of the 12 relic sites in each game, some power knew 6 to 10 by turn 150 (M5).
 
-| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game | Chapters | Most chapters |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 42 | Frontier Co-op | score | 250 | 85 | 4 | 4 | 4 | 0 | — | 15 | Transit Authority (6) |
-| 7 | Frontier Co-op | score | 250 | 90 | 2 | 18 | 6 | 0 | — | 18 | Frontier Co-op (9) |
-| 2176 | Frontier Co-op | score | 250 | 85 | 3 | 14 | 4 | 0 | — | 10 | Transit Authority (9) |
-| 1 | Frontier Co-op | score | 250 | 90 | 4 | 15 | 11 | 0 | — | 9 | Transit Authority (6) |
-| 2 | Frontier Co-op | score | 250 | 85 | 2 | 6 | 6 | 0 | — | 9 | Transit Authority (6) |
-| 3 | Dusk Concord | score | 250 | 90 | 5 | 3 | 4 | 0 | — | 3 | Transit Authority (3) |
-| 4 | Hollow Wake | score | 250 | 85 | 4 | 14 | 8 | 0 | — | 9 | Transit Authority (6) |
-| 5 | Frontier Co-op | the Assembly | 90 | 75 | 1 | 0 | 0 | 0 | — | 3 | Transit Authority (3) |
+| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game | Chapters | Most chapters | The arks | The Last Hearth at the end |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | Frontier Co-op | score | 250 | 85 | 4 | 18 | 4 | 0 | — | 12 | Transit Authority (9) | given by the Transit Authority, turn 129 | 2 colonies, 6 outposts |
+| 7 | Frontier Co-op | score | 250 | 90 | 2 | 20 | 6 | 0 | — | 18 | Frontier Co-op (9) | given by the Drift Moot, turn 115 | 10 colonies, 4 outposts |
+| 2176 | Frontier Co-op | score | 250 | 85 | 2 | 13 | 3 | 0 | — | 10 | Transit Authority (9) | taken in by the Frontier Co-op, turn 147 | — |
+| 1 | Frontier Co-op | score | 250 | 90 | 4 | 20 | 10 | 0 | — | 9 | Transit Authority (6) | given by the Transit Authority, turn 123 | 6 colonies, 4 outposts |
+| 2 | Frontier Co-op | score | 250 | 85 | 2 | 6 | 6 | 0 | — | 9 | Transit Authority (6) | given by the Drift Moot, turn 130 | 5 colonies, 2 outposts |
+| 3 | Dusk Concord | score | 250 | 90 | 5 | 4 | 4 | 0 | — | 3 | Transit Authority (3) | given by the Transit Authority, turn 144 | 5 colonies, 2 outposts |
+| 4 | Hollow Wake | score | 250 | 85 | 3 | 17 | 6 | 0 | — | 9 | Transit Authority (6) | given by the Transit Authority, turn 133 | 4 colonies, 2 outposts |
+| 5 | Frontier Co-op | the Assembly | 90 | 75 | 1 | 0 | 0 | 0 | — | 3 | Transit Authority (3) | — | — |
 
 ## Events, and how the rivals answered them
 

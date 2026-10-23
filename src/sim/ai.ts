@@ -13,6 +13,7 @@ import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
 import { TREATY_KINDS } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
+import { answerOf, givableWorlds, HEARTH, takeInPlan } from './arks.ts';
 import { callBetween, electionLean, heeds, isMember, onTheFloor, proposeRefusal, resolutionLean } from './assembly.ts';
 import { buildable } from './designs.ts';
 import { approvalOf, edictCost, industryOf, queueRefusal, settleable, treasuryOf } from './economy.ts';
@@ -28,10 +29,12 @@ import { blindReachDeci, findRoute, lanesFor } from './movement.ts';
 import type { Order } from './orders.ts';
 import { canExcavate, digAt, excavateRefusal, knownSites } from './relics.ts';
 import { canResearch, speciesFor, withNeeds } from './research.ts';
+import { rng } from './rng.ts';
 import { reachableFrom, roadStep } from './roads.ts';
 import { scoreOf } from './score.ts';
 import {
   type Amount,
+  type ArkAnswer,
   contactWith,
   type DigShare,
   type GameState,
@@ -81,6 +84,8 @@ export interface Personality {
   watches: number;
   /** The leaders it hires, in the order it wants them (M5_UNKNOWN.md §24.5). */
   leaders: readonly Calling[];
+  /** How it answers the arks of the Unhomed (M5_UNKNOWN.md §25.3). */
+  arks: ArkAnswer;
 }
 
 export const PERSONALITIES: Record<FactionId, Personality> = {
@@ -99,6 +104,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     studies: true,
     watches: 1,
     leaders: ['scholar', 'steward', 'ambassador'],
+    arks: 'give',
   },
   frontier: {
     capital: 'grow',
@@ -114,6 +120,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     studies: false,
     watches: 0,
     leaders: ['steward', 'scholar', 'ambassador'],
+    arks: 'take',
   },
   'hollow-wake': {
     capital: 'produce',
@@ -129,6 +136,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     studies: false,
     watches: 2,
     leaders: ['commander', 'spymaster', 'steward'],
+    arks: 'take',
   },
   // Patient expanders far from anyone's lanes (M3_NEIGHBOURS.md §24.7).
   'dusk-concord': {
@@ -145,6 +153,7 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     studies: false,
     watches: 1,
     leaders: ['ambassador', 'steward', 'scholar'],
+    arks: 'refuse',
   },
   // Brokers of the giants' fuel (M3_NEIGHBOURS.md §25.7).
   'drift-moot': {
@@ -161,7 +170,25 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     studies: true,
     watches: 2,
     leaders: ['ambassador', 'spymaster', 'steward'],
+    arks: 'give',
     broker: true,
+  },
+  // The Unhomed's Last Hearth (M5_UNKNOWN.md §25.5): few and stubborn, growing and settling near.
+  'last-hearth': {
+    capital: 'grow',
+    colonies: 'grow',
+    settles: 'nearest',
+    fields: ['life-sciences', 'propulsion'],
+    taxes: 'standard',
+    laneBuilder: true,
+    edict: 'festival',
+    doctrines: ['open-frontier', 'lane-network', 'garden-worlds'],
+    greatWork: 'commons',
+    digs: 25,
+    studies: false,
+    watches: 1,
+    leaders: ['steward', 'ambassador', 'scholar'],
+    arks: 'refuse',
   },
 };
 
@@ -375,6 +402,20 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
       : [];
   for (const f of power.agents) if (!watchable.includes(f)) orders.push({ type: 'watch', on: f, watch: false });
   for (const f of watchable) if (!power.agents.includes(f)) orders.push({ type: 'watch', on: f, watch: true });
+
+  // The arks (M5_UNKNOWN.md §25.3): it answers by character, a few turns after they come; a world
+  // to give or a colony with room, or else it refuses.
+  const arks = state.arks;
+  if (arks && arks.ended === null && faction !== HEARTH && !answerOf(state, faction)) {
+    const [lo, hi] = RULES.unhomed.answerAfter;
+    if (state.turn >= arks.arrived + rng(state.seed, 'arks-answer', faction).int(lo, hi)) {
+      const gift = me.arks === 'give' ? givableWorlds(world, state, faction)[0] : undefined;
+      if (gift) orders.push({ type: 'arks', answer: 'give', body: gift.id });
+      else if (me.arks === 'take' && takeInPlan(world, state, faction).length > 0)
+        orders.push({ type: 'arks', answer: 'take', body: null });
+      else orders.push({ type: 'arks', answer: 'refuse', body: null });
+    }
+  }
 
   // Leaders (M5_UNKNOWN.md §24.5): it hires those its character wants, while its treasury has the fee
   // and more and it is gaining, posts each at once, and lets a waiting one go when in debt.

@@ -11,6 +11,7 @@ import { isHull, SHIPS } from '../content/ships.ts';
 import type { SystemId } from '../data/types.ts';
 import { aiOrders } from './ai.ts';
 import { anomalyAt, grantReward } from './anomalies.ts';
+import { resolveArks } from './arks.ts';
 import { resolveAssembly } from './assembly.ts';
 import { repairShips, resolveBattles } from './battle.ts';
 import { bodiesOf } from './bodies.ts';
@@ -597,6 +598,8 @@ export function resolveTurn(world: World, before: GameState): TurnResult {
 
   // 11. Events (§27): lasting effects run down, answers take effect, and new events come.
   resolveEvents(world, state, events);
+  // 11a. The arks of the Unhomed (M5_UNKNOWN.md §25): arrived, answered, their star's death.
+  resolveArks(world, state, events);
   // 11b. Relic sites (M5_UNKNOWN.md §20.3): chapters' choices taken; and the sites a power's Old
   // charts show it for the first time.
   resolveChapterChoices(world, state, events, (power, system) => {

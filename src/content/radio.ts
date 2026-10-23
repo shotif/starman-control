@@ -86,6 +86,20 @@ export const RADIO: Record<FactionId, RadioVoice> = {
       held: 'The descent is turned back, Control. {place} is the Moot’s still. {left} of us remain.',
     },
   },
+  'last-hearth': {
+    landing: 'Warden of the landing',
+    garrison: 'Warden of the hearth',
+    lines: {
+      landing: 'Control. We are down at {place}, {troops} of us. We did not cross the dark to be turned away.',
+      fighting: 'About {garrison} stand against us. We have lost more than this before. We hold on.',
+      won: '{place} is the Hearth’s now. {left} of us remain. Another fire kept.',
+      lost: 'Control, the landing at {place} has failed. We will carry them in our telling.',
+      sighted: 'Control. Ships fall on {place}: the {enemy}, about {troops}. Not again. Not here.',
+      holding: 'The hearth holds, {garrison} of us. We have nowhere else to go.',
+      fell: 'Control. {place} is lost to us. Another home taken. We remember.',
+      held: 'They are gone, Control. {place} is ours still. {left} of us remain to keep the fire.',
+    },
+  },
 };
 
 /** A line with its numbers filled in. */

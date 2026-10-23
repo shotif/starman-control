@@ -109,3 +109,36 @@
   margin: 0;
   font-size: 0.85rem;
 }
+
+/* The arks of the Unhomed (M5_UNKNOWN.md §25.6): a world chosen to give, and the section in CE Boötis's panel. */
+.arks-give {
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.arks-world {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.arks-world select {
+  min-height: 44px;
+  max-width: 100%;
+}
+
+.arks-world .button {
+  min-height: 44px;
+}
+
+.arks-here {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.arks-here h3,
+.arks-here p {
+  margin: 0;
+}

@@ -7,23 +7,24 @@ import type { SystemId } from '../data/types.ts';
 import type { SpeciesId } from './species.ts';
 import type { TreatyKind } from './treaties.ts';
 
-export type FactionId = 'sta' | 'frontier' | 'hollow-wake' | 'dusk-concord' | 'drift-moot';
+export type FactionId = 'sta' | 'frontier' | 'hollow-wake' | 'dusk-concord' | 'drift-moot' | 'last-hearth';
 
 /**
  * How a power builds: each has its own buildings in the colony view (D-28, COLONY_VIEW.md §3). An
  * alien species brings its own (D-12); the Duskfolk's and the Drifters' are drawn when they can be
  * played (§24.9, §25.8).
  */
-export type ArchitectureId = 'authority' | 'cooperative' | 'wake' | 'dusk' | 'drift';
+export type ArchitectureId = 'authority' | 'cooperative' | 'wake' | 'dusk' | 'drift' | 'hearth';
 
 /** A shape drawn beside the colour wherever a faction is shown, so colour is never the only cue. */
-export type FactionMark = 'square' | 'circle' | 'triangle' | 'diamond' | 'hexagon';
+export type FactionMark = 'square' | 'circle' | 'triangle' | 'diamond' | 'hexagon' | 'cross';
 
 /** What a trait does. The rules read these; the interface shows `text`. Draft values, balanced in M2 and M3. */
 export type TraitEffect =
   | { kind: 'industry-percent'; percent: number }
   | { kind: 'growth-percent'; percent: number }
-  | { kind: 'extra-jump-points'; points: number };
+  | { kind: 'extra-jump-points'; points: number }
+  | { kind: 'approval'; amount: number };
 
 export interface TraitDef {
   id: string;
@@ -58,6 +59,11 @@ export interface FactionDef {
   id: FactionId;
   /** Whether a new game offers it to lead (D-08): the human powers in M3, the aliens later. */
   playable: boolean;
+  /**
+   * Whether it arrives in mid-game rather than starts (M5_UNKNOWN.md §25): no new game includes it,
+   * and nothing placed from the capitals (home webs, relic sites, keys, anomalies) counts its.
+   */
+  arrives?: boolean;
   name: string;
   shortName: string;
   description: string;
@@ -391,13 +397,78 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       alt: 'Drifters floating in the banded air of a giant planet, among its clouds (fiction)',
     },
   },
+  // The power that arrives (M5_UNKNOWN.md §25), fiction: the Unhomed of Arcturus, in their arks.
+  'last-hearth': {
+    id: 'last-hearth',
+    playable: false,
+    arrives: true,
+    name: 'Last Hearth',
+    shortName: 'Last Hearth',
+    description: 'The Unhomed of Arcturus, who crossed the dark in their arks as their star began to die.',
+    playsAs:
+      'Few and stubborn newcomers, arriving in mid-game with only what their arks carry, who remember who helped them.',
+    colour: '#ff8a7a',
+    mark: 'cross',
+    species: 'unhomed',
+    architecture: 'hearth',
+    // Where its arks arrive (§25.2); its capital is the world it is given or takes.
+    capital: { systemId: 'ce-bootis', bodyId: 'ce-bootis:1' },
+    traits: [
+      {
+        id: 'hearth-hardened',
+        name: 'Hardened by the dark',
+        text: 'Colonies keep 5 more approval.',
+        effect: { kind: 'approval', amount: 5 },
+      },
+    ],
+    shipmakers: ['the ark-wrights'],
+    fleetWord: 'Flotilla',
+    weary: 1,
+    // Stubborn (§25.5): war only for its claim, and peace soon after.
+    war: {
+      declares: ['claim'],
+      acceptsAfter: 10,
+      offersAfter: 15,
+      credits: 0,
+      peaceOnLoss: false,
+      callsForPeace: true,
+      conqueror: false,
+    },
+    regard: {},
+    asks: {
+      'open-lanes': 30,
+      'shared-research': 20,
+      border: 0,
+      trade: 10,
+      passage: 20,
+      protection: null,
+      'non-aggression': 10,
+      alliance: 50,
+    },
+    sells: [],
+    lawful: true,
+    giftCredits: 10,
+    forgets: 12,
+    speaker: { name: 'Old Ember', role: 'keeper of the hearth', portrait: 'speaker-last-hearth' },
+    people: {
+      picture: 'people-unhomed',
+      alt: 'The Unhomed gathered about a hearth in the long hall of an ancient ark (fiction)',
+    },
+  },
 };
 
+/** Every faction a new game includes, in its order. */
 export const FACTION_IDS: readonly FactionId[] = ['sta', 'frontier', 'hollow-wake', 'dusk-concord', 'drift-moot'];
+/** The factions that arrive in mid-game (M5_UNKNOWN.md §25). */
+export const ARRIVING_IDS: readonly FactionId[] = ['last-hearth'];
+/** Every faction, those that start and those that arrive. */
+export const ALL_FACTION_IDS: readonly FactionId[] = [...FACTION_IDS, ...ARRIVING_IDS];
+/** The factions that start, whose capitals place the home webs, relic sites, keys and anomalies. */
+export const STARTING_FACTIONS: readonly FactionDef[] = FACTION_IDS.map((f) => FACTIONS[f]);
 
 /** The factions a new game offers to lead (D-08). */
 export const PLAYABLE_IDS: readonly FactionId[] = FACTION_IDS.filter((f) => FACTIONS[f].playable);
 
 export function isFactionId(id: unknown): id is FactionId {
-  return typeof id === 'string' && (FACTION_IDS as readonly string[]).includes(id);
+  return typeof id === 'string' && (ALL_FACTION_IDS as readonly string[]).includes(id);
 }

@@ -41,10 +41,16 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
     'In the architecture of the Drifters, an invented alien people who live in a giant planet’s air: buoyant ' +
     'structures that float, rounded gas-filled pods of pale woven membrane tethered together by long cables, ' +
     'with slatted vanes for steering and soft violet lights; light, airy and slowly turning.',
+  // M5_UNKNOWN.md §25: written now, painted when the Unhomed can be played.
+  hearth:
+    'In the architecture of the Unhomed, an invented alien people who lived for centuries in ark ships: homes ' +
+    'built from the sections of landed arks, long ribbed hulls set into the ground and patched over with many ' +
+    'layers, insulated with heavy quilted cloth in rust and ochre, round hatches glowing a warm ember orange, ' +
+    'each settlement gathered around a central hearth-tower; mended, close and warm against the cold.',
 };
 
 /** The architectures whose buildings are painted: the aliens' wait until they can be played (§24.10, §25.9). */
-type Painted = Exclude<ArchitectureId, 'dusk' | 'drift'>;
+type Painted = Exclude<ArchitectureId, 'dusk' | 'drift' | 'hearth'>;
 
 /**
  * The Duskfolk (M3_NEIGHBOURS.md §24), an invented people, written once and put into every brief
@@ -67,6 +73,16 @@ const DRIFTER =
   'and cream with darker bands, rimmed by a frill of thin translucent vanes it steers with, a row of small dark ' +
   'eyes along its leading edge, and long fine feelers trailing beneath; it wears a few woven straps and ' +
   'cords hung with small tools and beads';
+
+/**
+ * The Unhomed (M5_UNKNOWN.md §25.1), an invented people, written once for every brief that shows
+ * them. Fiction, and like no other work's aliens.
+ */
+const UNHOMED =
+  'one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, ' +
+  'a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, ' +
+  'and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many ' +
+  'layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold';
 
 const FIRST: ArtBrief[] = [
   // The style test: the same four subjects from both services, so the owner can choose a direction
@@ -698,7 +714,66 @@ export const BRIEFS: ArtBrief[] = [
   ...duskfolk(),
   ...drifters(),
   ...leaders(),
+  ...unhomed(),
 ];
+
+/** Increment 57's pictures (M5_UNKNOWN.md §25.7): the arks, Arcturus's death, the Hearth's envoy, speaker and people, and four leaders' faces. */
+function unhomed(): ArtBrief[] {
+  return [
+    {
+      id: 'arks-arrive',
+      series: 'illustration',
+      subject:
+        'At the dark edge of known space, beside a small dim red dwarf star, a great slow procession of ancient ark ships ' +
+        'comes out of the black: long, patched, weathered hulls built and rebuilt over centuries, ringed with dim amber ' +
+        'windows, some towing others; far behind them, low among the stars, a single swollen orange star. Vast, quiet, weary. ' +
+        'Invented ships of an invented people, like no other story’s.',
+      purpose: 'The arks of the Unhomed arrive at CE Boötis (M5, fiction; CE Boötis and Arcturus are real stars).',
+    },
+    {
+      id: 'arcturus-dies',
+      series: 'illustration',
+      subject:
+        'Seen from a quiet rocky world under a starry night sky: a new, dazzling orange-white light low in the constellation ' +
+        'of Boötes, wrapped in a faint expanding glowing shell, casting soft shadows across the ground; a few small settlement ' +
+        'lights below, people outside looking up. Awe and loss.',
+      purpose: 'Arcturus dies, seen in every sky (M5; the star is real, its death fiction).',
+    },
+    {
+      id: 'advisor-hearth-envoy',
+      series: 'portrait',
+      subject: `Kindling, who asks for the Last Hearth: ${UNHOMED}; younger, the filaments bright, a single strip of embroidered cloth at the throat; earnest, hopeful, tired.`,
+      purpose: 'The Hearth’s Envoy, on the diplomacy screen (M5, fiction).',
+    },
+    {
+      id: 'speaker-last-hearth',
+      series: 'portrait',
+      subject: `Old Ember, keeper of the hearth of the Unhomed: ${UNHOMED}; very old, the filaments sparse and dim, a heavy cloak of many patched layers; grave and gentle.`,
+      purpose: 'The Hearth’s speaker, on the data page (M5, fiction).',
+    },
+    {
+      id: 'people-unhomed',
+      series: 'illustration',
+      subject:
+        'Inside a vast, ancient ark ship: a long curved hall lined with terraced homes and hanging gardens under dim amber ' +
+        'lamps, patched and mended over centuries, with a great window looking out on the stars; a few of the Unhomed, tall ' +
+        'stooped grey figures in layered patched cloth with faintly glowing filament crowns, gather around a warm central ' +
+        'hearth of light. An invented alien people, not human, and like no other story’s aliens.',
+      purpose: 'The Unhomed in their arks, on the data page (M5, fiction).',
+    },
+    ...[
+      ['1', 'middle-aged, the filaments a steady orange, a cloth band across the brow; watchful, patient.'],
+      ['2', 'young, the filaments bright and thick, a scarf of rust-red cloth; eager, restless.'],
+      ['3', 'old, the filaments white-gold and sparse, deep lines about the eyes; wise, sad.'],
+      ['4', 'broad-shouldered, an old burn scar across one cheek, the filaments cut short; stern, steady.'],
+    ].map(([n, look]) => ({
+      id: `leader-last-hearth-${n}`,
+      series: 'portrait' as const,
+      subject: `${UNHOMED}; ${look}`,
+      purpose: "A leader's face (M5, fiction): last-hearth.",
+    })),
+  ];
+}
 
 /**
  * Increment 56's faces (M5_UNKNOWN.md §24.7): four for each people, worn by the leaders a power

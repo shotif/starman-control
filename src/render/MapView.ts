@@ -125,7 +125,7 @@ void main() {
   gl_FragColor = vec4(vTint * a * a * strength, 1.0);
 }`;
 
-/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle, diamond, hexagon). */
+/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle, diamond, hexagon, cross). */
 const MARK_VERTEX = `
 attribute float size;
 attribute vec3 tint;
@@ -165,9 +165,13 @@ void main() {
   else if (vShape < 1.5) d = max(abs(p.x), abs(p.y)) - 0.68;
   else if (vShape < 2.5) d = triangle(p + vec2(0.0, 0.14), 0.82);
   else if (vShape < 3.5) d = (abs(p.x) + abs(p.y)) * 0.7071 - 0.6;
-  else {
+  else if (vShape < 4.5) {
     vec2 q = abs(p);
     d = max(q.x * 0.8660254 + q.y * 0.5, q.y) - 0.7;
+  } else {
+    // A cross (M5_UNKNOWN.md §25.1): two bars, outlined as one.
+    vec2 q = abs(p);
+    d = min(max(q.x - 0.72, q.y - 0.26), max(q.x - 0.26, q.y - 0.72));
   }
   float w = vWeight;
   float a = 1.0 - smoothstep(w, w + 0.07, abs(d));
@@ -175,7 +179,14 @@ void main() {
   gl_FragColor = vec4(vTint, a * opacity);
 }`;
 
-const SHAPE: Record<MapHolding['mark'], number> = { circle: 0, square: 1, triangle: 2, diamond: 3, hexagon: 4 };
+const SHAPE: Record<MapHolding['mark'], number> = {
+  circle: 0,
+  square: 1,
+  triangle: 2,
+  diamond: 3,
+  hexagon: 4,
+  cross: 5,
+};
 
 /** Ships: small chevrons drawn a fixed number of pixels from their star, so they never hide it. */
 const SHIP_VERTEX = `
@@ -257,6 +268,8 @@ const TAIL = 7;
 export interface RelicMark {
   at: SystemId;
   begun: boolean;
+  /** The arks of the Unhomed waiting there (M5_UNKNOWN.md §25.6): a coral ship's chevron, not a site. */
+  arks?: boolean;
 }
 
 export interface ShipMark {
@@ -1621,18 +1634,20 @@ export class MapView {
     const at = (id: SystemId) => this.content.systems[this.index.get(id) ?? -1]?.pos;
     const items = marks.flatMap((m) => {
       const pos = at(m.at);
-      return pos ? [{ pos, shape: m.begun ? 4 : 3 }] : [];
+      return pos ? [{ pos, shape: m.arks ? 0 : m.begun ? 4 : 3, arks: m.arks === true }] : [];
     });
     if (items.length > 0) {
       const gold = new THREE.Color(0xe8d49a);
+      const coral = new THREE.Color(0xff8a7a);
       const pos = new Float32Array(items.length * 3);
       const tint = new Float32Array(items.length * 3);
       const offset = new Float32Array(items.length * 2);
       const shape = new Float32Array(items.length);
       items.forEach((it, i) => {
         pos.set(it.pos, i * 3);
-        tint.set([gold.r, gold.g, gold.b], i * 3);
-        offset.set([-17, -15], i * 2);
+        const c = it.arks ? coral : gold;
+        tint.set([c.r, c.g, c.b], i * 3);
+        offset.set(it.arks ? [17, -15] : [-17, -15], i * 2);
         shape[i] = it.shape;
       });
       const g = new THREE.BufferGeometry();

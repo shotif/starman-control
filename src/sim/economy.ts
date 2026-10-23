@@ -329,6 +329,9 @@ export function approvalOf(world: World, state: GameState, h: Holding): Figure &
   if (home === 'harsh') parts.push({ label: 'life under domes', value: a.domes });
   else if (home === 'uninhabitable' && h.kind === 'colony') parts.push({ label: 'life in orbit', value: a.domes });
   for (const e of effects(state, h.owner, 'approval')) parts.push({ label: 'councils', value: e.amount });
+  // A power's own trait (M5_UNKNOWN.md §25.5: the Hearth, hardened by the dark).
+  for (const t of FACTIONS[h.owner].traits)
+    if (t.effect.kind === 'approval') parts.push({ label: t.name.toLowerCase(), value: t.effect.amount });
   if (holdsGreatWork(state, h.owner, 'commons'))
     parts.push({ label: 'the Commons', value: RULES.greatWorks.commonsApproval });
   const jumps = jumpsFromCapital(world, state, h);

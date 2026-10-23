@@ -155,6 +155,31 @@ export function shapeProblems(raw: unknown): string[] {
   if (!Array.isArray(raw.candidates) || !raw.candidates.every((c) => isLeader(c) && isWhole(c.fee)))
     out.push('the people offered are not a list of leaders');
   if (!isWhole(raw.nextLeaderId, 1)) out.push('nextLeaderId is not a whole number from 1');
+  // The arks of the Unhomed (M5_UNKNOWN.md §25.8).
+  const a = raw.arks;
+  if (
+    a !== null &&
+    !(
+      isRecord(a) &&
+      isWhole(a.arrived, 1) &&
+      isWhole(a.dies, 1) &&
+      Array.isArray(a.answers) &&
+      a.answers.every(
+        (x) =>
+          isRecord(x) &&
+          isFactionId(x.faction) &&
+          (x.answer === 'give' || x.answer === 'take' || x.answer === 'refuse') &&
+          (x.body === null || typeof x.body === 'string'),
+      ) &&
+      (a.ended === null ||
+        (isRecord(a.ended) &&
+          (a.ended.how === 'given' || a.ended.how === 'taken-in' || a.ended.how === 'took') &&
+          (a.ended.by === null || isFactionId(a.ended.by)) &&
+          (a.ended.body === null || typeof a.ended.body === 'string') &&
+          isWhole(a.ended.turn, 1)))
+    )
+  )
+    out.push('the arks are not arks');
   // The last turn's battles (M4_FLEETS.md §24.8), kept for the replay.
   if (
     !Array.isArray(raw.battles) ||
@@ -332,7 +357,7 @@ export function shapeProblems(raw: unknown): string[] {
         !p.lasting.every(
           (l) =>
             isRecord(l) &&
-            isEventId(l.event) &&
+            (isEventId(l.event) || l.event === 'arks') &&
             ['no-industry', 'blight', 'no-growth', 'approval'].includes(l.kind as string) &&
             (l.holding === null || isWhole(l.holding, 1)) &&
             typeof l.amount === 'number' &&

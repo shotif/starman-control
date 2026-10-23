@@ -192,8 +192,19 @@ for (const seed of SEEDS) {
   const chapters = g.powers.reduce((n, p) => n + p.chapters, 0);
   const most = [...g.powers].sort((a, b) => b.chapters - a.chapters)[0];
   const digger = most && most.chapters > 0 ? `${FACTIONS[most.faction].shortName} (${most.chapters})` : '—';
+  // The arks of the Unhomed (M5_UNKNOWN.md §25): how they ended, and what the Last Hearth held at the end.
+  const a = g.arks;
+  const arks = !a?.ended
+    ? a
+      ? 'still asking'
+      : '—'
+    : `${a.ended.how === 'given' ? `given by the ${FACTIONS[a.ended.by ?? 'sta'].shortName}` : a.ended.how === 'taken-in' ? `taken in by the ${FACTIONS[a.ended.by ?? 'sta'].shortName}` : 'took a world'}, turn ${a.ended.turn}`;
+  const hearth = g.holdings.filter((h) => h.owner === 'last-hearth');
+  const hearthHeld = g.powers.some((p) => p.faction === 'last-hearth')
+    ? `${hearth.filter((h) => h.kind === 'colony').length} colonies, ${hearth.filter((h) => h.kind === 'outpost').length} outposts`
+    : '—';
   ends.push(
-    `| ${seed} | ${e?.winner ? FACTIONS[e.winner].shortName : '—'} | ${how} | ${e ? e.turn : '—'} | ${game.firstWar || '—'} | ${game.wars} | ${game.battles} | ${game.taken} | ${game.surrenders} | ${game.left.join(', ') || '—'} | ${chapters} | ${digger} |`,
+    `| ${seed} | ${e?.winner ? FACTIONS[e.winner].shortName : '—'} | ${how} | ${e ? e.turn : '—'} | ${game.firstWar || '—'} | ${game.wars} | ${game.battles} | ${game.taken} | ${game.surrenders} | ${game.left.join(', ') || '—'} | ${chapters} | ${digger} | ${arks} | ${hearthHeld} |`,
   );
 }
 
@@ -246,8 +257,8 @@ largest save was ${(biggestAll / 1024).toFixed(1)} KB. The deepest any treasury 
 ${streak(longestDebtAll, 'in debt', 'no power fell into debt').replace(/^T/, 't')}
 Of the ${RULES.relics.sites} relic sites in each game, some power knew ${sitesBy150.length > 0 ? `${Math.min(...sitesBy150)} to ${Math.max(...sitesBy150)}` : 'none'} by turn 150 (M5).
 
-| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game | Chapters | Most chapters |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Seed | Won by | How | On turn | First war | Wars | Battles | Taken | Surrenders | Left the game | Chapters | Most chapters | The arks | The Last Hearth at the end |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${ends.join('\n')}
 
 ## Events, and how the rivals answered them

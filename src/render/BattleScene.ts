@@ -71,6 +71,8 @@ const BUILDERS: Record<FactionId, (ctx: ArtContext) => ShipArt> = {
   'hollow-wake': createPirateShip,
   'dusk-concord': createDuskShip,
   'drift-moot': createDriftShip,
+  // The Hearth's patched ships are haulers rebuilt for war (M5_UNKNOWN.md §25), until they have their own.
+  'last-hearth': createHaulerShip,
 };
 
 const SHIELD_VERT = /* glsl */ `

@@ -6,6 +6,7 @@ import type { FactionId } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { investigateRefusal } from './anomalies.ts';
+import { answerOf, HEARTH } from './arks.ts';
 import { onTheFloor, voteRefusal } from './assembly.ts';
 import {
   approvalOf,
@@ -56,7 +57,9 @@ export type Need =
   /** An election or a resolution before the Assembly this turn, and no vote of ours cast (M4_FLEETS.md §29.4). */
   | { kind: 'vote'; floor: 'election' | 'resolution' }
   /** A chapter of excavation done, waiting for our choice (M5_UNKNOWN.md §20.8); turns left before the first is taken. */
-  | { kind: 'chapter'; system: SystemId; left: number };
+  | { kind: 'chapter'; system: SystemId; left: number }
+  /** The arks of the Unhomed ask for a world, and we have not answered (M5_UNKNOWN.md §25.6); turns before their star dies. */
+  | { kind: 'arks'; left: number };
 
 export function needsOf(world: World, state: GameState, faction: FactionId): Need[] {
   const out: Need[] = [];
@@ -78,6 +81,9 @@ export function needsOf(world: World, state: GameState, faction: FactionId): Nee
     !state.assembly?.cast.some((c) => c.faction === faction)
   )
     out.push({ kind: 'vote', floor });
+  const arks = state.arks;
+  if (arks && arks.ended === null && faction !== HEARTH && !answerOf(state, faction))
+    out.push({ kind: 'arks', left: Math.max(1, arks.dies - state.turn) });
   for (const d of state.digs)
     if (d.by === faction && d.waiting !== null && d.answer === null)
       out.push({ kind: 'chapter', system: d.system, left: Math.max(1, RULES.relics.waits - (state.turn - d.waiting)) });

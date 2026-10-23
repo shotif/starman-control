@@ -52,6 +52,10 @@ export function memoryReason(world: World, m: Memory): string {
   switch (m.kind) {
     case 'gift':
       return `Remembers our gift of ${m.credits ?? 0} credits`;
+    case 'gave-home':
+      return 'We gave them a home';
+    case 'refused-home':
+      return 'We refused them a home';
     case 'great-work-lost':
       return `Lost ${m.project ? `the ${PROJECTS[m.project].name}` : 'a great work'} to us`;
     case 'settled-beside':

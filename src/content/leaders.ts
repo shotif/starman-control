@@ -224,6 +224,23 @@ export const LEADER_NAMES: Record<FactionId, { first: readonly string[]; second:
       'Calm',
     ],
   },
+  'last-hearth': {
+    first: ['Banked', 'Bright', 'Low', 'Kept', 'Patient', 'Warm', 'Small', 'Last', 'Steady', 'Glowing', 'Quiet', 'Old'],
+    second: [
+      'Coal',
+      'Ember',
+      'Spark',
+      'Ash',
+      'Flame',
+      'Tinder',
+      'Glow',
+      'Hearth',
+      'Cinder',
+      'Kindling',
+      'Fire',
+      'Lamp',
+    ],
+  },
 };
 
 /** Faces for each people (§24.7), each a portrait under art/portrait/. */

@@ -304,6 +304,36 @@
       "aiGenerated": true
     },
     {
+      "briefId": "advisor-hearth-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Kindling, who asks for the Last Hearth: one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold; younger, the filaments bright, a single strip of embroidered cloth at the throat; earnest, hopeful, tired.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:39:13.502Z",
+      "id": "advisor-hearth-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:47:40.267Z",
+      "candidate": "art/out/advisor-hearth-envoy/20261022-233657-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-hearth-envoy-128.webp",
+          "bytes": 4430
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-hearth-envoy-384.webp",
+          "bytes": 21634
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-hearth-envoy-768.webp",
+          "bytes": 56968
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-sta-admiral",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -782,6 +812,56 @@
           "width": 768,
           "path": "art/portrait/advisor-wake-works-768.webp",
           "bytes": 69580
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "arcturus-dies",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Seen from a quiet rocky world under a starry night sky: a new, dazzling orange-white light low in the constellation of Boötes, wrapped in a faint expanding glowing shell, casting soft shadows across the ground; a few small settlement lights below, people outside looking up. Awe and loss.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T23:38:14.463Z",
+      "id": "arcturus-dies",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T23:47:39.253Z",
+      "candidate": "art/out/arcturus-dies/20261022-233657-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/arcturus-dies-640.webp",
+          "bytes": 19278
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/arcturus-dies-1280.webp",
+          "bytes": 52042
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "arks-arrive",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: At the dark edge of known space, beside a small dim red dwarf star, a great slow procession of ancient ark ships comes out of the black: long, patched, weathered hulls built and rebuilt over centuries, ringed with dim amber windows, some towing others; far behind them, low among the stars, a single swollen orange star. Vast, quiet, weary. Invented ships of an invented people, like no other story’s.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T23:37:17.318Z",
+      "id": "arks-arrive",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T23:49:59.385Z",
+      "candidate": "art/out/arks-arrive/20261022-233657-gemini-nano-banana-2.1-1-cropped.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/arks-arrive-640.webp",
+          "bytes": 31348
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/arks-arrive-1280.webp",
+          "bytes": 96312
         }
       ],
       "aiGenerated": true
@@ -8539,6 +8619,127 @@
       "aiGenerated": true
     },
     {
+      "briefId": "leader-last-hearth-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold; middle-aged, the filaments a steady orange, a cloth band across the brow; watchful, patient.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:41:08.298Z",
+      "id": "leader-last-hearth-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:47:41.299Z",
+      "candidate": "art/out/leader-last-hearth-1/20261022-233657-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-last-hearth-1-128.webp",
+          "bytes": 4752
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-last-hearth-1-384.webp",
+          "bytes": 24800
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-last-hearth-1-768.webp",
+          "bytes": 71068
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-last-hearth-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold; young, the filaments bright and thick, a scarf of rust-red cloth; eager, restless.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:41:46.788Z",
+      "id": "leader-last-hearth-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:47:41.766Z",
+      "candidate": "art/out/leader-last-hearth-2/20261022-233657-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-last-hearth-2-128.webp",
+          "bytes": 4112
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-last-hearth-2-384.webp",
+          "bytes": 21486
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-last-hearth-2-768.webp",
+          "bytes": 63040
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-last-hearth-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold; old, the filaments white-gold and sparse, deep lines about the eyes; wise, sad.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:42:58.325Z",
+      "note": "Here is a painted science-fiction character portrait of one of the Unhomed for your strategy game:",
+      "id": "leader-last-hearth-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:47:42.245Z",
+      "candidate": "art/out/leader-last-hearth-3/20261022-233657-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-last-hearth-3-128.webp",
+          "bytes": 4472
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-last-hearth-3-384.webp",
+          "bytes": 24670
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-last-hearth-3-768.webp",
+          "bytes": 72344
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-last-hearth-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold; broad-shouldered, an old burn scar across one cheek, the filaments cut short; stern, steady.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:43:47.248Z",
+      "id": "leader-last-hearth-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:47:42.784Z",
+      "candidate": "art/out/leader-last-hearth-4/20261022-233657-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-last-hearth-4-128.webp",
+          "bytes": 4750
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-last-hearth-4-384.webp",
+          "bytes": 24942
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-last-hearth-4-768.webp",
+          "bytes": 66682
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "leader-sta-1",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -8861,6 +9062,32 @@
           "width": 1280,
           "path": "art/illustration/people-duskfolk-1280.webp",
           "bytes": 67716
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "people-unhomed",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: Inside a vast, ancient ark ship: a long curved hall lined with terraced homes and hanging gardens under dim amber lamps, patched and mended over centuries, with a great window looking out on the stars; a few of the Unhomed, tall stooped grey figures in layered patched cloth with faintly glowing filament crowns, gather around a warm central hearth of light. An invented alien people, not human, and like no other story’s aliens.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-22T23:40:50.825Z",
+      "note": "This painted widescreen illustration captures the quiet, vast, and grounded sci-fi atmosphere requested, emphasizing the enormous scale of the ancient ark ship and highlighting the intimate gathering of the Unhomed.",
+      "id": "people-unhomed",
+      "series": "illustration",
+      "approvedAt": "2026-10-22T23:47:39.759Z",
+      "candidate": "art/out/people-unhomed/20261022-233657-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/people-unhomed-640.webp",
+          "bytes": 34790
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/people-unhomed-1280.webp",
+          "bytes": 95962
         }
       ],
       "aiGenerated": true
@@ -9501,6 +9728,37 @@
           "width": 768,
           "path": "art/portrait/speaker-dusk-concord-768.webp",
           "bytes": 51638
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "speaker-last-hearth",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Old Ember, keeper of the hearth of the Unhomed: one of the Unhomed, an invented alien people who are not human: tall and stooped, with smooth ash-grey skin, a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold; very old, the filaments sparse and dim, a heavy cloak of many patched layers; grave and gentle.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-22T23:39:33.022Z",
+      "note": "Here is the character portrait of Old Ember, the keeper of the hearth of the Unhomed. Let me know if you would like any adjustments to this art style or the character's features!",
+      "id": "speaker-last-hearth",
+      "series": "portrait",
+      "approvedAt": "2026-10-22T23:47:40.749Z",
+      "candidate": "art/out/speaker-last-hearth/20261022-233657-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/speaker-last-hearth-128.webp",
+          "bytes": 4388
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/speaker-last-hearth-384.webp",
+          "bytes": 23396
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/speaker-last-hearth-768.webp",
+          "bytes": 70048
         }
       ],
       "aiGenerated": true

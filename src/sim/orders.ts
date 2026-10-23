@@ -12,6 +12,7 @@ import { isTechId, type TechId } from '../content/techs.ts';
 import { isTreatyKind, type TreatyKind } from '../content/treaties.ts';
 import type { SystemId } from '../data/types.ts';
 import { anomalyAt, investigateRefusal, investigationTurns } from './anomalies.ts';
+import { arksRefusal, setArksAnswer } from './arks.ts';
 import { castVote, propose, proposeRefusal, voteRefusal } from './assembly.ts';
 import { designRefusal, makeDesign, retireRefusal } from './designs.ts';
 import { approvalOf, edictCost, queueRefusal, settleRefusal } from './economy.ts';
@@ -37,6 +38,7 @@ import { chapterRefusal, digAt, excavate, excavateRefusal, stopExcavation, stopR
 import { queueResearch, researchRefusal, unqueueResearch } from './research.ts';
 import {
   type Amount,
+  type ArkAnswer,
   DIG_SHARES,
   type DigShare,
   type GameState,
@@ -142,7 +144,9 @@ export type Order =
   /** A leader hired, posted (or called back with null), or let go (M5_UNKNOWN.md §24). */
   | { type: 'hire'; leader: number }
   | { type: 'post'; leader: number; post: number | null }
-  | { type: 'dismiss'; leader: number };
+  | { type: 'dismiss'; leader: number }
+  /** Our answer to the arks of the Unhomed (M5_UNKNOWN.md §25.3): a world given, taking them in, or refusing. */
+  | { type: 'arks'; answer: ArkAnswer; body: string | null };
 
 type FleetOrder = Extract<
   Order,
@@ -259,6 +263,7 @@ export function refuse(world: World, state: GameState, faction: FactionId, order
   if (order.type === 'hire') return hireRefusal(state, faction, order.leader);
   if (order.type === 'post') return postRefusal(state, faction, order.leader, order.post);
   if (order.type === 'dismiss') return dismissRefusal(state, faction, order.leader);
+  if (order.type === 'arks') return arksRefusal(world, state, faction, order.answer, order.body);
   if (order.type === 'chapter-choice')
     return order.choice === 0 || order.choice === 1
       ? chapterRefusal(state, faction, order.system)
@@ -433,6 +438,10 @@ function applyChecked(world: World, next: GameState, faction: FactionId, order: 
   }
   if (order.type === 'dismiss') {
     dismiss(next, faction, order.leader);
+    return { ok: true, state: next };
+  }
+  if (order.type === 'arks') {
+    setArksAnswer(next, faction, order.answer, order.body);
     return { ok: true, state: next };
   }
 

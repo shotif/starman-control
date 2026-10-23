@@ -113,6 +113,20 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       admiral: { name: 'Deep Keel', role: 'who speaks for the Wardens', portrait: 'advisor-drift-admiral' },
     },
   },
+  // The Unhomed's names are translations too (M5_UNKNOWN.md §25.1); only Kindling has a face yet.
+  'last-hearth': {
+    voice: 'warm',
+    people: {
+      colonies: { name: 'Banked Coal', role: 'who keeps the settled', portrait: 'advisor-hearth-colonies' },
+      works: { name: 'Ash Mender', role: 'who keeps the arks whole', portrait: 'advisor-hearth-works' },
+      treasury: { name: 'Last Measure', role: 'who keeps the stores', portrait: 'advisor-hearth-treasury' },
+      science: { name: 'Long Reckoner', role: 'who keeps the old learning', portrait: 'advisor-hearth-science' },
+      survey: { name: 'Far Spark', role: 'who goes ahead', portrait: 'advisor-hearth-survey' },
+      watch: { name: 'Night Tender', role: 'who keeps the watch fires', portrait: 'advisor-hearth-watch' },
+      envoy: { name: 'Kindling', role: 'who asks', portrait: 'advisor-hearth-envoy' },
+      admiral: { name: 'Cinder Ward', role: 'who guards the arks', portrait: 'advisor-hearth-admiral' },
+    },
+  },
 };
 
 /**

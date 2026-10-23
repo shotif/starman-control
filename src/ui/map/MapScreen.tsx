@@ -17,8 +17,9 @@ import { quality, reducedMotion, settings } from '../../app/settings.ts';
 import { play as sound } from '../../app/sound.ts';
 import { ANOMALIES } from '../../content/anomalies.ts';
 import { EVENTS } from '../../content/events.ts';
-import { FACTION_IDS, FACTIONS, type FactionId } from '../../content/factions.ts';
+import { ALL_FACTION_IDS, type FACTION_IDS, FACTIONS, type FactionId } from '../../content/factions.ts';
 import { moodFor } from '../../content/music.ts';
+import { RULES } from '../../content/rules.ts';
 import { isHull } from '../../content/ships.ts';
 import type { SystemId } from '../../data/types.ts';
 import type { BattleScene } from '../../render/BattleScene.ts';
@@ -29,6 +30,7 @@ import type { Rect } from '../../render/mapMath.ts';
 import { mapContent } from '../../render/mapModel.ts';
 import type { SceneLabel, SystemScene } from '../../render/SystemScene.ts';
 import { anomalyAt } from '../../sim/anomalies.ts';
+import { arksWaiting } from '../../sim/arks.ts';
 import { bodiesOf } from '../../sim/bodies.ts';
 import { formatDate } from '../../sim/calendar.ts';
 import { fleetAt, fleetById, fleetShips } from '../../sim/fleets.ts';
@@ -48,6 +50,7 @@ import { Badge, FactionMark } from '../parts.tsx';
 import { Sheet } from '../Sheet.tsx';
 import { searchSystems } from '../search.ts';
 import { SystemView } from '../system/SystemPanel.tsx';
+import { ArksSection, ArksView } from './arks.tsx';
 import { AssemblyView } from './assembly.tsx';
 import { ColonyCard } from './ColonyCard.tsx';
 import { stillScene } from './ColonyStill.tsx';
@@ -286,6 +289,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       } else if (n.kind === 'chapter') {
         targeting.value = null;
         panel.value = 'relics';
+      } else if (n.kind === 'arks') {
+        targeting.value = null;
+        panel.value = 'arks';
       } else if (n.kind === 'debt') {
         targeting.value = null;
         panel.value = 'empire';
@@ -587,16 +593,24 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   }, [shipsKey, ready, play]);
   // The relic sites we know (M5_UNKNOWN.md §20.8), once the content is drawn.
   const relicsKey = play
-    ? JSON.stringify([knownSites(world, game, play.faction).map((x) => x.system), game.digs.map((d) => d.system)])
+    ? JSON.stringify([
+        knownSites(world, game, play.faction).map((x) => x.system),
+        game.digs.map((d) => d.system),
+        arksWaiting(game),
+      ])
     : '';
   useEffect(() => {
     const p = latest.current.play;
     view.current?.setRelics(
       p
-        ? knownSites(world, latest.current.game, p.faction).map((x) => ({
-            at: x.system,
-            begun: latest.current.game.digs.some((d) => d.system === x.system),
-          }))
+        ? [
+            ...knownSites(world, latest.current.game, p.faction).map((x) => ({
+              at: x.system,
+              begun: latest.current.game.digs.some((d) => d.system === x.system),
+            })),
+            // The arks, while they wait (M5_UNKNOWN.md §25.6).
+            ...(arksWaiting(latest.current.game) ? [{ at: RULES.unhomed.at, begun: false, arks: true }] : []),
+          ]
         : [],
     );
   }, [relicsKey, lanesKey, ready]);
@@ -802,7 +816,9 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   ? panel.value === 'assembly'
                   : n.kind === 'chapter'
                     ? panel.value === 'relics'
-                    : n.holding === selectedHolding.value,
+                    : n.kind === 'arks'
+                      ? panel.value === 'arks'
+                      : n.holding === selectedHolding.value,
     );
     const next = p.needs[(i + 1) % p.needs.length];
     if (next) onNeed(next);
@@ -941,14 +957,17 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       })()}
       relic={
         power ? (
-          <RelicSiteSection
-            world={world}
-            game={game}
-            faction={power.faction}
-            play={play ?? undefined}
-            system={id}
-            onRelics={play ? () => (panel.value = 'relics') : undefined}
-          />
+          <>
+            <RelicSiteSection
+              world={world}
+              game={game}
+              faction={power.faction}
+              play={play ?? undefined}
+              system={id}
+              onRelics={play ? () => (panel.value = 'relics') : undefined}
+            />
+            <ArksSection game={game} system={id} onArks={play ? () => (panel.value = 'arks') : undefined} />
+          </>
         ) : undefined
       }
       ships={shipsAt(id)}
@@ -1027,6 +1046,8 @@ export function MapScreen({ world, game, buildId, play }: Props) {
       }}
     />
   );
+  // The arks of the Unhomed (M5_UNKNOWN.md §25.6).
+  const arksView = play && game.arks && <ArksView world={world} game={game} faction={play.faction} play={play} />;
   // Leaders (M5_UNKNOWN.md §24.6).
   const leaders = play && <LeadersView world={world} game={game} faction={play.faction} play={play} />;
   // The end of the game (M4_FLEETS.md §30.3): play on, unless our power has left the game.
@@ -1216,6 +1237,14 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && relics && panel.value === 'relics' && (
           <div class="popover relics-popover" role="dialog" aria-label="Relics" data-keep-clear>
             {relics}
+            <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
+              Close
+            </button>
+          </div>
+        )}
+        {desktop && arksView && panel.value === 'arks' && (
+          <div class="popover event-popover" role="dialog" aria-label="The arks" data-keep-clear>
+            {arksView}
             <button type="button" class="button button-quiet button-small" onClick={() => (panel.value = null)}>
               Close
             </button>
@@ -1622,6 +1651,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           if (assembly && panel.value === 'assembly') return sheet('The Assembly', assembly, close, 'assembly');
           if (relics && panel.value === 'relics') return sheet('Relics', relics, close, 'relics');
           if (leaders && panel.value === 'leaders') return sheet('Leaders', leaders, close, 'leaders');
+          if (arksView && panel.value === 'arks') return sheet('The arks', arksView, close, 'arks');
           if (end && panel.value === 'end') return sheet('The end of the game', end, close, 'end');
           if (play && panel.value === 'designs') return sheet('Designs', designs, close, 'designs');
           if (play && panel.value === 'menu')
@@ -1808,7 +1838,7 @@ function Outliner({ world, game, onGo }: { world: World; game: GameState; onGo: 
   return (
     <aside class="outliner" aria-label="The powers">
       <h2>The powers</h2>
-      {FACTION_IDS.filter((f) => game.powers.some((p) => p.faction === f)).map((f) => (
+      {ALL_FACTION_IDS.filter((f) => game.powers.some((p) => p.faction === f)).map((f) => (
         <HomeWeb key={f} world={world} game={game} faction={f} onGo={onGo} />
       ))}
       <p class="dim">
@@ -1893,7 +1923,9 @@ function PlayOutliner({
                       ? `offer-${n.from}-${n.treaty}`
                       : n.kind === 'chapter'
                         ? `chapter-${n.system}`
-                        : `${n.kind}-${n.holding}`
+                        : n.kind === 'arks'
+                          ? 'arks'
+                          : `${n.kind}-${n.holding}`
               }
             >
               <button type="button" class="outliner-item" onClick={() => onNeed(n)}>
@@ -1982,7 +2014,7 @@ export function Legend() {
           <span class="legend-line legend-dark" aria-hidden="true" /> A dark lane: one of the old lanes, out of tune
           since the Lapse, that can be relit <Badge kind="fiction" />
         </li>
-        {FACTION_IDS.map((f) => (
+        {ALL_FACTION_IDS.map((f) => (
           <li key={f}>
             <FactionMark faction={f} size={14} /> {FACTIONS[f].name}: its {FACTIONS[f].mark} marks the systems it holds;
             a larger one its capital

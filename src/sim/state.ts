@@ -6,7 +6,7 @@
 import type { District } from '../content/districts.ts';
 import type { EdictId, Priority } from '../content/edicts.ts';
 import type { EventId } from '../content/events.ts';
-import { FACTIONS, type FactionId, type WarReason } from '../content/factions.ts';
+import { FACTIONS, type FactionId, STARTING_FACTIONS, type WarReason } from '../content/factions.ts';
 import type { Calling, FlawId, TraitId } from '../content/leaders.ts';
 import type { ModuleId } from '../content/modules.ts';
 import type { ProjectId, QueueItem } from '../content/projects.ts';
@@ -22,7 +22,7 @@ import type { ReportEvent } from './report.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
-export const STATE_VERSION = 29;
+export const STATE_VERSION = 30;
 
 export interface Stockpile {
   metals: number;
@@ -257,6 +257,9 @@ export const MEMORY_KINDS = [
   // M4 (M4_FLEETS.md §27.1).
   'raided',
   'raided-heard',
+  // M5 (M5_UNKNOWN.md §25.5): the Unhomed remember who gave them a home and who refused.
+  'gave-home',
+  'refused-home',
 ] as const;
 export type MemoryKind = (typeof MEMORY_KINDS)[number];
 
@@ -349,7 +352,8 @@ export interface PendingEvent {
 
 /** An event's lasting effect: on a colony, or on every colony (`holding` null), for `left` more turns. */
 export interface Lasting {
-  event: EventId;
+  /** The event it came from, or the arks of the Unhomed taken in (M5_UNKNOWN.md §25.3). */
+  event: EventId | 'arks';
   kind: 'no-industry' | 'blight' | 'no-growth' | 'approval';
   holding: number | null;
   /** Approval's change; 0 for the others. */
@@ -489,6 +493,22 @@ export interface GameState {
   /** The people offered to each power, until the next offers (§24.3), in id order. */
   candidates: Candidate[];
   nextLeaderId: number;
+  /** The arks of the Unhomed (M5_UNKNOWN.md §25.8), once they have come. */
+  arks: Arks | null;
+}
+
+/** A power's answer to the arks (§25.3). */
+export type ArkAnswer = 'give' | 'take' | 'refuse';
+
+/**
+ * The arks of the Unhomed (M5_UNKNOWN.md §25.8): when they came, the turn their star dies, each
+ * power's answer (a world given, by its body), and how it ended, or null while they wait.
+ */
+export interface Arks {
+  arrived: number;
+  dies: number;
+  answers: { faction: FactionId; answer: ArkAnswer; body: string | null }[];
+  ended: { how: 'given' | 'taken-in' | 'took'; by: FactionId | null; body: string | null; turn: number } | null;
 }
 
 /**
@@ -632,6 +652,47 @@ export function capitalHolding(faction: FactionId): Omit<Holding, 'id'> {
   };
 }
 
+/** A power as it starts (§5), or as it arrives in mid-game (M5_UNKNOWN.md §25.5), before its capital. */
+export function newPower(faction: FactionId, controller: 'player' | 'ai', governed = false): PowerState {
+  return {
+    faction,
+    controller,
+    capital: FACTIONS[faction].capital.systemId,
+    stockpile: { ...RULES.start.stockpile },
+    surveyed: [FACTIONS[faction].capital.systemId],
+    shipsBuilt: 0,
+    researched: [],
+    researchQueue: [],
+    techProgress: {},
+    inspired: [],
+    contacts: [],
+    memories: [],
+    gifts: [],
+    investigated: [],
+    food: RULES.food.start,
+    treasury: RULES.credits.start,
+    taxes: 'standard' as const,
+    attention: RULES.attention.start,
+    edicts: [],
+    governNew: governed,
+    event: null,
+    lastEvent: 0,
+    lasting: [],
+    designs: [],
+    fleetsMade: 0,
+    weariness: 0,
+    subduedBy: null,
+    mostColonies: 1,
+    left: null,
+    story: { wars: 0, battles: 0, taken: 0, research: 0, industry: 0 },
+    digShare: RULES.relics.share as DigShare,
+    chapters: 0,
+    agents: [],
+    guard: 0 as GuardStep,
+    intel: [],
+  };
+}
+
 /**
  * A new game (§5): every power in play holds its capital, with a shipyard and a lane station, its
  * home web of lanes, its starting ships and a small stockpile, and has surveyed its capital.
@@ -641,7 +702,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
   // Webs are worked out for every faction, in play or not, so a start never depends on who plays.
   const webs = homeWebs(
     world,
-    Object.values(FACTIONS).map((f) => ({ faction: f.id, capital: f.capital.systemId })),
+    STARTING_FACTIONS.map((f) => ({ faction: f.id, capital: f.capital.systemId })),
   );
   const lanes: LaneState[] = [];
   for (const p of setup.powers) {
@@ -653,43 +714,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     version: STATE_VERSION,
     seed: setup.seed >>> 0 || 1,
     turn: 1,
-    powers: setup.powers.map((p) => ({
-      faction: p.faction,
-      controller: p.controller,
-      capital: FACTIONS[p.faction].capital.systemId,
-      stockpile: { ...RULES.start.stockpile },
-      surveyed: [FACTIONS[p.faction].capital.systemId],
-      shipsBuilt: 0,
-      researched: [],
-      researchQueue: [],
-      techProgress: {},
-      inspired: [],
-      contacts: [],
-      memories: [],
-      gifts: [],
-      investigated: [],
-      food: RULES.food.start,
-      treasury: RULES.credits.start,
-      taxes: 'standard' as const,
-      attention: RULES.attention.start,
-      edicts: [],
-      governNew: p.governed === true,
-      event: null,
-      lastEvent: 0,
-      lasting: [],
-      designs: [],
-      fleetsMade: 0,
-      weariness: 0,
-      subduedBy: null,
-      mostColonies: 1,
-      left: null,
-      story: { wars: 0, battles: 0, taken: 0, research: 0, industry: 0 },
-      digShare: RULES.relics.share as DigShare,
-      chapters: 0,
-      agents: [],
-      guard: 0 as GuardStep,
-      intel: [],
-    })),
+    powers: setup.powers.map((p) => newPower(p.faction, p.controller, p.governed === true)),
     lanes,
     ships: [],
     nextShipId: 1,
@@ -713,6 +738,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     leaders: [],
     candidates: [],
     nextLeaderId: 1,
+    arks: null,
   };
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });

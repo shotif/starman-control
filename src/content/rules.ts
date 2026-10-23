@@ -452,6 +452,32 @@ export const RULES = {
       vigilant: 2,
     },
   },
+  /** The dying star and the Unhomed (M5_UNKNOWN.md §25). */
+  unhomed: {
+    /** The arks arrive on a turn from `from` to `to`, by the seed, at this system; their star dies so many turns after. */
+    from: 110,
+    to: 150,
+    at: 'ce-bootis',
+    diesAfter: 12,
+    /** Their capital's people, in tenths of a million, and its credits. */
+    people: 30,
+    credits: 100,
+    /** Taken in: so many people to each of so many colonies, research, and approval for so many turns. */
+    takeInPeople: 20,
+    takeInColonies: 3,
+    takeInResearch: 150,
+    takeInApproval: -5,
+    takeInTurns: 10,
+    /** Research for every power from the star's death. */
+    starResearch: 40,
+    /** How they remember the giver and those that refused. */
+    gave: 30,
+    refused: -15,
+    /** A world taken by force is sought within so many tenths of a light-year of the arks first. */
+    reachDeci: 100,
+    /** The rivals answer so many turns after the arks arrive, from the first to the second, by the seed. */
+    answerAfter: [2, 6],
+  },
   /** The keys and the Answer (M5_UNKNOWN.md §21): how many, the fear of them, the Answer's turns. */
   keys: {
     count: 5,

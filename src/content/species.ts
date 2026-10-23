@@ -5,7 +5,7 @@
 
 import type { Atmosphere, BodyKind, Gravity, TempBand, Water } from '../sim/bodies.ts';
 
-export type SpeciesId = 'human' | 'duskfolk' | 'drifters';
+export type SpeciesId = 'human' | 'duskfolk' | 'drifters' | 'unhomed';
 
 /** How hard a condition is: 0 easy, more harder; null impossible. */
 type Costs<K extends string> = Record<K, number | null>;
@@ -59,6 +59,23 @@ export const SPECIES: Record<SpeciesId, SpeciesDef> = {
       water: { none: 1, ice: 0, oceans: 0 },
       flare: 0,
       open: 2,
+    },
+    levels: { comfortable: 0, tolerable: 2, harsh: 6 },
+  },
+  // The Unhomed of Arcturus (M5_UNKNOWN.md §25.1), fiction: from the cold outer worlds of an old
+  // orange giant, at home in the cold and the dim, troubled by heat and heavy worlds.
+  unhomed: {
+    id: 'unhomed',
+    name: 'The Unhomed',
+    adjective: 'Unhomed',
+    surfaces: ['rocky', 'super-earth', 'moon', 'dwarf'],
+    costs: {
+      temperature: { frozen: 1, cold: 0, temperate: 0, warm: 1, hot: 2, scorching: null },
+      atmosphere: { none: 2, thin: 0, dense: 1, toxic: 2 },
+      gravity: { low: 0, normal: 0, high: 2 },
+      water: { none: 1, ice: 0, oceans: 0 },
+      flare: 1,
+      open: 0,
     },
     levels: { comfortable: 0, tolerable: 2, harsh: 6 },
   },

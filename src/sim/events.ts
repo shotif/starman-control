@@ -184,6 +184,7 @@ export function lastingOn(state: GameState, h: Holding, kind: Lasting['kind']): 
 
 /** How an event's lasting effect is named among a colony's parts. */
 export function lastingLabel(l: Lasting): string {
+  if (l.event === 'arks') return 'newcomers settling in';
   return EVENTS[l.event].lasting ?? EVENTS[l.event].name.toLowerCase();
 }
 

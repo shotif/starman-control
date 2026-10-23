@@ -1245,6 +1245,23 @@ function markSheet(mark: FactionMark, hex: string): HTMLCanvasElement {
       else g.lineTo(x, y);
     }
     g.closePath();
+  } else if (mark === 'cross') {
+    for (const [x, y] of [
+      [27, 17],
+      [37, 17],
+      [37, 27],
+      [47, 27],
+      [47, 37],
+      [37, 37],
+      [37, 47],
+      [27, 47],
+      [27, 37],
+      [17, 37],
+      [17, 27],
+      [27, 27],
+    ] as const)
+      g.lineTo(x, y);
+    g.closePath();
   } else {
     g.moveTo(32, 17);
     g.lineTo(46, 43);

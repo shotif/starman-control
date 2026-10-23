@@ -2,7 +2,7 @@
 // them, who may excavate them, the research each turn shares with its excavations, chapters done
 // and their choices answered, and the revelations they bring. Pure, in whole numbers.
 
-import { FACTIONS, type FactionId } from '../content/factions.ts';
+import { FACTIONS, type FactionId, STARTING_FACTIONS } from '../content/factions.ts';
 import { RELIC_KIND_IDS, RELIC_KINDS, type RelicKind } from '../content/relics.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
@@ -37,9 +37,7 @@ export function relicSites(world: World, seed: number): readonly RelicSite[] {
   }
   const known = bySeed.get(seed);
   if (known) return known;
-  const capitals = Object.values(FACTIONS)
-    .map((f) => f.capital.systemId)
-    .filter((c) => world.hasSystem(c));
+  const capitals = STARTING_FACTIONS.map((f) => f.capital.systemId).filter((c) => world.hasSystem(c));
   const candidates = world.systems
     .map((s) => s.id)
     .filter(

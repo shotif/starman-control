@@ -326,6 +326,8 @@ const MIGRATIONS: Record<number, (game: Raw) => Raw> = {
   },
   /** 28 → 29 (M5 increment 56): leaders. None hired and none offered yet. */
   28: (g) => ({ ...g, version: 29, leaders: [], candidates: [], nextLeaderId: 1 }),
+  /** 29 → 30 (M5 increment 57): the arks of the Unhomed, not yet come. */
+  29: (g) => ({ ...g, version: 30, arks: null }),
   /** 5 → 6 (M1 increment 6c): anomalies. Nothing investigated yet; no ship investigating. */
   5: (g) => {
     if (!Array.isArray(g.powers) || !Array.isArray(g.ships)) throw new SaveError(DAMAGED);
