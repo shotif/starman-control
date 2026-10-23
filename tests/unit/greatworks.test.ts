@@ -173,6 +173,52 @@ describe('great works (§20.2)', () => {
       ).toBe(true);
     }
   });
+
+  it('rivals study the road to theirs once any power begins a great work, while theirs is free (M6_ONE.md §26)', () => {
+    const g = newGame(world, {
+      seed: 42,
+      powers: [
+        { faction: 'sta', controller: 'player' },
+        { faction: 'frontier', controller: 'ai' },
+      ],
+    });
+    const studies = (s: GameState) =>
+      aiOrders(world, s, 'frontier').find((o) => o.type === 'research') as { tech: TechId } | undefined;
+    const road = (s: GameState) => {
+      const p = powerOf(s, 'frontier');
+      const visit = (id: TechId, out: Set<TechId>): Set<TechId> => {
+        if (p.researched.includes(id) || out.has(id)) return out;
+        for (const n of TECHS[id].needs) visit(n, out);
+        return out.add(id);
+      };
+      return visit('gene-tailoring', visit('great-engineering', new Set()));
+    };
+    expect(RULES.greatWorks.rivalsFrom).toBe('begun');
+    // Before any great work is begun: the cheapest, which is not on the road.
+    const early = studies(g);
+    expect(early && road(g).has(early.tech)).toBe(false);
+    // We begin the Lapse Archive: the Cooperative reaches for the Commons.
+    capital(g).queue.push({ kind: 'project', project: 'lapse-archive' });
+    const onRoad = studies(g);
+    expect(onRoad && road(g).has(onRoad.tech)).toBe(true);
+    // Once the Commons stands anywhere, back to the cheapest.
+    capital(g).projects.push('commons');
+    expect(studies(g)?.tech).toBe(early?.tech);
+    capital(g).projects.pop();
+    // From a turn instead (measured, not kept), and never.
+    const rules = RULES.greatWorks as { rivalsFrom: 'begun' | number | null };
+    try {
+      rules.rivalsFrom = null;
+      expect(studies(g)?.tech).toBe(early?.tech);
+      capital(g).queue.pop();
+      rules.rivalsFrom = 60;
+      expect(studies(g)?.tech).toBe(early?.tech);
+      g.turn = 60;
+      expect(road(g).has(studies(g)?.tech as TechId)).toBe(true);
+    } finally {
+      rules.rivalsFrom = 'begun';
+    }
+  });
 });
 
 describe('the score (§20.3)', () => {

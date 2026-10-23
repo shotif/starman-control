@@ -283,7 +283,10 @@ Concord** (§24): the Dusk Concord is the fourth power to lead, the first not hu
 in 50 pictures, its advisors' faces, its scene and its colonies' music. **Done: increment 66, music
 and sound for 1.0** (§25): a piece for the map at war, one for victory and one for defeat on the end
 screen, and two sounds after a turn's tone: a muffled double thud for a battle fought, two bells for
-a key found or taken.
+a key found or taken. **Done: increment 67, the long game for 1.0** (§26): rivals now race for the
+great works once any power begins one (none had ever built one, so a player took all four
+unopposed); the targets for 1.0 measured: five winners with the Co-op one over the three, no win by
+the keys, debt and the budgets within their limits.
 
 The art and music spend: about $40.00 of $50 (raised on 22 October 2026; about $10.00 left). M3's
 art is about 65 pictures (about $6.50).
@@ -453,6 +456,9 @@ npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its seri
 - The owner's try of M1 on a real phone.
 - The owner's choice by ear of the Concord's colony music (three candidates sent, lettered; A in
   the game, chosen by measure), and of its pictures (the lettered sheets).
+- The leaders journey failed once on the tablet (23 October 2026) while headless games loaded the
+  machine: the tablet had switched to the desktop layout, as it does after a mouse move or a key
+  outside a field. It passed three times alone. If it recurs in CI, find what counts as desktop input.
 - The owner's choice by ear of the war, victory and defeat pieces (three candidates each sent,
   lettered; C of each in the game, chosen by measure). Another letter is one `npm run music:approve`.
 - `npm audit` (23 October 2026) reports three advisories in Vite's development server (8.3.1, fixed in

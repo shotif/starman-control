@@ -148,6 +148,13 @@ export const RULES = {
     commonsGrowthPercent: 10,
     /** A colony that loses the race keeps this share of its industry, in percent. */
     lostKeepsPercent: 50,
+    /**
+     * When a rival studies towards its great work, while no one has built it (M6_ONE.md §26): once any
+     * power has begun or built one (`begun`, as built), from a turn, or never (`null`: the cheapest
+     * first, which never reached one in 250 turns). From turn 60 or 150 the Co-op won six or seven of
+     * the eight headless games, not four.
+     */
+    rivalsFrom: 'begun' as 'begun' | number | null,
   },
   /**
    * The score (M2B_SCIENCE.md §20.3, D-50); and its works (M4_FLEETS.md §31.4, as built): a point for

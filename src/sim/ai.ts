@@ -6,7 +6,7 @@
 import type { Priority } from '../content/edicts.ts';
 import { FACTIONS, type FactionId } from '../content/factions.ts';
 import { CALLING_DEFS, type Calling } from '../content/leaders.ts';
-import type { ProjectId, QueueItem } from '../content/projects.ts';
+import { GREAT_WORKS, PROJECTS, type ProjectId, type QueueItem } from '../content/projects.ts';
 import { RULES } from '../content/rules.ts';
 import { isHull, SHIPS } from '../content/ships.ts';
 import { type FieldId, TECHS, type TechId } from '../content/techs.ts';
@@ -726,12 +726,33 @@ export function aiOrders(world: World, state: GameState, faction: FactionId): Or
         (i < RULES.keys.study ? digging : keysHeld(state, faction).length >= RULES.keys.hunt) &&
         canResearch(power).includes(t),
     );
-    const relicFirst = keyTech;
+    // Its great work's road (M6_ONE.md §26): once the race is open, while no one has built it, Great
+    // engineering and the work's own technology before the cheapest. The race opens when any power
+    // begins a great work, which every power sees.
+    const from = RULES.greatWorks.rivalsFrom;
+    const workNeeds = PROJECTS[me.greatWork].great?.needs;
+    const great = (p: ProjectId) => GREAT_WORKS.includes(p);
+    const raceOpen =
+      from === 'begun'
+        ? state.holdings.some(
+            (h) => h.projects.some(great) || h.queue.some((q) => q.kind === 'project' && great(q.project)),
+          )
+        : from !== null && state.turn >= from;
+    const workRoad =
+      raceOpen && workNeeds && !state.holdings.some((h) => h.projects.includes(me.greatWork))
+        ? new Set([...withNeeds(power, 'great-engineering'), ...withNeeds(power, workNeeds)])
+        : null;
+    const workTech = workRoad
+      ? canResearch(power)
+          .filter((id) => workRoad.has(id) && withNeeds(power, id).every(own))
+          .sort((a, b) => price(a) - price(b) || (a < b ? -1 : 1))[0]
+      : undefined;
+    const first = keyTech ?? workTech;
     const next =
       atWarNow && warTech
         ? warTech
-        : relicFirst
-          ? relicFirst
+        : first
+          ? first
           : canResearch(power)
               .filter((id) => withNeeds(power, id).every(own))
               .sort((a, b) => idle(a) - idle(b) || price(a) - price(b) || (a < b ? -1 : 1))[0];

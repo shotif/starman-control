@@ -4,8 +4,8 @@
 6 rivals, 8 seeds, 100 turns each for the tables, then on to the end of each game. Regenerate it
 after any change to the rules or the rivals.*
 
-The slowest of the first 100 turns took 86 ms on the machine that wrote this; the largest save at turn 100
-was 82.3 KB. The longest time in debt was 3 turns in a row. The longest time hungry was 1 turn in a row.
+The slowest of the first 100 turns took 82 ms on the machine that wrote this; the largest save at turn 100
+was 82.4 KB. The longest time in debt was 3 turns in a row. The longest time hungry was 1 turn in a row.
 
 In all 8 games, by turn 100: 63 turns of plunder by raids, 4 battles, 8 wars declared and 3 colonies or outposts taken by invasion (M4).
 The Assembly formed in 6 of them, on turn 50 at the earliest and 90 at the latest; it held 6 elections and passed 8 resolutions by turn 100.
@@ -92,8 +92,8 @@ The tree has 88 technologies, of which a power can learn 85 (one of each pair of
 
 Each game played on, after turn 100, until it was won or reached the default limit of 250 turns
 (M4_FLEETS.md §30.4). 1 game was won before the limit; 8 games saw a war by turn 150;
-0 powers left the game before turn 100. The slowest turn of all took 161 ms (turn 215); the
-largest save was 173.3 KB. The deepest any treasury fell was -62 credits;
+0 powers left the game before turn 100. The slowest turn of all took 150 ms (turn 233); the
+largest save was 173.5 KB. The deepest any treasury fell was -62 credits;
 the longest time in debt was 21 turns in a row.
 Of the 12 relic sites in each game, some power knew 7 to 11 by turn 150 (M5).
 

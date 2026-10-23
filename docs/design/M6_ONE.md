@@ -36,6 +36,7 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 23. [Increment 64: guardians, deferred again](#23-increment-64-guardians-deferred-again)
 24. [Increment 65 in detail: playing the Concord](#24-increment-65-in-detail-playing-the-concord-written-before-building-it)
 25. [Increment 66 in detail: music and sound for 1.0](#25-increment-66-in-detail-music-and-sound-for-10-written-before-building-it)
+26. [Increment 67 in detail: the long game for 1.0](#26-increment-67-in-detail-the-long-game-for-10-written-before-building-it)
 
 ## 1. Where M6 starts
 
@@ -715,3 +716,87 @@ sets the music's mood to *war* (the music state is read, not heard).
 | The end's pieces | drop `end` from the same call |
 | A piece the owner prefers by ear | `npm run music:approve -- music/out/<piece>/<candidate>.mp3` |
 | The two sounds | remove the two `sound('battle'…)` / `sound('key'…)` lines after `sound('turn')` |
+
+## 26. Increment 67 in detail: the long game for 1.0 (written before building it)
+
+**Goals.** §8 (D-83, A): the eight headless games to turn 250 measured against the targets for 1.0,
+and met where a fair change meets them. **Out of scope:** new rules for one power alone; loosening
+the Assembly's brakes (D-69, the owner's choice); the keys' target, measured as out of reach in §22.
+
+### 26.1 Where it stands (after increments 63 to 66)
+
+| Target | Now |
+| --- | --- |
+| Four different winners, none winning more than three | five winners, but the Co-op wins four (seeds 42, 7, 2 on score at turn 250; seed 5 by the Assembly at turn 90) |
+| One game won by the keys | none (§22: missed, recorded) |
+| No treasury below −200, none in debt more than 30 turns | deepest −62, longest 21 turns: **met** |
+| Turns within 200 ms, saves within 200 KB | slowest 161 ms, largest 173 KB: **met** |
+
+The Co-op's margins at turn 250: seed 42, 1,546 against the Concord's 1,129; seed 7, 1,263 against
+the Concord's 1,204; seed 2, 1,140 against the Wake's 1,045. Seed 5's vote is close: the Authority
+regards the Co-op at 31, the fear at the deciding vote takes 20, and 11 is one over the 10 a vote
+needs; but with the vote missed the Co-op still wins seed 5 on score at turn 250 (1,368 against the
+Continuance's 1,232). It leads on colonies and people, not on technologies, which every power nearly
+finishes.
+
+### 26.2 A gap found: no rival builds a great work
+
+No power had built a single great work by turn 250 in any of the eight games. A rival queues its
+great work at its capital *when it can* (M2B_SCIENCE.md §20.2), but it studies the cheapest
+technology first, and *Great engineering* (480) with the work's own technology always comes last.
+So the race for each great work, one in the whole neighbourhood, is never run: a player builds every
+one unopposed. **The fix:** from turn 60 (`RULES.greatWorks.rivalsFrom`, `null` for the old order), a
+rival studies the road to its great work before the cheapest, while no one has built it. This is
+kept for the game's sake, as the race was always meant to be run, if it breaks no target, even if it
+does not help the winners'.
+
+### 26.3 The Co-op's fourth win: levers, in order, each measured in the eight games
+
+1. The great works raced (§26.2), as they are.
+2. The great works raced, with each rival aiming at the work nearest its character that is still
+   free, so that four powers do not race for one.
+3. Nothing more if neither helps: the target is recorded as missed by one, D-79 stays A, and the
+   owner decides.
+
+### 26.4 Tests
+
+Unit: once the race is open a rival studies *Great engineering* and its work's technology before
+cheaper ones, and not once its work stands; with `null`, the cheapest first. The headless games: the table
+of §26.1 again, in M2_BALANCE.md and here.
+
+### 26.5 As built (23 October 2026)
+
+Each line is the eight games to turn 250 (seeds 42, 7, 2176, 1, 2, 3, 4 and 5):
+
+| Tried | Winners |
+| --- | --- |
+| As after increment 66 (no rival ever begins a great work) | the Co-op 4, the Wake 1, the Concord 1, the Continuance 1, the Authority 1 |
+| 1. Rivals study towards their great work from turn 60 | the Co-op 7, the Continuance 1 |
+| 1. The same from turn 150 | the Co-op 6, the Continuance 1, the Wake 1 |
+| 2. From turn 60, the Concord aiming at the Long Array (which no rival sought), and no rival studying for a work another has begun | the Co-op 6, the Concord 2 |
+| **Kept: the race opens when any power begins a great work** | the Co-op 4, the Wake 1, the Concord 1, the Continuance 1, the Authority 1 (as before: among rivals alone no one begins one) |
+
+Racing from a set turn always helped the strongest: the others spent their research on a road of
+about 2,000 points while the Co-op grew, and close games turned its way. So the race opens instead
+when any power begins a great work, which every power sees (they are famous, §20.2 of M2B). Among
+rivals alone that never happens in 250 turns, so the balance is as it was; a player who begins one
+now meets rivals reaching for theirs. Measured in seed 42 with the Authority beginning the Lapse
+Archive at turn 120 (as a player might): it finished on turn 145; the Concord began the Commons on
+turn 148, the Continuance the Lanewright Foundry on 155, the Co-op the Commons on 156 and the Moot the
+Foundry on 158; the Continuance finished the Foundry on 164 and the Concord the Commons on 165, so the
+Co-op and the Moot lost their races. The Long Array, which no rival seeks, is left for a player.
+
+**The targets for 1.0 (D-83), as they stand:** five different winners, the Co-op one over the three
+(**missed by one**; D-79 stays A, the owner's to change); no game won by the keys (**missed**, §22);
+the deepest treasury −62 and the longest debt 21 turns (**met**); the slowest turn 150 ms and the
+largest save 173.5 KB (**met**, within 200 ms and 200 KB; M2_BALANCE.md, regenerated).
+
+- **Where:** `RULES.greatWorks.rivalsFrom` (`'begun'`; a turn, or `null` for the old cheapest-first
+  order); the road in `src/sim/ai.ts` under *Research*; the test in `tests/unit/greatworks.test.ts`.
+
+### 26.6 Reversing it
+
+| To undo | Change |
+| --- | --- |
+| Rivals racing for great works | `RULES.greatWorks.rivalsFrom = null` |
+| A race from a set turn instead (measured, not kept) | `RULES.greatWorks.rivalsFrom = 60` |
