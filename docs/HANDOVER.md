@@ -277,7 +277,8 @@ every main screen in CI, Enter that presses a focused button, dialogs that take 
 back, a list of every system (**K**), and the largest text on a phone without sideways scrolling. **Done: increment 63, the keys within
 reach** (§22), measured: no small change lets a rival win by the keys (missed, recorded; the keys
 stay the player's road); kept: a rival that digs settles its site first, from turn 20, which gives
-the long games five different winners.
+the long games five different winners. **Increment 64, guardians: deferred again to after 1.0**
+(§23), since no rival can gather the keys they would guard.
 
 The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).

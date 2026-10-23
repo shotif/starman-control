@@ -33,6 +33,7 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 20. [Increment 61 in detail: lessons when they matter](#20-increment-61-in-detail-lessons-when-they-matter-written-before-building-it)
 21. [Increment 62 in detail: accessibility](#21-increment-62-in-detail-accessibility-written-before-building-it)
 22. [Increment 63 in detail: the keys within reach](#22-increment-63-in-detail-the-keys-within-reach-written-before-building-it)
+23. [Increment 64: guardians, deferred again](#23-increment-64-guardians-deferred-again)
 
 ## 1. Where M6 starts
 
@@ -286,7 +287,7 @@ Each keeps the game playable, passes CI and deploys from `main`.
 | 61 | **Lessons when they matter** | §4: the lessons, *How to play* in the codex |
 | 62 | **Accessibility** | §9: the checker in the journeys, fixes, the map's list |
 | 63 | **The keys within reach** | §6: the hunt, keys in exchanges, measured |
-| 64 | **Guardians** | §7 |
+| 64 | **Guardians** | §7: **deferred again to after 1.0** (§23) |
 | 65 | **Playing the Concord** | §5: its buildings, faces, picture and music; the new game offers it |
 | 66 | **Music and sound for 1.0** | §11 |
 | 67 | **The long game for 1.0** | §8: the targets measured and met where they can be |
@@ -566,3 +567,15 @@ turn 161 ms and the largest save 173.3 KB. M3's targets still met at turn 100.
 | --- | --- |
 | A digger settling its site first | `RULES.keys.outpostFrom`: `null` turns it off |
 | The hunt, and a digger's first steps | `RULES.keys.hunt`, `RULES.keys.study` |
+
+## 23. Increment 64: guardians, deferred again
+
+**Decided on the owner's leave, 23 October 2026: guardians (D-72) wait until after 1.0.** §7 planned
+them for M6 once the rivals could carry the long campaign the keys need. Increment 63 measured that
+they cannot (§22, as built): never more than two keys end in one hand, and gathering five means taking
+four from four powers. Guardians would make the key sites harder still, for the player, whose road the
+keys are, and for every rival that digs, whose digging now gives the long games five different
+winners. And they need every battle, its replay and its report to learn a side that is no power, the
+large change M5 deferred them for. So M6 goes on without them; nothing is built, so nothing is to undo.
+When the keys are placed or fought for differently (the owner's call), guardians come back with them.
+

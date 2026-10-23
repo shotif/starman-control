@@ -755,7 +755,7 @@ owner to overrule at any time. None needs money beyond the allowance already giv
 | **D-13** | The vanished species and their artefacts ([§4](design/M5_UNKNOWN.md#4-the-absent-and-their-mystery-d-13)) | A the Absent, tied to Reborn's derelicts, tones and Pyre · B the heirs' makers · C no single story | **A** | Reborn's own threads (charts older than any, a bridge switched off carefully, a tone for a very long time, Pyre) become one quiet story, with the real white dwarfs as its places |
 | **D-70** | Relic sites ([§5](design/M5_UNKNOWN.md#5-relic-sites-d-70)) | A excavated in chapters, paid in research · B investigated like anomalies · C fixed sites | **A** | a story in chapters with choices, and a road for the power that studies most (D-69) |
 | **D-71** | The keys ([§6](design/M5_UNKNOWN.md#6-the-keys-and-the-answer-d-71)) | A all five, then the Answer · B keys add to the score · C three keys | **A** | a victory everyone can see coming and try to stop, as D-14 asked ("dangerous") |
-| **D-72** | Guardians ([§7](design/M5_UNKNOWN.md#7-guardians-d-72)) | A fixed defences at the sites · B none | **A**, then **deferred to M6** after increment 53 | the keys cost a fleet as well as research, using M4's battles; deferred because every battle assumes each side is a power, and no rival yet gathers the keys |
+| **D-72** | Guardians ([§7](design/M5_UNKNOWN.md#7-guardians-d-72)) | A fixed defences at the sites · B none | **A**, then **deferred to M6** after increment 53, and **again to after 1.0** on 23 October 2026 ([M6_ONE.md §23](design/M6_ONE.md#23-increment-64-guardians-deferred-again)) | the keys cost a fleet as well as research, using M4's battles; deferred because every battle assumes each side is a power, and no rival yet gathers the keys |
 | **D-73** | Leaders ([§8](design/M5_UNKNOWN.md#8-leaders-d-73)) | A five posts, traits and loyalty · B admirals and governors only | **A** | SCOPE §4.14 as written, each post a difference a player can read |
 | **D-74** | Espionage ([§9](design/M5_UNKNOWN.md#9-light-espionage-d-74)) | A watching and guarding · B none in 1.0 | **A** | SCOPE §4.10's light espionage; knowing a rival's keys matters now |
 | **D-75** | Events ([§10](design/M5_UNKNOWN.md#10-events-and-the-living-sky-d-75)) | A about fourteen more · B all forty now | **A** | the events that M5's rules need, the rest with M6 |
@@ -834,7 +834,8 @@ at any time. None needs money beyond the allowance already given (D-27).
 | **D-85** | Map sizes ([§10](design/M6_ONE.md#10-map-sizes-d-85)) | A one map for 1.0 · B add the 27 ly heartland · C add 40 ly if it measures within budget | **A** | the 33 ly map is already larger than MoO3's largest; a smaller map would hold no alien, a larger one would double the turn; a shorter game is the turn limit's job. **This takes "the wider map sizes" out of M6's scope in SCOPE.md**; B or C can come after 1.0 |
 | **D-86** | Music and sound ([§11](design/M6_ONE.md#11-music-and-sound-d-86)) | A four pieces (the Concord's colonies, war, victory, defeat) and sounds that tell · B the sounds only · C none | **A** | about $1, by D-31's way (Lyria), chosen on the owner's leave and sent lettered to overrule |
 
-D-72 (guardians) stays A and is built in M6; D-79 stays A. **Left to the owner: D-18**, and whether
+D-72 (guardians) stays A; planned for M6, it was deferred again to after 1.0 when increment 63 showed
+no rival can gather the keys ([M6_ONE.md §23](design/M6_ONE.md#23-increment-64-guardians-deferred-again)). D-79 stays A. **Left to the owner: D-18**, and whether
 the result is 1.0.
 
 ## Made without waiting
