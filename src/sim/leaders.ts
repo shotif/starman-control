@@ -119,11 +119,11 @@ function nameFor(people: FactionId, calling: Calling, taken: Set<string>, roll: 
 }
 
 /**
- * As the first turn ends, and every so many turns after (§24.3): each power in play is offered new
- * people in place of those it did not hire, and told so.
+ * As every tenth turn ends (§24.3, as built: not the first, when no power could pay a fee): each
+ * power in play is offered new people in place of those it did not hire, and told so.
  */
 export function makeCandidates(state: GameState, events: Map<FactionId, ReportEvent[]>): void {
-  if ((state.turn - 1) % L.offerEvery !== 0) return;
+  if (state.turn % L.offerEvery !== 0) return;
   state.candidates = [];
   const taken = namesTaken(state);
   for (const p of state.powers) {

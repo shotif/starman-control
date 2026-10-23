@@ -989,8 +989,9 @@ As designed above, with these differences and details:
   excavations (Antiquarian adds to what reaches them, taking nothing from the technology); an
   ambassador's in every power's regard (*Their Ambassador … (Charming 2)*, among the reasons) and in
   the Assembly's votes; a spymaster's in what agents gather. Each figure names the leader in its parts.
-- **The offers** come as the first turn ends and every 10 turns after, three for each power; the
-  report says *Three people offer to serve us: see the Leaders screen.* One in five is of another
+- **The offers** come as every tenth turn ends, three for each power (not as the first ends, when no
+  power can pay a fee, and so the first turn's report stays quiet); the report says *Three people
+  offer to serve us: see the Leaders screen.* One in five is of another
   power the power has heard of, named and drawn as theirs.
 - **On the screen:** the Leaders screen (**L**, or *Leaders* in the menu) with *Our leaders* (a face,
   the traits and what each level gives, the flaw, the wage and turns served, *Serves* as a list of
@@ -1250,10 +1251,17 @@ Cut down by what was measured (each change was played in the eight headless game
 - **Tests:** `costs.test.ts` (3) and `scrap.spec.ts` (phone, tablet and desktop). The headless test's
   targets are as before.
 
-**Numbers** (M2_BALANCE.md): by turn 100 as before. To turn 250, two winners: the Co-op seven and
-the Wake one. Seed 3, a narrow Concord win after increment 57 (1,128 to 1,022), went to the Co-op:
-its course changed when the rivals began scrapping ships. The deepest debt was −156 (it was −518) and
-the longest 39 turns (54); the slowest turn took 130 ms and the largest save 146.3 KB.
+**Numbers** (M2_BALANCE.md), with the leaders' first offers moved to the tenth turn (below): by turn
+100 as before. To turn 250, three different winners: the Co-op six, the Authority one (seed 42, on
+score) and the Moot one (seed 4, by the Assembly on turn 234); seed 3, a narrow Concord win after
+increment 57, went to the Co-op. Small changes move these close games, which is why D-79 is put to
+the owner rather than tuned by chance. The deepest debt was −156 (it was −518) and the longest 33
+turns (54); the slowest turn took 134 ms and the largest save 148.8 KB.
+
+**Mended in this increment:** increment 56's first offer of leaders came as the first turn ended, so
+the first turn's report was no longer quiet and a browser journey failed in CI (the report should say
+*A quiet quarter*). No power can pay a fee then: the offers now come as every tenth turn ends
+(§24, as built).
 
 **Reversing it:**
 

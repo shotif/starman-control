@@ -783,7 +783,7 @@ Each line is the eight games to turn 250:
 | The Co-op without its growth trait (*Settlers*) | the Co-op 6, the Concord 1, the Wake 1 |
 | The Co-op at standard taxes, not low | the Co-op 7, the Concord 1 |
 | The score counting people at half (increment 53), keys and chapters scored | no winner changed |
-| As built in increment 58 (rivals scrap ships when broke) | the Co-op 7, the Wake 1 (seed 3, a narrow Concord win, went to the Co-op) |
+| As built in increment 58 (rivals scrap ships when broke; leaders first offered on turn 10) | the Co-op 6, the Authority 1, the Moot 1 (by the Assembly); the close games move with small changes |
 
 The wariness and the earlier balance of power were taken out again (they changed nothing, and would
 have turned every power against a player who leads).

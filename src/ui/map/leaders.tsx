@@ -196,8 +196,8 @@ export function LeadersView({
 }) {
   const ours = leadersOf(game, faction);
   const offered = candidatesFor(game, faction);
-  // Offers are made as a turn ends whose number is one past a multiple of the interval (§24.3).
-  const next = L.offerEvery - ((game.turn - 2 + L.offerEvery) % L.offerEvery);
+  // Offers are made as every tenth turn ends (§24.3), so they are seen on the turn after.
+  const next = L.offerEvery - ((game.turn - 1 + L.offerEvery) % L.offerEvery);
   const treasury = powerOf(game, faction).treasury;
   return (
     <div class="leaders">

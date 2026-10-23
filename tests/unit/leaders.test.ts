@@ -72,6 +72,12 @@ const capitalOf = (g: GameState, f: FactionId) => {
   if (!h) throw new Error('capital');
   return h;
 };
+/** The turn the first people are offered (§24.3, as built: as the tenth turn ends), with their offers. */
+const offered = (g: GameState, ev = events(g)) => {
+  g.turn = L.offerEvery;
+  makeCandidates(g, ev);
+  return ev;
+};
 const order = (g: GameState, f: FactionId, o: Parameters<typeof applyInPlace>[3]) => applyInPlace(world, g, f, o);
 
 describe('faces (§24.7)', () => {
@@ -83,15 +89,15 @@ describe('faces (§24.7)', () => {
 });
 
 describe('the pool (§24.3)', () => {
-  it('as the first turn ends, three people for each power, from the seed, none an advisor', () => {
+  it('as the tenth turn ends, three people for each power, from the seed, none an advisor', () => {
     const g = five();
+    makeCandidates(g, events(g));
     expect(g.candidates).toEqual([]);
-    const ev = events(g);
-    makeCandidates(g, ev);
+    const ev = offered(g);
     for (const p of g.powers) expect(candidatesFor(g, p.faction)).toHaveLength(L.offers);
     expect(ev.get('sta')).toContainEqual({ kind: 'offered', count: L.offers });
     const again = five();
-    makeCandidates(again, events(again));
+    offered(again);
     expect(again.candidates).toEqual(g.candidates);
     const advisors = new Set(Object.values(ADVISORS).flatMap((a) => Object.values(a.people).map((x) => x.name)));
     for (const c of g.candidates) {
@@ -106,12 +112,12 @@ describe('the pool (§24.3)', () => {
 
   it('new people every 10 turns in place of those not hired', () => {
     const g = five();
-    makeCandidates(g, events(g));
+    offered(g);
     const first = g.candidates.map((c) => c.id);
-    g.turn = 2;
+    g.turn = L.offerEvery + 1;
     makeCandidates(g, events(g));
     expect(g.candidates.map((c) => c.id)).toEqual(first);
-    g.turn = 1 + L.offerEvery;
+    g.turn = 2 * L.offerEvery;
     makeCandidates(g, events(g));
     expect(g.candidates.some((c) => first.includes(c.id))).toBe(false);
   });
@@ -120,7 +126,7 @@ describe('the pool (§24.3)', () => {
 describe('hiring and posting (§24.1)', () => {
   it('hired for its fee, waiting, paid its wage', () => {
     const g = five();
-    makeCandidates(g, events(g));
+    offered(g);
     const c = candidatesFor(g, 'sta')[0];
     if (!c) throw new Error('offer');
     powerOf(g, 'sta').treasury = c.fee - 1;
@@ -396,7 +402,8 @@ describe('experience and loyalty (§24.2, §24.4)', () => {
 describe('the rivals (§24.5)', () => {
   it('hire by character from turn 70 with the fee and more, and post them at once', () => {
     const g = five('frontier');
-    makeCandidates(g, events(g));
+    offered(g);
+    g.turn = 1;
     const wake = powerOf(g, 'hollow-wake');
     wake.treasury = 400;
     const want = candidatesFor(g, 'hollow-wake');
@@ -436,6 +443,7 @@ describe('state (§24.8)', () => {
 
   it('a whole turn with leaders stays sound', () => {
     const g = five();
+    g.turn = L.offerEvery;
     const r = resolveTurn(world, g);
     expect(r.state.candidates.length).toBe(L.offers * g.powers.length);
     expect(stateProblems(world, r.state)).toEqual([]);
