@@ -1277,7 +1277,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
         {desktop && play && <TargetBar world={world} game={game} play={play} />}
         {play && colony === null && (
           // On a phone and a tablet, under the view switch (40 px at the top bar's foot).
-          <GuideCard game={game} faction={play.faction} top={desktop ? undefined : topHeight + 56} />
+          <GuideCard world={world} game={game} faction={play.faction} top={desktop ? undefined : topHeight + 56} />
         )}
       </div>
 
@@ -1350,6 +1350,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                     type="button"
                     class="chip"
                     aria-pressed={panel.value === 'diplomacy'}
+                    data-guide="diplomacy"
                     title="Diplomacy (Y)"
                     onClick={() => (panel.value = panel.value === 'diplomacy' ? null : 'diplomacy')}
                   >
@@ -1361,6 +1362,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   type="button"
                   class="chip"
                   aria-pressed={panel.value === 'menu'}
+                  data-guide="menu"
                   title="Menu"
                   onClick={() => (panel.value = panel.value === 'menu' ? null : 'menu')}
                 >
@@ -1385,6 +1387,7 @@ export function MapScreen({ world, game, buildId, play }: Props) {
           <button
             type="button"
             class="chip menu-chip"
+            data-guide="menu"
             onClick={() => (panel.value = panel.value === 'menu' ? null : 'menu')}
           >
             <Icon name="menu" />
@@ -1486,10 +1489,20 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             >
               Guide me
             </button>
-            <button type="button" class="button button-quiet" onClick={() => (panel.value = 'relics')}>
+            <button
+              type="button"
+              class="button button-quiet"
+              data-guide="menu-relics"
+              onClick={() => (panel.value = 'relics')}
+            >
               Relics
             </button>
-            <button type="button" class="button button-quiet" onClick={() => (panel.value = 'leaders')}>
+            <button
+              type="button"
+              class="button button-quiet"
+              data-guide="menu-leaders"
+              onClick={() => (panel.value = 'leaders')}
+            >
               Leaders
             </button>
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
@@ -1672,19 +1685,39 @@ export function MapScreen({ world, game, buildId, play }: Props) {
                   Guide me
                 </button>
                 {others && (
-                  <button type="button" class="button button-quiet" onClick={() => (panel.value = 'diplomacy')}>
+                  <button
+                    type="button"
+                    class="button button-quiet"
+                    data-guide="menu-diplomacy"
+                    onClick={() => (panel.value = 'diplomacy')}
+                  >
                     Diplomacy
                   </button>
                 )}
                 {others && (
-                  <button type="button" class="button button-quiet" onClick={() => (panel.value = 'assembly')}>
+                  <button
+                    type="button"
+                    class="button button-quiet"
+                    data-guide="menu-assembly"
+                    onClick={() => (panel.value = 'assembly')}
+                  >
                     The Assembly
                   </button>
                 )}
-                <button type="button" class="button button-quiet" onClick={() => (panel.value = 'relics')}>
+                <button
+                  type="button"
+                  class="button button-quiet"
+                  data-guide="menu-relics"
+                  onClick={() => (panel.value = 'relics')}
+                >
                   Relics
                 </button>
-                <button type="button" class="button button-quiet" onClick={() => (panel.value = 'leaders')}>
+                <button
+                  type="button"
+                  class="button button-quiet"
+                  data-guide="menu-leaders"
+                  onClick={() => (panel.value = 'leaders')}
+                >
                   Leaders
                 </button>
                 {outcome && (

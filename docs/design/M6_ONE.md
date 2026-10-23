@@ -30,6 +30,7 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 14. [Tests and budgets](#14-tests-and-budgets)
 15. [Art, music and their cost](#15-art-music-and-their-cost)
 16. [Decisions](#16-decisions)
+20. [Increment 61 in detail: lessons when they matter](#20-increment-61-in-detail-lessons-when-they-matter-written-before-building-it)
 
 ## 1. Where M6 starts
 
@@ -331,3 +332,82 @@ Assumed on the owner's standing leave of 23 October 2026, each as recommended, a
 
 D-72 (guardians) stays A and is built in M6; D-79 stays A. **Left to the owner:** **D-18**, and
 whether to call the result 1.0.
+
+## 20. Increment 61 in detail: lessons when they matter (written before building it)
+
+**Goals.** §4 (D-80): a lesson from the right advisor the first time each system matters, kept in the
+codex. **Out of scope:** changing the guided opening's steps; lessons for systems the player cannot
+use (an alien's view of its own species).
+
+### 20.1 Once on this device, not once a game
+
+§4 said *once a game*. Built that way, a player who learnt the Assembly in one game would be told
+again in every game after. So **each lesson is told once on this device**, as the guided opening
+is finished once; *Tell me again* in the codex's *How to play* forgets them all, and *off* for the
+guide in the settings turns the lessons off too.
+
+### 20.2 The lessons, in the order they are told
+
+When more than one is due, the first in this order comes first; the next waits until it is closed.
+The guided opening's step, while there is one, comes before any lesson.
+
+| Lesson | Due when | Advisor | Lit |
+| --- | --- | --- | --- |
+| Debt | our treasury is below zero | Treasury | Empire |
+| Hunger | a colony of ours is hungry | Colonies | Empire |
+| Unrest | a colony of ours is in unrest or revolt | Colonies | Empire |
+| War | we are at war | Admiral | Diplomacy |
+| Raided | the last report has a raid on us | Watch | — |
+| The arks | the arks wait and we have not answered | Envoy | Menu, *The arks* when there |
+| First contact | we have met another power | Envoy | Diplomacy |
+| Talking | we can talk with another power | Envoy | Diplomacy |
+| The Assembly | the Assembly has formed | Envoy | Menu, *The Assembly* |
+| Warships | we hold a warship, or a design | Admiral | — |
+| Relic sites | we know a relic site | Science | Menu, *Relics* |
+| A chapter | an excavation of ours waits for its choice | Science | Menu, *Relics* |
+| The keys | a key has been found by anyone | Science | Menu, *Relics* |
+| Leaders | people are offered to us | Colonies | Menu, *Leaders* |
+| Agents | we can talk with another power, from turn 30 | Watch | Diplomacy |
+| Events | an event waits for our answer | the event's advisor (Colonies) | — |
+
+Each has a line in each of the three voices (formal, warm, blunt), as the guided opening's steps do,
+a hint for where to find its control on the phone and the desktop, and a **summary**: two or three
+plain sentences that say how the system works, for the codex.
+
+### 20.3 On the screen
+
+- **The card** is the guided opening's card: the advisor's face and name, *Lesson*, the line, the
+  hint, and **Got it**, which closes it for good. It blocks nothing and sits where the opening's
+  card does.
+- **The ring** lights each of the lesson's controls that is on the screen (the Diplomacy chip on
+  the desktop, the Menu chip, and the menu's entry when the menu is open).
+- **The codex, *How to play*:** every lesson's summary, those met marked *Met in play*, and *Tell
+  me again*.
+- **In the browser tests** lessons stay off unless the address asks for them (`?test&lessons`), as
+  the guide does.
+
+### 20.4 State and tests
+
+Nothing in the game's state: what has been told is kept on the device, beside the guide
+(`starman-control:lessons`). **Unit** (`lessons.test.ts`): each lesson due by its rule; the order;
+told once; *Tell me again*; off with the guide. **Journey** (`lessons.spec.ts`, phone, tablet and
+desktop): first contact brings the Envoy's lesson with the Diplomacy chip lit (on the desktop);
+*Got it* closes it for good; the codex shows it met.
+
+
+### As built (23 October 2026)
+
+- **Sixteen lessons as §20.2,** in `src/content/lessons.ts` (each a line in three voices, a hint and a
+  summary) and `src/app/lessons.ts` (when each is due, and which are told). The order puts what
+  costs most first (debt, hunger, unrest, war, a raid, the arks).
+- **Told once on this device (§20.1);** the codex's *How to play* lists all sixteen summaries, marks
+  those *Met in play*, and has *Tell me again*. The guide's *off* in the settings turns them off.
+- **The ring** lights the Diplomacy chip on the desktop, the Menu chip, and the menu's *Diplomacy*,
+  *The Assembly*, *Relics* and *Leaders* when it is open (new `data-guide` names).
+- **Facts checked against the rules** as the summaries were written: a fleet's missions are invade,
+  bombard and (for an outlaw) raid; an event unanswered for a few turns takes its first choice.
+- **Tests:** `lessons.test.ts` (11) and `lessons.spec.ts` (phone, tablet and desktop).
+
+**Reversing it:** the lessons are off for a player who sets the guide *off*; to remove them, drop the
+`LessonCard` branch from `GuideCard` (`src/ui/map/guide.tsx`) and `HowToPlay` from the codex
+(`src/ui/data/DataPage.tsx`). Nothing in a game's state or its saves depends on them.

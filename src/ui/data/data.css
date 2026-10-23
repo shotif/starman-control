@@ -430,6 +430,11 @@
   margin: 0.5rem 0;
 }
 
+/* Lessons met in play (M6_ONE.md §20.3). */
+.lesson-met {
+  color: var(--warm);
+}
+
 /* Each power's advisors (M2_WORLDS.md §24.3), fiction like the power. */
 .web-advisors {
   display: grid;

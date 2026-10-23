@@ -270,7 +270,9 @@ won by the keys by a rival, the Co-op's fourth win (D-79), every site found by t
 the map, the keys within the rivals' reach, guardians, the Concord to play, music for war and the
 end, the long game's targets for 1.0, polish on phones, and the proof, in increments 61 to 69.
 D-80 to D-86 are **assumed as recommended** ([DECISIONS.md Round 9](DECISIONS.md#round-9-10-assumed-23-october-2026));
-D-85 keeps one map for 1.0.
+D-85 keeps one map for 1.0. **Done: increment 61, lessons when they matter** (M6 §20): sixteen
+lessons from the advisors, each told once on the device the first time its system matters, kept in
+the codex's *How to play*.
 
 The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).

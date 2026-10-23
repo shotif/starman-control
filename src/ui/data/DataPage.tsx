@@ -5,8 +5,10 @@
 
 import { signal } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
+import { forgetLessons, lessons } from '../../app/lessons.ts';
 import { ADVISORS, DEPARTMENT_NAMES, DEPARTMENTS } from '../../content/advisors.ts';
 import { ALL_FACTION_IDS, type FACTION_IDS, FACTIONS } from '../../content/factions.ts';
+import { LESSONS } from '../../content/lessons.ts';
 import { SPECIES } from '../../content/species.ts';
 import type { SystemId } from '../../data/types.ts';
 import { formatDate } from '../../sim/calendar.ts';
@@ -198,6 +200,7 @@ export function DataPage({ world, game, buildId }: Props) {
         </div>
       )}
 
+      <HowToPlay />
       <Methods />
 
       <footer class="data-footer">
@@ -388,6 +391,33 @@ function SystemCard({ row }: { row: SystemRow }) {
         </span>
       )}
     </button>
+  );
+}
+
+/** How to play (M6_ONE.md §20.3): every lesson's summary, those met in play marked, and *Tell me again*. */
+function HowToPlay() {
+  const told = lessons.value.told;
+  return (
+    <section class="codex-methods codex-lessons" aria-label="How to play">
+      <h2>How to play</h2>
+      <p>
+        The advisors explain each part of the game the first time it matters, and once only. Here is every lesson, those
+        met in play marked so.
+      </p>
+      <ul>
+        {LESSONS.map((l) => (
+          <li key={l.id}>
+            <b>{l.title}</b>
+            {told.includes(l.id) && <span class="lesson-met"> · Met in play</span>}: {l.summary}
+          </li>
+        ))}
+      </ul>
+      {told.length > 0 && (
+        <button type="button" class="button button-small button-quiet" onClick={forgetLessons}>
+          Tell me again
+        </button>
+      )}
+    </section>
   );
 }
 
