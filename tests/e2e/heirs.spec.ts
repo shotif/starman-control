@@ -53,6 +53,8 @@ test('the Forge at GJ 3306: the heirs’ capital, and fiction', async ({ page },
     ? page.getByRole('complementary', { name: 'Selected system' })
     : page.getByRole('dialog', { name: 'GJ 3306' });
   await expect(panel.getByRole('heading', { name: 'GJ 3306' })).toBeVisible();
+  // The vault where the Absent made them, a relic site of its own (M5_UNKNOWN.md §28.2).
+  await expect(panel.getByRole('region', { name: 'Relic site' })).toContainText('A vault');
   await press(panel.getByRole('button', { name: /The Forge/ }), project);
   const forge = panel.getByRole('article', { name: 'The Forge' });
   await expect(forge).toContainText('Fiction');

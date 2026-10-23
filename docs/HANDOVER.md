@@ -1,4 +1,4 @@
-# Handover: Starman Control, 22 October 2026 (M4 complete)
+# Handover: Starman Control, 23 October 2026 (M5 built)
 
 For a new Claude Code session continuing the game. Read this, then [CLAUDE.md](../CLAUDE.md), then
 the documents it points to. Everything here is also in the repository's documents; this page is the
@@ -258,10 +258,42 @@ changed no winner and were taken out; **D-79, the Co-op's lead in long games, is
 owner** with the measurements; assumed A on the owner's leave (left for M6). **Done: increment 59, the
 machine heirs** (§27): the Continuance, a sixth power at the start (lime, a pentagon), self-copying
 machines the Absent left at the Forge, a fictional world of the real white dwarf GJ 3306; they eat
-nothing, grow by building copies, and dig half again as fast; not yet playable. Next: 60 the proof.
+nothing, grow by building copies, and dig half again as fast; not yet playable. **Done: increment 60,
+the proof** (§28): M5 measured against its targets with six powers; the Forge made a relic site of
+its own, since the heirs could reach none; raids mended (a holding plundered once a turn, nothing
+taken from an empty treasury; deepest debt −131); four different winners in the long games. **M5 is
+built**; its last condition, the decision on Steam (D-18), is the owner's. Missed, for M6: a game
+won by the keys by a rival, the Co-op's fourth win (D-79), every site found by turn 150. Next:
+**M6**, after the owner's try.
 
 The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).
+
+### Trying M5 (for the owner)
+
+What is new since M4, and where it is (the desktop's key in brackets):
+
+- **Relic sites** (Relics, **J**): learn *Relic studies* and survey to find them; found an outpost
+  at one and *Excavate*. Each chapter asks a choice (study it for research, or take what it gives)
+  and tells a revelation of the Absent, kept in the journal.
+- **The keys and the Answer** (Relics, **J**): five sites hold a key, found with their third
+  chapter. Hold all five and learn *The instrument*, and you may begin the Answer: ten turns, while
+  every rival that does not call for peace comes for you. Done, you win by the keys.
+- **Events** in the report, with pictures: twenty-five in all, the great flare and a nova among
+  them, each marked real or fiction.
+- **Agents** (Diplomacy, **Y**, under each power you have met): watch a power to learn its
+  holdings, its ships and its secrets; set a guard at home.
+- **Leaders** (**L**): three people are offered every ten turns; hire them and post them to a fleet,
+  a colony, the research, the diplomacy or the agents. They grow with service and may leave.
+- **The arks of the Unhomed:** between turns 110 and 150 they come to CE Boötis and ask every power
+  for a world (*What needs you* takes you there): give one, take them in, or refuse.
+- **The Continuance:** the machine heirs, a sixth power in every game, at the Forge (GJ 3306).
+- **Scrap** a ship from its panel to save its upkeep.
+
+A good first try: lead the Transit Authority, which digs best, and play past turn 110 to meet the
+arks. What would help most to hear: whether the chapters are worth the research they take, whether
+leaders and agents are worth their credits, whether the arks' choice feels like a real one, and
+D-79 (the Co-op's lead in long games).
 
 ## 3. Standing instructions from the owner
 

@@ -10,12 +10,14 @@ import { contactWith, type GameState, type Holding, powerOf } from './state.ts';
 import type { World } from './world.ts';
 
 /**
- * Plunder as the turn ends (§27.1), after the battles: each fleet raiding a holding whose power no
+ * Plunder as the turn ends (§27.1), after the battles: a fleet raiding a holding whose power no
  * longer holds the orbit takes a colony's credits of the turn, or an outpost's yields, for its own
- * power. Both read of it; it is remembered by the raided and heard by the lawful.
+ * power; no more than the raided power has, and a holding once a turn however many fleets raid it
+ * (M5_UNKNOWN.md §28, as built). Both read of it; it is remembered by the raided and heard by the lawful.
  */
 export function resolveRaids(world: World, state: GameState, events: Map<FactionId, ReportEvent[]>): void {
   const r = RULES.raid;
+  const plundered = new Set<number>();
   for (const fleet of state.fleets) {
     const m = fleet.mission;
     if (!m || m.kind !== 'raid') continue;
@@ -24,13 +26,14 @@ export function resolveRaids(world: World, state: GameState, events: Map<Faction
       continue;
     }
     const h = state.holdings.find((x) => x.id === m.holding) as Holding;
-    if (holdsOrbit(state, h.owner, h.system)) continue;
+    if (holdsOrbit(state, h.owner, h.system) || plundered.has(h.id)) continue;
+    plundered.add(h.id);
     const victim = powerOf(state, h.owner);
     const raider = powerOf(state, fleet.owner);
     let credits = 0;
     const took = { metals: 0, volatiles: 0, fuel: 0 };
     if (h.kind === 'colony') {
-      credits = Math.max(0, creditsOf(world, state, h).total);
+      credits = Math.max(0, Math.min(creditsOf(world, state, h).total, victim.treasury));
       victim.treasury -= credits;
       raider.treasury += credits;
     } else {

@@ -5,7 +5,7 @@
 import { type FactionId, PLACING_FACTIONS } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
-import { digAt, relicSites } from './relics.ts';
+import { digAt, placedSites } from './relics.ts';
 import type { ReportEvent } from './report.ts';
 import { effects } from './research.ts';
 import { rng } from './rng.ts';
@@ -30,7 +30,8 @@ export function keySites(world: World, seed: number): readonly SystemId[] {
   const known = bySeed.get(seed);
   if (known) return known;
   const order = (id: SystemId) => rng(seed, 'key-site', id).int(0, 1_000_000_000);
-  const sites = relicSites(world, seed).map((s) => s.system);
+  // Among the placed sites only: the kept ones hold no key (M5_UNKNOWN.md §28.2).
+  const sites = placedSites(world, seed).map((s) => s.system);
   const capitals = PLACING_FACTIONS.map((f) => f.capital.systemId).filter((c) => world.hasSystem(c));
   const chosen: SystemId[] = [];
   for (const c of capitals) {

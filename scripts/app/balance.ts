@@ -10,7 +10,7 @@ import { RULES } from '../../src/content/rules.ts';
 import { TECH_IDS, TECHS } from '../../src/content/techs.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { researchOf } from '../../src/sim/economy.ts';
-import { relicSites, siteKnown } from '../../src/sim/relics.ts';
+import { placedSites, siteKnown } from '../../src/sim/relics.ts';
 import { scoreOf } from '../../src/sim/score.ts';
 import { newGame } from '../../src/sim/state.ts';
 import { resolveTurn } from '../../src/sim/turn.ts';
@@ -95,7 +95,7 @@ for (const seed of SEEDS) {
     }
     if (turn === 150)
       sitesBy150.push(
-        relicSites(world, seed).filter((s) => g.powers.some((p) => siteKnown(world, g, p, s.system))).length,
+        placedSites(world, seed).filter((s) => g.powers.some((p) => siteKnown(world, g, p, s.system))).length,
       );
     game.battles += g.battles.length;
     for (const rep of r.reports)

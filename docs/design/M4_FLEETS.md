@@ -1309,6 +1309,10 @@ and desktop.
   others 19.8 to 23.5); in the eight games 76 turns of plunder and 4 battles. `npm run balance`
   now counts raids, battles, wars and colonies taken.
 - **Tests:** `raids.test.ts` (7 tests); `raids.spec.ts` on the phone, tablet and desktop.
+- **Mended in M5's proof** (M5_UNKNOWN.md §28, as built): a holding is plundered once a turn however
+  many fleets raid it, and a raid takes no more credits than the treasury holds (as it already took no
+  more resources than the stockpile held). Two fleets on one colony had taken its credits twice, and
+  from a treasury in debt, which drove the Authority to −337 in one headless game.
 
 ## 28. Increment 48 in detail: rivals at war (written before building it)
 

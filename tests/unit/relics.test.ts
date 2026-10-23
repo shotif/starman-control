@@ -13,7 +13,9 @@ import {
   digAt,
   excavate,
   excavateRefusal,
+  KEPT_SITES,
   knownSites,
+  placedSites,
   relicSites,
   resolveChapterChoices,
   resolveDigs,
@@ -49,7 +51,7 @@ const five = (player: FactionId = 'sta'): GameState =>
     })),
   });
 const events = (g: GameState) => new Map(g.powers.map((p) => [p.faction, [] as ReportEvent[]]));
-const sites = relicSites(world, 42);
+const sites = placedSites(world, 42);
 /** A site's system, and an outpost of a power on its first free world. */
 const outpostAt = (g: GameState, owner: FactionId, system: string) => {
   const body = bodiesOf(world, g.seed, system).find((b) => !g.holdings.some((h) => h.body === b.id));
@@ -68,9 +70,11 @@ const ready = (g: GameState, f: FactionId, system: string): PowerState => {
 describe('where the sites are (§20.1)', () => {
   it('twelve from the seed, the same each time, each kind twice, GJ 915 a quiet beacon', () => {
     expect(sites).toHaveLength(R.sites);
-    expect(relicSites(world, 42)).toBe(sites);
-    expect(relicSites(buildWorld(SKY), 42)).toEqual(sites);
-    expect(relicSites(world, 7)).not.toEqual(sites);
+    expect(placedSites(world, 42)).toBe(sites);
+    expect(placedSites(buildWorld(SKY), 42)).toEqual(sites);
+    expect(placedSites(world, 7)).not.toEqual(sites);
+    // And the kept ones besides (M5_UNKNOWN.md §28.2).
+    expect(relicSites(world, 42)).toEqual([...sites, ...KEPT_SITES].sort((a, b) => (a.system < b.system ? -1 : 1)));
     for (const k of RELIC_KIND_IDS)
       expect(
         sites.filter((s) => s.kind === k),

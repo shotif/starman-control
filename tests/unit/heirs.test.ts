@@ -3,13 +3,13 @@ import { FACTION_IDS, FACTIONS, type FactionId, PLACING_FACTIONS } from '../../s
 import { RULES } from '../../src/content/rules.ts';
 import { SPECIES } from '../../src/content/species.ts';
 import { SKY } from '../../src/data/sky.ts';
-import { PERSONALITIES } from '../../src/sim/ai.ts';
+import { aiOrders, PERSONALITIES } from '../../src/sim/ai.ts';
 import { anomalyAt } from '../../src/sim/anomalies.ts';
 import { bodiesOf } from '../../src/sim/bodies.ts';
 import { COPIES, capacityOf, foodOf, growthOf, industryOf } from '../../src/sim/economy.ts';
 import { habitability } from '../../src/sim/habitability.ts';
 import { keySites } from '../../src/sim/keys.ts';
-import { excavate, relicSites, splitResearch } from '../../src/sim/relics.ts';
+import { excavate, placedSites, relicSites, siteAt, splitResearch } from '../../src/sim/relics.ts';
 import { type GameState, makeHolding, newGame, powerOf } from '../../src/sim/state.ts';
 import { resolveTurn } from '../../src/sim/turn.ts';
 import { shapeProblems, stateProblems } from '../../src/sim/validate.ts';
@@ -48,7 +48,7 @@ describe('the Forge (§27.1)', () => {
   it('moves no relic site and no key; anomalies only leave the heirs’ capital', () => {
     expect(PLACING_FACTIONS.map((f) => f.id)).not.toContain(HEIRS);
     // As they were before the heirs (increment 58), for two seeds.
-    expect(relicSites(world, 42).map((s) => s.system)).toEqual([
+    expect(placedSites(world, 42).map((s) => s.system)).toEqual([
       '2mass-1114-2618',
       '40-eridani',
       'gj-367',
@@ -143,7 +143,7 @@ describe('the heirs of the Absent (§27.3)', () => {
     const g = game();
     const heirs = powerOf(g, HEIRS);
     expect(heirs.researched).toContain('relic-studies');
-    const near = relicSites(world, g.seed)
+    const near = placedSites(world, g.seed)
       .map((s) => s.system)
       .sort((a, b) => world.distanceDeci('gj-3306', a) - world.distanceDeci('gj-3306', b))
       .slice(0, 2);
@@ -173,6 +173,21 @@ describe('the heirs of the Absent (§27.3)', () => {
     expect(def.traits.map((t) => t.effect.kind)).toContain('dig-percent');
     expect(def.lawful).toBe(true);
     expect(PERSONALITIES[HEIRS].arks).toBe('refuse');
+  });
+});
+
+describe('the Forge, a relic site of its own (§28.2)', () => {
+  it('is a vault in every game besides the twelve, and holds no key', () => {
+    for (const seed of [1, 7, 42]) {
+      expect(siteAt(world, seed, 'gj-3306')).toEqual({ system: 'gj-3306', kind: 'vault' });
+      expect(relicSites(world, seed)).toHaveLength(RULES.relics.sites + 1);
+      expect(keySites(world, seed)).not.toContain('gj-3306');
+    }
+  });
+
+  it('the heirs begin to excavate it on the first turn', () => {
+    const g = game();
+    expect(aiOrders(world, g, HEIRS)).toContainEqual({ type: 'excavate', system: 'gj-3306' });
   });
 });
 

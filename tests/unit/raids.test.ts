@@ -160,6 +160,31 @@ describe('a raid (§27.1)', () => {
     );
   });
 
+  it('plunders a holding once a turn, however many fleets raid it, and no credits the treasury lacks', () => {
+    const g = three();
+    const c = coop(g, 'colony', 40);
+    const credits = creditsOf(world, g, c).total;
+    expect(credits).toBeGreaterThan(0);
+    for (const f of [
+      squadron(g, 'hollow-wake', 'epsilon-eridani', 2),
+      squadron(g, 'hollow-wake', 'epsilon-eridani', 2),
+    ])
+      f.mission = { kind: 'raid', holding: c.id };
+    const before = powerOf(g, 'frontier').treasury;
+    const ev = events(g);
+    resolveRaids(world, g, ev);
+    expect(powerOf(g, 'frontier').treasury).toBe(before - credits);
+    expect((ev.get('frontier') ?? []).filter((e) => e.kind === 'raided')).toHaveLength(1);
+    // In debt, there is nothing to take.
+    powerOf(g, 'frontier').treasury = -40;
+    const wake = powerOf(g, 'hollow-wake').treasury;
+    const later = events(g);
+    resolveRaids(world, g, later);
+    expect(powerOf(g, 'frontier').treasury).toBe(-40);
+    expect(powerOf(g, 'hollow-wake').treasury).toBe(wake);
+    expect((later.get('frontier') ?? []).find((e) => e.kind === 'raided')).toMatchObject({ credits: 0 });
+  });
+
   it('takes nothing while the raided power holds the orbit', () => {
     const g = three();
     const c = coop(g, 'colony', 40);

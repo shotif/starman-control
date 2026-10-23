@@ -41,6 +41,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 25. [Increment 57 in detail: the dying star and the unhomed](#25-increment-57-in-detail-the-dying-star-and-the-unhomed-written-before-building-it)
 26. [Increment 58 in detail: the balance of power](#26-increment-58-in-detail-the-balance-of-power-written-before-building-it)
 27. [Increment 59 in detail: the machine heirs](#27-increment-59-in-detail-the-machine-heirs-written-before-building-it)
+28. [Increment 60 in detail: the proof](#28-increment-60-in-detail-the-proof-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -1400,3 +1401,95 @@ within budget; the deepest debt was −156, as before, and the longest 54 turns.
 | The Forge | `KEPT` in `src/sim/bodies.ts` |
 | Their character as a rival | `PERSONALITIES.continuance` in `src/sim/ai.ts`; the others' regard of them in `factions.ts` |
 | No anomaly at their capital | `CAPITALS` in `src/sim/anomalies.ts` (from `STARTING_FACTIONS`; `PLACING_FACTIONS` would put GJ 3306's back) |
+
+## 28. Increment 60 in detail: the proof (written before building it)
+
+**Goals.** Show where M5 stands against what it set out to do (§2, §17), with the six powers that now
+start every game: measure, mend what is small, and write down plainly what is left. **Out of scope:**
+guardians (M6, §7); D-79's question, the Co-op's lead in long games, assumed left for M6; the Steam
+decision (D-18), which is the owner's alone.
+
+### 28.1 The measures
+
+| §17's target | Measured by |
+| --- | --- |
+| At least one of the eight headless games won by the keys | `npm run balance` to turn 250 |
+| At least four different winners, none winning more than three | the same |
+| Every relic site found by turn 150 in most games | the same: the sites some power knows |
+| M3's and M4's targets still met | the headless test at turn 100, and the games to 250 |
+| Turns within 200 ms, saves within 200 KB | the same |
+| A full game can be won by the keys (SCOPE.md) | `keys.spec.ts`, the player's road |
+| The journeys of §17 on the phone, tablet and desktop | the whole browser suite |
+
+### 28.2 The keys for the rivals
+
+No headless game has yet been won by the keys: the rivals cannot plan the long campaign the five
+keys need (§21, as built). Before tuning anything, a study of the eight games at turns 100, 150, 200
+and the end: who digs, who finds keys, who holds them, and who knows *The second tone* and *The
+instrument*. Then **one bounded change**, kept only if the games show it working without breaking
+another target: the heirs, who dig fastest and know most of the Absent (§27.3), are the power most
+fitted to hunt the keys, so a change that lets them (or any rival) carry the hunt through is tried
+first. If no small change does it, the target is recorded as missed, for M6's longer campaigns,
+with the numbers.
+
+### 28.3 The owner's try
+
+HANDOVER.md gains a short guide to M5 for the owner: what is new since M4, where each thing is on
+the screen, and what to try first.
+
+### 28.4 State, tests and art
+
+No new state, no pictures. Tests for whatever changes in §28.2.
+
+
+### As built (23 October 2026)
+
+- **The study (§28.2).** At turns 100, 150, 200 and the end of two games: the Authority digs from the
+  start; the Co-op, the Concord and the Moot a few chapters after turn 150; the Wake takes keys and
+  never digs. **The heirs, made to dig, dug nothing before turn 200:** the sites lie within 18
+  light-years of the five older capitals, the nearest to the Forge 14 and 24 light-years away, past
+  any lane they could lay early. The keys end spread among three or four powers, none holding more
+  than two.
+- **The Forge, a relic site of its own** (`KEPT_SITES` in `src/sim/relics.ts`): a vault, where the
+  Absent made the heirs, in every game besides the twelve placed, holding no key. The twelve and the
+  keys are placed as before (`placedSites`), and the heirs still begin knowing the two placed sites
+  nearest them. They now excavate it from the first turn and finish its three chapters by about turn
+  100. Fiction, like every site.
+- **Raids mended** (found by the measures: the Authority fell to −337 in one game while two of the
+  Wake's fleets raided one of its colonies): a holding is plundered once a turn however many fleets
+  raid it, and a raid takes no more credits than the treasury holds, as it already took no more
+  resources than the stockpile held. The report says *took nothing* when there is nothing to take.
+- **The owner's try (§28.3):** a guide to M5 in HANDOVER.md, *Trying M5*.
+- **Tests:** `heirs.test.ts` (the Forge a vault with no key, and excavated on the first turn),
+  `relics.test.ts` (the twelve placed and the kept), `raids.test.ts` (once a turn, nothing from an
+  empty treasury); `heirs.spec.ts` shows the vault in GJ 3306's panel. The whole browser suite passes
+  (301 journeys on the phone, tablet and desktop).
+
+**The measures (§28.1), with six powers from the start:**
+
+| §17's target | Measured | |
+| --- | --- | --- |
+| One of the eight games won by the keys | none: the keys end spread among three or four powers | **missed**, for M6's longer campaigns |
+| Four different winners, none winning more than three | the Co-op 4, the Continuance 2, the Wake 1, the Concord 1 | four winners; **the Co-op one over** (D-79) |
+| Every relic site found by turn 150 in most games | 7 to 11 of the 12 known to some power | **missed** |
+| M3's targets at turn 100 | met (the headless test) | met |
+| M4's: a war by turn 150 in most games; no power leaving before turn 100; most games won before the limit | a war in all eight; none left; one game won before the limit | the last **missed** since increment 51's brakes on the Assembly (D-69) |
+| Turns within 200 ms, saves within 200 KB | 143 ms at most, 173.8 KB | met |
+| A full game can be won by the keys (SCOPE.md) | by the player: `keys.spec.ts` | met |
+| The journeys of §17 | every one but the guardians' (deferred to M6) | met |
+
+The deepest debt was −131 (−337 before the raids were mended, −518 before increment 58) and the
+longest 51 turns. At turn 100 the Continuance is fifth of six on average (346), as it gives half its
+research to the Forge; by turn 250 it wins two games on score.
+
+**M5 is built** (23 October 2026): the relic sites and the Absent's story, the keys and the Answer,
+events, light espionage, leaders, the arks and the Last Hearth, the machine heirs. Its last condition
+in SCOPE.md, the decision on Steam (D-18), is the owner's. Left for M6: the guardians, the rivals'
+long campaign for the keys, and D-79.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| The Forge's site | `KEPT_SITES` in `src/sim/relics.ts`: empty it |
+| The raid mend | `resolveRaids` in `src/sim/raids.ts`: the `plundered` set, and the treasury in the credits taken |

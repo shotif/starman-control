@@ -18,7 +18,7 @@ import type { SystemId } from '../data/types.ts';
 import type { BattleLog } from './battle.ts';
 import { refreshYards } from './designs.ts';
 import { homeWebs } from './homeWeb.ts';
-import { relicSites } from './relics.ts';
+import { placedSites } from './relics.ts';
 import type { ReportEvent } from './report.ts';
 import { learn } from './research.ts';
 import type { LaneId, World } from './world.ts';
@@ -751,7 +751,7 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
     const knows = FACTIONS[p.faction].knows;
     if (!knows) continue;
     for (const t of knows.techs) if (!p.researched.includes(t)) learn(p, t);
-    const near = relicSites(world, state.seed)
+    const near = placedSites(world, state.seed)
       .map((x) => x.system)
       .sort((a, b) => world.distanceDeci(p.capital, a) - world.distanceDeci(p.capital, b) || (a < b ? -1 : 1))
       .slice(0, knows.sites);

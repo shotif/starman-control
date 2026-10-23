@@ -25,11 +25,33 @@ const R = RULES.relics;
 const cache = new WeakMap<World, Map<number, readonly RelicSite[]>>();
 
 /**
- * The game's twelve relic sites (§20.1), in system order: GJ 915 always, a quiet beacon; then white
- * dwarfs, brown dwarfs and any system, each with a body, 8 to 18 light-years from the nearest capital
- * and apart from one another; each kind twice. The same for a seed every time.
+ * Sites in every game besides the twelve placed (M5_UNKNOWN.md §28.2): the Forge at GJ 3306, the vault
+ * where the Absent made the machine heirs. It holds no key. Fiction.
  */
+export const KEPT_SITES: readonly RelicSite[] = [{ system: 'gj-3306', kind: 'vault' }];
+const kept = new WeakMap<World, Map<number, readonly RelicSite[]>>();
+
+/** Every relic site of a game, in system order: the twelve placed from the seed, and the kept ones. */
 export function relicSites(world: World, seed: number): readonly RelicSite[] {
+  let bySeed = kept.get(world);
+  if (!bySeed) {
+    bySeed = new Map();
+    kept.set(world, bySeed);
+  }
+  const known = bySeed.get(seed);
+  if (known) return known;
+  const ours = KEPT_SITES.filter((k) => world.hasSystem(k.system) && bodiesOf(world, seed, k.system).length > 0);
+  const sites = [...placedSites(world, seed), ...ours].sort((a, b) => (a.system < b.system ? -1 : 1));
+  bySeed.set(seed, sites);
+  return sites;
+}
+
+/**
+ * The game's twelve placed relic sites (§20.1), in system order: GJ 915 always, a quiet beacon; then
+ * white dwarfs, brown dwarfs and any system, each with a body, 8 to 18 light-years from the nearest
+ * capital and apart from one another; each kind twice. The same for a seed every time.
+ */
+export function placedSites(world: World, seed: number): readonly RelicSite[] {
   let bySeed = cache.get(world);
   if (!bySeed) {
     bySeed = new Map();
