@@ -334,6 +334,37 @@
       "aiGenerated": true
     },
     {
+      "briefId": "advisor-heirs-envoy",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: Exact Measure, which negotiates for the Continuance: one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, with fine tool-arms folded beneath; its lens cluster turned toward the viewer, one lens brighter, a narrow band of polished metal across its front; precise, attentive.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T00:40:56.358Z",
+      "note": "Here is the painted science-fiction character portrait of Exact Measure, designed to be grounded, worn, and evocative for a strategy game.",
+      "id": "advisor-heirs-envoy",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T00:47:23.869Z",
+      "candidate": "art/out/advisor-heirs-envoy/20261023-004038-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/advisor-heirs-envoy-128.webp",
+          "bytes": 5678
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/advisor-heirs-envoy-384.webp",
+          "bytes": 32184
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/advisor-heirs-envoy-768.webp",
+          "bytes": 86128
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "advisor-sta-admiral",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -8135,6 +8166,127 @@
       "aiGenerated": true
     },
     {
+      "briefId": "leader-continuance-1",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, with fine tool-arms folded beneath; compact, its plates freshly made and bright, three large lenses; quick, curious.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T00:43:34.044Z",
+      "note": "Here is the painted portrait of the non-humanoid science-fiction character for the strategy game:",
+      "id": "leader-continuance-1",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T00:47:24.412Z",
+      "candidate": "art/out/leader-continuance-1/20261023-004038-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-continuance-1-128.webp",
+          "bytes": 4092
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-continuance-1-384.webp",
+          "bytes": 24078
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-continuance-1-768.webp",
+          "bytes": 65420
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-continuance-2",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, with fine tool-arms folded beneath; heavy, broad, with a thick armoured front and two great lenses; steady, guarded.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T00:44:00.499Z",
+      "id": "leader-continuance-2",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T00:47:24.973Z",
+      "candidate": "art/out/leader-continuance-2/20261023-004038-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-continuance-2-128.webp",
+          "bytes": 5438
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-continuance-2-384.webp",
+          "bytes": 30870
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-continuance-2-768.webp",
+          "bytes": 80438
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-continuance-3",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, with fine tool-arms folded beneath; slender, long-necked, a ring of small lenses glowing evenly; careful, exact.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T00:45:00.886Z",
+      "id": "leader-continuance-3",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T00:47:25.536Z",
+      "candidate": "art/out/leader-continuance-3/20261023-004038-gemini-nano-banana-2.1-1.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-continuance-3-128.webp",
+          "bytes": 5672
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-continuance-3-384.webp",
+          "bytes": 35752
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-continuance-3-768.webp",
+          "bytes": 104614
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
+      "briefId": "leader-continuance-4",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, with fine tool-arms folded beneath; older, the plates along one side darkened by heat, one lens replaced with an amber one; steady, unhurried.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T00:47:23.360Z",
+      "id": "leader-continuance-4",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T00:48:55.065Z",
+      "candidate": "art/out/leader-continuance-4/20261023-004628-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/leader-continuance-4-128.webp",
+          "bytes": 4262
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/leader-continuance-4-384.webp",
+          "bytes": 24290
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/leader-continuance-4-768.webp",
+          "bytes": 65066
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "leader-drift-moot-1",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -9067,6 +9219,31 @@
       "aiGenerated": true
     },
     {
+      "briefId": "people-heirs",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted widescreen illustration for a strategy game event. Grounded science fiction among real stars: believable ships, stations and worlds, true scale and starlight. One clear focal point that still reads on a small phone screen. A muted palette of deep navy, slate and warm starlight with small cyan accents. Painterly and cinematic, quiet rather than explosive.\n\nSubject: On an airless grey rocky world under a black sky, beside a small, faint, bluish-white star: a vast quiet workshop carved into the rock, terraces of machine shops and furnaces glowing a soft lime green, where many low, many-limbed machines of worn grey metal and pale ceramic, each with a cluster of glowing lenses for a face, build copies of themselves from ore carried in on rails. Orderly, patient and very old. Invented machines of a vanished people, like no other story’s robots.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, lens flares, cartoon style, busy clutter.",
+      "aspect": "3:2",
+      "createdAt": "2026-10-23T00:42:44.387Z",
+      "id": "people-heirs",
+      "series": "illustration",
+      "approvedAt": "2026-10-23T00:47:26.124Z",
+      "candidate": "art/out/people-heirs/20261023-004038-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 640,
+          "path": "art/illustration/people-heirs-640.webp",
+          "bytes": 51052
+        },
+        {
+          "width": 1280,
+          "path": "art/illustration/people-heirs-1280.webp",
+          "bytes": 140906
+        }
+      ],
+      "aiGenerated": true
+    },
+    {
       "briefId": "people-unhomed",
       "provider": "gemini",
       "model": "gemini-nano-banana-2.1",
@@ -9670,6 +9847,36 @@
         "width": 1788,
         "height": 816
       },
+      "aiGenerated": true
+    },
+    {
+      "briefId": "speaker-continuance",
+      "provider": "gemini",
+      "model": "gemini-nano-banana-2.1",
+      "prompt": "A painted science-fiction character portrait for a strategy game. Head and shoulders, three-quarter view, looking just past the viewer. Grounded and believable: practical clothing and equipment with real materials and wear; any insignia or badges are plain geometric shapes. One warm key light from the side and a thin cool cyan rim light; a deep navy-black background with a faint, softly blurred field of stars. Muted palette, rich shadows, fine painterly brushwork, calm and observant mood.\n\nSubject: First Lathe, the oldest of the heirs still running: one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, with fine tool-arms folded beneath; very old, its plates mismatched from many repairs, several lenses dark, patient and still.\n\nDo not include: text, letters, numbers, logos, signatures, watermarks, frames, borders, black letterbox bars, user-interface elements, cartoon or anime style, glossy plastic skin, fantasy armour, extra fingers.",
+      "aspect": "2:3",
+      "createdAt": "2026-10-23T00:42:01.208Z",
+      "id": "speaker-continuance",
+      "series": "portrait",
+      "approvedAt": "2026-10-23T00:48:55.647Z",
+      "candidate": "art/out/speaker-continuance/20261023-004038-gemini-nano-banana-2.1-2.jpg",
+      "files": [
+        {
+          "width": 128,
+          "path": "art/portrait/speaker-continuance-128.webp",
+          "bytes": 4896
+        },
+        {
+          "width": 384,
+          "path": "art/portrait/speaker-continuance-384.webp",
+          "bytes": 29170
+        },
+        {
+          "width": 768,
+          "path": "art/portrait/speaker-continuance-768.webp",
+          "bytes": 77270
+        }
+      ],
       "aiGenerated": true
     },
     {

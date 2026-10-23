@@ -41,6 +41,11 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
     'In the architecture of the Drifters, an invented alien people who live in a giant planet’s air: buoyant ' +
     'structures that float, rounded gas-filled pods of pale woven membrane tethered together by long cables, ' +
     'with slatted vanes for steering and soft violet lights; light, airy and slowly turning.',
+  // M5_UNKNOWN.md §27: written now, painted when the heirs can be played.
+  forge:
+    'In the architecture of the machine heirs, invented machines: low, precise workshops cut into bare rock, ' +
+    'terraced and squared, of grey metal and pale ceramic, with rails and gantries between them, furnaces glowing ' +
+    'a soft lime green through narrow slots, no windows meant for eyes; orderly, efficient and very old.',
   // M5_UNKNOWN.md §25: written now, painted when the Unhomed can be played.
   hearth:
     'In the architecture of the Unhomed, an invented alien people who lived for centuries in ark ships: homes ' +
@@ -50,7 +55,7 @@ export const ARCHITECTURE: Record<ArchitectureId, string> = {
 };
 
 /** The architectures whose buildings are painted: the aliens' wait until they can be played (§24.10, §25.9). */
-type Painted = Exclude<ArchitectureId, 'dusk' | 'drift' | 'hearth'>;
+type Painted = Exclude<ArchitectureId, 'dusk' | 'drift' | 'hearth' | 'forge'>;
 
 /**
  * The Duskfolk (M3_NEIGHBOURS.md §24), an invented people, written once and put into every brief
@@ -83,6 +88,16 @@ const UNHOMED =
   'a long narrow face with no visible nose, large dark eyes made for a dim orange sun, long four-fingered hands, ' +
   'and in place of hair a crown of soft, fine filaments that glow faintly orange like embers; wrapped in many ' +
   'layers of patched, faded ark-cloth in rust, ochre and soot-grey against the cold';
+
+/**
+ * The machine heirs (M5_UNKNOWN.md §27.1), invented machines, written once for every brief that shows
+ * them. Fiction, and like no other work's robots.
+ */
+const HEIRS =
+  'one of the heirs, invented self-copying machines left running by a vanished people: not humanoid, a long ' +
+  'low body of worn grey metal and pale cracked ceramic plates on many jointed limbs, with in place of a face a ' +
+  'tight cluster of round glass lenses of different sizes glowing a faint lime green; old, patiently repaired, ' +
+  'with fine tool-arms folded beneath';
 
 const FIRST: ArtBrief[] = [
   // The style test: the same four subjects from both services, so the owner can choose a direction
@@ -715,7 +730,51 @@ export const BRIEFS: ArtBrief[] = [
   ...drifters(),
   ...leaders(),
   ...unhomed(),
+  ...heirs(),
 ];
+
+/** Increment 59's pictures (M5_UNKNOWN.md §27.5): the Continuance's envoy, speaker and people, and four leaders' faces. */
+function heirs(): ArtBrief[] {
+  return [
+    {
+      id: 'advisor-heirs-envoy',
+      series: 'portrait',
+      subject: `Exact Measure, which negotiates for the Continuance: ${HEIRS}; its lens cluster turned toward the viewer, one lens brighter, a narrow band of polished metal across its front; precise, attentive.`,
+      purpose: 'The Continuance’s Envoy, on the diplomacy screen (M5, fiction).',
+    },
+    {
+      id: 'speaker-continuance',
+      series: 'portrait',
+      subject: `First Lathe, the oldest of the heirs still running: ${HEIRS}; very old, its plates mismatched from many repairs, several lenses dark, patient and still.`,
+      purpose: 'The Continuance’s speaker, on the data page (M5, fiction).',
+    },
+    {
+      id: 'people-heirs',
+      series: 'illustration',
+      subject:
+        'On an airless grey rocky world under a black sky, beside a small, faint, bluish-white star: a vast quiet ' +
+        'workshop carved into the rock, terraces of machine shops and furnaces glowing a soft lime green, where many ' +
+        'low, many-limbed machines of worn grey metal and pale ceramic, each with a cluster of glowing lenses for a ' +
+        'face, build copies of themselves from ore carried in on rails. Orderly, patient and very old. Invented ' +
+        'machines of a vanished people, like no other story’s robots.',
+      purpose: 'The heirs at the Forge, on the data page (M5, fiction).',
+    },
+    ...[
+      ['1', 'compact, its plates freshly made and bright, three large lenses; quick, curious.'],
+      ['2', 'heavy, broad, with a thick armoured front and two great lenses; steady, guarded.'],
+      ['3', 'slender, long-necked, a ring of small lenses glowing evenly; careful, exact.'],
+      [
+        '4',
+        'older, the plates along one side darkened by heat, one lens replaced with an amber one; steady, unhurried.',
+      ],
+    ].map(([n, look]) => ({
+      id: `leader-continuance-${n}`,
+      series: 'portrait' as const,
+      subject: `${HEIRS}; ${look}`,
+      purpose: "A leader's face (M5, fiction): continuance.",
+    })),
+  ];
+}
 
 /** Increment 57's pictures (M5_UNKNOWN.md §25.7): the arks, Arcturus's death, the Hearth's envoy, speaker and people, and four leaders' faces. */
 function unhomed(): ArtBrief[] {

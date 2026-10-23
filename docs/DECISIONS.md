@@ -32,7 +32,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-24 | Which planet each capital is on | Decided 2026-10-19 | Earth, **Tau Ceti e** (disputed) and **Wolf 1061 c** |
 | D-25 | The 3D system view: when, at what scale, with what look | Decided 2026-10-19 | in M1 as increment 7; compressed and labelled "not to scale"; Reborn's procedural shaders |
 | D-26 | Visual direction | Decided 2026-10-19 (owner's direction) | **Control's console**: a luminous, animated, installable game that does not look like a web page; see [VISUAL_DIRECTION.md](design/VISUAL_DIRECTION.md) |
-| D-27 | How much may be spent on generated art without asking | Decided 2026-10-22 | **about $50 in all** (raised from $5, then $15, then $25, then $35, by D-57); about $32.55 spent by 22 October 2026 (pictures and music) |
+| D-27 | How much may be spent on generated art without asking | Decided 2026-10-22 | **about $50 in all** (raised from $5, then $15, then $25, then $35, by D-57); about $33.20 spent by 23 October 2026 (pictures and music) |
 | D-28 | The colony view: its look, camera, how powers differ, where it lives | Decided 2026-10-20 | a living diorama from the art pipeline, seen from a ridge, on a screen of its own, with **a set of buildings for each power**; see [D-28](#d-28--the-colony-view--decided) and [COLONY_VIEW.md](design/COLONY_VIEW.md) |
 | D-29 | The "Illustration" labels on pictures | Decided 2026-10-20 (owner's direction) | **removed everywhere**; the AI disclosure moves to the codex's credits and stays in the art records; *Fiction* labels stay; see [D-29](#d-29--the-illustration-labels--decided) |
 | D-30 | What comes after the colony view | Decided 2026-10-20 (owner's choices) | more varied buildings first, then **M2 "Worlds"** with rivals that play, events, leaders and advisors and a guided opening; music needs the owner; see [D-30](#d-30--what-comes-next--decided) |
@@ -71,7 +71,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-69 | Who wins by the Assembly's vote ([below](#d-69--who-wins-by-the-assemblys-vote--decided-owners-choice)) | Decided 2026-10-22 (owner's choice) | **war plans for the rivals (H), fear at the deciding vote (K), tiring of a leader (C), and a less-loved Cooperative**, built as increment 51: three different winners in eight games (the target was four), none by the vote; every part has a switch |
 | D-13, D-70 – D-78 | The M5 design: the Absent, relic sites, the keys, guardians, leaders, espionage, events, the dying star, the species, Pyre | Assumed 2026-10-22 (owner's leave) | **as recommended**, open to the owner to overrule; see [Round 8](#round-8-the-unknown-assumed-22-october-2026) and [M5_UNKNOWN.md](design/M5_UNKNOWN.md) |
 | D-18 | Free or paid, open source or not, Steam or the web only | Open | the owner's; see [Round 2](#round-2-needed-later) |
-| D-79 | The Co-op's lead in long games ([below](#d-79--the-co-ops-lead-in-long-games--open-the-owners)) | Open | the owner's: measured in increment 58, nothing tried on the Co-op alone moves it; A, leave it for M6's longer campaigns, recommended |
+| D-79 | The Co-op's lead in long games ([below](#d-79--the-co-ops-lead-in-long-games--assumed-owners-leave)) | Assumed 2026-10-23 (owner's leave) | **A, leave the Co-op as it is for M6's longer campaigns**, as recommended; overrule any time |
 
 ## Round 1: decided 19 October 2026
 
@@ -765,7 +765,7 @@ owner to overrule at any time. None needs money beyond the allowance already giv
 **Left to the owner: D-18** (free or paid, open source or not, Steam or the web only). SCOPE makes
 it part of M5's *done*, and money and platforms are the owner's; nothing in M5 waits on it.
 
-### D-79 · The Co-op's lead in long games — **Open (the owner's)**
+### D-79 · The Co-op's lead in long games — **Assumed (owner's leave)**
 
 D-69's target (at least four different winners in the eight headless games, none winning more than
 three) is still not met: the Frontier Co-op wins six or seven, nearly always on score at turn 250. It
@@ -800,6 +800,11 @@ have turned every power against a player who leads).
   settles), measured until it wins at most three of eight.
 - **D. Drop D-69's target:** one power that plays the long game best may win most long games.
 
+**Assumed on 23 October 2026: A**, on the owner's renewed leave of that day (the same words as Round
+8's). The Co-op is left as it is; the machine heirs (increment 59), whose home lies 23 light-years
+from the Co-op's and nearer it than any other capital, are its first new neighbour. To overrule,
+choose B, C or D and the next increment builds it.
+
 ## Made without waiting
 
 Small engineering choices, easy to reverse. Overrule any of them.
@@ -815,6 +820,8 @@ Small engineering choices, easy to reverse. Overrule any of them.
 | 2026-10-22 | Increment 57 as M5_UNKNOWN.md §25 (D-76, D-77 in part): the Unhomed of Arcturus (fiction; the star is real) arrive at CE Boötis between turns 110 and 150 and ask for a world; give, take in or refuse; Arcturus dies 12 turns later (+40 research for all); the **Last Hearth** joins as a rival in mid-game; its names, looks, colour (coral, a cross) and character as §25.1 and §25.5; it comes knowing what **more than half** of the powers know; the rivals answer 2 to 6 turns after the arks come | each number in `RULES.unhomed`, listed under *Increment 57* |
 | 2026-10-22 | Increment 57's pictures (M5_UNKNOWN.md §25.7): 20 candidates, about **$1.00**, so about **$32.55** of the owner's $50 spent in all; the arks' picture cropped of a thin black band rather than rolled a third time | within D-27; the lettered sheets went to the owner to overrule |
 | 2026-10-23 | Increment 58 as M5_UNKNOWN.md §26, cut down by what was measured: **a scrap order** for any ship (the player's and the rivals'), and **rivals in debt and still losing scrap a ship a turn** (a warship beyond their wants in peace, else an idle civil ship); the deepest debt in the headless games fell from −518 to −156. The wariness of a leader, the balance of power at 115% and pacts given notice were built, measured, and taken out; D-79 raised for the owner | `RULES` unchanged; the order in `orders.ts`, the rivals' rule in `ai.ts` under *Cutting costs* |
+| 2026-10-23 | Increment 59 as M5_UNKNOWN.md §27 (D-77): **the Continuance**, the machine heirs, starts every game with rivals as a sixth power (not yet playable); a machine species eats nothing and puts half its industry into copies of itself while it has room (a tenth of a million for every 5); its excavations go half again as fast, and it starts with Relic studies and the two nearest sites; **the Forge**, a fictional world at the real white dwarf GJ 3306, is in every game; relic sites and keys stay placed from the five older capitals, but no anomaly lies at GJ 3306 now. The long games: two winners, not three (D-79) | each has its place, listed under *Increment 59* in M5_UNKNOWN.md; take `continuance` out of `FACTION_IDS` to play without them |
+| 2026-10-23 | Increment 59's pictures (M5_UNKNOWN.md §27.5): 13 candidates, about **$0.65**, so about **$33.20** of the owner's $50 spent in all; the provider refused three, and the fourth leader's wording was softened once; chosen the envoy A, the speaker A (its only one), the heirs at work B, the leaders B, A, A and B | within D-27; the lettered sheets went to the owner to overrule |
 | 2026-10-22 | Increment 53 as M5_UNKNOWN.md §21 (D-71), with what the building found: the Answer **begun by order** for 10 turns rather than built; **each key at the site nearest one of the five capitals** (spread to the edges, two were found in eight games); chapters 100, 200 and 300; Relic studies shows sites within 10 light-years, Old charts 20; **a road for the rivals** to a site they cannot reach; a power with three keys goes to war for the rest; the score's `peoplePer`, `key` and `chapter` switches, left neutral; state version 27. **No game won by the keys, and D-69's target still not met:** the Co-op won seven of eight | each has a switch, listed under *Increment 53* in M5_UNKNOWN.md; the rivals' long campaigns and the Co-op's lead are left for M6 |
 | 2026-10-22 | **Fear at the deciding vote mended** (increment 51's rule): it now applies once a power's votes as they lean are 60% of all, not only past two thirds, since the roll grows before the count (a vote of 87 in 131 became 88 in 132 and won the game on turn 70) | a bug in the rule as built; `RULES.assembly.fearFromPercent` |
 | 2026-10-22 | Increment 53's picture (M5_UNKNOWN.md §21.7): 2 candidates, about **$0.10**, so about **$28.25** of the owner's $50 spent in all; chosen the end by the keys A | within D-27; the lettered sheet went to the owner to overrule |

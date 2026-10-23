@@ -637,6 +637,40 @@ function order(bodies: Body[]): Body[] {
   return top.flatMap((b) => [b, ...bodies.filter((m) => m.parent === b.id)]);
 }
 
+/**
+ * Worlds the game keeps in every game, whatever the seed (M5_UNKNOWN.md §27.1): the Forge of the machine
+ * heirs at GJ 3306, a real white dwarf with no planet known. All of it is fiction.
+ */
+const KEPT: Partial<Record<SystemId, { name: string; orbitMilliAu: number; massCenti: number; radiusCenti: number }>> =
+  {
+    'gj-3306': { name: 'The Forge', orbitMilliAu: 9, massCenti: 70, radiusCenti: 90 },
+  };
+
+/** A kept world (§27.1), airless and rich in metals. */
+function keptWorld(system: WorldSystem, h: Host): Body | null {
+  const k = KEPT[system.id];
+  if (!k) return null;
+  return finish(
+    {
+      id: `${system.id}:forge`,
+      systemId: system.id,
+      name: k.name,
+      star: h.star.id,
+      origin: 'generated',
+      kind: 'rocky',
+      orbitMilliAu: k.orbitMilliAu,
+      massCenti: k.massCenti,
+      radiusCenti: k.radiusCenti,
+      atmosphere: 'none',
+      water: 'none',
+      riches: { metals: 2, volatiles: 0, fuel: 1 },
+      facts: FICTION,
+    },
+    h,
+    equilibriumK(h.luminosity, k.orbitMilliAu),
+  );
+}
+
 /** Every body of one system for a game's seed. */
 export function generateSystemBodies(seed: number, system: WorldSystem): Body[] {
   if (system.id === 'sol') return order(solBodies(seed, system));
@@ -644,8 +678,10 @@ export function generateSystemBodies(seed: number, system: WorldSystem): Body[] 
   const hosts = new Map(system.sky.stars.map((s) => [s.id, host(s)]));
   const known = system.sky.planets.map((p) => knownPlanet(seed, system, p, hosts.get(p.hostId) ?? primary));
   const belts = system.sky.belts.map((b) => observedBelt(system, primary, b));
+  const kept = keptWorld(system, primary);
+  // The generated worlds are as they would be without it, so no name or orbit changes in any seed.
   const made = generate(seed, system, primary, known);
-  const planets = [...known, ...made];
+  const planets = [...known, ...(kept ? [kept] : []), ...made];
   const moons = planets.flatMap((p) => moonsOf(seed, p, hosts.get(p.star) ?? primary));
   return order([...planets, ...belts, ...moons]);
 }

@@ -61,7 +61,7 @@ test('rivals: unseen at first; the Watch sees a Wake survey ship reach Sol, on t
   let empire = await openEmpire(page, project);
   await press(empire.getByRole('tab', { name: 'Powers 1' }), project);
   await expect(empire.locator('.standings')).toContainText(
-    'Not yet seen: the Frontier Co-op, the Hollow Wake, the Dusk Concord and the Drift Moot.',
+    'Not yet seen: the Frontier Co-op, the Hollow Wake, the Dusk Concord, the Drift Moot and the Continuance.',
   );
   await closeEmpire(page, project);
 
@@ -89,7 +89,7 @@ test('rivals: unseen at first; the Watch sees a Wake survey ship reach Sol, on t
   await expect(rows.nth(0)).toContainText('known');
   await expect(rows.nth(1)).toContainText(/ahead of us|level|behind/);
   await expect(empire.locator('.standings')).toContainText(
-    'Not yet seen: the Frontier Co-op, the Dusk Concord and the Drift Moot.',
+    'Not yet seen: the Frontier Co-op, the Dusk Concord, the Drift Moot and the Continuance.',
   );
 });
 

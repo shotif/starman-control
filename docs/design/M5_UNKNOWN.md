@@ -40,6 +40,7 @@ decision on Steam is taken.* The second half of that is the owner's alone (D-18,
 24. [Increment 56 in detail: leaders](#24-increment-56-in-detail-leaders-written-before-building-it)
 25. [Increment 57 in detail: the dying star and the unhomed](#25-increment-57-in-detail-the-dying-star-and-the-unhomed-written-before-building-it)
 26. [Increment 58 in detail: the balance of power](#26-increment-58-in-detail-the-balance-of-power-written-before-building-it)
+27. [Increment 59 in detail: the machine heirs](#27-increment-59-in-detail-the-machine-heirs-written-before-building-it)
 
 ## 1. Where M5 starts
 
@@ -1269,3 +1270,133 @@ the first turn's report was no longer quiet and a browser journey failed in CI (
 | --- | --- |
 | The rivals' cost-cutting | the *Cutting costs* block in `aiOrders` (`src/sim/ai.ts`); delete it to turn it off |
 | The scrap order | `scrap` in `src/sim/orders.ts`, and `Scrap` in `src/ui/map/play.tsx` |
+
+## 27. Increment 59 in detail: the machine heirs (written before building it)
+
+**Goals.** §12 (D-77, option A): the machine heirs, self-copying machines the Absent made and left
+running, as a species and a power that starts every game with rivals, played by the rivals' rules
+and designed so it can be played later (D-08). Nothing in the rules is theirs alone: a species may be
+a **machine** (it eats nothing and grows by building copies of itself), and a faction's traits say
+the rest. **Out of scope:** playing them (their buildings, landscapes, advisors' faces and music wait,
+as the Concord's did); ships of their own look; the under-ice thinkers and the chorus (after M5).
+
+### 27.1 Names, home and look (fiction, and what is real)
+
+- **GJ 3306** (EGGR 41) is real: a cool white dwarf 30.7 light-years from Sol, in the shell, its
+  nearest neighbours LP 655-48 (2.2 ly), GJ 183 (3.8 ly) and GJ 3325 (5.6 ly). No planet of it is
+  known. **The Forge**, the airless rocky world the heirs keep there, is the game's fiction, in every
+  game, and labelled so. GJ 3306 is 23 ly from the Co-op's capital, the nearest of the five, and
+  farther than 18 ly from all of them, so no relic site, key or anomaly moves.
+- **The heirs** (the species): machines of grey metal and pale ceramic, many-limbed, patient, with
+  a cluster of lenses for a face; they copy themselves from rock and metal. Fiction, and like no
+  other work's machines.
+- **The Continuance** (*the Continuance*): their power, which holds that it carries on the work of
+  its makers. Lime (`#d4e157`), and a pentagon beside the colour wherever it is shown (a seventh
+  shape).
+- **Their names** are designations, translated: the envoy *Exact Measure, which negotiates*, the
+  speaker *First Lathe, the oldest running*; the leaders' pairs such as *Ninth Spindle*.
+
+### 27.2 A machine species
+
+- **Habitability:** any rocky world, super-Earth, moon or dwarf, comfortable whatever its air, water
+  or cold; hot worlds cost 1, scorching 2, dense or toxic air 1, high gravity 1, oceans 1 (they
+  corrode). Never giants.
+- **They eat nothing:** a machine colony's food eaten is 0, it is never hungry, and its farms are
+  worth nothing to it.
+- **They grow by building copies:** while a machine colony has room, **half its industry** goes into
+  copies (*building copies of ourselves*, among the industry's parts) and it grows **a tenth of a
+  million for every 5** so spent (at least a tenth); approval still stops growth in unrest or revolt.
+  With no room, all its industry goes to its queue.
+
+### 27.3 Their character as a rival
+
+- **Traits:** *Tireless* (machines, §27.2, from the species) and *Heirs of the Absent*: their
+  excavations progress **half again** as fast, and they begin with **Relic studies** known and the
+  **two relic sites nearest their capital** surveyed.
+- **As a rival:** produce at the capital and colonies; settle the nearest world; construction and
+  propulsion; standard taxes; lanes from their colonies too; a labour drive; Open frontier, Lane
+  network, Industrial worlds; the Lanewright Foundry; a half of research to excavations, and they
+  study a chapter rather than take; watch one power; leaders a commander, a scholar, a steward;
+  they refuse the arks of the Unhomed.
+- **War:** a conqueror for a claim or the weak; lawful (they keep what they agree, it is efficient);
+  accept peace after 10 turns, offer it after 20.
+- **Regard:** gifts count for little (a point for every 20 credits) and memories fade fast (a point
+  every 2 turns): they weigh usefulness, not feeling. They ask 20 for open lanes, 30 for shared
+  research, 0 for a border, 0 for trade, 10 for passage, never protection, 0 for a non-aggression
+  pact, 60 for an alliance. The lawful powers think 5 less of them (*Machines that answer to no
+  one*); the Concord 5 less again (*Made by the ones who left*).
+
+### 27.4 In the game
+
+- **Every new game with rivals has six powers at the start** (seven with the Hearth later): the
+  Continuance plays as a rival, never offered to lead; a game saved before keeps its powers.
+- **Placements stay with the five older capitals:** relic sites, the keys (still five) and the
+  anomalies are placed from the five, as before; the home webs are worked out with the heirs too
+  (a web of their own lanes, as the Concord's, which takes nothing from anyone's).
+- **On the screen** as every power: the map in lime with its pentagon, the diplomacy screen with its
+  envoy, the codex with its speaker and its people, the new game's list of rivals. A machine colony's
+  panel says *eats nothing* for its food and names the copies among its industry.
+
+### 27.5 Pictures (D-57)
+
+The envoy's and the speaker's faces, the heirs at work for the codex, and four leaders' faces:
+**7 pictures, 14 candidates, about $0.70**, sent as lettered sheets. Their buildings (for the colony
+view) wait until they can be played; their architecture is written now.
+
+### 27.6 State
+
+The faction `continuance` and the species `heirs`; no new field. **State version 30** still: a save
+from before reads as it was, without them.
+
+### 27.7 Tests
+
+- **Unit** (`heirs.test.ts`): the Forge in every game; their habitability; eating nothing; growing
+  by copies (industry spent, people gained, none without room); the excavations' pace; the two sites
+  and Relic studies at the start; no relic site, key or anomaly moved; the Continuance as a rival for
+  100 turns with the game sound; the human powers' starts unchanged.
+- **Journey** (`heirs.spec.ts`, phone, tablet and desktop): the new game says the Continuance plays
+  as a rival; its card in the codex; the Forge's panel with *Fiction*.
+- **The headless games** with six powers at the start: M3's and M4's targets kept, turns within 200
+  ms and saves within 200 KB.
+
+### As built (23 October 2026)
+
+- **The Forge as §27.1:** in every game, 0.009 au from GJ 3306, which warms it to about 321 K: a
+  warm, airless, dry rocky world, metal-rich, comfortable for the heirs and harsh for humans. It is
+  added beside the generated worlds, which stay as they were in every seed.
+- **Machines as §27.2.** The industry's parts name *building copies of ourselves*; industry bought
+  with credits goes to the queue, not into copies. A machine colony's panel says *eats nothing* for
+  its food.
+- **The heirs of the Absent as §27.3,** their rival's character as written there.
+- **Placements (§27.4).** The relic sites and the keys are placed from the five older capitals, and
+  the test pins them as they were before the heirs for two seeds. **One change:** no anomaly lies at
+  a capital, so GJ 3306 no longer holds one; of the two seeds checked, seed 7 had one there (ice
+  vents). The Continuance's own web is 6 systems and 5 lanes, and takes no lane from anyone's.
+- **Pictures (§27.5):** 13 candidates made, about **$0.65**. The provider refused three for its content
+  rules (one of the speaker's, both of the fourth leader's); the fourth leader's wording was softened
+  once (*older, the plates along one side darkened by heat, one lens replaced with an amber one*), and
+  the speaker kept its one candidate. Chosen the envoy A, the speaker A, the heirs at work B, the
+  leaders' faces B, A, A and B. The lettered sheets went to the owner to overrule.
+- **Tests:** `heirs.test.ts` (11) and `heirs.spec.ts` (phone, tablet and desktop). The journeys that
+  name the powers (the new game, diplomacy, the rivals' list, the codex's seven home webs, the living
+  map's 38 fields and 32 sparks) now count the Continuance.
+
+**Numbers** (M2_BALANCE.md, six powers from the start): by turn 100 the Continuance is mid-table, about
+11 colonies, 69 million and a score of 365 on average (the Concord 391, the Moot 297); M3's targets
+are still met. To turn 250, **two different winners, not three**: the Co-op seven and the Wake one.
+Two close games changed hands with a sixth power on the map (seed 42 from the Authority to the Co-op,
+seed 4 from the Moot to the Wake); seed 5 is won by the Co-op through the Assembly on turn 90, as it
+was before. This is D-79's question (the Co-op's lead in long games, assumed left for M6), not one the
+heirs answer. The slowest turn took 176 ms (it was 134) and the largest save 168.0 KB (148.8), both
+within budget; the deepest debt was −156, as before, and the longest 54 turns.
+
+**Reversing it:**
+
+| To change | Where |
+| --- | --- |
+| The Continuance in new games | `FACTION_IDS` in `src/content/factions.ts`: take `continuance` out (a save that has them keeps them) |
+| The machine rule (eats nothing, grows by copies) | `machine: true` on `SPECIES.heirs` (`src/content/species.ts`); its numbers in `RULES.machines` |
+| Their faster digging, and what they know at the start | the *Heirs of the Absent* trait and `knows` on their faction |
+| The Forge | `KEPT` in `src/sim/bodies.ts` |
+| Their character as a rival | `PERSONALITIES.continuance` in `src/sim/ai.ts`; the others' regard of them in `factions.ts` |
+| No anomaly at their capital | `CAPITALS` in `src/sim/anomalies.ts` (from `STARTING_FACTIONS`; `PLACING_FACTIONS` would put GJ 3306's back) |

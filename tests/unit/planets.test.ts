@@ -223,8 +223,9 @@ describe('generated worlds', () => {
     for (const seed of [1, 2, 3, 4]) {
       for (const s of world.systems) {
         const cls = starClass(s.sky.stars[0]?.spectralType ?? '');
+        // The Forge, a kept world (M5_UNKNOWN.md §27.1), is not one of the generated.
         const made = bodiesOf(world, seed, s.id).filter(
-          (b) => b.origin === 'generated' && !b.parent && b.kind !== 'belt',
+          (b) => b.origin === 'generated' && !b.parent && b.kind !== 'belt' && !b.id.endsWith(':forge'),
         );
         if (s.id === 'sol') expect(made).toHaveLength(0);
         else if (cls === 'M') expect(made.length, s.id).toBeLessThanOrEqual(4);
@@ -265,5 +266,6 @@ describe('generated worlds', () => {
 });
 
 const PINNED = '9f4f8318';
-const SHELL_BODIES = 474;
-const PINNED_SHELL = 'fd9b5f5e';
+// One more since M5 (M5_UNKNOWN.md §27.1): the Forge, the heirs' kept world at GJ 3306, in every game.
+const SHELL_BODIES = 475;
+const PINNED_SHELL = 'eaf98a23';

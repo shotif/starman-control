@@ -81,9 +81,10 @@ describe('districts (§2)', () => {
       expect(c.districts.map((d) => d.zone)).toEqual(RULES.districts.capitalStart);
       expect(workedSlots(c).size).toBe(8);
       expect(idleMillions(c)).toBe(2);
+      // Machines eat nothing (M5_UNKNOWN.md §27.2).
       expect(foodOf(world, g, c)).toEqual({
         made: { total: 6, parts: [{ label: 'from 2 farms', value: 6 }] },
-        eaten: 5,
+        eaten: f === 'continuance' ? 0 : 5,
       });
       // 2 from its lab, 2 from its 2 scholars and 3 of its own (M2B_SCIENCE.md §16).
       expect(researchOf(world, g, f).total).toBe(7);

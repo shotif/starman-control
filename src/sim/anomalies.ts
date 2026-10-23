@@ -10,6 +10,7 @@ import { effects, grantResearch, grantTechProgress } from './research.ts';
 import { rng } from './rng.ts';
 import { type GameState, hasSurveyed, type PowerState, powerOf, type ShipState } from './state.ts';
 
+// Never at a capital of a power that starts, the heirs' among them (M5_UNKNOWN.md §27.4).
 const CAPITALS = new Set<SystemId>(STARTING_FACTIONS.map((f) => f.capital.systemId));
 
 /** About one system in six holds an anomaly, never a capital; which, the seed decides. */

@@ -13,8 +13,8 @@ test.describe('the codex', () => {
     await expect(page.getByRole('heading', { name: /Codex/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /How the game works out/ })).toBeVisible();
     await expect(page.locator('.count')).toHaveText('356 of 356');
-    // The five that start, and the Last Hearth, which arrives in mid-game (M5_UNKNOWN.md §25).
-    await expect(page.locator('.web-card')).toHaveCount(6);
+    // The six that start, and the Last Hearth, which arrives in mid-game (M5_UNKNOWN.md §25, §27).
+    await expect(page.locator('.web-card')).toHaveCount(7);
     await expect(page.locator('.web-card').filter({ hasText: 'Last Hearth' })).toContainText('Arrives in mid-game');
   });
 
@@ -73,7 +73,7 @@ test.describe('the codex', () => {
   }, info) => {
     await page.goto('./#/codex');
     await press(page.getByLabel('Home webs only'), info.project.name);
-    await expect(page.locator('.count')).toHaveText('32 of 356');
+    await expect(page.locator('.count')).toHaveText('38 of 356');
     await press(page.getByRole('button', { name: 'Show Tau Ceti' }), info.project.name);
     const detail = isDesktop(info.project.name) ? page.locator('.inspector') : page.getByRole('dialog');
     await expect(detail.getByRole('heading', { name: 'Tau Ceti' })).toBeVisible();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FACTION_IDS, type FactionId, PLAYABLE_IDS } from '../../src/content/factions.ts';
+import { FACTION_IDS, FACTIONS, type FactionId, PLAYABLE_IDS } from '../../src/content/factions.ts';
 import { shipName } from '../../src/content/ships.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { blindJumpTurns, findRoute, jumpPoints, laneCost, planJourney, previewMove } from '../../src/sim/movement.ts';
@@ -27,7 +27,9 @@ describe('a new game', () => {
       const g = start(f);
       expect(g.ships.map((s) => s.type)).toEqual(['survey', 'survey', 'colony', 'outpost']);
       expect(g.ships.every((s) => s.at === powerOf(g, f).capital && s.owner === f)).toBe(true);
-      expect(powerOf(g, f).surveyed).toEqual([powerOf(g, f).capital]);
+      // The heirs know two relic sites from the start (M5_UNKNOWN.md §27.3).
+      expect(powerOf(g, f).surveyed).toContain(powerOf(g, f).capital);
+      expect(powerOf(g, f).surveyed).toHaveLength(1 + (FACTIONS[f].knows?.sites ?? 0));
       expect(stateProblems(world, g)).toEqual([]);
       expect(shapeProblems(g)).toEqual([]);
     }

@@ -173,6 +173,23 @@ export const PERSONALITIES: Record<FactionId, Personality> = {
     arks: 'give',
     broker: true,
   },
+  // The machine heirs (M5_UNKNOWN.md §27.3): they produce, settle near and dig hard.
+  continuance: {
+    capital: 'produce',
+    colonies: 'produce',
+    settles: 'nearest',
+    fields: ['construction', 'propulsion'],
+    taxes: 'standard',
+    laneBuilder: true,
+    edict: 'labour-drive',
+    doctrines: ['open-frontier', 'lane-network', 'industrial-worlds'],
+    greatWork: 'lanewright-foundry',
+    digs: 50,
+    studies: true,
+    watches: 1,
+    leaders: ['commander', 'scholar', 'steward'],
+    arks: 'refuse',
+  },
   // The Unhomed's Last Hearth (M5_UNKNOWN.md §25.5): few and stubborn, growing and settling near.
   'last-hearth': {
     capital: 'grow',

@@ -452,6 +452,11 @@ export const RULES = {
       vigilant: 2,
     },
   },
+  /** The machine heirs (M5_UNKNOWN.md §27.2): the share of a machine colony's industry that builds copies while it has room, and the industry for each tenth of a million. */
+  machines: {
+    copyPercent: 50,
+    industryPerTenth: 5,
+  },
   /** The dying star and the Unhomed (M5_UNKNOWN.md §25). */
   unhomed: {
     /** The arks arrive on a turn from `from` to `to`, by the seed, at this system; their star dies so many turns after. */

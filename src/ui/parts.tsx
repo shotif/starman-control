@@ -38,6 +38,7 @@ export function FactionMark({ faction, size = 12 }: { faction: FactionId; size?:
       {f.mark === 'triangle' && <polygon points="6,1 11.2,10.6 0.8,10.6" fill={f.colour} />}
       {f.mark === 'diamond' && <polygon points="6,0.8 11.2,6 6,11.2 0.8,6" fill={f.colour} />}
       {f.mark === 'hexagon' && <polygon points="11.2,6 8.6,10.5 3.4,10.5 0.8,6 3.4,1.5 8.6,1.5" fill={f.colour} />}
+      {f.mark === 'pentagon' && <polygon points="6,0.8 11.2,4.7 9.2,10.9 2.8,10.9 0.8,4.7" fill={f.colour} />}
       {f.mark === 'cross' && (
         <polygon
           points="4.2,0.8 7.8,0.8 7.8,4.2 11.2,4.2 11.2,7.8 7.8,7.8 7.8,11.2 4.2,11.2 4.2,7.8 0.8,7.8 0.8,4.2 4.2,4.2"
@@ -62,8 +63,9 @@ export function FactionTag({ faction }: { faction: FactionId }) {
  * A power's emblem, drawn on its mark (FIRST_IMPRESSION.md §4; D-08, colour always with shape):
  * the Authority's square within a square, crossed by a lane; the Cooperative's circle of three
  * rising shoots; the Wake's triangle trailing a broken wake; the Concord's diamond, a sun low on a
- * horizon within it; the Moot's hexagon, a cloud band crossing it and a drifter above; the Hearth's
- * cross, an ember kept at its heart. All fiction.
+ * horizon within it; the Moot's hexagon, a cloud band crossing it and a drifter above; the
+ * Continuance's pentagon, a ring of lenses within it; the Hearth's cross, an ember kept at its heart.
+ * All fiction.
  */
 export function Emblem({ faction, size = 40 }: { faction: FactionId; size?: number }) {
   const f = FACTIONS[faction];
@@ -106,6 +108,13 @@ export function Emblem({ faction, size = 40 }: { faction: FactionId; size?: numb
             <path d="M45 24L34.5 42.2H13.5L3 24L13.5 5.8H34.5Z" />
             <path d="M9 30c6-3 10 3 15 0s9-3 15 0" />
             <ellipse cx="24" cy="18" rx="7" ry="4.5" fill="currentColor" />
+          </>
+        )}
+        {f.mark === 'pentagon' && (
+          <>
+            <path d="M24 3L44 17.5L36.4 41H11.6L4 17.5Z" />
+            <circle cx="24" cy="25" r="8" />
+            <circle cx="24" cy="25" r="3" fill="currentColor" />
           </>
         )}
         {f.mark === 'cross' && (

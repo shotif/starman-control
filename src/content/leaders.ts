@@ -224,6 +224,23 @@ export const LEADER_NAMES: Record<FactionId, { first: readonly string[]; second:
       'Calm',
     ],
   },
+  continuance: {
+    first: ['Second', 'Ninth', 'Exact', 'Patient', 'True', 'Long', 'Quiet', 'Even', 'Cold', 'Clear', 'Fine', 'Deep'],
+    second: [
+      'Lathe',
+      'Spindle',
+      'Measure',
+      'Index',
+      'Vector',
+      'Lattice',
+      'Anvil',
+      'Gauge',
+      'Bearing',
+      'Lens',
+      'Ledger',
+      'Coil',
+    ],
+  },
   'last-hearth': {
     first: ['Banked', 'Bright', 'Low', 'Kept', 'Patient', 'Warm', 'Small', 'Last', 'Steady', 'Glowing', 'Quiet', 'Old'],
     second: [

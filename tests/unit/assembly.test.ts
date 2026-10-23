@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { FACTION_IDS, type FactionId } from '../../src/content/factions.ts';
+import { FACTION_IDS as ALL_STARTING, type FactionId } from '../../src/content/factions.ts';
+
+/** The five older powers: these tests set up their votes and wars (the heirs, M5_UNKNOWN.md §27, are left out). */
+const FACTION_IDS = ALL_STARTING.filter((f) => f !== 'continuance');
+
 import { RULES } from '../../src/content/rules.ts';
 import { SKY } from '../../src/data/sky.ts';
 import { assemblyOrders, dealings } from '../../src/sim/ai.ts';

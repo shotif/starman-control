@@ -71,6 +71,8 @@ const BUILDERS: Record<FactionId, (ctx: ArtContext) => ShipArt> = {
   'hollow-wake': createPirateShip,
   'dusk-concord': createDuskShip,
   'drift-moot': createDriftShip,
+  // The heirs' ships are the Concord's long hulls until they have their own (M5_UNKNOWN.md §27).
+  continuance: createDuskShip,
   // The Hearth's patched ships are haulers rebuilt for war (M5_UNKNOWN.md §25), until they have their own.
   'last-hearth': createHaulerShip,
 };

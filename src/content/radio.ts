@@ -86,6 +86,20 @@ export const RADIO: Record<FactionId, RadioVoice> = {
       held: 'The descent is turned back, Control. {place} is the Moot’s still. {left} of us remain.',
     },
   },
+  continuance: {
+    landing: 'Landing array',
+    garrison: 'Defence array',
+    lines: {
+      landing: 'Control. Landing at {place}: {troops} units. Resistance expected. Proceeding.',
+      fighting: 'Opposition estimated at {garrison}. Losses within tolerance. Continuing.',
+      won: '{place} is held for the Continuance. {left} units remain. The work goes on.',
+      lost: 'Control. The landing at {place} has failed. Losses recorded. Revising.',
+      sighted: 'Control. Landing detected at {place}: the {enemy}, about {troops}. Defence array engaging.',
+      holding: 'The array holds, {garrison} units. Repairs continue between engagements.',
+      fell: 'Control. {place} is lost. The loss is recorded. It will be recovered.',
+      held: 'They have withdrawn, Control. {place} holds. {left} units remain. Resuming work.',
+    },
+  },
   'last-hearth': {
     landing: 'Warden of the landing',
     garrison: 'Warden of the hearth',

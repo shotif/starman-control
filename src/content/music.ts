@@ -38,6 +38,7 @@ export const MOOD_PIECES: Record<MusicMood, readonly MusicPiece[]> = {
   // None until the Duskfolk can be played and their colonies seen (M3_NEIGHBOURS.md §24.9).
   'colony-dusk': [],
   'colony-drift': [],
+  'colony-forge': [],
   'colony-hearth': [],
 };
 
@@ -51,6 +52,7 @@ export const SILENCE_SECONDS: Record<MusicMood, number> = {
   'colony-wake': 20,
   'colony-dusk': 20,
   'colony-drift': 20,
+  'colony-forge': 20,
   'colony-hearth': 20,
 };
 

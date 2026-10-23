@@ -18,7 +18,9 @@ import type { SystemId } from '../data/types.ts';
 import type { BattleLog } from './battle.ts';
 import { refreshYards } from './designs.ts';
 import { homeWebs } from './homeWeb.ts';
+import { relicSites } from './relics.ts';
 import type { ReportEvent } from './report.ts';
+import { learn } from './research.ts';
 import type { LaneId, World } from './world.ts';
 
 /** The version of the game state's shape. Raised, with a migration in save.ts, whenever it changes. */
@@ -743,6 +745,18 @@ export function newGame(world: World, setup: NewGameSetup): GameState {
   for (const p of state.powers)
     makeHolding(state, { ...capitalHolding(p.faction), governor: p.governNew ? 'balance' : null });
   for (const p of state.powers) for (const type of STARTING_FLEET) makeShip(state, p.faction, type, p.capital);
+  // What a power knows from the start (M5_UNKNOWN.md §27.3): the heirs' technologies, and the relic
+  // sites nearest their capital, surveyed.
+  for (const p of state.powers) {
+    const knows = FACTIONS[p.faction].knows;
+    if (!knows) continue;
+    for (const t of knows.techs) if (!p.researched.includes(t)) learn(p, t);
+    const near = relicSites(world, state.seed)
+      .map((x) => x.system)
+      .sort((a, b) => world.distanceDeci(p.capital, a) - world.distanceDeci(p.capital, b) || (a < b ? -1 : 1))
+      .slice(0, knows.sites);
+    p.surveyed = [...new Set([...p.surveyed, ...near])].sort();
+  }
   // Each yard's designs for the hulls every power can build from the start (M4_FLEETS.md §21.3).
   for (const p of state.powers) refreshYards(state, p);
   return state;

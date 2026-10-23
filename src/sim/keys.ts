@@ -2,7 +2,7 @@
 // seed, never saved), a key found with its site's third chapter, taken with its holding and lost with
 // it, and the Answer begun, kept up or stopped. Pure, in whole numbers.
 
-import { type FactionId, STARTING_FACTIONS } from '../content/factions.ts';
+import { type FactionId, PLACING_FACTIONS } from '../content/factions.ts';
 import { RULES } from '../content/rules.ts';
 import type { SystemId } from '../data/types.ts';
 import { digAt, relicSites } from './relics.ts';
@@ -31,7 +31,7 @@ export function keySites(world: World, seed: number): readonly SystemId[] {
   if (known) return known;
   const order = (id: SystemId) => rng(seed, 'key-site', id).int(0, 1_000_000_000);
   const sites = relicSites(world, seed).map((s) => s.system);
-  const capitals = STARTING_FACTIONS.map((f) => f.capital.systemId).filter((c) => world.hasSystem(c));
+  const capitals = PLACING_FACTIONS.map((f) => f.capital.systemId).filter((c) => world.hasSystem(c));
   const chosen: SystemId[] = [];
   for (const c of capitals) {
     if (chosen.length >= K.count) break;

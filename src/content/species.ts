@@ -5,7 +5,7 @@
 
 import type { Atmosphere, BodyKind, Gravity, TempBand, Water } from '../sim/bodies.ts';
 
-export type SpeciesId = 'human' | 'duskfolk' | 'drifters' | 'unhomed';
+export type SpeciesId = 'human' | 'duskfolk' | 'drifters' | 'unhomed' | 'heirs';
 
 /** How hard a condition is: 0 easy, more harder; null impossible. */
 type Costs<K extends string> = Record<K, number | null>;
@@ -28,6 +28,8 @@ export interface SpeciesDef {
   };
   /** The highest total for each level; above `harsh` a world is uninhabitable. */
   levels: { comfortable: number; tolerable: number; harsh: number };
+  /** Machines (M5_UNKNOWN.md §27.2): they eat nothing, and grow by building copies of themselves from industry. */
+  machine?: boolean;
 }
 
 export const SPECIES: Record<SpeciesId, SpeciesDef> = {
@@ -61,6 +63,23 @@ export const SPECIES: Record<SpeciesId, SpeciesDef> = {
       open: 2,
     },
     levels: { comfortable: 0, tolerable: 2, harsh: 6 },
+  },
+  // The machine heirs (M5_UNKNOWN.md §27.2), fiction: rock and metal is all they need.
+  heirs: {
+    id: 'heirs',
+    name: 'The heirs',
+    adjective: 'heir',
+    surfaces: ['rocky', 'super-earth', 'moon', 'dwarf'],
+    costs: {
+      temperature: { frozen: 0, cold: 0, temperate: 0, warm: 0, hot: 1, scorching: 2 },
+      atmosphere: { none: 0, thin: 0, dense: 1, toxic: 1 },
+      gravity: { low: 0, normal: 0, high: 1 },
+      water: { none: 0, ice: 0, oceans: 1 },
+      flare: 0,
+      open: 0,
+    },
+    levels: { comfortable: 0, tolerable: 2, harsh: 6 },
+    machine: true,
   },
   // The Unhomed of Arcturus (M5_UNKNOWN.md §25.1), fiction: from the cold outer worlds of an old
   // orange giant, at home in the cold and the dim, troubled by heat and heavy worlds.

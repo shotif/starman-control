@@ -5,26 +5,36 @@
 
 import type { SystemId } from '../data/types.ts';
 import type { SpeciesId } from './species.ts';
+import type { TechId } from './techs.ts';
 import type { TreatyKind } from './treaties.ts';
 
-export type FactionId = 'sta' | 'frontier' | 'hollow-wake' | 'dusk-concord' | 'drift-moot' | 'last-hearth';
+export type FactionId =
+  | 'sta'
+  | 'frontier'
+  | 'hollow-wake'
+  | 'dusk-concord'
+  | 'drift-moot'
+  | 'continuance'
+  | 'last-hearth';
 
 /**
  * How a power builds: each has its own buildings in the colony view (D-28, COLONY_VIEW.md §3). An
  * alien species brings its own (D-12); the Duskfolk's and the Drifters' are drawn when they can be
  * played (§24.9, §25.8).
  */
-export type ArchitectureId = 'authority' | 'cooperative' | 'wake' | 'dusk' | 'drift' | 'hearth';
+export type ArchitectureId = 'authority' | 'cooperative' | 'wake' | 'dusk' | 'drift' | 'forge' | 'hearth';
 
 /** A shape drawn beside the colour wherever a faction is shown, so colour is never the only cue. */
-export type FactionMark = 'square' | 'circle' | 'triangle' | 'diamond' | 'hexagon' | 'cross';
+export type FactionMark = 'square' | 'circle' | 'triangle' | 'diamond' | 'hexagon' | 'pentagon' | 'cross';
 
 /** What a trait does. The rules read these; the interface shows `text`. Draft values, balanced in M2 and M3. */
 export type TraitEffect =
   | { kind: 'industry-percent'; percent: number }
   | { kind: 'growth-percent'; percent: number }
   | { kind: 'extra-jump-points'; points: number }
-  | { kind: 'approval'; amount: number };
+  | { kind: 'approval'; amount: number }
+  /** Excavations progress so much faster, in percent (M5_UNKNOWN.md §27.3). */
+  | { kind: 'dig-percent'; percent: number };
 
 export interface TraitDef {
   id: string;
@@ -121,6 +131,8 @@ export interface FactionDef {
   giftCredits: number;
   /** Turns for each point its memories fade by (§20.1): more for a power slow to forget (§24.6). */
   forgets: number;
+  /** What it knows from the start (M5_UNKNOWN.md §27.3): technologies, and so many relic sites nearest its capital, surveyed. */
+  knows?: { techs: readonly TechId[]; sites: number };
   /** An alien power's speaker, and a picture of its people for the data page (§24.9), fiction. */
   speaker?: Figure;
   people?: { picture: string; alt: string };
@@ -159,7 +171,11 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       callsForPeace: false,
       conqueror: false,
     },
-    regard: { 'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' } },
+    regard: {
+      'hollow-wake': { amount: -15, reason: 'Holds us for outlaws' },
+      // M5_UNKNOWN.md §27.3: the lawful are wary of machines that answer to no one.
+      continuance: { amount: -5, reason: 'Machines that answer to no one' },
+    },
     // Law: open lanes once warm, its research only with friends.
     asks: {
       'open-lanes': 10,
@@ -208,7 +224,10 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       callsForPeace: true,
       conqueror: false,
     },
-    regard: { 'hollow-wake': { amount: -5, reason: 'Distrusts our ways' } },
+    regard: {
+      'hollow-wake': { amount: -5, reason: 'Distrusts our ways' },
+      continuance: { amount: -5, reason: 'Machines that answer to no one' },
+    },
     // Trade and peace once warm; its research a little warmer (20, tuned in M3's proof: at 10 its
     // shared research with the Wake took it past 25 technologies by turn 100 on three seeds).
     asks: {
@@ -319,6 +338,7 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       'hollow-wake': { amount: -5, reason: 'Takes what is not given' },
       // M4_FLEETS.md §31.4: the Cooperative settles fastest, and the Concord guards its claim.
       frontier: { amount: -5, reason: 'Fears our settlers will crowd its claim' },
+      continuance: { amount: -10, reason: 'Made by the ones who left, and answer to no one' },
     },
     // Slow to trust (§24.6): a clear border sooner than open lanes, and research only with friends.
     asks: {
@@ -375,7 +395,10 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
       callsForPeace: true,
       conqueror: false,
     },
-    regard: { 'hollow-wake': { amount: -10, reason: 'Sells the lanes that should be open' } },
+    regard: {
+      'hollow-wake': { amount: -10, reason: 'Sells the lanes that should be open' },
+      continuance: { amount: -5, reason: 'Machines that answer to no one' },
+    },
     // Brokers (§25.6): trade with anyone, open lanes once known, and peace bought from those who sell it.
     asks: {
       'open-lanes': 0,
@@ -395,6 +418,70 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
     people: {
       picture: 'people-drifters',
       alt: 'Drifters floating in the banded air of a giant planet, among its clouds (fiction)',
+    },
+  },
+  // The machine heirs (M5_UNKNOWN.md §27), fiction: the Absent's machines, left running at GJ 3306.
+  continuance: {
+    id: 'continuance',
+    playable: false,
+    name: 'Continuance',
+    shortName: 'Continuance',
+    description:
+      'The machine heirs of the Forge at GJ 3306, which copy themselves and carry on the work of their vanished makers.',
+    playsAs:
+      'Patient machines that need no air and eat nothing, grow by copying themselves, and know more of the Absent than they say.',
+    colour: '#d4e157',
+    mark: 'pentagon',
+    species: 'heirs',
+    architecture: 'forge',
+    capital: { systemId: 'gj-3306', bodyId: 'gj-3306:forge' },
+    traits: [
+      {
+        id: 'heirs-tireless',
+        name: 'Tireless',
+        text: 'Machines: colonies eat nothing, and grow by building copies of themselves from industry.',
+        effect: { kind: 'growth-percent', percent: 0 },
+      },
+      {
+        id: 'heirs-of-the-absent',
+        name: 'Heirs of the Absent',
+        text: 'Excavations progress half again as fast; Relic studies known, and two relic sites, from the start.',
+        effect: { kind: 'dig-percent', percent: 50 },
+      },
+    ],
+    shipmakers: ['the Forge'],
+    fleetWord: 'Array',
+    weary: 1,
+    // A conqueror, for a claim or the weak; lawful, as keeping its word is efficient (§27.3).
+    war: {
+      declares: ['claim', 'weak'],
+      acceptsAfter: 10,
+      offersAfter: 20,
+      credits: 0,
+      peaceOnLoss: false,
+      callsForPeace: false,
+      conqueror: true,
+    },
+    regard: {},
+    asks: {
+      'open-lanes': 20,
+      'shared-research': 30,
+      border: 0,
+      trade: 0,
+      passage: 10,
+      protection: null,
+      'non-aggression': 0,
+      alliance: 60,
+    },
+    sells: [],
+    lawful: true,
+    giftCredits: 20,
+    forgets: 2,
+    knows: { techs: ['relic-studies'], sites: 2 },
+    speaker: { name: 'First Lathe', role: 'the oldest running', portrait: 'speaker-continuance' },
+    people: {
+      picture: 'people-heirs',
+      alt: 'Many-limbed machines building copies of themselves in a workshop cut into an airless world (fiction)',
     },
   },
   // The power that arrives (M5_UNKNOWN.md §25), fiction: the Unhomed of Arcturus, in their arks.
@@ -458,13 +545,25 @@ export const FACTIONS: Record<FactionId, FactionDef> = {
 };
 
 /** Every faction a new game includes, in its order. */
-export const FACTION_IDS: readonly FactionId[] = ['sta', 'frontier', 'hollow-wake', 'dusk-concord', 'drift-moot'];
+export const FACTION_IDS: readonly FactionId[] = [
+  'sta',
+  'frontier',
+  'hollow-wake',
+  'dusk-concord',
+  'drift-moot',
+  'continuance',
+];
 /** The factions that arrive in mid-game (M5_UNKNOWN.md §25). */
 export const ARRIVING_IDS: readonly FactionId[] = ['last-hearth'];
 /** Every faction, those that start and those that arrive. */
 export const ALL_FACTION_IDS: readonly FactionId[] = [...FACTION_IDS, ...ARRIVING_IDS];
-/** The factions that start, whose capitals place the home webs, relic sites, keys and anomalies. */
+/** The factions that start, whose capitals place the home webs. */
 export const STARTING_FACTIONS: readonly FactionDef[] = FACTION_IDS.map((f) => FACTIONS[f]);
+/**
+ * The five older peoples, whose capitals place the relic sites, the keys and the anomalies (M5_UNKNOWN.md
+ * §27.4): the machine heirs are the Absent's own, and their home moves none of these.
+ */
+export const PLACING_FACTIONS: readonly FactionDef[] = STARTING_FACTIONS.filter((f) => f.id !== 'continuance');
 
 /** The factions a new game offers to lead (D-08). */
 export const PLAYABLE_IDS: readonly FactionId[] = FACTION_IDS.filter((f) => FACTIONS[f].playable);

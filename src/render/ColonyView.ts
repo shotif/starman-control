@@ -1245,6 +1245,15 @@ function markSheet(mark: FactionMark, hex: string): HTMLCanvasElement {
       else g.lineTo(x, y);
     }
     g.closePath();
+  } else if (mark === 'pentagon') {
+    for (let i = 0; i < 5; i++) {
+      const a = -Math.PI / 2 + ((Math.PI * 2) / 5) * i;
+      const x = 32 + 15 * Math.cos(a);
+      const y = 33 + 15 * Math.sin(a);
+      if (i === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.closePath();
   } else if (mark === 'cross') {
     for (const [x, y] of [
       [27, 17],

@@ -125,7 +125,7 @@ void main() {
   gl_FragColor = vec4(vTint * a * a * strength, 1.0);
 }`;
 
-/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle, diamond, hexagon, cross). */
+/** Outlined shapes, so a faction's colour always comes with its shape (square, circle, triangle, diamond, hexagon, cross, pentagon). */
 const MARK_VERTEX = `
 attribute float size;
 attribute vec3 tint;
@@ -168,10 +168,18 @@ void main() {
   else if (vShape < 4.5) {
     vec2 q = abs(p);
     d = max(q.x * 0.8660254 + q.y * 0.5, q.y) - 0.7;
-  } else {
+  } else if (vShape < 5.5) {
     // A cross (M5_UNKNOWN.md §25.1): two bars, outlined as one.
     vec2 q = abs(p);
     d = min(max(q.x - 0.72, q.y - 0.26), max(q.x - 0.26, q.y - 0.72));
+  } else {
+    // A pentagon (M5_UNKNOWN.md §27.1), point up.
+    const vec3 k = vec3(0.809016994, 0.587785252, 0.726542528);
+    vec2 q = vec2(abs(p.x), p.y + 0.08);
+    q -= 2.0 * min(dot(vec2(-k.x, k.y), q), 0.0) * vec2(-k.x, k.y);
+    q -= 2.0 * min(dot(vec2(k.x, k.y), q), 0.0) * vec2(k.x, k.y);
+    q -= vec2(clamp(q.x, -0.62 * k.z, 0.62 * k.z), 0.62);
+    d = length(q) * sign(q.y);
   }
   float w = vWeight;
   float a = 1.0 - smoothstep(w, w + 0.07, abs(d));
@@ -186,6 +194,7 @@ const SHAPE: Record<MapHolding['mark'], number> = {
   diamond: 3,
   hexagon: 4,
   cross: 5,
+  pentagon: 6,
 };
 
 /** Ships: small chevrons drawn a fixed number of pixels from their star, so they never hide it. */

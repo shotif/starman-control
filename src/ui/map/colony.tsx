@@ -270,7 +270,8 @@ function FoodText({ world, game, h }: { world: World; game: GameState; h: Holdin
       : 'Cut off from the capital’s lanes: it feeds itself.';
   return (
     <>
-      {f.made.total} made, {f.eaten} eaten{h.hungry > 0 ? ' · hungry' : ''} <span class="dim">{where}</span>
+      {f.made.total} made, {speciesFor(game, h.owner).machine ? 'eats nothing' : `${f.eaten} eaten`}
+      {h.hungry > 0 ? ' · hungry' : ''} <span class="dim">{where}</span>
     </>
   );
 }

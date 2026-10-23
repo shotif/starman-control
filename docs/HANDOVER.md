@@ -255,9 +255,12 @@ version 30. **Done: increment 58, the balance of power** (§26), moved before th
 cut down by what was measured: a *scrap* order for ships, and rivals in debt scrapping what they
 cannot pay for (deepest debt −518 → −156). The wariness of a leader and a sooner balance-of-power war
 changed no winner and were taken out; **D-79, the Co-op's lead in long games, is open for the
-owner** with the measurements. Next: 59 the machine heirs, 60 the proof.
+owner** with the measurements; assumed A on the owner's leave (left for M6). **Done: increment 59, the
+machine heirs** (§27): the Continuance, a sixth power at the start (lime, a pentagon), self-copying
+machines the Absent left at the Forge, a fictional world of the real white dwarf GJ 3306; they eat
+nothing, grow by building copies, and dig half again as fast; not yet playable. Next: 60 the proof.
 
-The art and music spend: about $32.55 of $50 (raised on 22 October 2026; about $17.45 left). M3's
+The art and music spend: about $33.20 of $50 (raised on 22 October 2026; about $16.80 left). M3's
 art is about 65 pictures (about $6.50).
 
 ## 3. Standing instructions from the owner

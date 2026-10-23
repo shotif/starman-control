@@ -113,6 +113,20 @@ export const ADVISORS: Record<FactionId, { voice: Voice; people: Record<Departme
       admiral: { name: 'Deep Keel', role: 'who speaks for the Wardens', portrait: 'advisor-drift-admiral' },
     },
   },
+  // The heirs' names are designations, translated (M5_UNKNOWN.md §27.1); only Exact Measure has a face yet.
+  continuance: {
+    voice: 'formal',
+    people: {
+      colonies: { name: 'Second Survey', role: 'which places the copies', portrait: 'advisor-heirs-colonies' },
+      works: { name: 'Patient Lathe', role: 'which keeps the Forge', portrait: 'advisor-heirs-works' },
+      treasury: { name: 'True Ledger', role: 'which counts', portrait: 'advisor-heirs-treasury' },
+      science: { name: 'Old Index', role: 'which remembers the makers', portrait: 'advisor-heirs-science' },
+      survey: { name: 'Far Vector', role: 'which goes ahead', portrait: 'advisor-heirs-survey' },
+      watch: { name: 'Still Lens', role: 'which watches', portrait: 'advisor-heirs-watch' },
+      envoy: { name: 'Exact Measure', role: 'which negotiates', portrait: 'advisor-heirs-envoy' },
+      admiral: { name: 'Hard Anvil', role: 'which defends', portrait: 'advisor-heirs-admiral' },
+    },
+  },
   // The Unhomed's names are translations too (M5_UNKNOWN.md §25.1); only Kindling has a face yet.
   'last-hearth': {
     voice: 'warm',

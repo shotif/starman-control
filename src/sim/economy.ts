@@ -275,6 +275,11 @@ export function growthOf(world: World, state: GameState, h: Holding): number {
   if (lastingOn(state, h, 'no-growth').length > 0) return 0;
   const level = approvalOf(world, state, h).level;
   if (level === 'unrest' || level === 'revolt') return 0;
+  // Machines grow by the copies they build (M5_UNKNOWN.md §27.2): a tenth of a million for so much industry.
+  if (speciesFor(state, h.owner).machine) {
+    const spent = -(industryOf(world, state, h).parts.find((p) => p.label === COPIES)?.value ?? 0);
+    return spent > 0 ? Math.min(cap - h.people, Math.max(1, Math.floor(spent / RULES.machines.industryPerTenth))) : 0;
+  }
   // The traits' and technologies' percentages add up, then apply to the base rate.
   const base = RULES.colonies.growthPercent;
   let percent = 0;
@@ -506,11 +511,29 @@ export function industryOf(world: World, state: GameState, h: Holding, fusion = 
     const value = -Math.floor((made * -ed.crashIndustryPercent) / 100);
     if (value < 0) parts.push({ label: `a crash programme (${ed.crashIndustryPercent}%)`, value });
   }
+  // Machines build copies of themselves with a share of it while they have room (M5_UNKNOWN.md §27.2).
+  const copying = copiesOf(world, state, h, sum(parts));
+  if (copying > 0) parts.push({ label: COPIES, value: -copying });
   if (h.overdrive > 0) {
     const o = overdriveOf(sum(parts), h.overdrive);
     if (o.industry > 0) parts.push({ label: `bought for ${o.credits} credits`, value: o.industry });
   }
   return { total: sum(parts), parts };
+}
+
+/** The industry's part a machine colony puts into copies of itself (M5_UNKNOWN.md §27.2). */
+export const COPIES = 'building copies of ourselves';
+
+/**
+ * The industry a machine colony puts into copies of itself this turn (M5_UNKNOWN.md §27.2): a share of
+ * what it makes, while it has room and is not in unrest or revolt; 0 for any other colony.
+ */
+export function copiesOf(world: World, state: GameState, h: Holding, made: number): number {
+  if (h.kind !== 'colony' || !speciesFor(state, h.owner).machine) return 0;
+  if (h.people >= capacityOf(world, state, h)) return 0;
+  const level = approvalOf(world, state, h).level;
+  if (level === 'unrest' || level === 'revolt') return 0;
+  return Math.floor((Math.max(0, made) * RULES.machines.copyPercent) / 100);
 }
 
 /** The capital's own research: its old universities, and Strong centre's (M2B_SCIENCE.md §19.1). */
@@ -609,7 +632,8 @@ export function foodOf(world: World, state: GameState, h: Holding): { made: Figu
   const parts = [...farms.parts];
   if (h.projects.includes('hydroponics') && !stopped(world, state, h))
     parts.push({ label: 'from hydroponics', value: RULES.projects.hydroponicsFood });
-  const eaten = ceilDiv(h.people, RULES.food.eatenPer);
+  // Machines eat nothing (M5_UNKNOWN.md §27.2).
+  const eaten = speciesFor(state, h.owner).machine ? 0 : ceilDiv(h.people, RULES.food.eatenPer);
   return {
     made: { total: sum(parts), parts },
     eaten: rationed(world, state, h) ? ceilDiv(eaten * RULES.edicts.rationingEatsPercent, 100) : eaten,

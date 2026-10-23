@@ -134,7 +134,7 @@ export interface TitleSceneOptions {
   reducedMotion: boolean;
 }
 
-const SHAPES = { square: 0, circle: 1, triangle: 2, diamond: 3, hexagon: 4, cross: 5 } as const;
+const SHAPES = { square: 0, circle: 1, triangle: 2, diamond: 3, hexagon: 4, cross: 5, pentagon: 6 } as const;
 
 /** The scene's centre: between the capitals of the powers one can lead, so each is in view. */
 function centreOfPowers(): THREE.Vector3 {
