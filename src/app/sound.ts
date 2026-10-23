@@ -4,9 +4,14 @@
 
 import { settings } from './settings.ts';
 
-export type Cue = 'tap' | 'open' | 'turn' | 'report' | 'refused';
+export type Cue = 'tap' | 'open' | 'turn' | 'report' | 'refused' | 'battle' | 'key';
 
 let audio: AudioContext | null = null;
+
+/** The cues played, for the test hook (`?test`). */
+const played: Cue[] = [];
+const testing = typeof location !== 'undefined' && new URLSearchParams(location.search).has('test');
+if (testing) (window as unknown as { __sound: unknown }).__sound = { played: () => [...played] };
 
 function context(): AudioContext | null {
   if (settings.value.sound === 'off' || typeof window === 'undefined') return null;
@@ -48,11 +53,16 @@ function tone(c: AudioContext, t: Tone): void {
   osc.stop(t.at + t.length + 0.02);
 }
 
-/** Plays a cue: a tick for a press, a rising tone for a turn, a chime for the report, a low tone for a refusal. */
-export function play(cue: Cue): void {
+/**
+ * Plays a cue, `after` seconds from now: a tick for a press, a rising tone for a turn, a chime for
+ * the report, a low tone for a refusal, a muffled double thud for a battle fought, two bells for a
+ * key (M6_ONE.md §25.2).
+ */
+export function play(cue: Cue, after = 0): void {
   const c = context();
   if (!c) return;
-  const at = c.currentTime + 0.005;
+  if (testing) played.push(cue);
+  const at = c.currentTime + 0.005 + after;
   switch (cue) {
     case 'tap':
       tone(c, { from: 1900, to: 1500, at, length: 0.04, gain: 0.018, wave: 'sine' });
@@ -70,6 +80,14 @@ export function play(cue: Cue): void {
       break;
     case 'refused':
       tone(c, { from: 240, to: 170, at, length: 0.2, gain: 0.035, wave: 'triangle' });
+      break;
+    case 'battle':
+      tone(c, { from: 120, to: 50, at, length: 0.3, gain: 0.06, wave: 'sine' });
+      tone(c, { from: 105, to: 45, at: at + 0.2, length: 0.4, gain: 0.05, wave: 'sine' });
+      break;
+    case 'key':
+      tone(c, { from: 1046, to: 1044, at, length: 0.9, gain: 0.016, wave: 'sine' });
+      tone(c, { from: 1568, to: 1566, at: at + 0.16, length: 1.1, gain: 0.013, wave: 'sine' });
       break;
   }
 }

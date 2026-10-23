@@ -84,3 +84,47 @@ test('with music off nothing is downloaded; turned on it plays, and off again it
   await press('Off');
   await expect.poll(async () => (await music(page)).playing).toBe(false);
 });
+
+test('at war the map plays war’s piece, and the end of the game its own', async ({ page }, info) => {
+  test.slow();
+  const desktop = info.project.name === 'desktop';
+  await musicSettings(page, true);
+  await page.goto('./?test&music#/new');
+  const power = page.getByRole('button', { name: 'Lead the Transit Authority' });
+  if (desktop) await power.click();
+  else await power.tap();
+  await expect(page.getByTestId('map')).toHaveAttribute('data-ready', '1', { timeout: 30_000 });
+  await expect.poll(async () => (await music(page)).mood, { timeout: 30_000 }).toBe('map');
+  // At war with the Cooperative (M6_ONE.md §25.1).
+  await page.evaluate(() => {
+    const w = window as unknown as {
+      __game(): { wars: unknown[]; powers: { faction: string; contacts: unknown[] }[] };
+      __setGame(g: unknown): void;
+    };
+    const g = structuredClone(w.__game());
+    g.powers
+      .find((p) => p.faction === 'sta')
+      ?.contacts.push({ faction: 'frontier', stage: 'talk', since: 1, words: 20 });
+    g.powers
+      .find((p) => p.faction === 'frontier')
+      ?.contacts.push({ faction: 'sta', stage: 'talk', since: 1, words: 20 });
+    g.wars.push({ a: 'frontier', b: 'sta', since: 1, by: 'sta' });
+    w.__setGame(g);
+  });
+  await expect.poll(async () => (await music(page)).mood, { timeout: 30_000 }).toBe('war');
+  await expect.poll(async () => (await music(page)).piece, { timeout: 30_000 }).toBe('war');
+  // We have won: the end, shown, plays victory's piece.
+  await page.evaluate(() => {
+    const w = window as unknown as { __game(): { turn: number; ended: unknown }; __setGame(g: unknown): void };
+    const g = structuredClone(w.__game());
+    g.ended = { turn: g.turn, winner: 'sta', how: 'score' };
+    w.__setGame(g);
+  });
+  for (const name of ['Menu', 'The end of the game']) {
+    const button = page.getByRole('button', { name, exact: true });
+    if (desktop) await button.click();
+    else await button.tap();
+  }
+  await expect(page.getByRole('dialog', { name: 'The end of the game' })).toBeVisible();
+  await expect.poll(async () => (await music(page)).mood, { timeout: 30_000 }).toBe('victory');
+});

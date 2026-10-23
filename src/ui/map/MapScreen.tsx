@@ -42,7 +42,7 @@ import { speciesFor } from '../../sim/research.ts';
 import { starKindWord } from '../../sim/stars.ts';
 import { type Fleet, type GameState, hasSurveyed, powerOf, type ShipState } from '../../sim/state.ts';
 import { outcomeFor } from '../../sim/victory.ts';
-import { atWar } from '../../sim/war.ts';
+import { atWar, enemiesOf } from '../../sim/war.ts';
 import type { World } from '../../sim/world.ts';
 import { DialogFocus, focusedByKeyboard } from '../focus.tsx';
 import { Icon } from '../icons.tsx';
@@ -548,9 +548,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
   // The music follows the place: the map, a system, or a colony in its owner's character (MUSIC.md).
   const colonyArchitecture = colonyHolding ? FACTIONS[colonyHolding.owner].architecture : null;
   const inSystem = inside !== null;
+  // At war the map plays war's piece; the end of the game, shown, its own (M6_ONE.md §25).
+  const atWarNow = play ? enemiesOf(game, play.faction).length > 0 : false;
+  const shownEnd = play && panel.value === 'end' ? outcomeFor(game, play.faction) : null;
+  const endMood = shownEnd ? (shownEnd.result === 'victory' ? 'victory' : 'defeat') : null;
   useEffect(() => {
-    setMusicMood(moodFor({ screen: 'map', system: inSystem, colony: colonyArchitecture }));
-  }, [inSystem, colonyArchitecture]);
+    setMusicMood(moodFor({ screen: 'map', system: inSystem, colony: colonyArchitecture, war: atWarNow, end: endMood }));
+  }, [inSystem, colonyArchitecture, atWarNow, endMood]);
   useEffect(() => {
     const cv = colonyRef.current;
     const { game: g } = latest.current;
@@ -751,8 +755,13 @@ export function MapScreen({ world, game, buildId, play }: Props) {
     if (game.turn === turnSeen.current) return;
     const later = game.turn > turnSeen.current;
     turnSeen.current = game.turn;
-    if (!later || !latest.current.play) return;
+    const p = latest.current.play;
+    if (!later || !p) return;
     sound('turn');
+    // What the turn brought, after its tone (M6_ONE.md §25.2): a battle we fought, a key we found or took.
+    const events = game.reports.find((r) => r.faction === p.faction)?.events ?? [];
+    if (events.some((e) => e.kind === 'battle')) sound('battle', 0.6);
+    if (events.some((e) => e.kind === 'key' && e.stage !== 'lost' && e.by === p.faction)) sound('key', 1.1);
     if (reducedMotion()) return;
     setSweep(game.turn);
     const t = setTimeout(() => setSweep(null), 1400);
@@ -1557,6 +1566,12 @@ export function MapScreen({ world, game, buildId, play }: Props) {
             >
               Systems
             </button>
+            {/* Back to the end of the game after playing on, as on a phone (M6_ONE.md §25.4). */}
+            {outcome && (
+              <button type="button" class="button button-quiet" onClick={() => (panel.value = 'end')}>
+                The end of the game
+              </button>
+            )}
             <button type="button" class="button button-quiet" onClick={() => (panel.value = 'legend')}>
               Legend
             </button>

@@ -80,6 +80,31 @@ export const MUSIC_BRIEFS: MusicBrief[] = [
       'it never hurries, and the dusk never ends.',
     purpose: 'A colony of the Dusk Concord: its character, patient and very old (fiction).',
   },
+  // M6_ONE.md §25 (D-86): war, and the two ends of a game.
+  {
+    id: 'war',
+    subject:
+      'Tense, grave music for a time of war, felt from far away rather than in the thick of battle. Slow, about 66 BPM, in C minor. ' +
+      'A low, steady pulse on muted timpani and deep synthesiser, taut low strings playing short repeated figures, muted French horns holding long, uneasy chords, ' +
+      'a slow build in the middle that never breaks into a climax, then a return to the low pulse. Serious and watchful, never triumphant or martial.',
+    purpose: 'The map while we are at war, in place of the map’s two pieces.',
+  },
+  {
+    id: 'victory',
+    subject:
+      'Warm, wide and calm music for the end of a long journey that has been won. Slow, about 68 BPM, in D major. ' +
+      'Soft synthesiser pads and a low string drone open it; a broad, singing melody on solo French horn and then the full strings rises to a ' +
+      'warm, generous statement with gentle timpani rolls, then settles onto piano and pads and fades. An ending and a homecoming, not a fanfare.',
+    purpose: 'The end screen when we have won.',
+  },
+  {
+    id: 'defeat',
+    subject:
+      'Quiet, dignified and sorrowful music for an ending that was not ours. Very slow, about 52 BPM, in A minor. ' +
+      'A low, soft drone; a solo cello playing a slow, plain lament over it; a sparse felt piano answering now and then; ' +
+      'distant airy pads like a cold sky. Restrained and gentle, never despairing, fading slowly to silence.',
+    purpose: 'The end screen when we have lost, left the game, or the game ended with no winner.',
+  },
 ];
 
 /** The prompt sent for a piece: the shared style, then the piece. */

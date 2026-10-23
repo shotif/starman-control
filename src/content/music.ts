@@ -13,10 +13,13 @@ export type MusicPiece =
   | 'colony-authority'
   | 'colony-cooperative'
   | 'colony-wake'
-  | 'colony-dusk';
+  | 'colony-dusk'
+  | 'war'
+  | 'victory'
+  | 'defeat';
 
 /** Where the player is, as far as the music cares. */
-export type MusicMood = 'title' | 'map' | 'system' | `colony-${ArchitectureId}`;
+export type MusicMood = 'title' | 'map' | 'system' | `colony-${ArchitectureId}` | 'war' | 'victory' | 'defeat';
 
 export const MUSIC_PIECES: readonly MusicPiece[] = [
   'title',
@@ -27,6 +30,9 @@ export const MUSIC_PIECES: readonly MusicPiece[] = [
   'colony-cooperative',
   'colony-wake',
   'colony-dusk',
+  'war',
+  'victory',
+  'defeat',
 ];
 
 /** The pieces each mood plays, in turn. */
@@ -43,6 +49,10 @@ export const MOOD_PIECES: Record<MusicMood, readonly MusicPiece[]> = {
   'colony-drift': [],
   'colony-forge': [],
   'colony-hearth': [],
+  // War, and the two ends of a game (M6_ONE.md §25).
+  war: ['war'],
+  victory: ['victory'],
+  defeat: ['defeat'],
 };
 
 /** Seconds of quiet after a piece ends, before the next. */
@@ -57,6 +67,9 @@ export const SILENCE_SECONDS: Record<MusicMood, number> = {
   'colony-drift': 20,
   'colony-forge': 20,
   'colony-hearth': 20,
+  war: 30,
+  victory: 20,
+  defeat: 20,
 };
 
 /** Seconds a change of mood takes to fade the old piece out and the new one in. */
@@ -75,17 +88,28 @@ export const PUBLISHED_PIECES: readonly MusicPiece[] = [
   'colony-cooperative',
   'colony-wake',
   'colony-dusk',
+  'war',
+  'victory',
+  'defeat',
 ];
 
-/** The mood for where the player is: a screen of the map (the map, a system, a colony) or any other screen. */
+/**
+ * The mood for where the player is: a screen of the map (the map, a system, a colony) or any other
+ * screen. On the map, war takes the place of the map's own pieces, and the end of a game, shown,
+ * wins over every other (M6_ONE.md §25).
+ */
 export function moodFor(place: {
   screen: 'map' | 'other';
   system?: boolean;
   colony?: ArchitectureId | null;
+  war?: boolean;
+  end?: 'victory' | 'defeat' | null;
 }): MusicMood {
   if (place.screen !== 'map') return 'title';
+  if (place.end) return place.end;
   if (place.colony) return `colony-${place.colony}`;
-  return place.system ? 'system' : 'map';
+  if (place.system) return 'system';
+  return place.war ? 'war' : 'map';
 }
 
 /** The piece to play after `last` in a mood: the next in turn, or the first. */

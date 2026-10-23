@@ -35,6 +35,7 @@ the owner's alone, so M6 ends with a proof and the owner's try.
 22. [Increment 63 in detail: the keys within reach](#22-increment-63-in-detail-the-keys-within-reach-written-before-building-it)
 23. [Increment 64: guardians, deferred again](#23-increment-64-guardians-deferred-again)
 24. [Increment 65 in detail: playing the Concord](#24-increment-65-in-detail-playing-the-concord-written-before-building-it)
+25. [Increment 66 in detail: music and sound for 1.0](#25-increment-66-in-detail-music-and-sound-for-10-written-before-building-it)
 
 ## 1. Where M6 starts
 
@@ -652,3 +653,65 @@ No change: a game's powers already say who is the player. A save from before pla
 **Reversing it:** set `playable: false` on the Concord in `src/content/factions.ts`; its pictures,
 music and ship names can stay (they are used only when it is seen), and the new game falls back to
 three cards.
+
+## 25. Increment 66 in detail: music and sound for 1.0 (written before building it)
+
+**Goals.** §11 (D-86, A): music for war and for the end of a game, and sounds that tell what a turn
+brought. The Concord's colony piece came with increment 65. **Out of scope:** a volume slider; music
+for each event; sung or spoken words.
+
+### 25.1 Three pieces
+
+| Piece | Plays | Character |
+| --- | --- | --- |
+| **War** | on the map while we are at war, in place of the map's two pieces | tense and low, slow-building, never martial bombast: a low pulse, muted brass, taut strings |
+| **Victory** | on the end screen when we have won | the title's warmth grown wide and calm, an ending rather than a fanfare |
+| **Defeat** | on the end screen when we have lost or left the game | quiet and dignified, a solo instrument over a low drone, fading |
+
+Inside a system or a colony the music stays as it is; at war the map's mood is *war*. On the end
+screen the end's mood wins over every other. Three candidates each, by D-31's way (Lyria), chosen by
+measure (a soft start and end, the widest range) and sent lettered for the owner to choose by ear:
+**9 candidates, about $0.75**.
+
+### 25.2 Two sounds
+
+Made in the browser like the interface's others (CONSOLE.md §5), after the turn's rising tone when the
+report brings them: **a battle** (a low, muffled double thud) when the report has a battle we fought,
+and **a key** (two soft bell tones a fifth apart) when we found or took a key. A key lost to another
+is told in the report and sounds nothing more. Off with the sound setting.
+
+### 25.3 Tests
+
+Unit: the moods (war on the map only, the end over all); the pieces published. Journey: a game at war
+sets the music's mood to *war* (the music state is read, not heard).
+
+### 25.4 As built (23 October 2026)
+
+- **The pieces** (`music/briefs.ts`, `public/music/war.mp3`, `victory.mp3`, `defeat.mp3`): nine
+  candidates, about **$0.75**, so about **$40.00** of the owner's $50 (D-27). Lyria's filter refused
+  one defeat candidate once and took it on the retry. Each chosen by measure, the softest start among
+  those with the widest loudness range: war C (range 8.7 LU, start −20 dB), victory C (10.4 LU,
+  −32 dB; B's range of 17 LU meant a loud climax, against the brief's *no big build-ups*), defeat C
+  (12.1 LU, −28 dB). The nine went to the owner, lettered, to choose by ear.
+- **The moods** (`src/content/music.ts`): `moodFor` takes `war` and `end`; the end wins over every
+  place, a system and a colony keep their own at war. A game that ended with no winner plays
+  *defeat*, the quiet one. MapScreen gives the mood from the war (`enemiesOf`) and the end's dialog
+  being shown; playing on after a victory brings the map's music back.
+- **The sounds** (`src/app/sound.ts`): cues `battle` (two sine thuds, 120→50 Hz and 105→45 Hz) and
+  `key` (C6 then G6, soft); `play(cue, after)` delays them past the turn's tone. A `__sound` hook
+  lists the cues played in test runs.
+- **The end, again, on a desktop:** its journey found that the desktop's menu had no way back to the
+  end of the game after *Play on*; the phone's had. The desktop's menu now has *The end of the game*
+  too, once the game is decided.
+- **Tests**: unit, the moods (war on the map only, the end over all, every new mood's piece); journeys,
+  `music.spec.ts` (at war the mood and piece are *war*; the end, shown, *victory*) and
+  `battles.spec.ts` (a battle fought sounds `battle`, not `key`).
+
+### 25.5 Reversing it
+
+| To undo | Change |
+| --- | --- |
+| War's piece on the map | drop `war` from `moodFor`'s call in MapScreen (the map's two pieces return) |
+| The end's pieces | drop `end` from the same call |
+| A piece the owner prefers by ear | `npm run music:approve -- music/out/<piece>/<candidate>.mp3` |
+| The two sounds | remove the two `sound('battle'…)` / `sound('key'…)` lines after `sound('turn')` |

@@ -22,6 +22,17 @@ describe('the music (MUSIC.md)', () => {
     expect(moodFor({ screen: 'map', system: true, colony: 'wake' })).toBe('colony-wake');
   });
 
+  it('plays war on the map at war, and the end of the game over every other place (M6_ONE.md §25)', () => {
+    expect(moodFor({ screen: 'map', war: true })).toBe('war');
+    // A system and a colony keep their own music at war.
+    expect(moodFor({ screen: 'map', war: true, system: true })).toBe('system');
+    expect(moodFor({ screen: 'map', war: true, colony: 'dusk' })).toBe('colony-dusk');
+    expect(moodFor({ screen: 'map', colony: 'wake', end: 'victory' })).toBe('victory');
+    expect(moodFor({ screen: 'map', war: true, end: 'defeat' })).toBe('defeat');
+    expect(moodFor({ screen: 'other', end: 'victory' })).toBe('title');
+    for (const mood of ['war', 'victory', 'defeat'] as const) expect(nextPiece(mood, null)).toBe(mood);
+  });
+
   it('gives every power’s colonies the piece of its architecture, never the player’s (D-08)', () => {
     for (const f of PLAYABLE_IDS) {
       const mood = moodFor({ screen: 'map', colony: FACTIONS[f].architecture }) as MusicMood;

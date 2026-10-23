@@ -28,6 +28,10 @@ Seven instrumental pieces of about two and a half minutes, each written as a bri
 | **Authority colony** | in the colony view, for any colony of the Sol Transit Authority | orderly and civic: a measured string ensemble and brass, steady and dignified |
 | **Cooperative colony** | for the Frontier Cooperative's | warm and communal: acoustic guitar, hand percussion, a wooden flute, open fifths |
 | **Wake colony** | for the Hollow Wake's | low and tough: a slow, heavy pulse, metallic percussion, a lonely electric guitar, dust |
+| **Concord colony** | for the Dusk Concord's (M6_ONE.md §24) | patient and very old: a low bowed drone, slow frame drums, a breathy wooden flute |
+| **War** | on the map while we are at war, in place of the map's two (M6_ONE.md §25) | tense and grave: a low pulse, taut low strings, muted horns, a build that never breaks |
+| **Victory** | on the end screen when we have won | warm and wide: the horn and the strings grown to a homecoming, then piano and pads |
+| **Defeat** | on the end screen when we have lost, left, or no one won | quiet and dignified: a solo cello's lament over a drone, a sparse piano |
 
 A colony's piece follows its owner's architecture (D-28), never the player's power (D-08), so an
 alien power later brings its own.

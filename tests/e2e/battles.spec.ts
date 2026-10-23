@@ -106,5 +106,10 @@ test('our squadron meets the Cooperative’s at war, and the report tells the ba
   );
   // The Admiral speaks of it.
   await expect(report.getByRole('list', { name: 'Your advisors' })).toContainText('Helena Vasquez');
+  // A battle fought sounds after the turn's tone (M6_ONE.md §25.2).
+  const played = await page.evaluate(() => (window as unknown as { __sound: { played(): string[] } }).__sound.played());
+  expect(played).toContain('turn');
+  expect(played).toContain('battle');
+  expect(played).not.toContain('key');
   expect(errors).toEqual([]);
 });
