@@ -293,7 +293,7 @@ measured with phone throttling (`npm run phone-speed`: title 1.0 s, map 3.5 s), 
 **Done: increment 69, the proof** (§28): the whole suite on the last build, a CI flake on the title
 mended, and *Trying M6* below. **M6 is built** (§29); whether to call it 1.0 is the owner's.
 
-The art and music spend: about $40.00 of $50 (raised on 22 October 2026; about $10.00 left). M3's
+The art and music spend: about $40.32 of $50 (Lyria $0.32 for the trailer's cue, 24 October 2026) (raised on 22 October 2026; about $10.00 left). M3's
 art is about 65 pictures (about $6.50).
 
 **Now: the trailer** ([design/TRAILER.md](design/TRAILER.md)), asked for on 24 October 2026: a
@@ -311,8 +311,10 @@ list (§6) were answered "go on" (24 October 2026). **Done: increment 70, voices
 owner's direction: no voice created; lettered recordings sent to overrule, `npm run voice:pick`), all
 356 clips made and checked (`voice:make`, `voice:check` in `npm run check`), and the player with its
 *Voices* setting, *Hear* and the music stepping back. ffmpeg for the scripts comes from `tools/`
-(`npm ci --prefix tools`). **Next: the trailer's pipeline under `trailer/`** (TRAILER.md §10), with
-the advisors' clips taken from `public/voice/`. **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
+(`npm ci --prefix tools`). **Done: the trailer's pipeline and first cut** (`trailer/`, TRAILER.md §10.6):
+frame-stepped capture, the narrator (George, by measure) and the Lyria cue (D, by measure), the cut
+sent to the owner as a 720p copy with its .srt. **Next: the owner's notes on the first cut**, then
+another cut; where the finished video lives (TRAILER.md §12) is still the owner's. **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
 and `ELEVENLABS_API_BASE` are in the git-ignored `.env` in the repository root (the ElevenLabs lines
 copied from Reborn's `promo/.env`, its EU host, an Enterprise plan); both checked on 24 October 2026.
 **Commits from the owner's Mac go out under its own git identity** (the owner's wish); leave it.

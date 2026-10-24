@@ -120,5 +120,7 @@ describe('hearing a take back (VOICES.md §3)', () => {
     expect(wordMatch('Our survey confirms the old catalogues.', 'our survey confirms the old catalogs')).toBe(1);
     expect(wordMatch('Our neighbours have settled.', 'our neighbors have settled')).toBe(1);
     expect(wordMatch('[gruff, blunt] Done. It works.', 'done it works')).toBe(1);
+    expect(wordMatch('Three hundred and fifty-six star systems.', '356 star systems')).toBe(1);
+    expect(wordMatch('Ten turns of truce.', '10 turns of truce')).toBe(1);
   });
 });

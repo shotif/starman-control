@@ -33,7 +33,8 @@ export function run(tool: string, args: string[], seconds = 120): string {
 }
 
 /** ffmpeg, never waiting on the terminal for keys (`-nostdin`). */
-export const ffmpeg = (args: string[]) => run(FFMPEG, ['-hide_banner', '-nostats', '-nostdin', ...args]);
+export const ffmpeg = (args: string[], seconds = 120) =>
+  run(FFMPEG, ['-hide_banner', '-nostats', '-nostdin', ...args], seconds);
 
 /** A file's length in seconds. */
 export function duration(file: string): number {

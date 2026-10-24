@@ -37,3 +37,6 @@ music/out/
 
 # Voice takes awaiting review (docs/design/VOICES.md); approved clips go to public/voice/
 voices/out/
+
+# The trailer's captures, takes and renders (docs/design/TRAILER.md §10.1)
+trailer/out/

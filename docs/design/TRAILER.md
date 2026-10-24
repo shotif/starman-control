@@ -263,14 +263,46 @@ as the art and music manifests do; `aiGenerated: true` throughout.
 the music, mastered to −14 LUFS with peaks under −1 dBTP, encoded as D-97 says, and the .srt written
 from the script's times (the spoken words, not the cards').
 
+## 10.6 As built: the first cut (24 October 2026)
+
+The pipeline is in `trailer/` ([README.md](../../trailer/README.md)), run by `npm run trailer:stage`,
+`trailer:film`, `trailer:narrator`, `trailer:music` and `trailer:build`.
+
+- **The test capture** (`trailer/test-capture.ts`): real time on this Mac gives 32 frames a second,
+  139 of 160 gaps over 25 ms, so it would judder. Frame-stepped, 10 s of S01 took 25 s to film and 8 s
+  of S13 16 s, with no repeated frame. **The clock** is a capture-only init script (adapted from
+  Reborn's harness, D-10): `requestAnimationFrame` and `performance.now` move only when a frame is
+  stepped, and the page's CSS animations (the turn's sweep, the logotype's pass of light) are held and
+  stepped with it. No game code changed.
+- **The frame:** the game's window is 1280×720 CSS pixels drawn at 1.5×, so the interface reads in a
+  small player, and every frame is captured at 1920×1080 (S09b at a 1920-pixel window, where the four
+  powers' cards stand side by side). Each frame is piped into ffmpeg; 25 shots, 132 s of film.
+- **The narrator:** five stock voices auditioned (`george`, `daniel`, each also shaped deeper, and
+  `bill`); **A, George, plain**, picked by measure; three takes of each of the 20 lines in it, the best
+  by measure (every word heard, within its slot, the calm pace). George speaks slowly: six lines are
+  spoken up to 12% faster (the pitch kept) to fit before the next, and a few start up to 0.8 s late.
+- **The music:** four Lyria 3.5 candidates to the timed plan of §8; **D** picked by measure (its
+  loudness, section by section, fits the cut's rise and fall at 0.74; the others 0.1 to 0.54); 2:02,
+  faded by 2:00.
+- **The mix:** every spoken line levelled to −16 LUFS, as the game's clips are; the music lowered and
+  stepping back under the voices; every line at least 8.1 dB above the music under it (measured by the
+  build). The master: **120.00 s, −14.1 LUFS, peaks at −1.0 dBFS**, 1920×1080 at 60 fps, H.264 High at
+  CRF 16 (82 MB), AAC 320 kbps at 48 kHz, `+faststart`; a 720p copy (28 MB) and the .srt.
+- **Known weak points:** the battle (S13) is small in its frame; the narrator is hurried in places;
+  the feature cards cover the game's text on the busiest screens (a soft shade behind them helps).
+- **Found and mended on the way:** Chrome's screenshots come at the window's CSS size unless asked to
+  scale (the cards fell outside a 1280×720 frame); scaling `<body>` for a push blanked the game's fixed
+  screens (the root is scaled instead); two scripts writing `manifest.json` at once lost records (saves
+  now merge); ffmpeg is run with `-nostdin` and a time limit, after one hung on a Concord clip.
+
 ## 11. Cost
 
 | | | |
 | --- | --- | --- |
 | Capture, cards, assembly | done on this machine | nothing |
 | The advisors' clips | made once for the game (VOICES.md §8) | the ElevenLabs plan's credits |
-| The narrator | ElevenLabs: 19 lines, four to six candidates for the voice, then the takes, about 5,000 characters | the plan's credits; outside D-27 |
-| Music | Lyria 3.5: four to six candidates at $0.08 | about **$0.30 to $0.50**, inside D-27 (D-98) |
+| The narrator | ElevenLabs: two auditions of five voices and three takes of 20 lines, **about 5,700 characters** | the plan's credits; outside D-27 |
+| Music | Lyria 3.5: **four candidates at $0.08** | **$0.32**, inside D-27 (D-98) |
 | The animatic | 926 characters of temporary voice | the plan's credits |
 
 Every Gemini spend is logged in DECISIONS.md with the running total, which stands at about $40.00 of
