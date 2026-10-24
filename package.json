@@ -32,6 +32,8 @@
     "music:generate": "node scripts/music/generate.ts",
     "music:approve": "node scripts/music/approve.ts",
     "music:check": "node scripts/music/check.ts",
+    "voice:cast": "node scripts/voice/cast.ts",
+    "voice:pick": "node scripts/voice/pick.ts",
     "data:import": "node scripts/data/import-reborn.ts",
     "data:shell": "node scripts/data/import-shell.ts",
     "data:import-dwarfs": "node scripts/data/import-dwarfs.ts",

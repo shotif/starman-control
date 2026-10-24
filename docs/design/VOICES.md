@@ -62,31 +62,46 @@ lose their places and numbers the same way.
 The spoken forms live in `src/content/voices.ts`, keyed like the written lines, with a unit test
 that every line, lesson, step and radio stage has one and that none holds a blank.
 
-## 3. The cast (D-103: Claude picks, the owner overrules)
+## 3. The cast (D-103: Claude picks, the owner overrules; stock voices, by the owner's direction)
 
 Forty parts: 32 advisors (8 departments × 4 powers) and 8 commanders (the landing and the garrison
 for each power). For each, `voices/briefs.ts` holds a written description taken from their face
-(`public/art/portrait/`), their power and their manner: age, sex as their portrait shows it,
-accent, pace, warmth. The Authority's are measured and civil; the Co-op's warm and plain-spoken;
-the Wake's rough and short; the Concord's very slow, deep and patient, not human.
+(`public/art/portrait/`), their power and their manner: age, sex as their portrait shows it, pace,
+warmth. The Authority's are measured and civil; the Co-op's warm and plain-spoken; the Wake's rough
+and short; the Concord's very slow, deep and patient, not human.
 
-- **Made with ElevenLabs' voice design** from those descriptions (D-91's key): designed voices
-  only, never a cloned voice or a library voice made from a named person, and never "sounding
-  like" anyone. The Concord's are designed voices with a light treatment in ffmpeg (lowered and
-  slowed, a faint second voice beneath), the same for all its parts and recorded with them.
-- **Three candidates for each part**, each reading two of its lines. Claude picks by what can be
-  measured and heard in a transcription (clear, unhurried, the manner right, no artefacts) and
-  sends the owner **one file per power**, every part lettered A to C, as the music was, to overrule
-  with one command.
+- **ElevenLabs' stock voices only** (the owner, 24 October 2026: "use stock voices which best match
+  the character's descriptions. Maybe just morph them or make something that will not consume voice
+  slots"): no voice is designed, cloned or added to the account, and none is made from a named
+  person. The account's 21 stock voices are enough because **a player only ever hears the power
+  they lead**: within a power its ten parts have ten different stock voices; across powers a stock
+  voice may serve again, shaped differently.
+- **Shaped into the character** after generation, in ffmpeg, and recorded with each clip: *deeper*
+  or *lighter* (the pitch and the timbre moved a semitone together, the pace kept), the **radio**
+  for the commanders (a narrow band, compressed, as a voice over a link), and the **Concord's**
+  for all its people (lowered and slowed, a faint second voice a step lower beneath, a short echo)
+  so they do not sound human. Every shaping was checked to keep each word clear in a transcription.
+- **Directed** with the model's delivery tags, which are not spoken (`eleven_v4`: "[measured,
+  formal]" for the Authority, "[warm, friendly]" for the Co-op, "[gruff, blunt]" for the Wake,
+  "[slow, calm, patient]" for the Concord; the commanders as their power's, on the radio).
+- **Three candidates for each part** (three stock voices, each shaped), each reading two of its
+  lines. Claude picks by what can be measured (every word right in a transcription, the pace for the
+  manner, no clipping, ten different voices in each power) and sends the owner **one file per
+  power**, every part announced and its candidates lettered A to C, to overrule with one command.
+- **The trailer's narrator** is a stock voice the game's parts do not use (George or Daniel are kept
+  for it).
 
 ## 4. The pipeline
 
 Like the pictures and the music (ART_PIPELINE.md, MUSIC.md §4):
 
-- `voices/briefs.ts`: each part's description, and once chosen its voice's id and settings.
-- `npm run voice:design -- --part <id>[,…]`: three designed candidates for each part, each reading
-  two of its lines, to `voices/out/` (ignored by git), with their records; `--sheet` joins a
-  power's candidates into one lettered file.
+- `voices/briefs.ts`: each part's description, its three candidates (a stock voice and a shaping
+  each), and once chosen its pick; the shapings and the delivery tags, written once.
+- `npm run voice:cast -- --power <id>`: the three candidates of each part of that power, each
+  reading two of its lines, to `voices/out/` (ignored by git), with their records and measures; a
+  lettered file for the power, every part announced before its candidates.
+- `npm run voice:pick -- <part> <letter>`: the owner's choice of a part's candidate, kept in
+  `voices/cast.json`, where a pick by measure never replaces it.
 - `npm run voice:generate -- --power <id>`: every clip of that power in its chosen voices, each
   transcribed back and compared with its spoken form; a clip that does not match is made again.
 - `npm run voice:approve -- --power <id>`: levels and encodes the clips to
@@ -124,8 +139,8 @@ Like the pictures and the music (ART_PIPELINE.md, MUSIC.md §4):
 
 ## 7. Credits and disclosure
 
-The codex's *Sources and licences* says the voices are made with ElevenLabs' voice design and
-speech from the game's own lines, beside the pictures' and the music's (D-29). Every clip keeps
+The codex's *Sources and licences* says the voices are made with ElevenLabs' stock voices and
+speech from the game's own lines, shaped for each character, beside the pictures' and the music's (D-29). Every clip keeps
 `aiGenerated: true` in its record, as a store's declaration needs (Steam's content survey: pre-made
 generated content). The account's plan (Enterprise, checked 24 October 2026) covers commercial use.
 
@@ -133,7 +148,8 @@ generated content). The account's plan (Enterprise, checked 24 October 2026) cov
 
 ElevenLabs credits from the owner's plan, outside D-27: the casting (40 parts, three candidates,
 two lines each) about 25,000 characters; every clip once, about 25,000; transcription checks and
-retakes perhaps as much again: **about 75,000 characters** of the plan's 109.65 million a month.
+retakes perhaps as much again: **about 75,000 characters** of the plan's 109.65 million a month. No
+voice slot is used (§3).
 
 ## 9. Tests
 
@@ -158,3 +174,26 @@ retakes perhaps as much again: **about 75,000 characters** of the plan's 109.65 
 Turning *Voices* off silences them for a player. To take the feature out: remove the player
 (`src/app/voice.ts`) and its calls, the setting, `public/voice/` and `voices/manifest.json`; the
 written lines are untouched throughout.
+
+## 12. As built: increment 70a, the cast (24 October 2026)
+
+- **The spoken forms** are in `src/content/voices.ts` (`SPOKEN`, `SPOKEN_RADIO`), with which
+  department says each kind (`SPEAKERS`) and every clip a power plays (`clipsOf`: 89 each, about
+  6,000 characters for the Authority, the Co-op and the Concord, 3,900 for the Wake's short
+  manner). `tests/unit/voices.test.ts` checks that every line, lesson, step and radio stage has one,
+  that none holds a blank, that Control is addressed wherever the written line does, that the
+  speakers match `src/sim/advice.ts`, and the count.
+- **The model:** `eleven_v4`, chosen by measure on 24 October 2026 from `eleven_v4`, `eleven_v3` and
+  `eleven_multilingual_v2`: all three were heard word for word; v4 and v3 take delivery tags they do
+  not speak; v4 is the newest. Every shaping (`deeper`, `lighter`, `radio`, `concord`) was
+  transcribed back without losing a word.
+- **The casting:** `npm run voice:cast` made the three candidates of all 40 parts (120 candidates,
+  240 takes, 19,681 characters), each transcribed and measured; the picks are in `voices/cast.json`,
+  ten different stock voices in each power. Where every candidate of a part scored lower, the
+  transcription misheard a word ("yard's" as "yard", "Wake's" as "wakes"), not the voice.
+- **Sent to the owner:** one lettered recording per power with every part announced, and an index of
+  each letter's voice, shaping, time and score; `npm run voice:pick -- <part> <letter>` applies an
+  overrule.
+- **Tools:** ffmpeg and ffprobe come from the small `tools/` package (`npm ci --prefix tools`,
+  `ffmpeg-static` and `ffprobe-static`, as Reborn's `promo/` has), found by `scripts/media.ts`, which
+  `music:approve` now uses too; the game's own dependencies and CI are unchanged.

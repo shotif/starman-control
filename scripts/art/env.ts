@@ -39,11 +39,15 @@ function readDotEnv(): Record<string, string> {
   return dotEnv;
 }
 
-/** The provider's key, from the environment first, then `.env`; undefined when neither has it. */
-export function apiKey(provider: ProviderId, env: NodeJS.ProcessEnv = process.env): string | undefined {
-  const name = KEY_NAMES[provider];
+/** A named setting (such as `ELEVENLABS_API_KEY` for the voices), from the environment first, then `.env`. */
+export function envValue(name: string, env: NodeJS.ProcessEnv = process.env): string | undefined {
   const value = env[name] || readDotEnv()[name];
   return value ? value : undefined;
+}
+
+/** The provider's key, from the environment first, then `.env`; undefined when neither has it. */
+export function apiKey(provider: ProviderId, env: NodeJS.ProcessEnv = process.env): string | undefined {
+  return envValue(KEY_NAMES[provider], env);
 }
 
 export function missingKeyHelp(provider: ProviderId): string {

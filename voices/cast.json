@@ -1,0 +1,1322 @@
+{
+  "sta-colonies": {
+    "letter": "A",
+    "voice": "alice",
+    "shape": "deeper",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "alice",
+        "shape": "deeper",
+        "score": 95.1,
+        "match": 1,
+        "pace": 2.09
+      },
+      {
+        "letter": "B",
+        "voice": "lily",
+        "shape": "deeper",
+        "score": 93.7,
+        "match": 1,
+        "pace": 1.98
+      },
+      {
+        "letter": "C",
+        "voice": "sarah",
+        "shape": "deeper",
+        "score": 94.5,
+        "match": 1,
+        "pace": 2.04
+      }
+    ]
+  },
+  "sta-works": {
+    "letter": "B",
+    "voice": "adam",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "eric",
+        "shape": "plain",
+        "score": 91.8,
+        "match": 1,
+        "pace": 1.81
+      },
+      {
+        "letter": "B",
+        "voice": "adam",
+        "shape": "plain",
+        "score": 92.2,
+        "match": 1,
+        "pace": 1.85
+      },
+      {
+        "letter": "C",
+        "voice": "roger",
+        "shape": "plain",
+        "score": 91.5,
+        "match": 1,
+        "pace": 1.79
+      }
+    ]
+  },
+  "sta-treasury": {
+    "letter": "C",
+    "voice": "sarah",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "lily",
+        "shape": "deeper",
+        "score": 95.7,
+        "match": 1,
+        "pace": 2.14
+      },
+      {
+        "letter": "B",
+        "voice": "matilda",
+        "shape": "deeper",
+        "score": 95.6,
+        "match": 1,
+        "pace": 2.13
+      },
+      {
+        "letter": "C",
+        "voice": "sarah",
+        "shape": "plain",
+        "score": 96.4,
+        "match": 1,
+        "pace": 2.2
+      }
+    ]
+  },
+  "sta-science": {
+    "letter": "B",
+    "voice": "eric",
+    "shape": "deeper",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "bill",
+        "shape": "lighter",
+        "score": 93.4,
+        "match": 1,
+        "pace": 1.95
+      },
+      {
+        "letter": "B",
+        "voice": "eric",
+        "shape": "deeper",
+        "score": 95.5,
+        "match": 1,
+        "pace": 2.12
+      },
+      {
+        "letter": "C",
+        "voice": "river",
+        "shape": "plain",
+        "score": 95,
+        "match": 1,
+        "pace": 2.09
+      }
+    ]
+  },
+  "sta-survey": {
+    "letter": "B",
+    "voice": "bella",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "jessica",
+        "shape": "plain",
+        "score": 96,
+        "match": 1,
+        "pace": 2.17
+      },
+      {
+        "letter": "B",
+        "voice": "bella",
+        "shape": "plain",
+        "score": 96.3,
+        "match": 1,
+        "pace": 2.19
+      },
+      {
+        "letter": "C",
+        "voice": "laura",
+        "shape": "plain",
+        "score": 95.5,
+        "match": 1,
+        "pace": 2.12
+      }
+    ]
+  },
+  "sta-watch": {
+    "letter": "B",
+    "voice": "brian",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "bill",
+        "shape": "plain",
+        "score": 94.3,
+        "match": 1,
+        "pace": 2.03
+      },
+      {
+        "letter": "B",
+        "voice": "brian",
+        "shape": "plain",
+        "score": 96.9,
+        "match": 1,
+        "pace": 2.24
+      },
+      {
+        "letter": "C",
+        "voice": "adam",
+        "shape": "deeper",
+        "score": 97.2,
+        "match": 1,
+        "pace": 2.26
+      }
+    ]
+  },
+  "sta-envoy": {
+    "letter": "A",
+    "voice": "lily",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "lily",
+        "shape": "plain",
+        "score": 99.7,
+        "match": 1,
+        "pace": 2.47
+      },
+      {
+        "letter": "B",
+        "voice": "alice",
+        "shape": "plain",
+        "score": 98.9,
+        "match": 1,
+        "pace": 2.59
+      },
+      {
+        "letter": "C",
+        "voice": "bella",
+        "shape": "plain",
+        "score": 98.9,
+        "match": 1,
+        "pace": 2.59
+      }
+    ]
+  },
+  "sta-admiral": {
+    "letter": "B",
+    "voice": "matilda",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "sarah",
+        "shape": "plain",
+        "score": 98.9,
+        "match": 1,
+        "pace": 2.4
+      },
+      {
+        "letter": "B",
+        "voice": "matilda",
+        "shape": "plain",
+        "score": 98.9,
+        "match": 1,
+        "pace": 2.41
+      },
+      {
+        "letter": "C",
+        "voice": "alice",
+        "shape": "deeper",
+        "score": 99.2,
+        "match": 1,
+        "pace": 2.44
+      }
+    ]
+  },
+  "sta-landing": {
+    "letter": "B",
+    "voice": "charlie",
+    "shape": "radio",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "adam",
+        "shape": "radio",
+        "score": 99.8,
+        "match": 1,
+        "pace": 2.52
+      },
+      {
+        "letter": "B",
+        "voice": "charlie",
+        "shape": "radio",
+        "score": 99.9,
+        "match": 1,
+        "pace": 2.49
+      },
+      {
+        "letter": "C",
+        "voice": "harry",
+        "shape": "radio",
+        "score": 99.7,
+        "match": 1,
+        "pace": 2.53
+      }
+    ]
+  },
+  "sta-garrison": {
+    "letter": "B",
+    "voice": "roger",
+    "shape": "radio",
+    "by": "measure",
+    "at": "2026-10-24T07:13:09.736Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "eric",
+        "shape": "radio",
+        "score": 96.8,
+        "match": 1,
+        "pace": 2.24
+      },
+      {
+        "letter": "B",
+        "voice": "roger",
+        "shape": "radio",
+        "score": 88.3,
+        "match": 0.917,
+        "pace": 2.22
+      },
+      {
+        "letter": "C",
+        "voice": "brian",
+        "shape": "radio",
+        "score": 94.2,
+        "match": 1,
+        "pace": 2.02
+      }
+    ]
+  },
+  "frontier-colonies": {
+    "letter": "C",
+    "voice": "matilda",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.693Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "bella",
+        "shape": "plain",
+        "score": 91.7,
+        "match": 1,
+        "pace": 2.01
+      },
+      {
+        "letter": "B",
+        "voice": "sarah",
+        "shape": "plain",
+        "score": 91.1,
+        "match": 1,
+        "pace": 1.96
+      },
+      {
+        "letter": "C",
+        "voice": "matilda",
+        "shape": "plain",
+        "score": 92,
+        "match": 1,
+        "pace": 2.04
+      }
+    ]
+  },
+  "frontier-works": {
+    "letter": "A",
+    "voice": "chris",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.693Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "chris",
+        "shape": "plain",
+        "score": 97.4,
+        "match": 1,
+        "pace": 2.48
+      },
+      {
+        "letter": "B",
+        "voice": "will",
+        "shape": "plain",
+        "score": 95.6,
+        "match": 1,
+        "pace": 2.33
+      },
+      {
+        "letter": "C",
+        "voice": "charlie",
+        "shape": "plain",
+        "score": 91.2,
+        "match": 0.944,
+        "pace": 2.43
+      }
+    ]
+  },
+  "frontier-treasury": {
+    "letter": "C",
+    "voice": "brian",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.693Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "bill",
+        "shape": "plain",
+        "score": 95.1,
+        "match": 1,
+        "pace": 2.29
+      },
+      {
+        "letter": "B",
+        "voice": "roger",
+        "shape": "deeper",
+        "score": 95.7,
+        "match": 1,
+        "pace": 2.34
+      },
+      {
+        "letter": "C",
+        "voice": "brian",
+        "shape": "plain",
+        "score": 96.5,
+        "match": 1,
+        "pace": 2.41
+      }
+    ]
+  },
+  "frontier-science": {
+    "letter": "C",
+    "voice": "bella",
+    "shape": "lighter",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "jessica",
+        "shape": "plain",
+        "score": 94.3,
+        "match": 1,
+        "pace": 2.23
+      },
+      {
+        "letter": "B",
+        "voice": "laura",
+        "shape": "plain",
+        "score": 94.4,
+        "match": 1,
+        "pace": 2.23
+      },
+      {
+        "letter": "C",
+        "voice": "bella",
+        "shape": "lighter",
+        "score": 95.1,
+        "match": 1,
+        "pace": 2.29
+      }
+    ]
+  },
+  "frontier-survey": {
+    "letter": "C",
+    "voice": "roger",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "brian",
+        "shape": "plain",
+        "score": 98.3,
+        "match": 1,
+        "pace": 2.84
+      },
+      {
+        "letter": "B",
+        "voice": "chris",
+        "shape": "deeper",
+        "score": 97.2,
+        "match": 1,
+        "pace": 2.93
+      },
+      {
+        "letter": "C",
+        "voice": "roger",
+        "shape": "plain",
+        "score": 98.3,
+        "match": 1,
+        "pace": 2.84
+      }
+    ]
+  },
+  "frontier-watch": {
+    "letter": "B",
+    "voice": "alice",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "matilda",
+        "shape": "plain",
+        "score": 96.1,
+        "match": 0.977,
+        "pace": 2.57
+      },
+      {
+        "letter": "B",
+        "voice": "alice",
+        "shape": "plain",
+        "score": 96.5,
+        "match": 0.977,
+        "pace": 2.6
+      },
+      {
+        "letter": "C",
+        "voice": "sarah",
+        "shape": "plain",
+        "score": 95,
+        "match": 0.977,
+        "pace": 2.47
+      }
+    ]
+  },
+  "frontier-envoy": {
+    "letter": "B",
+    "voice": "eric",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "roger",
+        "shape": "plain",
+        "score": 99.6,
+        "match": 1,
+        "pace": 2.67
+      },
+      {
+        "letter": "B",
+        "voice": "eric",
+        "shape": "plain",
+        "score": 99.8,
+        "match": 1,
+        "pace": 2.72
+      },
+      {
+        "letter": "C",
+        "voice": "bill",
+        "shape": "plain",
+        "score": 98.4,
+        "match": 1,
+        "pace": 2.57
+      }
+    ]
+  },
+  "frontier-admiral": {
+    "letter": "B",
+    "voice": "adam",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "eric",
+        "shape": "plain",
+        "score": 96.9,
+        "match": 1,
+        "pace": 2.96
+      },
+      {
+        "letter": "B",
+        "voice": "adam",
+        "shape": "plain",
+        "score": 98.7,
+        "match": 1,
+        "pace": 2.81
+      },
+      {
+        "letter": "C",
+        "voice": "chris",
+        "shape": "plain",
+        "score": 96.2,
+        "match": 1,
+        "pace": 3.02
+      }
+    ]
+  },
+  "frontier-landing": {
+    "letter": "C",
+    "voice": "liam",
+    "shape": "radio",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "will",
+        "shape": "radio",
+        "score": 95.3,
+        "match": 1,
+        "pace": 2.31
+      },
+      {
+        "letter": "B",
+        "voice": "chris",
+        "shape": "radio",
+        "score": 98.2,
+        "match": 1,
+        "pace": 2.55
+      },
+      {
+        "letter": "C",
+        "voice": "liam",
+        "shape": "radio",
+        "score": 96.3,
+        "match": 1,
+        "pace": 2.39
+      }
+    ]
+  },
+  "frontier-garrison": {
+    "letter": "A",
+    "voice": "sarah",
+    "shape": "radio",
+    "by": "measure",
+    "at": "2026-10-24T07:13:43.694Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "sarah",
+        "shape": "radio",
+        "score": 90.5,
+        "match": 1,
+        "pace": 1.91
+      },
+      {
+        "letter": "B",
+        "voice": "bella",
+        "shape": "radio",
+        "score": 91.9,
+        "match": 1,
+        "pace": 2.03
+      },
+      {
+        "letter": "C",
+        "voice": "matilda",
+        "shape": "radio",
+        "score": 82.8,
+        "match": 0.929,
+        "pace": 1.86
+      }
+    ]
+  },
+  "hollow-wake-colonies": {
+    "letter": "A",
+    "voice": "sarah",
+    "shape": "deeper",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "sarah",
+        "shape": "deeper",
+        "score": 86.6,
+        "match": 1,
+        "pace": 1.68
+      },
+      {
+        "letter": "B",
+        "voice": "matilda",
+        "shape": "deeper",
+        "score": 86.2,
+        "match": 1,
+        "pace": 1.65
+      },
+      {
+        "letter": "C",
+        "voice": "lily",
+        "shape": "deeper",
+        "score": 85.8,
+        "match": 1,
+        "pace": 1.62
+      }
+    ]
+  },
+  "hollow-wake-works": {
+    "letter": "A",
+    "voice": "liam",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "liam",
+        "shape": "plain",
+        "score": 77.1,
+        "match": 0.875,
+        "pace": 1.93
+      },
+      {
+        "letter": "B",
+        "voice": "harry",
+        "shape": "plain",
+        "score": 76.4,
+        "match": 0.875,
+        "pace": 1.88
+      },
+      {
+        "letter": "C",
+        "voice": "charlie",
+        "shape": "plain",
+        "score": 75.9,
+        "match": 0.875,
+        "pace": 1.84
+      }
+    ]
+  },
+  "hollow-wake-treasury": {
+    "letter": "C",
+    "voice": "eric",
+    "shape": "lighter",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "callum",
+        "shape": "plain",
+        "score": 94.6,
+        "match": 1,
+        "pace": 2.35
+      },
+      {
+        "letter": "B",
+        "voice": "roger",
+        "shape": "plain",
+        "score": 95.1,
+        "match": 1,
+        "pace": 2.39
+      },
+      {
+        "letter": "C",
+        "voice": "eric",
+        "shape": "lighter",
+        "score": 95.7,
+        "match": 1,
+        "pace": 2.44
+      }
+    ]
+  },
+  "hollow-wake-science": {
+    "letter": "B",
+    "voice": "alice",
+    "shape": "deeper",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "lily",
+        "shape": "deeper",
+        "score": 92.1,
+        "match": 1,
+        "pace": 2.14
+      },
+      {
+        "letter": "B",
+        "voice": "alice",
+        "shape": "deeper",
+        "score": 95.3,
+        "match": 1,
+        "pace": 2.41
+      },
+      {
+        "letter": "C",
+        "voice": "matilda",
+        "shape": "plain",
+        "score": 93.8,
+        "match": 1,
+        "pace": 2.28
+      }
+    ]
+  },
+  "hollow-wake-survey": {
+    "letter": "C",
+    "voice": "bella",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "laura",
+        "shape": "plain",
+        "score": 89.8,
+        "match": 1,
+        "pace": 1.95
+      },
+      {
+        "letter": "B",
+        "voice": "jessica",
+        "shape": "plain",
+        "score": 91.1,
+        "match": 1,
+        "pace": 2.06
+      },
+      {
+        "letter": "C",
+        "voice": "bella",
+        "shape": "plain",
+        "score": 92,
+        "match": 1,
+        "pace": 2.13
+      }
+    ]
+  },
+  "hollow-wake-watch": {
+    "letter": "A",
+    "voice": "callum",
+    "shape": "deeper",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "callum",
+        "shape": "deeper",
+        "score": 98.1,
+        "match": 1,
+        "pace": 2.96
+      },
+      {
+        "letter": "B",
+        "voice": "adam",
+        "shape": "deeper",
+        "score": 97.7,
+        "match": 1,
+        "pace": 2.99
+      },
+      {
+        "letter": "C",
+        "voice": "harry",
+        "shape": "deeper",
+        "score": 98.1,
+        "match": 1,
+        "pace": 2.96
+      }
+    ]
+  },
+  "hollow-wake-envoy": {
+    "letter": "B",
+    "voice": "laura",
+    "shape": "deeper",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "lily",
+        "shape": "plain",
+        "score": 98.9,
+        "match": 1,
+        "pace": 2.71
+      },
+      {
+        "letter": "B",
+        "voice": "laura",
+        "shape": "deeper",
+        "score": 99.2,
+        "match": 1,
+        "pace": 2.74
+      },
+      {
+        "letter": "C",
+        "voice": "bella",
+        "shape": "deeper",
+        "score": 99.6,
+        "match": 1,
+        "pace": 2.83
+      }
+    ]
+  },
+  "hollow-wake-admiral": {
+    "letter": "A",
+    "voice": "adam",
+    "shape": "plain",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "adam",
+        "shape": "plain",
+        "score": 99.3,
+        "match": 1,
+        "pace": 2.74
+      },
+      {
+        "letter": "B",
+        "voice": "harry",
+        "shape": "plain",
+        "score": 97.3,
+        "match": 1,
+        "pace": 3.03
+      },
+      {
+        "letter": "C",
+        "voice": "callum",
+        "shape": "plain",
+        "score": 98.9,
+        "match": 1,
+        "pace": 2.71
+      }
+    ]
+  },
+  "hollow-wake-landing": {
+    "letter": "A",
+    "voice": "harry",
+    "shape": "radio",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "harry",
+        "shape": "radio",
+        "score": 98.3,
+        "match": 1,
+        "pace": 2.95
+      },
+      {
+        "letter": "B",
+        "voice": "callum",
+        "shape": "radio",
+        "score": 99.1,
+        "match": 1,
+        "pace": 2.87
+      },
+      {
+        "letter": "C",
+        "voice": "charlie",
+        "shape": "radio",
+        "score": 97.4,
+        "match": 1,
+        "pace": 3.02
+      }
+    ]
+  },
+  "hollow-wake-garrison": {
+    "letter": "C",
+    "voice": "roger",
+    "shape": "radio",
+    "by": "measure",
+    "at": "2026-10-24T07:14:15.055Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "adam",
+        "shape": "radio",
+        "score": 90.2,
+        "match": 0.929,
+        "pace": 2.58
+      },
+      {
+        "letter": "B",
+        "voice": "brian",
+        "shape": "radio",
+        "score": 89.1,
+        "match": 0.929,
+        "pace": 2.49
+      },
+      {
+        "letter": "C",
+        "voice": "roger",
+        "shape": "radio",
+        "score": 90.2,
+        "match": 0.929,
+        "pace": 2.58
+      }
+    ]
+  },
+  "dusk-concord-colonies": {
+    "letter": "A",
+    "voice": "brian",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "brian",
+        "shape": "concord",
+        "score": 98.8,
+        "match": 1,
+        "pace": 1.8
+      },
+      {
+        "letter": "B",
+        "voice": "bill",
+        "shape": "concord",
+        "score": 97.4,
+        "match": 1,
+        "pace": 1.68
+      },
+      {
+        "letter": "C",
+        "voice": "roger",
+        "shape": "concord",
+        "score": 98.1,
+        "match": 1,
+        "pace": 1.74
+      }
+    ]
+  },
+  "dusk-concord-works": {
+    "letter": "B",
+    "voice": "eric",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "adam",
+        "shape": "concord",
+        "score": 94.2,
+        "match": 1,
+        "pace": 1.41
+      },
+      {
+        "letter": "B",
+        "voice": "eric",
+        "shape": "concord",
+        "score": 94.9,
+        "match": 1,
+        "pace": 1.47
+      },
+      {
+        "letter": "C",
+        "voice": "chris",
+        "shape": "concord",
+        "score": 94.8,
+        "match": 1,
+        "pace": 1.47
+      }
+    ]
+  },
+  "dusk-concord-treasury": {
+    "letter": "B",
+    "voice": "sarah",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "matilda",
+        "shape": "concord",
+        "score": 99.3,
+        "match": 1,
+        "pace": 1.84
+      },
+      {
+        "letter": "B",
+        "voice": "sarah",
+        "shape": "concord",
+        "score": 99.5,
+        "match": 1,
+        "pace": 1.86
+      },
+      {
+        "letter": "C",
+        "voice": "bella",
+        "shape": "concord",
+        "score": 99.1,
+        "match": 1,
+        "pace": 1.98
+      }
+    ]
+  },
+  "dusk-concord-science": {
+    "letter": "A",
+    "voice": "river",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "river",
+        "shape": "concord",
+        "score": 98.7,
+        "match": 1,
+        "pace": 1.79
+      },
+      {
+        "letter": "B",
+        "voice": "alice",
+        "shape": "concord",
+        "score": 97.8,
+        "match": 1,
+        "pace": 1.71
+      },
+      {
+        "letter": "C",
+        "voice": "lily",
+        "shape": "concord",
+        "score": 97.4,
+        "match": 1,
+        "pace": 1.69
+      }
+    ]
+  },
+  "dusk-concord-survey": {
+    "letter": "C",
+    "voice": "liam",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "charlie",
+        "shape": "concord",
+        "score": 98.3,
+        "match": 1,
+        "pace": 1.76
+      },
+      {
+        "letter": "B",
+        "voice": "will",
+        "shape": "concord",
+        "score": 98.7,
+        "match": 1,
+        "pace": 1.79
+      },
+      {
+        "letter": "C",
+        "voice": "liam",
+        "shape": "concord",
+        "score": 99.6,
+        "match": 1,
+        "pace": 1.87
+      }
+    ]
+  },
+  "dusk-concord-watch": {
+    "letter": "B",
+    "voice": "harry",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "callum",
+        "shape": "concord",
+        "score": 99,
+        "match": 1,
+        "pace": 1.81
+      },
+      {
+        "letter": "B",
+        "voice": "harry",
+        "shape": "concord",
+        "score": 99.5,
+        "match": 1,
+        "pace": 1.86
+      },
+      {
+        "letter": "C",
+        "voice": "adam",
+        "shape": "concord",
+        "score": 98.6,
+        "match": 1,
+        "pace": 1.78
+      }
+    ]
+  },
+  "dusk-concord-envoy": {
+    "letter": "B",
+    "voice": "alice",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "lily",
+        "shape": "concord",
+        "score": 96.8,
+        "match": 1,
+        "pace": 2.17
+      },
+      {
+        "letter": "B",
+        "voice": "alice",
+        "shape": "concord",
+        "score": 97,
+        "match": 1,
+        "pace": 2.15
+      },
+      {
+        "letter": "C",
+        "voice": "sarah",
+        "shape": "concord",
+        "score": 96.1,
+        "match": 1,
+        "pace": 2.23
+      }
+    ]
+  },
+  "dusk-concord-admiral": {
+    "letter": "C",
+    "voice": "bill",
+    "shape": "concord",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "brian",
+        "shape": "concord",
+        "score": 98.2,
+        "match": 1,
+        "pace": 2.05
+      },
+      {
+        "letter": "B",
+        "voice": "adam",
+        "shape": "concord",
+        "score": 98,
+        "match": 1,
+        "pace": 2.07
+      },
+      {
+        "letter": "C",
+        "voice": "bill",
+        "shape": "concord",
+        "score": 98.9,
+        "match": 1,
+        "pace": 1.99
+      }
+    ]
+  },
+  "dusk-concord-landing": {
+    "letter": "C",
+    "voice": "roger",
+    "shape": "concord-radio",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "bill",
+        "shape": "concord-radio",
+        "score": 96.6,
+        "match": 1,
+        "pace": 2.18
+      },
+      {
+        "letter": "B",
+        "voice": "brian",
+        "shape": "concord-radio",
+        "score": 95.3,
+        "match": 1,
+        "pace": 2.29
+      },
+      {
+        "letter": "C",
+        "voice": "roger",
+        "shape": "concord-radio",
+        "score": 96.1,
+        "match": 1,
+        "pace": 2.22
+      }
+    ]
+  },
+  "dusk-concord-garrison": {
+    "letter": "C",
+    "voice": "callum",
+    "shape": "concord-radio",
+    "by": "measure",
+    "at": "2026-10-24T07:14:49.319Z",
+    "measured": [
+      {
+        "letter": "A",
+        "voice": "eric",
+        "shape": "concord-radio",
+        "score": 99.5,
+        "match": 1,
+        "pace": 1.86
+      },
+      {
+        "letter": "B",
+        "voice": "adam",
+        "shape": "concord-radio",
+        "score": 97.5,
+        "match": 1,
+        "pace": 2.1
+      },
+      {
+        "letter": "C",
+        "voice": "callum",
+        "shape": "concord-radio",
+        "score": 98,
+        "match": 1,
+        "pace": 2.07
+      }
+    ]
+  }
+}

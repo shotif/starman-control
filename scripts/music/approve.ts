@@ -4,9 +4,9 @@
 //
 //   npm run music:approve -- music/out/title/20261021-044029-lyria-3.5-1.mp3
 
-import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
+import { FFMPEG, FFPROBE, run } from '../media.ts';
 import { MUSIC_BITRATE, MUSIC_LUFS, type MusicManifest, upsertMusic } from './catalogue.ts';
 
 const candidate = process.argv[2];
@@ -24,15 +24,8 @@ const made = JSON.parse(readFileSync(source.replace(/\.\w+$/, '.json'), 'utf8'))
   createdAt: string;
 };
 
-/** Runs ffmpeg or ffprobe and returns what it wrote (ffmpeg reports on stderr). */
-function run(tool: string, args: string[]): string {
-  const r = spawnSync(tool, args, { encoding: 'utf8' });
-  if (r.status !== 0) throw new Error(`${tool} failed: ${r.stderr.slice(-400)}`);
-  return `${r.stdout}\n${r.stderr}`;
-}
-
 // The candidate's integrated loudness (EBU R128), so every piece plays at the same level.
-const report = run('ffmpeg', [
+const report = run(FFMPEG, [
   '-hide_banner',
   '-nostats',
   '-i',
@@ -50,7 +43,7 @@ const gainDb = Math.round((MUSIC_LUFS - integrated) * 10) / 10;
 const path = `music/${made.pieceId}.mp3`;
 const out = resolve(root, 'public', path);
 mkdirSync(resolve(root, 'public/music'), { recursive: true });
-run('ffmpeg', [
+run(FFMPEG, [
   '-hide_banner',
   '-y',
   '-i',
@@ -71,7 +64,7 @@ run('ffmpeg', [
 ]);
 const seconds =
   Math.round(
-    Number(run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', out]).trim()) * 10,
+    Number(run(FFPROBE, ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', out]).trim()) * 10,
   ) / 10;
 const bytes = statSync(out).size;
 

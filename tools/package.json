@@ -1,0 +1,10 @@
+{
+  "name": "starman-control-tools",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Build-time media tools for the music, the voices and the trailer (ffmpeg and ffprobe). Install with npm ci --prefix tools; the game never uses them.",
+  "devDependencies": {
+    "ffmpeg-static": "5.2.0",
+    "ffprobe-static": "3.1.0"
+  }
+}
