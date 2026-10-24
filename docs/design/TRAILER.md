@@ -6,8 +6,9 @@ D-98). After the first animatic the owner's notes became
 [Round 11](../DECISIONS.md#round-11-voices-and-the-trailers-ending-decided-24-october-2026) (D-99 to
 D-105): the advisors' lines are voiced **in the game** ([VOICES.md](VOICES.md)) and the trailer uses
 those same clips; the ending is End turn, the sweep and the neighbourhood, with a last line.
-**The revised script (§5) and shot list (§6) wait for the owner's approval**; nothing costly is
-generated for the trailer before it.
+**Finished:** the script and shot list were answered "go on", the first cut was approved ("It is
+good, release on github", D-106), and the trailer is the release
+[`trailer-1`](https://github.com/shotif/starman-control/releases/tag/trailer-1) (§10.7).
 
 **Goals.** A cinematic trailer with voice-over, as if for the game's future Steam page: it shows the
 game's greatest parts, says each in a few plain words, and makes people want it. Every frame is the
@@ -227,8 +228,8 @@ owner. The advisors are now the game's own voices (D-99).
 2. **Then the trailer**, from a pipeline under `trailer/` like `art/` and `music/`, with its own small
    package (`ffmpeg-static`, as Reborn's `promo/` has), run from the root by `npm run trailer:build`.
    Captures, narrator takes, music candidates and renders go to `trailer/out/`, which git ignores.
-   The finished video is sent to the owner as a file; where it lives after that (a GitHub release on
-   this repository, or only locally) is the owner's (§12).
+   The finished video is sent to the owner as a file; where it lives after that is a GitHub release on
+   this repository (D-106, §10.7).
 
 ### 10.2 Staging
 
@@ -287,13 +288,21 @@ The pipeline is in `trailer/` ([README.md](../../trailer/README.md)), run by `np
 - **The mix:** every spoken line levelled to −16 LUFS, as the game's clips are; the music lowered and
   stepping back under the voices; every line at least 8.1 dB above the music under it (measured by the
   build). The master: **120.00 s, −14.1 LUFS, peaks at −1.0 dBFS**, 1920×1080 at 60 fps, H.264 High at
-  CRF 16 (82 MB), AAC 320 kbps at 48 kHz, `+faststart`; a 720p copy (28 MB) and the .srt.
+  CRF 16 (138 MB), AAC 320 kbps at 48 kHz, `+faststart`; a 720p copy (26 MB) and the .srt.
 - **Known weak points:** the battle (S13) is small in its frame; the narrator is hurried in places;
   the feature cards cover the game's text on the busiest screens (a soft shade behind them helps).
 - **Found and mended on the way:** Chrome's screenshots come at the window's CSS size unless asked to
   scale (the cards fell outside a 1280×720 frame); scaling `<body>` for a push blanked the game's fixed
   screens (the root is scaled instead); two scripts writing `manifest.json` at once lost records (saves
   now merge); ffmpeg is run with `-nostdin` and a time limit, after one hung on a Concord clip.
+
+## 10.7 Released (24 October 2026)
+
+The owner approved the first cut. The master, its .srt and the 720p copy are the GitHub release
+[`trailer-1`](https://github.com/shotif/starman-control/releases/tag/trailer-1), tagged at `319afa9`,
+the commit whose pipeline made them; its notes say that every frame is the game and which parts are
+generated (D-106). To make another: change the script or the shots and run `npm run trailer:build`
+(`trailer/README.md`), then release it under the next tag.
 
 ## 11. Cost
 
@@ -310,6 +319,6 @@ $50 before the trailer.
 
 ## 12. For the owner
 
-1. **The revised script (§5) and shot list (§6):** approve, or name lines or shots to change.
-2. **Where the finished video lives:** recommended, a GitHub release on this repository holding the
-   master and its .srt, with renders kept out of git; or only on this machine and sent as files.
+Nothing is waiting. The script, the shots and the cut are approved, and the trailer is released
+(D-106). Still the owner's, as before: D-18 (Steam and money), which the end card's *Wishlist on
+Steam* waits on.

@@ -313,8 +313,10 @@ owner's direction: no voice created; lettered recordings sent to overrule, `npm 
 *Voices* setting, *Hear* and the music stepping back. ffmpeg for the scripts comes from `tools/`
 (`npm ci --prefix tools`). **Done: the trailer's pipeline and first cut** (`trailer/`, TRAILER.md §10.6):
 frame-stepped capture, the narrator (George, by measure) and the Lyria cue (D, by measure), the cut
-sent to the owner as a 720p copy with its .srt. **Next: the owner's notes on the first cut**, then
-another cut; where the finished video lives (TRAILER.md §12) is still the owner's. **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
+sent to the owner as a 720p copy with its .srt. The owner approved it ("It is good,
+release on github", D-106): **the trailer is the release
+[`trailer-1`](https://github.com/shotif/starman-control/releases/tag/trailer-1)** (master, .srt, 720p copy).
+The trailer is done; its end card's *Wishlist on Steam* still waits on D-18. **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
 and `ELEVENLABS_API_BASE` are in the git-ignored `.env` in the repository root (the ElevenLabs lines
 copied from Reborn's `promo/.env`, its EU host, an Enterprise plan); both checked on 24 October 2026.
 **Commits from the owner's Mac go out under its own git identity** (the owner's wish); leave it.
