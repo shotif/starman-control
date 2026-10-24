@@ -296,6 +296,16 @@ mended, and *Trying M6* below. **M6 is built** (§29); whether to call it 1.0 is
 The art and music spend: about $40.00 of $50 (raised on 22 October 2026; about $10.00 left). M3's
 art is about 65 pictures (about $6.50).
 
+**Now: the trailer** ([design/TRAILER.md](design/TRAILER.md)), asked for on 24 October 2026: a
+cinematic trailer with voice-over, as if for a Steam page, made with the owner step by step. Its
+options were answered the same day ([DECISIONS.md Round 10](DECISIONS.md#round-10-the-trailer-decided-24-october-2026),
+D-87 to D-98): *You are Control*, 90 to 120 s, a narrator and the advisors' real lines voiced with
+ElevenLabs, capture only, a Lyria cue, feature cards and an .srt, *Wishlist on Steam*, 16:9 only,
+inside D-27. The script (§5), the shot list (§6) and an animatic (§9, sent to the owner) **wait for
+the owner's approval**; the pipeline under `trailer/` (§10) is built after it. The ElevenLabs key
+lives in the git-ignored `trailer/.env` (copied from Reborn's `promo/.env`, the EU host; an
+Enterprise plan). **`GEMINI_API_KEY` was not in the environment on 24 October 2026**; Lyria needs it.
+
 ### Trying M5 (for the owner)
 
 What is new since M4, and where it is (the desktop's key in brackets):
