@@ -34,12 +34,14 @@
     "music:check": "node scripts/music/check.ts",
     "voice:cast": "node scripts/voice/cast.ts",
     "voice:pick": "node scripts/voice/pick.ts",
+    "voice:make": "node scripts/voice/make.ts",
+    "voice:check": "node scripts/voice/check.ts",
     "data:import": "node scripts/data/import-reborn.ts",
     "data:shell": "node scripts/data/import-shell.ts",
     "data:import-dwarfs": "node scripts/data/import-dwarfs.ts",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "check": "npm run typecheck && npm run lint && npm run art:check && npm run music:check && npm test && npm run build && npm run budgets"
+    "check": "npm run typecheck && npm run lint && npm run art:check && npm run music:check && npm run voice:check && npm test && npm run build && npm run budgets"
   },
   "dependencies": {
     "@fontsource/saira-condensed": "5.3.0",

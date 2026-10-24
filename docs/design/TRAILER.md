@@ -68,7 +68,7 @@ a rival and loaded with `__setGame` (§10.2).
 | 356 real star systems | the title: "356 real star systems, free to explore"; `src/data/shell.json` and the census (D-02, D-51) |
 | The old lanes run dark | the new-game screen: "Beyond them, the old lanes run dark, and the stars are waiting." (D-19) |
 | Every captain answers to one voice: you are Control | D-11; every advisor addresses the player as Control |
-| The advisors and commanders speak | from increment 70 (VOICES.md, D-99): the trailer waits for it |
+| The advisors and commanders speak | in the game since increment 70b (VOICES.md, D-99): 356 clips for the four powers that can be led |
 | Settle real worlds | the Authority settles Proxima Centauri b, a real planet, on turn 4 of seed 42 |
 | Relight the old lanes, lay new ones | lanes relit and built as projects (D-19); the map's sparks and fields |
 | First contact, learning their tongue | the Envoy's line on contact; Diplomacy: "learning their tongue: 1 of 20" (D-52) |

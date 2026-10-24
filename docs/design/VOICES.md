@@ -115,8 +115,9 @@ Like the pictures and the music (ART_PIPELINE.md, MUSIC.md §4):
 
 ## 5. Playing them (D-102: the first line, then on a press)
 
-- **When the report opens**, its first advisor line (the most pressing) is spoken; any other line
-  is spoken when its card is pressed. **A lesson or a guide step** is spoken as it appears. **The
+- **When a turn's report opens**, its first advisor line (the most pressing) is spoken, once however
+  often the report is opened; any other line is spoken when its *Hear* is pressed (beside the
+  speaker's name, shown only where a voice can speak). **A lesson or a guide step** is spoken as it appears. **The
   radio** is spoken as an invasion's lines come into the report, the landing before the garrison.
 - **Never two at once:** a new line stops the one speaking. Closing the report stops it.
 - **The music steps back** by about 6 dB while a voice speaks and returns after.
@@ -129,8 +130,9 @@ Like the pictures and the music (ART_PIPELINE.md, MUSIC.md §4):
 
 ## 6. Download and offline
 
-- Each clip is mono MP3 at about 48 kbps, levelled for speech: about 20 KB for a clip of three and a
-  half seconds, about **2 MB for a power's 89** and 8 MB for all four in the repository.
+- Each clip is mono MP3 at 40 kbps and 24 kHz, levelled for speech: about 18 KB for a clip of three
+  and a half seconds, about **2 MB for a power's 89** (the slow Concord's 2.5 MB) and 8 MB for all four
+  in the repository.
 - **No clip is in the first load** or the offline list given at the first visit. A clip is fetched
   when it is first spoken and the service worker keeps it, so a phone never pays for a voice it has
   not heard; **only the clips of the power being led are ever fetched**.
@@ -197,3 +199,34 @@ written lines are untouched throughout.
 - **Tools:** ffmpeg and ffprobe come from the small `tools/` package (`npm ci --prefix tools`,
   `ffmpeg-static` and `ffprobe-static`, as Reborn's `promo/` has), found by `scripts/media.ts`, which
   `music:approve` now uses too; the game's own dependencies and CI are unchanged.
+
+## 13. As built: increment 70b, in the game (24 October 2026)
+
+- **Every clip:** `npm run voice:make -- --power all` spoke all 356 in the cast's voices (29,124
+  characters for one take of each, about 33,000 with the retakes), each shaped, heard back and made again if a word was lost (up to five
+  times), trimmed of silence, levelled to −16 LUFS and published as mono MP3 at 40 kbps, 24 kHz, to
+  `public/voice/<power>/<clip>.mp3`, with its record in `voices/manifest.json`: 27½ minutes of speech,
+  8.0 MB, the Concord's the largest at 2.53 MB (its speech is slowest). 341 were heard back word for
+  word; the other 15 differ only as the transcriber writes them ("cue" for "queue", "arcs" for
+  "arks", "10" for "ten"). The Wake's "They want a fight" came out as "wanna fight" three times
+  running and was made again until it was heard as written. `--encode` encodes again from the
+  takes already made without asking the service (used once, from 48 to 40 kbps, to keep the
+  Concord's longest lesson within 60 KB). `npm run voice:check` is in `npm run check`.
+- **The player** (`src/app/voice.ts`): one audio element unlocked at the first press; a clip fetched
+  whole, so the service worker keeps it; one line at a time; the music steps back by about 6 dB
+  (`duckMusic` in `src/app/music.ts`); the page hidden or the setting off stops it. Clips are
+  excluded from the offline list by its own rule (only scripts, styles, fonts and pictures).
+- **Where it speaks:** the report (`src/ui/map/play.tsx`) speaks its most pressing line and then any
+  radio traffic once a turn; each advisor's line has *Hear*; the guided opening's steps and the
+  lessons speak as they appear (`src/ui/map/guide.tsx`); `radioTraffic` now gives each line's stage.
+- **The setting:** *Voices*, on or off, under *Music* (`voices` in the settings, on by default);
+  *Advisors: off* silences them too; test runs stay silent unless the address says `voices`.
+- **Credits:** the codex's *Sources and licences* says how the voices are made, with a link to the
+  records. **Budgets:** each clip at most 60 KB, a power's set at most 3 MB, none in the first load.
+- **Tests:** `tests/unit/voices.test.ts` (the spoken forms, the speakers against the report, the 89
+  clips, the records' audit, hearing a take back), `tests/unit/settings.test.ts` (the setting),
+  `tests/e2e/voices.spec.ts` (nothing before the first press, the guide's step, the report's first
+  line, *Hear*, only the led power's clips; off downloads nothing and shows no *Hear*), and
+  `tests/e2e/data.spec.ts` (the credits), on the phone, the tablet and the desktop.
+- **Owner's overrules:** a lettered pick from the casting is `npm run voice:pick -- <part> <letter>`,
+  then `npm run voice:make -- --power <power>`, which remakes only that part's clips.

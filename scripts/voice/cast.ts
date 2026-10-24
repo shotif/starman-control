@@ -14,7 +14,8 @@ import { ADVISORS } from '../../src/content/advisors.ts';
 import { VOICED_FACTIONS, type VoicedFaction } from '../../src/content/voices.ts';
 import { auditionLines, deliveryOf, PARTS, type Part, SHAPES, STOCK, VOICE_MODEL } from '../../voices/briefs.ts';
 import { duration, ffmpeg, loudness } from '../media.ts';
-import { hasKey, missingKeyHelp, speak, transcribe, wordMatch, wordsOf } from './eleven.ts';
+import { hasKey, missingKeyHelp, speak, transcribe } from './eleven.ts';
+import { wordMatch, wordsOf } from './words.ts';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const OUT = resolve(ROOT, 'voices/out/cast');

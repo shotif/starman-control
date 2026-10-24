@@ -306,8 +306,13 @@ line is voiced in the game** ([design/VOICES.md](design/VOICES.md), increment 70
 with no names, 89 clips for each of the four playable powers, cast by Claude and sent lettered to
 overrule), and the trailer uses those same clips; it ends on End turn, the sweep and the
 neighbourhood with "The stars are waiting, Control." The revised script (TRAILER.md §5) and shot
-list (§6) **wait for the owner's approval**; the voices (increment 70) come first, then the trailer's
-pipeline under `trailer/` (§10). **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
+list (§6) were answered "go on" (24 October 2026). **Done: increment 70, voices**
+([VOICES.md](design/VOICES.md) §12 and §13): the spoken forms, the cast from stock voices (the
+owner's direction: no voice created; lettered recordings sent to overrule, `npm run voice:pick`), all
+356 clips made and checked (`voice:make`, `voice:check` in `npm run check`), and the player with its
+*Voices* setting, *Hear* and the music stepping back. ffmpeg for the scripts comes from `tools/`
+(`npm ci --prefix tools`). **Next: the trailer's pipeline under `trailer/`** (TRAILER.md §10), with
+the advisors' clips taken from `public/voice/`. **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
 and `ELEVENLABS_API_BASE` are in the git-ignored `.env` in the repository root (the ElevenLabs lines
 copied from Reborn's `promo/.env`, its EU host, an Enterprise plan); both checked on 24 October 2026.
 **Commits from the owner's Mac go out under its own git identity** (the owner's wish); leave it.
@@ -407,6 +412,10 @@ npm run art:generate -- --brief <id>[,<id>…] --provider gemini --count 2
 npm run art:key -- --brief <id>[,<id>…]             # key a landscape's or building's candidates
 npm run art:sheet -- --brief <id>                   # one brief at a time (keyed ones on a checkerboard)
 npm run art:approve -- art/out/<brief>/<file>.jpg   # keys it too, when its series is keyed
+npm ci --prefix tools                               # ffmpeg and ffprobe for music:approve, voice:* and the trailer
+npm run voice:cast -- --power <id>                  # three stock-voice candidates for each part, one lettered file
+npm run voice:pick -- <part> <letter>               # the owner's overrule of a part's voice
+npm run voice:make -- --power <id>|all              # every clip in the cast's voices (unchanged ones kept)
 ```
 
 **Where things are:**

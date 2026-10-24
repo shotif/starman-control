@@ -81,7 +81,7 @@ export function radioTraffic(
   game: GameState,
   e: Invasion,
   me: FactionId,
-): { who: string; text: string }[] {
+): { who: string; stage: RadioStage; text: string }[] {
   const place = placeOf(world, game, e.holding, e.system);
   const attacking = e.by === me;
   const voice = RADIO[attacking ? e.by : e.from];
@@ -96,7 +96,7 @@ export function radioTraffic(
     ? ['landing', ...(e.garrison > 0 ? (['fighting'] as const) : []), e.won ? 'won' : 'lost']
     : ['sighted', ...(e.garrison > 0 ? (['holding'] as const) : []), e.won ? 'fell' : 'held'];
   const who = attacking ? voice.landing : voice.garrison;
-  return stages.map((s) => ({ who, text: radioLine(voice, s, fill) }));
+  return stages.map((s) => ({ who, stage: s, text: radioLine(voice, s, fill) }));
 }
 
 export function RadioTraffic({ world, game, e, me }: { world: World; game: GameState; e: Invasion; me: FactionId }) {

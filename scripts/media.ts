@@ -24,14 +24,16 @@ export const FFMPEG = process.env.FFMPEG || fromTools('ffmpeg-static') || 'ffmpe
 export const FFPROBE = process.env.FFPROBE || fromTools('ffprobe-static') || 'ffprobe';
 
 /** Runs ffmpeg or ffprobe and returns what it wrote (ffmpeg reports on stderr); throws with its words if it fails. */
-export function run(tool: string, args: string[]): string {
-  const r = spawnSync(tool, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+export function run(tool: string, args: string[], seconds = 120): string {
+  const r = spawnSync(tool, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: seconds * 1000 });
+  if (r.signal) throw new Error(`${tool} stopped after ${seconds} s (${r.signal}): ${args.join(' ').slice(0, 300)}`);
   if (r.error) throw new Error(`${tool} could not be run (${r.error.message}); try npm ci --prefix tools`);
   if (r.status !== 0) throw new Error(`${tool} failed: ${r.stderr.slice(-600)}`);
   return `${r.stdout}\n${r.stderr}`;
 }
 
-export const ffmpeg = (args: string[]) => run(FFMPEG, ['-hide_banner', '-nostats', ...args]);
+/** ffmpeg, never waiting on the terminal for keys (`-nostdin`). */
+export const ffmpeg = (args: string[]) => run(FFMPEG, ['-hide_banner', '-nostats', '-nostdin', ...args]);
 
 /** A file's length in seconds. */
 export function duration(file: string): number {

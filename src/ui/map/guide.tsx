@@ -7,10 +7,12 @@ import { useEffect } from 'preact/hooks';
 import { currentStep, guide, guideFinished, guideGameId, setGuideFlag, skipStep, stopGuide } from '../../app/guide.ts';
 import { currentLesson, hintFor, lessons, lessonsOn, tellLesson } from '../../app/lessons.ts';
 import { settings } from '../../app/settings.ts';
+import { speak } from '../../app/voice.ts';
 import { ADVISORS, DEPARTMENT_NAMES } from '../../content/advisors.ts';
 import type { FactionId } from '../../content/factions.ts';
 import { ALONE_LINES, GUIDE_STEPS } from '../../content/guide.ts';
 import type { Lesson } from '../../content/lessons.ts';
+import { ALONE_CLIP, guideClip, lessonClip } from '../../content/voices.ts';
 import type { GameState } from '../../sim/state.ts';
 import type { World } from '../../sim/world.ts';
 import { layout } from '../layout.ts';
@@ -41,6 +43,12 @@ export function GuideCard({
     if (guideFinished(game, faction, guide.value.flags)) stopGuide();
   }, [active, openedCapital, openedEmpire, game, faction]);
   const step = active ? currentStep(game, faction, g.flags) : null;
+  // The step's advisor speaks it as it appears (VOICES.md §5).
+  const stepId = step?.id ?? null;
+  const alone = game.powers.length === 1;
+  useEffect(() => {
+    if (stepId) speak(faction, [stepId === 'watch' && alone ? ALONE_CLIP : guideClip(stepId)]);
+  }, [stepId, alone, faction]);
   if (!step) {
     const lesson = lessonsOn() ? currentLesson(world, game, faction, lessons.value.told) : null;
     return lesson ? <LessonCard lesson={lesson} faction={faction} top={top} /> : null;
@@ -77,6 +85,8 @@ export function GuideCard({
 
 /** A lesson come due (M6_ONE.md §20.3): its advisor, its line in our voice, where to look, *Got it*. */
 function LessonCard({ lesson, faction, top }: { lesson: Lesson; faction: FactionId; top?: number }) {
+  // Its advisor speaks it as it appears (VOICES.md §5).
+  useEffect(() => speak(faction, [lessonClip(lesson.id)]), [lesson.id, faction]);
   const team = ADVISORS[faction];
   const advisor = team.people[lesson.department];
   return (

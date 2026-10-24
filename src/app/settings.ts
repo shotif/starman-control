@@ -1,5 +1,5 @@
 // Settings (M1_PROOF.md §1), kept on the device as Starman Reborn keeps them (src/app/settings.ts
-// at ba4ef73, D-10, in spirit): text size, reduced motion, quality, sound (CONSOLE.md §5), music (MUSIC.md) and the
+// at ba4ef73, D-10, in spirit): text size, reduced motion, quality, sound (CONSOLE.md §5), music (MUSIC.md), voices (VOICES.md) and the
 // advisors (M2_WORLDS.md §24). They are read at start-up,
 // before anything is drawn, so they live in localStorage rather than the save store.
 
@@ -19,6 +19,8 @@ export interface Settings {
   quality: QualitySetting;
   sound: SoundSetting;
   music: SoundSetting;
+  /** The advisors' and commanders' voices (VOICES.md §5). */
+  voices: SoundSetting;
   advisors: AdvisorSetting;
   /** Edicts and the attention that pays for them shown, or hidden (M2_WORLDS.md §25.2). */
   edicts: SoundSetting;
@@ -33,6 +35,7 @@ export const DEFAULT_SETTINGS: Settings = {
   quality: 'auto',
   sound: 'on',
   music: 'on',
+  voices: 'on',
   advisors: 'speak',
   edicts: 'on',
   guide: 'on',
@@ -49,6 +52,7 @@ export function parseSettings(raw: unknown): Settings {
     s.quality = r.quality;
   if (r.sound === 'on' || r.sound === 'off') s.sound = r.sound;
   if (r.music === 'on' || r.music === 'off') s.music = r.music;
+  if (r.voices === 'on' || r.voices === 'off') s.voices = r.voices;
   if (r.advisors === 'speak' || r.advisors === 'quiet' || r.advisors === 'off') s.advisors = r.advisors;
   if (r.edicts === 'on' || r.edicts === 'off') s.edicts = r.edicts;
   if (r.guide === 'on' || r.guide === 'off') s.guide = r.guide;

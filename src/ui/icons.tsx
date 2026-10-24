@@ -25,6 +25,13 @@ const PATHS = {
     </>
   ),
   menu: <path d="M4.5 7h15M4.5 12h15M4.5 17h15" />,
+  // A voice speaking (VOICES.md §5): a speaker and two rings of sound.
+  voice: (
+    <>
+      <path d="M4.5 9.5h3.5l4.5-4v13l-4.5-4H4.5z" />
+      <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />
+    </>
+  ),
   'end-turn': (
     <>
       <path d="M6 5.5l6.5 6.5L6 18.5" />

@@ -55,31 +55,3 @@ export async function transcribe(audio: Buffer): Promise<string> {
   const res = await call('/v1/speech-to-text', { method: 'POST', body: form });
   return ((await res.json()) as { text: string }).text;
 }
-
-/** The words of a line, for comparing: lower case, no punctuation, one kind of apostrophe. */
-export function wordsOf(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[’‘]/g, "'")
-    .replace(/\[[^\]]*\]/g, ' ')
-    .replace(/[^a-z0-9' ]+/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-/** How much of what was meant was heard, in order: the longest common run of words over the words meant. */
-export function wordMatch(meant: string, heard: string): number {
-  const a = wordsOf(meant);
-  const b = wordsOf(heard);
-  if (a.length === 0) return 1;
-  const row = new Array<number>(b.length + 1).fill(0);
-  for (let i = 1; i <= a.length; i++) {
-    let diagonal = 0;
-    for (let j = 1; j <= b.length; j++) {
-      const above = row[j];
-      row[j] = a[i - 1] === b[j - 1] ? diagonal + 1 : Math.max(row[j], row[j - 1]);
-      diagonal = above;
-    }
-  }
-  return row[b.length] / a.length;
-}

@@ -38,6 +38,9 @@ let rest = 0;
 let generation = 0;
 /** The mood whose piece is being fetched or played, set at once so a second call does not fetch again. */
 let playing: MusicMood | null = null;
+/** The level the music plays at, below its own: lowered while a voice speaks (VOICES.md §5). */
+let duckLevel = 1;
+const DUCKED = 0.5;
 const lastPiece: Partial<Record<MusicMood, MusicPiece>> = {};
 /** Pieces asked for, in order, for the test hook. */
 const requested: string[] = [];
@@ -54,8 +57,8 @@ function allowed(): boolean {
   return settings.value.music === 'on' && testAllowed;
 }
 
-/** A moment of silence as a WAV, to unlock an audio element during the first press. */
-function silence(): string {
+/** A moment of silence as a WAV, to unlock an audio element during the first press (the voices use it too). */
+export function silence(): string {
   const samples = 800;
   const buf = new ArrayBuffer(44 + samples * 2);
   const v = new DataView(buf);
@@ -174,7 +177,7 @@ async function start(mood: MusicMood, piece: MusicPiece, mine: number): Promise<
   } catch {
     return;
   }
-  fade(deck, 1, FADE_SECONDS);
+  fade(deck, duckLevel, FADE_SECONDS);
   musicState.value = { mood, piece, playing: true };
 }
 
@@ -220,6 +223,13 @@ function apply(): void {
   const piece = nextPiece(wanted, lastPiece[wanted] ?? null);
   if (piece) void start(wanted, piece, generation);
   else musicState.value = { mood: wanted, piece: null, playing: false };
+}
+
+/** Steps the music back while a voice speaks (about 6 dB), and brings it up again after. */
+export function duckMusic(on: boolean): void {
+  duckLevel = on ? DUCKED : 1;
+  const deck = decks[front];
+  if (deck?.piece) fade(deck, duckLevel, on ? 0.25 : 0.8);
 }
 
 /** Says where the player is; the music follows once a press has unlocked it. */

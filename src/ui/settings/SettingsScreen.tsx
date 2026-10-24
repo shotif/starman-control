@@ -116,6 +116,20 @@ export default function SettingsScreen() {
           ]}
           onPick={(music) => updateSettings({ music })}
         />
+        <p>
+          Your advisors and commanders speak their lines, as short forms with the details on their cards: the most
+          pressing line when a turn’s report opens, any other when you press <i>Hear</i>, and each lesson and step of
+          the guide as it appears. Downloaded only when heard.
+        </p>
+        <Choice
+          label="Voices"
+          value={s.voices}
+          options={[
+            { value: 'on', text: 'On' },
+            { value: 'off', text: 'Off' },
+          ]}
+          onPick={(voices) => updateSettings({ voices })}
+        />
       </section>
       <section class="page-section" aria-labelledby="set-advisors">
         <h2 id="set-advisors">Advisors</h2>

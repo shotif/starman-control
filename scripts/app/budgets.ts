@@ -143,6 +143,40 @@ for (const b of BUDGETS) {
   );
 }
 
+// The voices (VOICES.md §6): each clip at most 60 KB, a power's clips at most 3 MB (a player only ever
+// fetches the power they lead), and none in the first load.
+{
+  const clipLimit = 60 * KB;
+  const powerLimit = 3 * 1024 * KB;
+  let heaviest = 0;
+  let heaviestName = '';
+  let biggestPower = 0;
+  let biggestName = '';
+  const powers = await readdir('dist/voice').catch(() => [] as string[]);
+  for (const p of powers) {
+    let total = 0;
+    for (const f of (await readdir(`dist/voice/${p}`).catch(() => [] as string[])).filter((x) => x.endsWith('.mp3'))) {
+      const bytes = (await stat(`dist/voice/${p}/${f}`)).size;
+      total += bytes;
+      if (bytes > heaviest) {
+        heaviest = bytes;
+        heaviestName = `${p}/${f}`;
+      }
+    }
+    if (total > biggestPower) {
+      biggestPower = total;
+      biggestName = p;
+    }
+  }
+  const html = await readFile('dist/index.html', 'utf8');
+  const listed = /voice\/[\w-]+\/[\w-]+\.mp3/.test(html);
+  const ok = heaviest <= clipLimit && biggestPower <= powerLimit && !listed;
+  failed ||= !ok;
+  console.log(
+    `${ok ? 'ok  ' : 'OVER'} Voices: the largest clip${heaviestName ? ` (${heaviestName})` : ''} ${(heaviest / KB).toFixed(1)} KB of 60 KB; the largest power${biggestName ? ` (${biggestName})` : ''} ${(biggestPower / KB / 1024).toFixed(2)} MB of 3 MB; ${listed ? 'listed in the first load' : 'none in the first load'}`,
+  );
+}
+
 if (failed) {
   console.error('budgets: over budget (docs/design/M1_PROOF.md §4)');
   process.exit(1);

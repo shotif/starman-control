@@ -2,8 +2,9 @@
 // orders, choosing where a ship goes, the report, and what needs you. The same parts serve both
 // layouts; the map screen places them as sheets on a phone and as panels on a desktop.
 
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { settings } from '../../app/settings.ts';
+import { canSpeak, speak, speakReport } from '../../app/voice.ts';
 import { DEPARTMENT_NAMES, fillLine } from '../../content/advisors.ts';
 import { ANOMALIES, type AnomalyReward } from '../../content/anomalies.ts';
 import { ZONE_DEFS } from '../../content/districts.ts';
@@ -17,6 +18,7 @@ import { RULES } from '../../content/rules.ts';
 import { type HullId, SHIPS } from '../../content/ships.ts';
 import { TECHS } from '../../content/techs.ts';
 import { TREATIES } from '../../content/treaties.ts';
+import { adviceClip, radioClip } from '../../content/voices.ts';
 import type { SystemId } from '../../data/types.ts';
 import { adviceFor } from '../../sim/advice.ts';
 import { anomalyAt, investigateRefusal, investigationTurns, rewardTimes } from '../../sim/anomalies.ts';
@@ -46,7 +48,7 @@ import { endText } from './end.tsx';
 import { intelText } from './espionage.tsx';
 import { eventTitle } from './event.tsx';
 import { FleetRows, fleetStatus, planForFleet } from './fleets.tsx';
-import { bombardedText, invasionText, RadioTraffic, raidedText } from './invasion.tsx';
+import { bombardedText, invasionText, RadioTraffic, radioTraffic, raidedText } from './invasion.tsx';
 import { leaderText } from './leaders.tsx';
 import { relicText } from './relics.tsx';
 import { panel, say, targeting } from './state.ts';
@@ -1018,6 +1020,18 @@ export function ReportView({
   const advice = r
     ? adviceFor(world, game, faction, r.events, needsOf(world, game, faction), settings.value.advisors)
     : [];
+  const voiced = canSpeak(faction);
+  // The voices (VOICES.md §5): the most pressing line as a turn's report opens, then any radio traffic.
+  useEffect(() => {
+    if (!r || !voiced) return;
+    const first = advice[0];
+    speakReport(faction, r.turn, [
+      ...(first ? [adviceClip(first.department, first.kind)] : []),
+      ...r.events.flatMap((e) =>
+        e.kind === 'invasion' ? radioTraffic(world, game, e, faction).map((l) => radioClip(l.stage)) : [],
+      ),
+    ]);
+  }, [r, voiced, advice, world, game, faction]);
   return (
     <section class="report" aria-label="Report">
       {picture && <DispatchArt key={`${r?.turn}-${picture}`} picture={picture} />}
@@ -1030,6 +1044,16 @@ export function ReportView({
               <div>
                 <p class="advice-who">
                   <b>{a.advisor.name}</b> <span class="dim">· {DEPARTMENT_NAMES[a.department]}</span>
+                  {voiced && (
+                    <button
+                      type="button"
+                      class="button button-quiet button-small advice-hear"
+                      aria-label={`Hear ${a.advisor.name}`}
+                      onClick={() => speak(faction, [adviceClip(a.department, a.kind)])}
+                    >
+                      <Icon name="voice" size={14} /> Hear
+                    </button>
+                  )}
                 </p>
                 {a.event || a.holding !== undefined || a.system !== undefined ? (
                   <button

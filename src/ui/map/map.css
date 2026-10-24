@@ -760,8 +760,18 @@
 }
 
 .advice-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
   margin: 0 0 0.15rem;
   font-size: 0.85rem;
+}
+
+/* A line's voice (VOICES.md §5), at the far end of its speaker's name. */
+.advice-hear {
+  margin-left: auto;
+  gap: 0.3rem;
 }
 
 .advice-text {

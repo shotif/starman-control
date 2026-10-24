@@ -11,6 +11,7 @@ describe('settings (M1_PROOF.md §1)', () => {
         quality: 'low',
         sound: 'off',
         music: 'off',
+        voices: 'off',
         advisors: 'quiet',
         edicts: 'off',
         guide: 'off',
@@ -21,6 +22,7 @@ describe('settings (M1_PROOF.md §1)', () => {
       quality: 'low',
       sound: 'off',
       music: 'off',
+      voices: 'off',
       advisors: 'quiet',
       edicts: 'off',
       guide: 'off',
@@ -33,6 +35,9 @@ describe('settings (M1_PROOF.md §1)', () => {
     expect(DEFAULT_SETTINGS.sound).toBe('on');
     // Settings kept before music read with the music on (MUSIC.md §2).
     expect(parseSettings({ sound: 'off' }).music).toBe('on');
+    // And before the voices, with them speaking (VOICES.md §5).
+    expect(parseSettings({ music: 'off' }).voices).toBe('on');
+    expect(parseSettings({ voices: 'shout' }).voices).toBe('on');
     // And before the advisors, with them speaking (M2_WORLDS.md §24.2).
     expect(parseSettings({ sound: 'off' }).advisors).toBe('speak');
     expect(parseSettings({ advisors: 'loud' }).advisors).toBe('speak');

@@ -480,7 +480,7 @@ function Methods() {
         </a>
         .
       </p>
-      <h3>The pictures and the music</h3>
+      <h3>The pictures, the music and the voices</h3>
       <p data-testid="picture-credits">
         The pictures of places, people, buildings and vehicles are made with an image model, Google’s Gemini, from the
         game’s own written briefs. Each was chosen by hand from a few candidates, and its prompt, model and date are
@@ -506,6 +506,18 @@ function Methods() {
           the music records
         </a>
         . The interface’s own sounds are made by the game as you play.
+      </p>
+      <p data-testid="voice-credits">
+        The voices of the advisors and commanders are made with a speech model, ElevenLabs, from its own stock voices
+        reading the game’s own lines, each part cast from candidates and shaped to its character, and recorded in{' '}
+        <a
+          href="https://github.com/shotif/starman-control/blob/main/voices/manifest.json"
+          target="_blank"
+          rel="noreferrer"
+        >
+          the voice records
+        </a>
+        . No voice imitates a real person.
       </p>
     </section>
   );
