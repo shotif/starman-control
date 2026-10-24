@@ -73,6 +73,7 @@ Status: **Open** · **Decided** · **Deferred** (not needed until a later milest
 | D-18 | Free or paid, open source or not, Steam or the web only | Open | the owner's; see [Round 2](#round-2-needed-later) |
 | D-79 | The Co-op's lead in long games ([below](#d-79--the-co-ops-lead-in-long-games--assumed-owners-leave)) | Assumed 2026-10-23 (owner's leave) | **A, leave the Co-op as it is for M6's longer campaigns**, as recommended; overrule any time |
 | D-80 – D-86 | The M6 design: lessons when they matter, playing an alien power, the keys within everyone's reach, the balance targets for 1.0, accessibility, map sizes, music and sound | Assumed 2026-10-23 (owner's leave) | **as recommended**, open to the owner to overrule; see [Round 9](#round-9-10-assumed-23-october-2026) and [M6_ONE.md](design/M6_ONE.md) |
+| D-99 – D-105 | Voices in the game (the owner's direction) and the trailer's ending: names in spoken lines, which lines, when they speak, the casting, the ending, its last line | Decided 2026-10-24 | **every advisor and commander of the four playable powers voiced**, short spoken forms with no names, the first line then on a press, Claude casts and the owner overrules; the trailer ends on End turn and the neighbourhood with "The stars are waiting, Control."; see [Round 11](#round-11-voices-and-the-trailers-ending-decided-24-october-2026) and [VOICES.md](design/VOICES.md) |
 | D-87 – D-98 | The trailer: concept, length, voices, tone, pictures, music, words on screen, fiction labels, end card, formats, spend | Decided 2026-10-24 | **You are Control**, 90–120 s, a narrator and the advisors made with ElevenLabs, calm and quietly awed, capture only, a Lyria cue, feature cards and an .srt, a closing line, *Wishlist on Steam*, 16:9 only, inside D-27; see [Round 10](#round-10-the-trailer-decided-24-october-2026) and [TRAILER.md](design/TRAILER.md) |
 
 ## Round 1: decided 19 October 2026
@@ -865,6 +866,26 @@ the same day. The design, the script and the shot list are in
 | **D-96** | The end card | two cuts (Steam and web) · Wishlist on Steam · Play now in your browser · both on one card | two cuts | **Wishlist on Steam** (the owner's choice) | one cut, a placeholder until D-18 (Steam and money) is decided; no price and no date |
 | **D-97** | The formats | 16:9 now and 9:16 later · both together · 16:9 only | 16:9 now, 9:16 later | **16:9 only** (the owner's choice) | 1920×1080 at 60 fps (star fields judder on slow pans at 30), H.264 and AAC at 48 kHz, about 20 Mbps, with an .srt |
 | **D-98** | What it may spend | $2 of its own · $5 of its own · inside D-27 | $2 of its own | **inside D-27** (the owner's choice) | no new allowance: the trailer's Gemini spend (Lyria, about $0.30 to $0.50) comes out of the art and music budget, about $10 of $50 left; the voices are paid from the ElevenLabs plan's credits, outside D-27 |
+
+## Round 11: voices and the trailer's ending, decided 24 October 2026
+
+After the animatic the owner gave three notes: the stills were janky (they are stills moved by the
+edit; the trailer itself is the game filmed live, TRAILER.md §10.3); the advisors' lines should be
+voiced **in the game**, and the trailer should use those same files; and the ending was
+uninspiring and wanted a line after *Starman Control* and a look in the game's style. Claude put
+the options, with mock-ups of the endings made in the game's own page; the owner answered the same
+day. The design is [design/VOICES.md](design/VOICES.md); the trailer's changes are in
+[design/TRAILER.md](design/TRAILER.md).
+
+| ID | Question | Options | Recommended | **Decided** | Why |
+| --- | --- | --- | --- | --- | --- |
+| **D-99** | Voices in the game | (the owner's direction) | | **every advisor line voiced**, generated at build time with ElevenLabs, the trailer using the same files | the owner: "I want you to generate audio for all the advisor lines that will be added to the game as a feature, and use these same narration files for the trailer so you don't generate twice". This takes voice acting out of SCOPE.md's *Out of scope for 1.0*, and answers D-89's caution: the advisors the trailer voices now speak in the game too |
+| **D-100** | Names in spoken lines | powers and events named · short forms with no names · every name stitched in · only lines with no names | powers and events named | **short forms with no names** (the owner's choice) | every line gets a spoken form with no place, power, technology or number, true for every case; the card keeps the whole line. About 89 clips a power, about 2 MB, the simplest to make and to load |
+| **D-101** | Which lines | advisors and radio · advisors only · the report only | advisors and radio | **advisors and radio**, as recommended | the report's lines, the lessons, the guided opening and the commanders' radio during invasions, for the four powers that can be led: 32 advisors and 8 commanders |
+| **D-102** | When they speak | the first line, then on a press · every line in turn · only when pressed | the first line, then on a press | **the first line, then on a press**, as recommended | the most pressing line when the report opens, any other when its card is pressed, lessons and steps as they appear, the radio as an invasion comes in; a *Voices* setting, on by default; never two at once |
+| **D-103** | The casting | Claude picks, the owner overrules · the owner chooses each by ear · the owner chooses four and Claude matches | Claude picks | **Claude picks, the owner overrules**, as recommended | a description for each part from its face, power and manner; three designed voices each (no cloned or named person's voice); one lettered file per power sent to the owner |
+| **D-104** | The trailer's ending | End turn, then the neighbourhood · pull back to the neighbourhood · the game's title screen | End turn, then the neighbourhood | **End turn, then the neighbourhood**, as recommended | after "Your call, Control." the End turn plate lights and is pressed, the game's own turn sweep crosses with the next quarter's date, and leaves the whole neighbourhood behind with the logotype, the line, the closing line and the Wishlist plate |
+| **D-105** | The line after *Starman Control* | "The stars are waiting, Control." · "Every star is real. Every choice is yours." · "356 stars. One voice. Yours." · "Take control." | "The stars are waiting, Control." | **"The stars are waiting, Control."**, as recommended | it answers the opening's "The stars are waiting" and names the viewer as Control, the concept's payoff; spoken by the narrator and set under the logotype |
 
 ## Made without waiting
 

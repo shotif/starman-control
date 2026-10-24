@@ -398,7 +398,9 @@ keyboard and mouse.
 Portraits (species, leaders, advisors) and illustrations (events, relics) are generated with
 Google Gemini at build time, reviewed, and committed with a record of how each was made
 ([ART_PIPELINE.md](ART_PIPELINE.md)); pictures are sized and compressed for phones. Music and sound
-from Reborn's procedural audio engine, adapted for a calmer strategic mood.
+from Reborn's procedural audio engine, adapted for a calmer strategic mood. *(Since then: music
+generated with Lyria, D-31; and the advisors and commanders of every playable power voiced with
+ElevenLabs at build time, D-99, [design/VOICES.md](design/VOICES.md).)*
 
 ### 4.20 Saves and settings
 
@@ -416,7 +418,7 @@ deterministic and the map is rebuilt from its seed.
 - Tactical command of battles *(D-07)*; flying a ship yourself.
 - Live AI-written text while playing *(D-17)*.
 - Mods (the rules will live in data files, so this is possible later).
-- Languages other than English; voice acting.
+- Languages other than English; names, places and numbers spoken in voiced lines (the advisors and commanders speak short forms, D-99, D-100).
 - A made-up galaxy: the map is always the real neighbourhood.
 
 ## 6. Technical approach

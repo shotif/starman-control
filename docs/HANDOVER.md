@@ -301,10 +301,16 @@ cinematic trailer with voice-over, as if for a Steam page, made with the owner s
 options were answered the same day ([DECISIONS.md Round 10](DECISIONS.md#round-10-the-trailer-decided-24-october-2026),
 D-87 to D-98): *You are Control*, 90 to 120 s, a narrator and the advisors' real lines voiced with
 ElevenLabs, capture only, a Lyria cue, feature cards and an .srt, *Wishlist on Steam*, 16:9 only,
-inside D-27. The script (§5), the shot list (§6) and an animatic (§9, sent to the owner) **wait for
-the owner's approval**; the pipeline under `trailer/` (§10) is built after it. The ElevenLabs key
-lives in the git-ignored `trailer/.env` (copied from Reborn's `promo/.env`, the EU host; an
-Enterprise plan). **`GEMINI_API_KEY` was not in the environment on 24 October 2026**; Lyria needs it.
+inside D-27. After the animatic the owner's notes became Round 11 (D-99 to D-105): **every advisor
+line is voiced in the game** ([design/VOICES.md](design/VOICES.md), increment 70: short spoken forms
+with no names, 89 clips for each of the four playable powers, cast by Claude and sent lettered to
+overrule), and the trailer uses those same clips; it ends on End turn, the sweep and the
+neighbourhood with "The stars are waiting, Control." The revised script (TRAILER.md §5) and shot
+list (§6) **wait for the owner's approval**; the voices (increment 70) come first, then the trailer's
+pipeline under `trailer/` (§10). **Keys on the owner's Mac:** `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`
+and `ELEVENLABS_API_BASE` are in the git-ignored `.env` in the repository root (the ElevenLabs lines
+copied from Reborn's `promo/.env`, its EU host, an Enterprise plan); both checked on 24 October 2026.
+**Commits from the owner's Mac go out under its own git identity** (the owner's wish); leave it.
 
 ### Trying M5 (for the owner)
 
